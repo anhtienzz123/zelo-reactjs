@@ -5,7 +5,7 @@ import Home from 'features/Home';
 import AdminLayout from 'layout/AdminLayout';
 import ChatLayout from 'layout/ChatLayout';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import './App.css';
+import './scss/App.scss';
 
 function App() {
     return (
@@ -14,7 +14,7 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={Home} />
 
-                    <ProtectedRoute path="/chat" component={ChatLayout} />
+                    <Route path="/chat" component={ChatLayout} />
 
                     <ProtectedRoute
                         exact

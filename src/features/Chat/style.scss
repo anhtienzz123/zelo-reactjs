@@ -1,0 +1,36 @@
+@import "../../scss/variables";
+
+#main-chat-wrapper {
+    .main-conversation {
+        &_search-bar {
+            height: 20vh;
+            background-color: cyan;
+        }
+
+        &_list-conversation {
+            height: 80vh;
+            background-color: gray;
+          
+        }
+    }
+    .main_chat {
+        display: flex;
+        flex-direction: column;
+
+        &-header {
+            height: 9vh;
+            background-color: red;
+        }
+
+        &-body {
+            height: 78vh;
+            background-color: yellow;
+           
+        }
+
+        &-footer {
+            height: 13vh;
+            background-color: green;
+        }
+    }
+}
