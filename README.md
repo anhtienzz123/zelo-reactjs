@@ -11,8 +11,7 @@ Chạy trên cổng 3000
 
 -   `/`: trang chủ.
 -   `/account/login`: trang login.
--   `/account/registry/email`: đăng kí email.
--   `/account/registry/phone`: đăng kí phone.
+-   `/account/registry`: đăng kí.
 -   `/account/forgot`: quên mật khẩu.
 
 ## `Chat`
