@@ -5,6 +5,7 @@ import NotFoundPage from 'components/NotFoundPage';
 import Friend from 'features/Friend';
 import { Col, Row } from 'antd';
 import HeaderChatContainer from 'features/Chat/containers/HeaderChatContainer';
+import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 
 function ChatLayout(props) {
     const { url } = useRouteMatch();
@@ -14,7 +15,7 @@ function ChatLayout(props) {
 
             <Row gutter={[0, 0]}>
                 <Col span={1} >
-                    <HeaderChatContainer />
+                    <NavbarContainer />
                 </Col>
                 <Col span={23} >
                     <Switch>

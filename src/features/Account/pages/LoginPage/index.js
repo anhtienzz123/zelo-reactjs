@@ -29,8 +29,8 @@ function LoginPage(props) {
             dispatch(setLoading(true));
 
             const { token } = await loginApi.login(username, password);
-            localStorage.setItem('token', token);
 
+            localStorage.setItem('token', token);
             dispatch(setLogin(true));
         } catch (error) {
             setError(true);

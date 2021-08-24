@@ -18,7 +18,6 @@ function Account(props) {
                 <Route path={`${url}/login`} component={LoginPage} />
                 <Route path={`${url}/registry`} component={RegistryPage} />
                 <Route path={`${url}/forgot`} component={ForgotPage} />
-
                 <Route component={NotFoundPage} />
             </Switch>
         </Spin>

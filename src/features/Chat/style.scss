@@ -3,14 +3,11 @@
 #main-chat-wrapper {
     .main-conversation {
         &_search-bar {
-            height: 20vh;
-            background-color: cyan;
+            height: 18vh;
         }
 
         &_list-conversation {
-            height: 80vh;
-            background-color: gray;
-          
+            height: 82vh;
         }
     }
     .main_chat {
@@ -25,12 +22,15 @@
         &-body {
             height: 78vh;
             background-color: yellow;
-           
         }
 
         &-footer {
             height: 13vh;
             background-color: green;
         }
+    }
+
+    .main-info {
+        height: 100vh;
     }
 }

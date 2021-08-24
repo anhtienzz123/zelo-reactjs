@@ -45,7 +45,9 @@ function Chat(props) {
                     </div>
                 </Col>
                 <Col span={6} >
-                    <InfoContainer />
+                    <div className="main-info">
+                        <InfoContainer />
+                    </div>
                 </Col>
 
             </Row>
