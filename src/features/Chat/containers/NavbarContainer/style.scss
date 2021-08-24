@@ -8,25 +8,6 @@ $icon-demention: 48px;
     display: flex;
     flex-direction: column;
 
-    .user-icon {
-        height: 10vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &_img {
-            height: $icon-demention;
-            width: $icon-demention;
-            object-fit: cover;
-            background-position: center center;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-            img {
-                max-width: 100%;
-                border-radius: 50%;
-            }
-        }
-    }
 
     .sidebar-main {
         display: flex;

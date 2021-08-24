@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { BellOutlined, CheckSquareOutlined, ContactsOutlined, MessageOutlined, SettingOutlined, StarOutlined, UserOutlined } from '@ant-design/icons';
 import './style.scss';
 import { Avatar, Badge } from 'antd';
+import PersonalIcon from 'features/Chat/components/PersonalIcon';
 NavbarContainer.propTypes = {
 
 };
@@ -11,20 +12,9 @@ NavbarContainer.propTypes = {
 function NavbarContainer(props) {
     return (
         <div id='sidebar_wrapper'>
-            <div className="user-icon">
-                <Badge 
-                    dot 
-                    status='success'
-                    offset={[-5, 40]}
-                    >
-                    <div className="user-icon_img">
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/3/38/Melissa_Benoist_by_Gage_Skidmore.jpg"
-                            alt="user"
-                        />
-                    </div>
-                </Badge>
-            </div>
+            {/* <div className="user-icon"> */}
+            <PersonalIcon isActive={true} />
+            {/* </div> */}
 
             <div className="sidebar-main">
                 <ul className="sidebar_nav">

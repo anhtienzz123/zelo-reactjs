@@ -3,7 +3,7 @@
 #search-wrapper {
     background: $white-color;
     height: 100%;
-    padding: 0 1rem;
+    // padding: 0 1rem;
 
     .ant-input-affix-wrapper {
         border-radius: 18px;
@@ -14,7 +14,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 1.4rem 0;
+        padding: 1.4rem 1rem;
 
         div ~ div {
             margin: 0 0.2rem;
@@ -46,10 +46,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 1rem;
             span:last-child {
                 font-size: 1.7rem;
                 font-weight: 500;
             }
+        }
+        .classify-element {
+            padding-left: 1rem;
         }
 
         .add-classify {

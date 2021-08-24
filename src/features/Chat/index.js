@@ -17,10 +17,14 @@ function Chat(props) {
     return (
         <div id='main-chat-wrapper'>
             <Row gutter={[0, 0]}>
-                <Col span={6} >
+                <Col span={5} >
                     <div className="main-conversation">
                         <div className="main-conversation_search-bar">
                             <SearchContainer />
+                        </div>
+
+                        <div className="divider-layout">
+                            <div></div>
                         </div>
 
                         <div className="main-conversation_list-conversation">
@@ -28,7 +32,7 @@ function Chat(props) {
                         </div>
                     </div>
                 </Col>
-                <Col span={12} >
+                <Col span={13} >
                     <div className="main_chat">
 
                         <div className="main_chat-header">

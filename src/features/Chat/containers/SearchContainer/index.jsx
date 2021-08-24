@@ -64,12 +64,6 @@ function SearchContainer(props) {
                     </div>
 
                     <div className='classify-element'>
-                        {/* <div className='classify-element-item'>
-                            <span>
-                                Tất cả
-                            </span>
-                        </div> */}
-
                         <Scrollbars
                             autoHide={true}
                             autoHideTimeout={1000}
