@@ -24,8 +24,6 @@ const styleGroup2 = {
 function ConversationContainer(props) {
     return (
         <>
-            {/* <Divider /> */}
-            {/* <div className='divider-layout'></div> */}
             <Scrollbars
                 autoHide={true}
                 autoHideTimeout={1000}
@@ -88,7 +86,7 @@ function ConversationContainer(props) {
                         </li>
 
 
-                      
+
                     </ul>
                 </div>
             </Scrollbars>

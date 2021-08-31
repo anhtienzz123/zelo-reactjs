@@ -2,24 +2,42 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './style.scss'
 import { Avatar, Badge } from 'antd';
+import { KeyOutlined } from '@ant-design/icons';
 PersonalIcon.propTypes = {
     isActive: PropTypes.bool,
     demention: PropTypes.number,
+    common: PropTypes.bool,
+    isHost: PropTypes.bool,
 };
 
 PersonalIcon.defaultProps = {
     isActive: false,
     demention: 48,
+    common: false,
+    isHost: false,
 }
 
 
 function PersonalIcon(props) {
-    const { isActive, demention } = props;
+    const { isActive, demention, common, isHost } = props;
     return (
-        <div className={isActive ? "user-icon" : "user-icon no-online"}>
+        <div
+            className={isActive ? "user-icon" : "user-icon no-online"}
+            className={common ? "user-icon common" : undefined}>
             <Badge
-                offset={[-5, 40]}
+                offset={!isHost ? [-5, 40] : [-5, 32]}
                 color='green'
+                count={isHost
+                    ? <KeyOutlined style={{
+                        backgroundColor: 'rgba(0,0,0,0.3)',
+                        padding: '0.24rem',
+                        borderRadius: '50%',
+                        color: 'yellow',
+                        fontSize: '1.2rem'
+
+                    }}
+                    />
+                    : ''}
 
             >
                 <Avatar

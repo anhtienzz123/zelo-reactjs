@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Scrollbars } from 'react-custom-scrollbars';
+import UserMessage from 'features/Chat/components/UserMessage';
 
 BodyChatContainer.propTypes = {
 
@@ -13,70 +14,9 @@ function BodyChatContainer(props) {
             autoHideTimeout={1000}
             autoHideDuration={200}
         >
-            <div>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
-                <p>body chat</p>
+            <div className="main-body-conversation">
+ 
+                <UserMessage />
             </div>
 
         </Scrollbars>

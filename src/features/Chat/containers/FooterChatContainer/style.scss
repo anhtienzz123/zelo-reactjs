@@ -1,0 +1,46 @@
+@import "../../../../scss/variables";
+
+#main-footer-chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .chat-editor {
+        display: flex;
+
+        flex-direction: row;
+        justify-content: space-between;
+        position: relative;
+
+        align-items: center;
+        flex: 1;
+
+        .main-editor {
+            flex: 1;
+            width: 100%;
+        }
+
+        .addtion-interaction {
+            display: flex;
+            flex-direction: row;
+            font-size: 2.4rem;
+            padding: 0 0.8rem;
+            align-self: flex-end;
+
+            .emoji-or-stiker,
+            .like-emoji {
+                margin: 0.2rem 0;
+                padding: 0.2rem 0.8rem;
+                transition: 0, 2s;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+
+            .emoji-or-stiker:hover,
+            .like-emoji:hover {
+                background: $light-grey;
+            }
+            // .like-emoji {
+            // }
+        }
+    }
+}

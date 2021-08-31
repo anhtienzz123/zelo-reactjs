@@ -9,7 +9,7 @@ import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
 import './style.scss';
 
-Chat.propTypes = {};
+Chat.propTypes = { };
 
 function Chat(props) {
     const { isLoading } = useSelector((state) => state.chat);
@@ -40,12 +40,15 @@ function Chat(props) {
                         </div>
 
                         <div className="main_chat-body">
-                            <BodyChatContainer />
+                            <div className="main_chat-body--view">
+                                <BodyChatContainer />
+                            </div>
+
+                            <div className="main_chat-body--input">
+                                <FooterChatContainer />
+                            </div>
                         </div>
 
-                        <div className="main_chat-footer">
-                            <FooterChatContainer />
-                        </div>
                     </div>
                 </Col>
                 <Col span={6} >

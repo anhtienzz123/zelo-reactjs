@@ -2,6 +2,7 @@
 
 #main-chat-wrapper {
     .main-conversation {
+        border-right: 0.1px solid rgba(0, 0, 0, 0.2);
         &_search-bar {
             height: 18vh;
         }
@@ -13,24 +14,44 @@
     }
     .main_chat {
         display: flex;
+        height: 100%;
         flex-direction: column;
 
         &-header {
-            height: 9vh;
+            height: 68px;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
 
         &-body {
-            height: 78vh;
-            background-color: yellow;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+
+            &--view {
+                height: calc(100% - 68px);
+                background: $white-smoke;
+                flex-grow: 1;
+            }
+
+            &--input {
+                border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+            }
         }
 
+        // &-body {
+        //     height: calc(100% - 68px);
+        //     background: $white-smoke;
+        //     flex-grow: 1;
+        // }
+
         &-footer {
-            height: 13vh;
-            background-color: green;
+            border-top: 0.5px solid rgba(0, 0, 0, 0.1);
         }
     }
 
     .main-info {
+        border-left: 0.5px solid rgba(0, 0, 0, 0.1);
         height: 100vh;
     }
 }
@@ -43,8 +64,8 @@
 
     // background-color: red;
     > div {
-        height: 0.5px;
+        height: 0.1px;
         width: 100%;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.1);
     }
 }

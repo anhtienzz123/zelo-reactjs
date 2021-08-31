@@ -1,0 +1,261 @@
+@import "../../../../scss/variables";
+#user-message {
+    padding: 0 2rem;
+}
+#user-message {
+    .interact-conversation {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .reverse {
+        flex-direction: row-reverse !important;
+    }
+
+    .list-conversation {
+        display: flex;
+        flex-direction: column;
+
+        .message {
+            .sub-message {
+                display: flex;
+                flex-direction: row;
+                margin: 1rem;
+                align-items: center;
+                position: relative;
+
+                .content-message {
+                    background: $white-color;
+                    padding: 1.4rem 1.4rem;
+                    display: flex;
+                    flex-direction: column;
+
+                    border-radius: 0.8rem;
+                    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.18);
+                    position: relative;
+
+                    .reacted-block {
+                        margin-top: 1rem;
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
+
+                        .list-user-react-icon {
+                            position: relative;
+
+                            .list-user-detail {
+                                position: absolute;
+                                background: $blue-1f4;
+                                color: $white-color;
+                                top: 0;
+
+                                left: 0;
+                                transform: translateY(-115%);
+                                font-size: 13px;
+                                display: none;
+
+                                flex-direction: column;
+                                padding: 0.4rem 1rem;
+                                border-radius: 4px;
+                                white-space: nowrap;
+                                transition: 0.2s;
+                            }
+
+                            .list-user-detail::before {
+                                position: absolute;
+                                content: "";
+                                height: 10px;
+                                width: 10px;
+
+                                background: $blue-1f4;
+                                bottom: -4px;
+                                left: 50%;
+                                transform: translateX(-50%);
+
+                                transform: rotate(45deg);
+                            }
+                        }
+
+                        .list-user-react {
+                            padding: 0.4rem 0.8rem;
+                            border: 0.05rem solid $grey-300;
+                            border-radius: 14px;
+                        }
+
+                        .your-react {
+                            margin-left: 0.6rem;
+                            padding: 0.3rem;
+                            border-radius: 50%;
+                            border: 0.05rem solid $grey-300;
+                            position: relative;
+
+                            .list_icon-reaction {
+                                position: absolute;
+                                top: -200%;
+                                left: 14px;
+                                transform: translateX(-50%);
+
+                                border: 1px solid black;
+                                padding: 0.6rem 1rem;
+                                display: none;
+
+                                border-radius: 5px;
+                                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                                background: $white-color;
+                                border: 0.05rem solid $grey-300;
+
+                                span {
+                                    font-size: 20px;
+                                    transition: 0.2s;
+                                    margin: 0 0.8rem;
+                                }
+
+                                span:hover {
+                                    transform: scale(1.5);
+                                }
+                            }
+
+                            .list_icon-reaction::after {
+                                content: "";
+                                width: 100%;
+                                height: 10px;
+                                bottom: -25%;
+
+                                left: 0;
+                                position: absolute;
+                            }
+                        }
+
+                        .list-user-react:hover .list-user-detail {
+                            display: flex;
+                        }
+                    }
+
+                    .reaction {
+                        font-size: 14px;
+                        padding: 2.2px 6px;
+                        text-align: center;
+
+                        background: $white-color;
+                        cursor: pointer;
+                        border: 0.05rem solid $grey-300;
+                        position: absolute;
+                        border-radius: 50%;
+                        display: inline;
+
+                        right: 10%;
+                        bottom: 0;
+                        transform: translateY(50%);
+                        visibility: hidden;
+                        z-index: 100;
+                  
+                    }
+
+                    .list_icon-reaction::after {
+                        content: "";
+                        width: 100%;
+                        height: 10px;
+                        bottom: -20%;
+
+                        left: 0;
+                        position: absolute;
+                    }
+
+                    .list_icon-reaction {
+                        position: absolute;
+                        top: -200%;
+                        left: 14px;
+                        transform: translateX(-50%);
+
+                        border: 1px solid black;
+                        padding: 0.6rem 1rem;
+                        display: none;
+
+                        border-radius: 5px;
+                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                        background: $white-color;
+                        border: 0.05rem solid $grey-300;
+
+                        span {
+                            font-size: 20px;
+                            transition: 0.2s;
+                            margin: 0 0.8rem;
+                        }
+
+                        span:hover {
+                            transform: scale(1.5);
+                        }
+                    }
+
+                    .reaction.reaction-reverse {
+                        right: initial;
+                        left: 10%;
+                    }
+
+                    .author-message {
+                        font-size: 1.3rem;
+                        color: $normal-text;
+                        padding-bottom: 0.4rem;
+                    }
+
+                    .time-send {
+                        font-size: 1.3rem;
+                        color: $thumbnail-text;
+                        padding-top: 0.4rem;
+                    }
+                }
+            }
+        }
+
+        .interaction {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: $ghost-white;
+
+            margin-left: 1rem;
+            margin-right: 1rem;
+            justify-content: center;
+
+            border-radius: 6px;
+            visibility: hidden;
+            box-shadow: 0 0.5px 0 0 rgba(0, 0, 0, 0.18);
+        }
+
+        .icon-interact {
+            margin-left: 1rem;
+            color: $normal-text;
+            font-size: 1.7rem;
+            padding: 0.4rem;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-interact:hover {
+            color: $blue-light;
+        }
+
+        .message .sub-message:hover .interaction,
+        .message .sub-message:hover .reaction,
+        .message .sub-message:hover .reaction-reverse {
+            visibility: visible;
+        }
+
+        .message .sub-message .reaction-reverse:hover + .list_icon-reaction,
+        .message .sub-message .content-message .reaction .reaction-thumbnail:hover .list_icon-reaction {
+            display: flex;
+        }
+
+        .message .sub-message .content-message .reacted-block .your-react:hover .list_icon-reaction {
+            display: flex;
+        }
+    }
+
+    .last-message {
+        padding-bottom: 3rem;
+    }
+}

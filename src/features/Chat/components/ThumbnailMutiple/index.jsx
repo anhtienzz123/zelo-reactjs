@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Tooltip } from 'antd';
 import './style.scss';
-ConversationMutiple.propTypes = {
-    participants: PropTypes.number,
+import { Avatar, Tooltip } from 'antd';
+
+ThumbnailMutiple.propTypes = {
+    participants: PropTypes.number.isRequired,
 };
 
-ConversationMutiple.defaultProps = {
-    participants: 4,
+ThumbnailMutiple.propTypes = {
+
 };
 
 const styleGroup3 = {
@@ -21,41 +22,10 @@ const styleGroup2 = {
     alignItems: 'center',
 }
 
-function ConversationMutiple(props) {
+function ThumbnailMutiple(props) {
     const { participants } = props;
-
-    // useEffect(() => {
-    //     const groupUser = document.getElementsByClassName('per-user');
-    //     console.log(groupUser);
-
-    //     for (let index = 0; index < groupUser.length; index++) {
-    //         if (index > 2) {
-    //             groupUser[index].remove();
-    //             console.log("removed");
-    //         }
-
-    //     }
-    // }, []);
-
-
-    // useEffect(() => {
-    //     const groupUser = document.getElementById('group-many-user');
-    //     groupUser.appendChild(`
-    //         <div className='per-user'>
-    //             {/* <Avatar
-    //                 size={28}
-    //                 src="https://vnn-imgs-f.vgcloud.vn/2019/10/09/23/bo-qua-lum-xum-huong-ly-ra-mat-mv-moi.jpg"
-    //             /> */}
-
-    //             abc
-    //         </div>`
-
-    //     );
-    // }, []);
-
-
     return (
-        <>
+        <div id='thumbnail-mutiple'>
             {(() => {
                 if (participants === 3) {
                     return (
@@ -65,7 +35,7 @@ function ConversationMutiple(props) {
                                     <Avatar.Group
                                         maxCount={3}
                                         size={28}
-                                        maxPopoverPlacement='bottom'
+                                        maxPopoverPlacement={false}
                                     >
                                         <Avatar
                                             size={28}
@@ -86,26 +56,6 @@ function ConversationMutiple(props) {
                                 </div>
                             </div>
 
-                            <div className="middle-side-box">
-                                <span className="name-box">
-                                    U30 Đồ Sơn
-                                </span>
-
-                                <div className="lastest-message">
-                                    <span>Suzy: </span>
-                                    <span>Em Xuân iu các</span>
-                                </div>
-                            </div>
-
-                            <div className="right-side-box">
-                                <span className="lastest-time">
-                                    18 phút trước
-                                </span>
-                                <span className="message-count">
-                                    10
-                                </span>
-                            </div>
-
 
                         </div>
                     )
@@ -118,7 +68,8 @@ function ConversationMutiple(props) {
                                     <Avatar.Group
                                         maxCount={3}
                                         size={28}
-                                        maxPopoverPlacement={false}
+                                        maxPopoverPlacement='none'
+                                        vi
                                     >
                                         <Avatar
                                             size={28}
@@ -132,26 +83,6 @@ function ConversationMutiple(props) {
 
                                     </Avatar.Group>
                                 </div>
-                            </div>
-
-                            <div className="middle-side-box">
-                                <span className="name-box">
-                                    U30 Đồ Sơn
-                                </span>
-
-                                <div className="lastest-message">
-                                    <span>Suzy: </span>
-                                    <span>Em Xuân iu các </span>
-                                </div>
-                            </div>
-
-                            <div className="right-side-box">
-                                <span className="lastest-time">
-                                    18 phút trước
-                                </span>
-                                <span className="message-count">
-                                    10
-                                </span>
                             </div>
 
 
@@ -191,8 +122,7 @@ function ConversationMutiple(props) {
                                             <Tooltip placement="top">
                                                 <Avatar
                                                     style={{
-                                                        backgroundColor: '#e8eaef',
-                                                        color: '#848f9b'
+                                                        backgroundColor: '#87d068',
                                                     }}
                                                     size={28}
 
@@ -204,30 +134,9 @@ function ConversationMutiple(props) {
 
 
                                     </div>
-
-
                                 </div>
                             </div>
 
-                            <div className="middle-side-box">
-                                <span className="name-box">
-                                    U30 Đồ Sơn
-                                </span>
-
-                                <div className="lastest-message">
-                                    <span>Suzy: </span>
-                                    <span>Em Xuân iu các</span>
-                                </div>
-                            </div>
-
-                            <div className="right-side-box">
-                                <span className="lastest-time">
-                                    18 phút trước
-                                </span>
-                                <span className="message-count">
-                                    10
-                                </span>
-                            </div>
 
 
                         </div>
@@ -239,8 +148,8 @@ function ConversationMutiple(props) {
 
 
 
-        </>
+        </div>
     );
 }
 
-export default ConversationMutiple;
+export default ThumbnailMutiple;

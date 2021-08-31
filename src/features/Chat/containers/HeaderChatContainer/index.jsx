@@ -14,6 +14,8 @@ function HeaderChatContainer(props) {
         <div id='header-main'>
             <HeaderOptional
                 group={true}
+                members={5}
+
             />
         </div>
     );

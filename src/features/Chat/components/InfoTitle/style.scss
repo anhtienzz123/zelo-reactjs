@@ -1,0 +1,17 @@
+#main-info {
+    .info_title {
+        line-height: normal;
+        height: 68px;
+        display: flex;
+        justify-content: center;
+
+        align-items: center;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+
+        > span {
+            font-weight: 600;
+            font-size: 18px;
+        }
+    }
+}

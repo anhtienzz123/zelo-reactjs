@@ -1,0 +1,10 @@
+@import "../../../../scss/variables";
+#main-info {
+    background: $grey-400;
+    div ~ div {
+        margin: 0.3rem 0;
+    }
+    // .info_member-wrapper {
+    //     margin: 0.2rem 0;
+    // }
+}
