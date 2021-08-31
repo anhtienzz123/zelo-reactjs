@@ -1,0 +1,21 @@
+.option-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .name-user-item {
+        margin-left: 1rem;
+        font-size: 12px;
+        font-weight: 400;
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+
+        // overflow-wrap: break-word !important;
+        // word-wrap: break-word !important;
+        // hyphens: auto !important;
+    }
+}
+
+// .ant-select-dropdown {
+//     width: auto !important;
+// }

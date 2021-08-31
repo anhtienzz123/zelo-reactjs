@@ -2,7 +2,7 @@
 
 #main-chat-wrapper {
     .main-conversation {
-        border-right: 0.1px solid rgba(0, 0, 0, 0.2);
+        border-right: 0.05px solid rgba(0, 0, 0, 0.2);
         &_search-bar {
             height: 18vh;
         }
@@ -19,7 +19,7 @@
 
         &-header {
             height: 68px;
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 0.05px solid rgba(0, 0, 0, 0.1);
             width: 100%;
         }
 
@@ -35,23 +35,18 @@
             }
 
             &--input {
-                border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+                border-top: 0.05px solid rgba(0, 0, 0, 0.1);
             }
         }
 
-        // &-body {
-        //     height: calc(100% - 68px);
-        //     background: $white-smoke;
-        //     flex-grow: 1;
-        // }
 
         &-footer {
-            border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-top: 0.05px solid rgba(0, 0, 0, 0.1);
         }
     }
 
     .main-info {
-        border-left: 0.5px solid rgba(0, 0, 0, 0.1);
+        border-left: 0.05px solid rgba(0, 0, 0, 0.1);
         height: 100vh;
     }
 }

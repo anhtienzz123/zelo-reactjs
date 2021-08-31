@@ -1,5 +1,5 @@
 @import "../../../../scss/variables";
-.info_media {
+.info_setting {
     background: #fff;
 
     &-header {
@@ -26,27 +26,28 @@
         overflow-y: hidden;
         max-height: 300px;
         transition: max-height 0.2s ease;
-        padding: 0rem 1.4rem;
-        padding-bottom: 0.8rem;
-        &-media {
+
+        &-amount {
             display: flex;
             flex-direction: row;
             align-items: center;
-
+            padding: 0.8rem 1.4rem;
             cursor: pointer;
         }
-        &-button button {
-            width: 100%;
-            font-weight: 600;
-            border: none;
-            outline: none;
-
-            padding: 0.5rem 0;
-            cursor: pointer;
+        &-amount-icon {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.4rem;
             transition: 0.2s;
         }
-        &-button button:hover {
-            background-color: rgba(0, 0, 0, 0.1);
+        &-amount-text {
+            padding-left: 1rem;
+        }
+
+        .danger {
+            color: red !important;
         }
     }
 

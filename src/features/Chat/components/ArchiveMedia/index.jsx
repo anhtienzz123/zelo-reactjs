@@ -2,21 +2,24 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './style.scss';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { GrGroup } from 'react-icons/gr';
 ArchiveMedia.propTypes = {
-
+    viewMediaClick: PropTypes.func,
 };
 
+ArchiveMedia.defaultProps = {
+    viewMediaClick: null
+};
+
+
 function ArchiveMedia(props) {
+    const { viewMediaClick } = props;
     const [isDrop, setIsDrop] = useState(true);
     const styleIconDrop = {
 
         transform: 'rotate(-90deg)'
     }
-
     const styleInteract = {
         maxHeight: "0px",
-
 
     }
 
@@ -26,7 +29,9 @@ function ArchiveMedia(props) {
     }
 
     const handleViewAllOnClick = () => {
-        console.log('view all')
+        if (viewMediaClick) {
+            viewMediaClick(2);
+        }
     }
 
     return (

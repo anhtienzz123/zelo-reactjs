@@ -11,7 +11,7 @@ HeaderOptional.propTypes = {
 
 HeaderOptional.defaultProps = {
     group: false,
-    members: 1,
+    members: 2,
 };
 
 function HeaderOptional(props) {
@@ -22,11 +22,11 @@ function HeaderOptional(props) {
                 <div className="header_leftside">
                     <div className='icon_user'>
                         {(() => {
-                            if (group) {
+                            if (!group) {
                                 return (<ThumbnailMutiple participants={members} />)
 
                             } else {
-                                return (<PersonalIcon isActive={true} />);
+                                return (<PersonalIcon isActive={false}  />);
                             }
                         })()}
                     </div>

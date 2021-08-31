@@ -4,10 +4,15 @@ import './style.scss';
 import { CaretDownOutlined } from '@ant-design/icons';
 
 ArchiveFile.propTypes = {
+    viewMediaClick: PropTypes.func
+};
 
+ArchiveFile.defaultProps = {
+    viewMediaClick: null
 };
 
 function ArchiveFile(props) {
+    const { viewMediaClick } = props;
     const [isDrop, setIsDrop] = useState(true);
     const styleIconDrop = {
 
@@ -20,14 +25,16 @@ function ArchiveFile(props) {
 
     }
 
-
     const handleOnClick = () => {
         setIsDrop(!isDrop);
     }
 
     const handleViewAllOnClick = () => {
-        console.log('view all')
+        if (viewMediaClick) {
+            viewMediaClick(2);
+        }
     }
+
 
     return (
         <div className="info_file">

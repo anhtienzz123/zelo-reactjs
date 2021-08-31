@@ -30,6 +30,7 @@ function UserMessage(props) {
                     <PersonalIcon
                         isHost={true}
                         demention={40}
+                        
                     />
                 </div>
                 <div className="list-conversation">

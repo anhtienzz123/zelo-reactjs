@@ -13,17 +13,26 @@ PersonalIcon.propTypes = {
 PersonalIcon.defaultProps = {
     isActive: false,
     demention: 48,
-    common: false,
+    common: true,
     isHost: false,
 }
 
 
 function PersonalIcon(props) {
     const { isActive, demention, common, isHost } = props;
+
     return (
         <div
-            className={isActive ? "user-icon" : "user-icon no-online"}
-            className={common ? "user-icon common" : undefined}>
+            className={
+                (isActive && common)
+                    ? "user-icon common"
+                    : (!isActive && common)
+                        ? "user-icon no-online common"
+                        : (isActive && !common) ? 'user-icon'
+                            : 'user-icon no-online'
+            }
+
+        >
             <Badge
                 offset={!isHost ? [-5, 40] : [-5, 32]}
                 color='green'

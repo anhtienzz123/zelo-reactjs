@@ -13,7 +13,7 @@ function NavbarContainer(props) {
     return (
         <div id='sidebar_wrapper'>
             {/* <div className="user-icon"> */}
-            <PersonalIcon isActive={true} common={true} />
+            <PersonalIcon isActive={true} common={false} />
             {/* </div> */}
 
             <div className="sidebar-main">

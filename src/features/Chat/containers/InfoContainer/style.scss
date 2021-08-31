@@ -1,8 +1,8 @@
 @import "../../../../scss/variables";
 #main-info {
     background: $grey-400;
-    div ~ div {
-        margin: 0.3rem 0;
+    div:nth-child(n + 3) {
+        margin-top: 0.6rem;
     }
     // .info_member-wrapper {
     //     margin: 0.2rem 0;

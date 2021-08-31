@@ -122,12 +122,13 @@ function ThumbnailMutiple(props) {
                                             <Tooltip placement="top">
                                                 <Avatar
                                                     style={{
-                                                        backgroundColor: '#87d068',
+                                                        backgroundColor: '#e8eaef',
+                                                        color: '#848f9b'
                                                     }}
                                                     size={28}
 
                                                 >
-                                                    +1
+                                                    +2
                                                 </Avatar>
                                             </Tooltip>
                                         </div>

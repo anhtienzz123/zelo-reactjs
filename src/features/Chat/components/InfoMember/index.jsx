@@ -1,13 +1,18 @@
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import PropTypes from 'prop-types';
 import './style.scss';
 import { GrGroup } from "react-icons/gr";
 import { useState } from 'react'
 InfoMember.propTypes = {
-
+    viewMemberClick: PropTypes.func,
 };
 
+InfoMember.defaultProps = {
+    viewMemberClick: null,
+}
+
 function InfoMember(props) {
+    const { viewMemberClick } = props;
     const [isDrop, setIsDrop] = useState(true);
     const styleIconDrop = {
 
@@ -16,13 +21,17 @@ function InfoMember(props) {
 
     const styleInteract = {
         maxHeight: "0px",
-     
-
     }
 
 
     const handleOnClick = () => {
         setIsDrop(!isDrop);
+    }
+
+    const handleViewAll = () => {
+        if (viewMemberClick) {
+            viewMemberClick(1);
+        }
     }
 
     return (
@@ -41,7 +50,7 @@ function InfoMember(props) {
             </div>
 
             <div className="info_member-interact" style={isDrop ? { } : styleInteract}>
-                <div className="info_member-interact-amount">
+                <div className="info_member-interact-amount" onClick={handleViewAll}>
                     <div className="info_member-interact-amount-icon">
                         <GrGroup />
                     </div>
