@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './style.scss';
 import { CaretDownOutlined } from '@ant-design/icons';
+import ImageItem from '../ImageItem';
 ArchiveMedia.propTypes = {
     viewMediaClick: PropTypes.func,
 };
@@ -51,7 +52,16 @@ function ArchiveMedia(props) {
 
             <div className="info_media-interact" style={isDrop ? { } : styleInteract}>
                 <div className="info_media-interact-media">
-                    ádasd
+                    <ImageItem width={80} height={80} />
+                    <ImageItem width={80} height={80} />
+                    <ImageItem width={80} height={80} />
+                    <ImageItem width={80} height={80} />
+
+                    <ImageItem width={80} height={80} />
+                    <ImageItem width={80} height={80} />
+                    <ImageItem width={80} height={80} />
+                    <ImageItem width={80} height={80} />
+                  
                 </div>
 
                 <div className="info_media-interact-button">

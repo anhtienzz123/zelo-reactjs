@@ -7,11 +7,25 @@ import {
     LinkOutlined,
 } from '@ant-design/icons';
 import { IoText } from "react-icons/io5";
-NavigationChatBox.propTypes = {
 
+NavigationChatBox.propTypes = {
+    onClickTextFormat: PropTypes.func,
 };
 
+NavigationChatBox.defaultProps = {
+    onClickTextFormat: null,
+};
+
+
 function NavigationChatBox(props) {
+    const { onClickTextFormat } = props;
+
+    const handleOnClickTextFormat = () => {
+
+        if (onClickTextFormat) {
+            onClickTextFormat();
+        }
+    }
     return (
         <div id='navigation-chat-box'>
             <ul>
@@ -35,7 +49,7 @@ function NavigationChatBox(props) {
                 </li>
 
                 <li className='item-chat-box'>
-                    <div title='Định dạng tin nhắn'>
+                    <div title='Định dạng tin nhắn' onClick={handleOnClickTextFormat}>
                         <IoText />
                     </div>
                 </li>

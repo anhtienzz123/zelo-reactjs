@@ -8,9 +8,15 @@
     border: none;
 }
 
+.ql-snow .ql-tooltip {
+    top: 0 !important;
+    right: 0 !important;
+    left: initial !important;
+}
+
 .ql-container {
     overflow-y: scroll;
-    min-height: 16px;
+    min-height: 50px;
     max-height: 142px;
 }
 

@@ -1,6 +1,7 @@
 @import "../../../../scss/variables";
 .info_file {
     background: #fff;
+    padding: 1rem 0;
 
     &-header {
         display: flex;
@@ -27,7 +28,6 @@
         max-height: 300px;
         transition: max-height 0.2s ease;
         padding: 0rem 1.4rem;
-        padding-bottom: 0.8rem;
         &-file {
             display: flex;
             flex-direction: row;

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Select, DatePicker } from 'antd';
 import PersonalIcon from '../PersonalIcon';
 import './style.scss';
+import FsLightbox from 'fslightbox-react';
+
 TabPaneMedia.propTypes = {
 
 };
@@ -11,6 +13,16 @@ function TabPaneMedia(props) {
     const { Option } = Select;
     const { RangePicker } = DatePicker;
     const dateFormat = 'DD/MM/YYYY';
+
+    const [toggler, setToggler] = useState(false);
+
+    const [productIndex, setProductIndex] = useState(0);
+    const image = [
+        'https://i.imgur.com/fsyrScY.jpg',
+        'https://www.youtube.com/watch?v=xshEZzpS4CQ',
+        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+    ];
+
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
@@ -31,6 +43,9 @@ function TabPaneMedia(props) {
             return text.substring(0, 15) + '...'
         }
     }
+
+
+
     return (
         <div id='tabpane-media'>
             <Row gutter={[16, 8]}>
@@ -176,6 +191,29 @@ function TabPaneMedia(props) {
 
                     />
                 </Col>
+                {/* 
+               <Col span={24} >
+
+                    {/* <button onClick={() => setToggler(!toggler)}>
+                        Toggle Lightbox
+                    </button> */}
+                {/* https://fslightbox.com/react/documentation/control-slide-number */}
+
+
+                {/* <FsLightbox
+                        toggler={toggler}
+                        sources={image}
+                        slide={2}
+                        thumbs={[
+                            null,
+                            'images/second.png',
+                            'images/third.jpg'
+                        ]}
+                    /> *
+
+
+
+                </Col> */}
             </Row>
         </div>
     );

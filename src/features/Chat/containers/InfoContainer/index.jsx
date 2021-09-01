@@ -31,66 +31,75 @@ function InfoContainer(props) {
     }
     return (
 
-        <Scrollbars
-            autoHide={true}
-            autoHideTimeout={1000}
-            autoHideDuration={200}
-            style={{ width: '100%', minHeight: '100vh' }}
 
 
-        >
-
-            <div id='main-info'>
-                {
-                    (() => {
-                        if (isFind === 0) {
-                            return (<>
-
-                                <div className="info_title-wrapper">
-                                    <InfoTitle
-                                        onBack={handleOnBack}
-                                        text="Thông tin nhóm" />
-                                </div>
-
-                                <div className="info_name-and-thumbnail-wrapper">
-                                    <InfoNameAndThumbnail />
-                                </div>
-
-                                <div className="info_member-wrapper">
-                                    <InfoMember viewMemberClick={handleViewMemberClick} />
-
-                                </div>
-
-                                <div className='info_archive-media-wrapper'>
-                                    <ArchiveMedia viewMediaClick={handleViewMediaClick} />
-                                </div>
-
-                                <div className='info_archive-file-wrapper'>
-                                    <ArchiveFile viewMediaClick={handleViewMediaClick} />
-                                </div>
-
-                                <div className='info_another-setting-wrapper'>
-                                    <AnotherSetting />
-                                </div>
+        <div id='main-info'>
+            {
+                (() => {
+                    if (isFind === 0) {
+                        return (<>
 
 
-                            </>)
-                        } else if (isFind === 2) {
-                            return (
-                                <InfoMediaSearch
+
+                            <div className="info_title-wrapper">
+                                <InfoTitle
                                     onBack={handleOnBack}
+                                    text="Thông tin nhóm"
                                 />
-                            )
-                        } else {
-                            return (<InfoFriendSearch />)
-                        }
-                    })()
+                            </div>
+                            <Scrollbars
+                                autoHide={true}
+                                autoHideTimeout={1000}
+                                autoHideDuration={200}
+                                style={{ width: '100%', height: 'calc(100vh - 68px)' }}
 
 
-                }
+                            >
 
-            </div>
-        </Scrollbars>
+                                <div className="body-info">
+                                    <div className="info_name-and-thumbnail-wrapper">
+                                        <InfoNameAndThumbnail />
+                                    </div>
+
+                                    <div className="info_member-wrapper">
+                                        <InfoMember viewMemberClick={handleViewMemberClick} />
+
+                                    </div>
+
+                                    <div className='info_archive-media-wrapper'>
+                                        <ArchiveMedia viewMediaClick={handleViewMediaClick} />
+                                    </div>
+
+                                    <div className='info_archive-file-wrapper'>
+                                        <ArchiveFile viewMediaClick={handleViewMediaClick} />
+                                    </div>
+
+                                    <div className='info_another-setting-wrapper'>
+                                        <AnotherSetting />
+                                    </div>
+
+                              
+                                </div>
+
+                            </Scrollbars>
+
+                        </>)
+                    } else if (isFind === 2) {
+                        return (
+                            <InfoMediaSearch
+                                onBack={handleOnBack}
+                            />
+                        )
+                    } else {
+                        return (<InfoFriendSearch />)
+                    }
+                })()
+
+
+            }
+
+        </div>
+        // </Scrollbars >
 
     );
 }

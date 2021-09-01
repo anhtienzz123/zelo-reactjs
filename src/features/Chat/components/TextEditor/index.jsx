@@ -6,20 +6,27 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // ES6
 
 TextEditor.propTypes = {
+    showTextFormat: PropTypes.bool,
+};
 
+TextEditor.propTypes = {
+    showTextFormat: null,
 };
 
 function TextEditor(props) {
+    const { showTextFormat } = props;
     const [value, setValue] = useState('');
 
     console.log(value);
 
-    const formats = [[{ 'header': '1' }, { 'header': '2' }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{ 'list': 'ordered' }, { 'list': 'bullet' },
-    { 'indent': '-1' }, { 'indent': '+1' }],
-    ['image', 'video'],
-    ['clean']];
+    const formats = [
+        [{ 'header': '1' }, { 'header': '2' }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' },
+        { 'indent': '-1' }, { 'indent': '+1' }],
+        ['image', 'video'],
+        ['clean']
+    ];
 
     const handleFocus = (range, source, editor) => {
 
@@ -40,7 +47,7 @@ function TextEditor(props) {
 
         <div
             id='text-editor'
-            // style={style_MainEditor}
+            style={showTextFormat ? style_MainEditor : undefined}
 
         >
             <ReactQuill
@@ -50,9 +57,10 @@ function TextEditor(props) {
                 placeholder='Nhập @, tin nhắn tới Phúc'
                 onFocus={handleFocus}
                 onBlur={handleOnBlur}
-                modules={{ toolbar: formats }}
-                // formats={formats}
+                modules={{ toolbar: (showTextFormat ? formats : false) }}
+                formats={formats}
                 style={{ border: 'none', outline: 'none' }}
+
             />
         </div>
 

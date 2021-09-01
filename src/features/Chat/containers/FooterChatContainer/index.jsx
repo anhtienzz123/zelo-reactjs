@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
 import { LikeFilled, LikeOutlined, LikeTwoTone, SmileOutlined } from '@ant-design/icons';
@@ -16,32 +16,41 @@ const style_EditorText = {
 
 
 
-const style_addtion_interactiont = {
+const style_addtion_interaction = {
     flex: 1,
-    boxShadow: '0 -5px 3px -3px rgba(0,0,0,0.2)',
     justifyContent: 'flex-end',
     width: '100%',
 }
 
 
 function FooterChatContainer(props) {
+    const [showTextFormat, setShowTextFormat] = useState(false);
+
+
+    const handleClickTextFormat = () => {
+        setShowTextFormat(!showTextFormat);
+    }
     return (
         <div id='main-footer-chat'>
             <div className="navigation">
-                <NavigationChatBox />
+                <NavigationChatBox
+                    onClickTextFormat={handleClickTextFormat}
+                />
             </div>
 
             <div
                 className="chat-editor"
-            // style={style_EditorText}
+                style={showTextFormat ? style_EditorText : undefined}
+
+
             >
                 <div className="main-editor" >
-                    <TextEditor />
+                    <TextEditor showTextFormat={showTextFormat} />
                 </div>
 
                 <div
                     className="addtion-interaction"
-                // style={style_addtion_interactiont}
+                    style={showTextFormat ? style_addtion_interaction : undefined}
                 >
 
                     <div className="emoji-or-stiker">
