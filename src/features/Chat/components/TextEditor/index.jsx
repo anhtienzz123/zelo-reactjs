@@ -58,7 +58,8 @@ function TextEditor(props) {
                 onFocus={handleFocus}
                 onBlur={handleOnBlur}
                 modules={{ toolbar: (showTextFormat ? formats : false) }}
-                formats={formats}
+                // modules={{ toolbar: formats }}
+
                 style={{ border: 'none', outline: 'none' }}
 
             />

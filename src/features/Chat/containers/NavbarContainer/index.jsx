@@ -12,12 +12,16 @@ NavbarContainer.propTypes = {
 function NavbarContainer(props) {
     return (
         <div id='sidebar_wrapper'>
-            {/* <div className="user-icon"> */}
-            <PersonalIcon isActive={true} common={false} />
-            {/* </div> */}
 
             <div className="sidebar-main">
                 <ul className="sidebar_nav">
+
+                    <li className="sidebar_nav_item icon-avatar">
+                        <div className="user-icon-navbar">
+                            <PersonalIcon isActive={true} common={false} />
+                        </div>
+
+                    </li>
                     <li className="sidebar_nav_item">
                         <Link>
                             <div className='sidebar_nav_item--icon'>

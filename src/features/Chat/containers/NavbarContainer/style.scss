@@ -2,18 +2,21 @@
 
 $icon-demention: 48px;
 
+ul {
+    margin-bottom: 0;
+}
+
 #sidebar_wrapper {
     height: 100%;
     background: #4c92ff;
     display: flex;
     flex-direction: column;
 
-
     .sidebar-main {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 90vh;
+        height: 100%;
 
         .sidebar_nav {
             padding: 2rem 0;
@@ -41,9 +44,20 @@ $icon-demention: 48px;
                 }
             }
 
+            &_item.icon-avatar {
+                margin-bottom: 2rem;
+
+                .user-icon-navbar {
+                    border-radius: 50%;
+                }
+            }
+
             &_item:hover {
                 background: $blue-light;
                 color: #fff;
+            }
+            &_item.icon-avatar:hover {
+                background: #4c92ff;
             }
         }
     }
