@@ -31,7 +31,7 @@ function ForgotPage(props) {
             console.log(response.data);
             // account was actived 
 		 if (response.data) { //no have account
-			Alert.alert("Cảnh báo", "Tài khoản không tồn tại");
+            console.log('tài khoản không tồn tại')
 		 } else {
 		 	const account = await loginApi.fetchUser(username);
 			console.log(account);
@@ -51,7 +51,7 @@ function ForgotPage(props) {
         dispatch(setLoading(false));
     };
 
-    //if (isForgot) return <Redirect to="/account/otp" />;
+    if (isForgot) return <Redirect to="/account/otp" />;
 
     return (
         <div className="forgot-page">

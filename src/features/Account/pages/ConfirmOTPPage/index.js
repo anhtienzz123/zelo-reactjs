@@ -12,15 +12,16 @@ import './style.scss';
 import { forgotValues } from 'features/Account/initValues';
 import loginApi from 'api/loginApi';
 
-const RESEND_OTP_TIME_LIMIT = 60;
+const RESEND_OTP_TIME_LIMIT = 30;
 const { Text, Title } = Typography;
 
 function ConfirmOTPPage(route) {
  
     const dispatch = useDispatch();
-   
+    const { account, isForgotPassword } = useState("");
     const { isForgot } = useSelector((state) => state.global);
     const [isError, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     let resendOTPTimerInterval;
 
@@ -32,7 +33,7 @@ function ConfirmOTPPage(route) {
 	const [otpValue, setOTPValue] = useState("");
 
     
-	//start time from 60 to '0'
+	//start time from 30 to '0'
 	const startResendOTPTimer = () => {
 		if (resendOTPTimerInterval) {
 			clearInterval(resendOTPTimerInterval);
@@ -53,12 +54,13 @@ function ConfirmOTPPage(route) {
 		setResendButtonDisabledTime(RESEND_OTP_TIME_LIMIT);
 		startResendOTPTimer();
 		dispatch(setLoading(true));
-		const response = await loginApi.changePassword({
-			//username: values.username,
+		const response = await loginApi.forgot({
+		 	username: account.username,
 		});
 		dispatch(setLoading(false));
 	};
-
+    
+    //Test
     const toggleTouched = () => {
         this.setState( prevState => ({
           touched: !prevState.touched
@@ -75,24 +77,25 @@ function ConfirmOTPPage(route) {
 		};
 	}, [resendButtonDisabledTime]);
 
-	useEffect(() => {
-		dispatch(setLoading(false));
-	}, []);
 
     const handleConfirmOTP = async () => {
-        //const { username } = values;
+        //const { username } = account;
         try {
             if(otpValue.length==6){
                dispatch(setLoading(true));
-               const response = await loginApi.confirmPassword();
+               const response = await loginApi.confirmPassword({
+				...account,
+				otp: otpValue,
+               });
                dispatch(setLoading(false));
                   if (response.data?.message) {
-                    console.log('fail')
+                    setErrorMessage(response.data.message);
+                    console.log('fail otp')
 			      } else  {
                     console.log('Đổi mật khẩu thành công')
 			      } 
             }
-        dispatch(setForgot(true));
+        //dispatch(setForgot(true));
         } catch (error) {
             setError(true);
         }
@@ -165,7 +168,7 @@ function ConfirmOTPPage(route) {
                                                         Bạn chưa nhận được mã OTP ? Gửi sau {resendButtonDisabledTime} giây
                                                     </Text>
                                                 ) : (
-                                                    <div onPress={handleResendOTP}>
+                                                    <div onClick={handleResendOTP}>
                                                         <Link to='#'>
                                                             Gửi lại mã OTP
                                                         </Link>
