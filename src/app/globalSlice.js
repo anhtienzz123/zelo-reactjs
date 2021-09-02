@@ -27,6 +27,12 @@ const globalSlice = createSlice({
         setLogin: (state, action) => {
             state.isLogin = action.payload;
         },
+        setRegistry:(state,action)=>{
+            state.isRegistry = action.payload;
+        },
+        setForgot:(state,action)=>{
+            state.isForgot = action.payload;
+        },
     },
 
     extraReducers: {
@@ -49,5 +55,5 @@ const globalSlice = createSlice({
 });
 
 const { reducer, actions } = globalSlice;
-export const { setLoading, setLogin } = actions;
+export const { setLoading, setLogin,setRegistry,setForgot } = actions;
 export default reducer;
