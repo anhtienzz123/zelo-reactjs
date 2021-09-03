@@ -3,8 +3,13 @@ import axiosClient from './axiosClient';
 const API_URL = '/conversations';
 
 const conversationApi = {
-    fetchListConversations: () => {
-        return axiosClient.get(API_URL);
+    fetchListConversations: (name, type) => {
+        return axiosClient.get(API_URL, {
+            params: {
+                name,
+                type,
+            },
+        });
     },
 };
 

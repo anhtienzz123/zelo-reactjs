@@ -10,19 +10,19 @@ import './scss/App.scss';
 function App() {
     return (
         <BrowserRouter>
-            <div className="App">
+            <div className='App'>
                 <Switch>
-                    <Route exact path="/" component={Home} />
+                    <Route exact path='/' component={Home} />
 
-                    <Route path="/chat" component={ChatLayout} />
+                    <ProtectedRoute path='/chat' component={ChatLayout} />
 
                     <ProtectedRoute
                         exact
-                        path="/admin"
+                        path='/admin'
                         component={AdminLayout}
                     />
 
-                    <Route path="/account" component={Account} />
+                    <Route path='/account' component={Account} />
 
                     <Route component={NotFoundPage} />
                 </Switch>
