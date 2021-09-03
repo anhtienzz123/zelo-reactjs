@@ -1,15 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { BellOutlined, CheckSquareOutlined, ContactsOutlined, MessageOutlined, SettingOutlined, StarOutlined, UserOutlined } from '@ant-design/icons';
+import { BellOutlined, CheckSquareOutlined, ContactsOutlined, LogoutOutlined, MessageOutlined, SettingOutlined, StarOutlined, UserOutlined } from '@ant-design/icons';
 import './style.scss';
-import { Avatar, Badge } from 'antd';
+import { Avatar, Badge, Button, Popover, Modal } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 NavbarContainer.propTypes = {
 
 };
 
 function NavbarContainer(props) {
+  
+    const [visible, setVisible] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+
+
+    const showModal = () => {
+        setVisible(true);
+      
+    };
+
+    const handleOk = () => {
+
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisible(false);
+            setConfirmLoading(false);
+        }, 2000);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setVisible(false);
+    };
+
+
+
+    const content = (
+        <div className='pop_up-personal'>
+
+            <div className="pop_up-personal--item" onClick={showModal}>
+                <div className="pop_up-personal--item-icon">
+                    <UserOutlined />
+                </div>
+
+                <div className="pop_up-personal--item-text">
+                    Tài khoản
+                </div>
+            </div>
+
+            <div className="pop_up-personal--item">
+                <div className="pop_up-personal--item-icon">
+                    <LogoutOutlined />
+                </div>
+
+                <div className="pop_up-personal--item-text">
+                    Đăng xuất
+                </div>
+            </div>
+
+        </div>
+    );
+
+
+
+
+
+
     return (
         <div id='sidebar_wrapper'>
 
@@ -17,9 +74,50 @@ function NavbarContainer(props) {
                 <ul className="sidebar_nav">
 
                     <li className="sidebar_nav_item icon-avatar">
-                        <div className="user-icon-navbar">
-                            <PersonalIcon isActive={true} common={false} />
-                        </div>
+
+
+                        <Popover
+                            placement="bottomLeft"
+                            content={content}
+                            trigger="focus"
+                      
+                        >
+
+
+                            {/* <div className="user-icon-navbar" onClick={handlePopup}>
+                                <PersonalIcon
+                                    isActive={true}
+                                    common={false}
+
+                                />
+
+                            </div> */}
+
+                            <Button
+                                style={
+                                    {
+                                        height: '48px',
+                                        width: '48px',
+                                        background: 'none',
+                                        outline: 'none',
+                                        border: 'red',
+                                        padding: '0px',
+                                        borderRadius: '50%'
+                                    }
+                                }
+                            >
+                                <div className="user-icon-navbar" >
+                                    <PersonalIcon
+                                        isActive={true}
+                                        common={false}
+
+                                    />
+
+                                </div>
+                            </Button>
+                        </Popover>
+
+
 
                     </li>
                     <li className="sidebar_nav_item">
@@ -98,6 +196,18 @@ function NavbarContainer(props) {
                     </li>
                 </ul>
             </div>
+
+
+            <Modal
+                title="Cập nhật thông tin"
+                visible={visible}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+            >
+                <p>Cập nhật thông tin</p>
+            </Modal>
+
         </div>
     );
 }

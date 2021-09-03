@@ -6,6 +6,30 @@ ul {
     margin-bottom: 0;
 }
 
+.pop_up-personal {
+    display: flex;
+    flex-direction: column;
+    &--item {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        transition: 0.1s;
+        padding: 0.4rem 0.4rem;
+        &-text {
+            padding-left: 0.8rem;
+            padding-right: 3rem;
+        }
+    }
+
+    &--item:hover {
+        color: $strong-blue;
+    }
+}
+
+
+
 #sidebar_wrapper {
     height: 100%;
     background: #4c92ff;
