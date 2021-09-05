@@ -9,8 +9,15 @@ ConversationSingle.propTypes = {
 };
 
 function ConversationSingle({ conversation, onClick }) {
-    const { _id, name, avatar, numberUnread, lastMessage } = conversation;
+    const { _id, name, avatar, numberUnread, lastMessage, totalMembers } = conversation;
     const { content, type, createdAt, user } = lastMessage;
+
+    const handleLengthText = (text) => {
+        if (text.length >= 23) {
+            return text.slice(0, 20) + '...';
+        }
+        return text;
+    }
 
     const handleClick = () => {
         if (onClick) onClick(_id);
@@ -31,7 +38,8 @@ function ConversationSingle({ conversation, onClick }) {
 
                         <div className='lastest-message'>
                             <span>
-                                {user.name}: {content}
+
+                                {handleLengthText(totalMembers > 2 ? `${user.name}: ${content}` : content)}
                             </span>
                         </div>
                     </div>

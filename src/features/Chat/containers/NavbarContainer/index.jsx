@@ -5,19 +5,21 @@ import { BellOutlined, CheckSquareOutlined, ContactsOutlined, LogoutOutlined, Me
 import './style.scss';
 import { Avatar, Badge, Button, Popover, Modal } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import { useSelector } from 'react-redux'
 NavbarContainer.propTypes = {
 
 };
 
 function NavbarContainer(props) {
-  
+
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const { user } = useSelector(state => state.global);
 
 
     const showModal = () => {
         setVisible(true);
-      
+
     };
 
     const handleOk = () => {
@@ -80,18 +82,8 @@ function NavbarContainer(props) {
                             placement="bottomLeft"
                             content={content}
                             trigger="focus"
-                      
+
                         >
-
-
-                            {/* <div className="user-icon-navbar" onClick={handlePopup}>
-                                <PersonalIcon
-                                    isActive={true}
-                                    common={false}
-
-                                />
-
-                            </div> */}
 
                             <Button
                                 style={
@@ -110,6 +102,7 @@ function NavbarContainer(props) {
                                     <PersonalIcon
                                         isActive={true}
                                         common={false}
+                                        avatar={user.avatar}
 
                                     />
 
@@ -121,7 +114,7 @@ function NavbarContainer(props) {
 
                     </li>
                     <li className="sidebar_nav_item">
-                        <Link>
+                        <Link to='/chat' >
                             <div className='sidebar_nav_item--icon'>
 
                                 <Badge count={5}>
@@ -133,7 +126,7 @@ function NavbarContainer(props) {
                     </li>
 
                     <li className="sidebar_nav_item">
-                        <Link>
+                        <Link to="/chat/friends">
                             <div className='sidebar_nav_item--icon'>
 
                                 <Badge count={5}>
@@ -146,7 +139,7 @@ function NavbarContainer(props) {
                     </li>
 
                     <li className="sidebar_nav_item">
-                        <Link>
+                        <Link to='/notify'>
                             <div className='sidebar_nav_item--icon'>
 
                                 <Badge count={5}>
@@ -158,7 +151,7 @@ function NavbarContainer(props) {
                     </li>
 
                     <li className="sidebar_nav_item">
-                        <Link>
+                        <Link to='/todo'>
                             <div className='sidebar_nav_item--icon'>
                                 <CheckSquareOutlined />
                             </div>
@@ -171,28 +164,28 @@ function NavbarContainer(props) {
 
                 <ul className="sidebar_nav">
                     <li className="sidebar_nav_item">
-                        <Link>
-                            <div className='sidebar_nav_item--icon'>
 
-                                <Badge count={0}>
-                                    <SettingOutlined />
-                                </Badge>
+                        <div className='sidebar_nav_item--icon'>
 
-                            </div>
-                        </Link>
+                            <Badge count={0}>
+                                <SettingOutlined />
+                            </Badge>
+
+                        </div>
+
                     </li>
 
 
                     <li className="sidebar_nav_item">
-                        <Link>
-                            <div className='sidebar_nav_item--icon'>
 
-                                <Badge count={0}>
-                                    <StarOutlined />
-                                </Badge>
+                        <div className='sidebar_nav_item--icon'>
 
-                            </div>
-                        </Link>
+                            <Badge count={0}>
+                                <StarOutlined />
+                            </Badge>
+
+                        </div>
+
                     </li>
                 </ul>
             </div>

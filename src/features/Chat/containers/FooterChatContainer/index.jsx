@@ -5,6 +5,7 @@ import {
     LikeFilled,
     LikeOutlined,
     LikeTwoTone,
+    SendOutlined,
     SmileOutlined,
 } from '@ant-design/icons';
 import './style.scss';
@@ -26,18 +27,23 @@ const style_addtion_interaction = {
 
 function FooterChatContainer(props) {
     const [showTextFormat, setShowTextFormat] = useState(false);
-    const { currentConversation } = useSelector((state) => state.chat);
+    const { currentConversation, conversations } = useSelector((state) => state.chat);
+    const [isShowLike, setShowLike] = useState(true);
+    const { TextArea } = Input;
+    const [valueText, setValueText] = useState('');
+
+
+
+    const detailConver = conversations.find(conver => conver._id === currentConversation);
 
     const handleClickTextFormat = () => {
         setShowTextFormat(!showTextFormat);
     };
 
-    const handleMessageSend = (e) => {
-        const inputValue = e.target.value;
-
+    function sendMessage(value, type) {
         const newMessage = {
-            content: inputValue,
-            type: 'TEXT',
+            content: value,
+            type: type,
             conversationId: currentConversation,
         };
 
@@ -45,7 +51,34 @@ function FooterChatContainer(props) {
             .sendTextMessage(newMessage)
             .then((res) => console.log('Send Message Success'))
             .catch((err) => console.log('Send Message Fail'));
+
     };
+
+    const handleSentMessage = () => {
+        sendMessage(valueText, 'TEXT');
+    }
+
+    const handleOnChageInput = (e) => {
+        const value = e.target.value;
+        value.length > 0 ? setShowLike(false) : setShowLike(true);
+        setValueText(value);
+    }
+
+    const handleKeyPress = (event) => {
+        console.log("keycode", event.keyCode);
+        if (event.keyCode === 13) {
+
+            if (!event.shiftKey) {
+                const valueInput = event.target.value;
+                setValueText('');
+                sendMessage(valueInput, 'TEXT');
+                event.preventDefault();
+
+            }
+        }
+
+
+    }
 
     return (
         <div id='main-footer-chat'>
@@ -57,12 +90,24 @@ function FooterChatContainer(props) {
                 className='chat-editor'
                 style={showTextFormat ? style_EditorText : undefined}>
                 <div className='main-editor'>
-                    {/* <TextEditor showTextFormat={showTextFormat} /> */}
-                    <Input
-                        placeholder='Nhập'
-                        size='large'
-                        onPressEnter={handleMessageSend}
-                    />
+
+                    {
+                        showTextFormat
+                            ? (<TextEditor showFormat={showTextFormat} />)
+                            : (<TextArea
+                                autoSize={{ minRows: 1, maxRows: 5 }}
+                                placeholder={`Nhập @, tin nhắt tới ${detailConver.name}`}
+                                size='large'
+                                // onPressEnter={handleMessageSend}
+                                bordered={false}
+                                onChange={handleOnChageInput}
+                                onKeyDown={handleKeyPress}
+                                value={valueText}
+                                style={{ whiteSpace: "pre-wrap" }}
+
+                            />)
+                    }
+
                 </div>
 
                 <div
@@ -75,7 +120,14 @@ function FooterChatContainer(props) {
                     </div>
 
                     <div className='like-emoji'>
-                        <LikeTwoTone twoToneColor='#faad14' />
+                        {
+                            isShowLike
+                                ? <LikeTwoTone twoToneColor='#faad14' />
+                                : <div className='send-text-thumb' onClick={handleSentMessage}>
+                                    <SendOutlined />
+                                </div>
+
+                        }
                     </div>
                 </div>
             </div>

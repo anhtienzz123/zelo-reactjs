@@ -6,15 +6,15 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // ES6
 
 TextEditor.propTypes = {
-    showTextFormat: PropTypes.bool,
+    showFormat: PropTypes.bool,
 };
 
 TextEditor.propTypes = {
-    showTextFormat: null,
+    showFormat: null,
 };
 
 function TextEditor(props) {
-    const { showTextFormat } = props;
+    const { showFormat } = props;
     const [value, setValue] = useState('');
 
     console.log(value);
@@ -32,9 +32,9 @@ function TextEditor(props) {
         ['clean'],
     ];
 
-    const handleFocus = (range, source, editor) => {};
+    const handleFocus = (range, source, editor) => { };
 
-    const handleOnBlur = (previousRange, source, editor) => {};
+    const handleOnBlur = (previousRange, source, editor) => { };
 
     const style_MainEditor = {
         minHeight: '122px',
@@ -43,7 +43,7 @@ function TextEditor(props) {
     return (
         <div
             id='text-editor'
-            style={showTextFormat ? style_MainEditor : undefined}>
+            style={showFormat ? style_MainEditor : undefined}>
             <ReactQuill
                 theme='snow'
                 value={value}
@@ -51,7 +51,7 @@ function TextEditor(props) {
                 placeholder='Nhập @, tin nhắn tới Phúc'
                 onFocus={handleFocus}
                 onBlur={handleOnBlur}
-                modules={{ toolbar: showTextFormat ? formats : false }}
+                modules={{ toolbar: showFormat ? formats : false }}
                 // formats={formats}
 
                 style={{ border: 'none', outline: 'none' }}

@@ -1,6 +1,35 @@
 @import "../../scss/variables";
 
 #main-chat-wrapper {
+    .landing-app {
+        padding: 8% 0;
+
+        .title-welcome {
+            // height: 25vh;
+            display: flex;
+            justify-content: center;
+
+            align-items: center;
+            flex-direction: column;
+
+            &-heading {
+                font-size: 22px;
+                font-weight: 500;
+                margin-bottom: 2rem;
+            }
+
+            &-detail {
+                width: 500px;
+                text-align: center;
+                font-size: 14px;
+            }
+        }
+
+        .carousel-slider {
+            margin-top: 3rem;
+        }
+    }
+
     .main-conversation {
         border-right: 0.05px solid rgba(0, 0, 0, 0.2);
         &_search-bar {
@@ -38,7 +67,6 @@
                 border-top: 0.05px solid rgba(0, 0, 0, 0.1);
             }
         }
-
 
         &-footer {
             border-top: 0.05px solid rgba(0, 0, 0, 0.1);
