@@ -4,6 +4,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import UserMessage from 'features/Chat/components/UserMessage';
 import { useSelector } from 'react-redux';
 import DividerCustom from 'features/Chat/components/DividerCustom';
+import './style.scss';
 
 BodyChatContainer.propTypes = {};
 
@@ -43,13 +44,14 @@ function BodyChatContainer(props) {
                 dateTempt2.setMinutes(dateTempt2.getMinutes() - 5) > dateTempt1
             ) {
                 result.push(
-                    <>
+                    <div key={i}>
                         <DividerCustom dateString={dateTempt2} />
                         <UserMessage
+                            key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
                         />
-                    </>
+                    </div>
                 );
             } else
                 result.push(
@@ -70,17 +72,6 @@ function BodyChatContainer(props) {
             autoHideTimeout={1000}
             autoHideDuration={200}>
             <div className='main-body-conversation'>
-                {/* {messages.map((messageEle, index) => {
-                    const { createdAt } = messageEle;
-
-                    return (
-                        <>
-                            <DividerCustom dateString={createdAt} />
-                            <UserMessage message={messageEle} key={index} />
-                        </>
-                    );
-                })} */}
-
                 {renderMessages(messages)}
             </div>
         </Scrollbars>

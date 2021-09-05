@@ -3,45 +3,43 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import PersonalIcon from '../PersonalIcon';
 import ThumbnailMutiple from '../ThumbnailMutiple';
+import ConversationAvatar from '../ConversationAvatar';
 import './style.scss';
 HeaderOptional.propTypes = {
-    group: PropTypes.bool,
-    members: PropTypes.number,
+    avatar: PropTypes.array || PropTypes.string,
+    totalMembers: PropTypes.number,
+    name: PropTypes.string,
 };
 
 HeaderOptional.defaultProps = {
-    group: false,
-    members: 2,
+    avatar: [] || "",
+    totalMembers: 0,
+    name: ''
 };
 
 function HeaderOptional(props) {
-    const { group, members } = props;
+    const { avatar, totalMembers, name } = props;
+    const type = typeof avatar;
     return (
         <div id='header-optional'>
             <div className="header_wrapper">
                 <div className="header_leftside">
                     <div className='icon_user'>
-                        {(() => {
-                            if (!group) {
-                                return (<ThumbnailMutiple participants={members} />)
 
-                            } else {
-                                return (<PersonalIcon isActive={false}  />);
-                            }
-                        })()}
+                        {<ConversationAvatar avatar={avatar} />}
                     </div>
 
                     <div className="info_user">
                         <div className="info_user-name">
-                            <span>Nancy</span>
+                            <span>{name}</span>
                         </div>
 
                         <div className="lastime-access">
                             {
-                                group
+                                totalMembers > 2
                                     ? (
                                         <div className="member-hover">
-                                            <UserOutlined />&nbsp;101<span >&nbsp;Thành viên</span>
+                                            <UserOutlined />&nbsp;{totalMembers}<span >&nbsp;Thành viên</span>
                                         </div>)
                                     : (<span>Vừa truy cập</span>)
                             }

@@ -28,10 +28,10 @@ function PersonalIcon(props) {
                 isActive && common
                     ? 'user-icon common'
                     : !isActive && common
-                    ? 'user-icon no-online common'
-                    : isActive && !common
-                    ? 'user-icon'
-                    : 'user-icon no-online'
+                        ? 'user-icon no-online common'
+                        : isActive && !common
+                            ? 'user-icon'
+                            : 'user-icon no-online'
             }>
             <Badge
                 offset={!isHost ? [-5, 40] : [-5, 32]}

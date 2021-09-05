@@ -20,7 +20,7 @@ function ChatLayout(props) {
                 <Col span={23} >
                     <Switch>
                         <Route exact path={url} component={Chat} />
-                        <Route path={`${url}/friends`} component={Friend} />
+                        <Route exact path={`${url}/friends`} component={Friend} />
                         <Route component={NotFoundPage} />
                     </Switch>
                 </Col>

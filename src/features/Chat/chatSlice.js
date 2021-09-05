@@ -44,6 +44,7 @@ const chatSlice = createSlice({
         messagesPage: {},
         currentConversation: '',
         messages: [],
+        
     },
     reducers: {
         addMessage: (state, action) => {
@@ -93,10 +94,12 @@ const chatSlice = createSlice({
             const conversationIndex = state.conversations.findIndex(
                 (conversationEle) => conversationEle._id === conversationId
             );
+
             state.conversations[conversationIndex] = {
                 ...state.conversations[conversationIndex],
                 numberUnread: 0,
             };
+
             state.currentConversation = conversationId;
 
             state.messagesPage = action.payload.messages;

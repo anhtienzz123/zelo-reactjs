@@ -28,9 +28,8 @@ function UserMessage({ message, isMyMessage }) {
     return (
         <div id='user-message'>
             <div
-                className={`interact-conversation ${
-                    isMyMessage ? 'reverse' : ''
-                }  `}>
+                className={`interact-conversation ${isMyMessage ? 'reverse' : ''
+                    }  `}>
                 <div className='avatar-user'>
                     <PersonalIcon
                         isHost={true}
@@ -41,12 +40,11 @@ function UserMessage({ message, isMyMessage }) {
                 <div className='list-conversation'>
                     <div className='message'>
                         <div
-                            className={`sub-message ${
-                                isMyMessage ? 'reverse' : ''
-                            }   `}>
+                            className={`sub-message ${isMyMessage ? 'reverse' : ''
+                                }   `}>
                             <div className='content-message'>
                                 <span className='author-message'>{name}</span>
-                                <span>{content}</span>
+                                <div className='content-message-description'>{content}</div>
 
                                 <div className='reaction'>
                                     <div className='reaction-thumbnail'>
