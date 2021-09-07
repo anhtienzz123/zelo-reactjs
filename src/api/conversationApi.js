@@ -11,6 +11,18 @@ const conversationApi = {
             },
         });
     },
+
+    createGroup: (name, userIds) => {
+        return axiosClient.post(`${API_URL}/groups`, {
+            name,
+            userIds,
+        }
+        )
+    },
+
+    getConversationById: (id) => {
+        return axiosClient.get(`${API_URL}/${id}`);
+    }
 };
 
 export default conversationApi;

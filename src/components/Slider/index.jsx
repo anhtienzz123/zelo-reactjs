@@ -44,7 +44,7 @@ function Slider(props) {
             autoWidth={true}
             controlsStrategy="alternate"
             autoPlay={true}
-            animationDuration={1400}
+            animationDuration={2000}
             disableButtonsControls={true}
             infinite={true}
             autoPlayDirection={true}

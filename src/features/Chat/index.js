@@ -9,7 +9,7 @@ import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
 import './style.scss';
 import io from 'socket.io-client';
-import { addMessage } from './chatSlice';
+import { addMessage, fetchConversationById } from './chatSlice';
 import { SLIDER_IMAGES } from 'constants/images'
 import Slider from 'components/Slider'
 import { useRouteMatch } from 'react-router';
@@ -25,6 +25,15 @@ function Chat(props) {
     const { conversations, isLoading, currentConversation } = useSelector((state) => state.chat);
     const { path } = useRouteMatch();
 
+    const { user } = useSelector((state) => state.global);
+
+    useEffect(() => {
+        const userId = user._id;
+
+        if (userId) socket.emit('join', userId);
+    }, [user]);
+
+
     useEffect(() => {
         if (conversations.length === 0) return;
 
@@ -35,10 +44,15 @@ function Chat(props) {
         socket.emit('join-conversations', conversationIds);
     }, [conversations]);
 
+
     useEffect(() => {
-        socket.on('new-message', (newMessage) => {
+        socket.on('new-message', (conversationId, newMessage) => {
             dispatch(addMessage(newMessage));
         });
+
+        socket.on('create-conversation', (conversationId) => {
+            dispatch(fetchConversationById({ conversationId }));
+        })
     }, []);
 
     return (

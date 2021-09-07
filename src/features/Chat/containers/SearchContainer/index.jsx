@@ -1,36 +1,58 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
-import { Radio } from 'antd';
-import { Input } from 'antd';
 import { AlignLeftOutlined, AppstoreAddOutlined, SearchOutlined, UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Input, Radio } from 'antd';
+import { options } from 'constants/searchOption';
+import { createGroup } from 'features/Chat/chatSlice';
+import ModalCreateGroup from 'features/Chat/components/ModalCreateGroup';
+import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useDispatch } from 'react-redux';
+import './style.scss';
 SearchContainer.propTypes = {
 
 };
 
 function SearchContainer(props) {
     const [valueSearch, setValueSearch] = useState(0);
+    const [isModalCreateGroupVisible, setIsModalCreateGroupVisible] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const dispatch = useDispatch();
 
 
 
 
-    const options = [
-
-        { label: 'Tất cả', value: 0 },
-        { label: 'Khách hàng', value: 'Khách hàng' },
-        { label: 'Gia đình', value: 'Gia đình' },
-        { label: 'Công việc', value: 'Công việc' },
-        { label: 'Bạn bè', value: 'Bạn bè' },
-        { label: 'Bạn gái', value: 'Bạn gái' },
-        { label: 'Em gái nuôi', value: 'Em gái nuôi' },
-
-    ];
 
     const handleOnChange = (e) => {
-        console.log('radio1 checked', e.target.value);
         setValueSearch(e.target.value);
     };
+
+
+    const handleCreateGroup = () => {
+        setIsModalCreateGroupVisible(true);
+    }
+
+
+    const handleCancelModalCreatGroup = (value) => {
+        setIsModalCreateGroupVisible(value);
+    }
+
+    const handleOklModalCreatGroup = (value) => {
+        setConfirmLoading(true);
+
+        dispatch(createGroup(value));
+
+        setConfirmLoading(false);
+        setIsModalCreateGroupVisible(false);
+
+
+
+
+    }
+
+
+
+
+
+
     return (
         <div id='search-wrapper'>
             <div className="search-main">
@@ -46,7 +68,7 @@ function SearchContainer(props) {
                         <UserAddOutlined />
                     </div>
 
-                    <div className="search-top_create-group">
+                    <div className="search-top_create-group" onClick={handleCreateGroup}>
                         <UsergroupAddOutlined />
                     </div>
                 </div>
@@ -77,14 +99,17 @@ function SearchContainer(props) {
 
                         </Scrollbars>
 
-
-
-
-
-
                     </div>
                 </div>
             </div>
+
+
+            <ModalCreateGroup
+                isVisible={isModalCreateGroupVisible}
+                onCancel={handleCancelModalCreatGroup}
+                onOk={handleOklModalCreatGroup}
+                loading={confirmLoading}
+            />
         </div>
     );
 }

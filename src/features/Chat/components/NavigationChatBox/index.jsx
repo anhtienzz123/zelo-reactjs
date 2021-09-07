@@ -10,15 +10,21 @@ import { IoText } from "react-icons/io5";
 
 NavigationChatBox.propTypes = {
     onClickTextFormat: PropTypes.func,
+    isFocus: PropTypes.bool,
 };
 
 NavigationChatBox.defaultProps = {
     onClickTextFormat: null,
+    isFocus: false,
 };
+
+const styleBorder = {
+    borderColor: '#396edd'
+}
 
 
 function NavigationChatBox(props) {
-    const { onClickTextFormat } = props;
+    const { onClickTextFormat, isFocus } = props;
 
     const handleOnClickTextFormat = () => {
 
@@ -27,7 +33,10 @@ function NavigationChatBox(props) {
         }
     }
     return (
-        <div id='navigation-chat-box'>
+        <div
+            style={isFocus ? styleBorder : undefined}
+            id='navigation-chat-box'
+        >
             <ul>
                 <li className='item-chat-box'>
                     <div title='Gửi sticker'>

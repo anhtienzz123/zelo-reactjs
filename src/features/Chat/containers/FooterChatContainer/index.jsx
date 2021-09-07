@@ -31,6 +31,7 @@ function FooterChatContainer(props) {
     const [isShowLike, setShowLike] = useState(true);
     const { TextArea } = Input;
     const [valueText, setValueText] = useState('');
+    const [isHightLight, setHightLight] = useState(false);
 
 
 
@@ -80,10 +81,19 @@ function FooterChatContainer(props) {
 
     }
 
+    const handleOnFocus = (e) => {
+        setHightLight(true)
+    }
+
+
+    const handleOnBlur = (e) => {
+        setHightLight(false)
+    }
+
     return (
         <div id='main-footer-chat'>
             <div className='navigation'>
-                <NavigationChatBox onClickTextFormat={handleClickTextFormat} />
+                <NavigationChatBox isFocus={isHightLight} onClickTextFormat={handleClickTextFormat} />
             </div>
 
             <div
@@ -104,6 +114,9 @@ function FooterChatContainer(props) {
                                 onKeyDown={handleKeyPress}
                                 value={valueText}
                                 style={{ whiteSpace: "pre-wrap" }}
+                                spellCheck={false}
+                                onFocus={handleOnFocus}
+                                onBlur={handleOnBlur}
 
                             />)
                     }

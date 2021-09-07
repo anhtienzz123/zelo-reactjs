@@ -42,25 +42,27 @@ function ConversationContainer(props) {
                 autoHideTimeout={1000}
                 autoHideDuration={200}>
                 <div id='conversation-main'>
-                    {conversations.map((conversationEle, index) => {
-                        const { numberUnread } = conversationEle;
+                    <ul className='list_conversation' >
+                        {conversations.map((conversationEle, index) => {
+                            const { numberUnread } = conversationEle;
 
-                        return (
-                            <ul className='list_conversation' key={index}>
+                            return (
+
                                 <li
-                                    className={`conversation-item ${
-                                        numberUnread === 0
-                                            ? ''
-                                            : 'arrived-message'
-                                    } `}>
+                                    key={index}
+                                    className={`conversation-item ${numberUnread === 0
+                                        ? ''
+                                        : 'arrived-message'
+                                        } `}>
                                     <ConversationSingle
                                         conversation={conversationEle}
                                         onClick={handleConversationClick}
                                     />
                                 </li>
-                            </ul>
-                        );
-                    })}
+
+                            );
+                        })}
+                    </ul>
                 </div>
             </Scrollbars>
         </>
