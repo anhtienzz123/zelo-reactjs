@@ -13,6 +13,7 @@ ItemsSelected.propTypes = {
 
 function ItemsSelected({ items, onRemove }) {
 
+
     const handleRemoveSelect = (id) => {
         if (onRemove) {
             onRemove(id);
@@ -22,6 +23,7 @@ function ItemsSelected({ items, onRemove }) {
     return (
         <>
             {
+                items.length > 0 &&
                 items.map((item, index) => (
                     <div className='item-selected--text' key={index}>
                         <div className='item-selected-avatar'>

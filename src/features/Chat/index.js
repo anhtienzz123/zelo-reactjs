@@ -1,6 +1,10 @@
-import { Col, Row, Spin } from 'antd';
+import { Col, Row } from 'antd';
+import Slider from 'components/Slider';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouteMatch } from 'react-router';
+import io from 'socket.io-client';
+import { addMessage, fetchConversationById, removeConversation, fetchListFriends } from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
 import FooterChatContainer from './containers/FooterChatContainer';
@@ -8,11 +12,6 @@ import HeaderChatContainer from './containers/HeaderChatContainer';
 import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
 import './style.scss';
-import io from 'socket.io-client';
-import { addMessage, fetchConversationById } from './chatSlice';
-import { SLIDER_IMAGES } from 'constants/images'
-import Slider from 'components/Slider'
-import { useRouteMatch } from 'react-router';
 
 
 let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
@@ -24,12 +23,17 @@ function Chat(props) {
     const dispatch = useDispatch();
     const { conversations, isLoading, currentConversation } = useSelector((state) => state.chat);
     const { path } = useRouteMatch();
-
     const { user } = useSelector((state) => state.global);
+
+
+    useEffect(() => {
+        dispatch(fetchListFriends({
+            name: ''
+        }));
+    }, []);
 
     useEffect(() => {
         const userId = user._id;
-
         if (userId) socket.emit('join', userId);
     }, [user]);
 
@@ -52,6 +56,12 @@ function Chat(props) {
 
         socket.on('create-conversation', (conversationId) => {
             dispatch(fetchConversationById({ conversationId }));
+        });
+        // socket: io.emit('delete-conversation', conversationId ).
+        socket.on('delete-conversation', (conversationId) => {
+
+            console.log("nhận được id khi deleee", conversationId);
+            dispatch(removeConversation(conversationId));
         })
     }, []);
 
@@ -84,7 +94,7 @@ function Chat(props) {
                                     </div>
 
                                     <div className='main_chat-body'>
-                                        <div className='main_chat-body--view'>
+                                        <div id='main_chat-body--view'>
                                             <BodyChatContainer />
                                         </div>
 

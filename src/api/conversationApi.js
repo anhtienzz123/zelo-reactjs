@@ -22,6 +22,14 @@ const conversationApi = {
 
     getConversationById: (id) => {
         return axiosClient.get(`${API_URL}/${id}`);
+    },
+
+    deleteConversation: (id) => {
+        return axiosClient.delete(`${API_URL}/${id}`)
+    },
+
+    getMemberInConversation: (id) => {
+        return axiosClient.get(`${API_URL}/${id}/members`);
     }
 };
 

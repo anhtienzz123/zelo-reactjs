@@ -1,9 +1,9 @@
 import { EditOutlined, InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { Checkbox, Col, Divider, Input, Modal, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
-import { fetchListFriends } from 'features/Chat/chatSlice';
+import { fetchListFriends, setFriends } from 'features/Chat/chatSlice';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ItemsSelected from '../ItemsSelected';
 import PersonalIcon from '../PersonalIcon';
@@ -32,24 +32,24 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
     const [frInput, setFrInput] = useState('');
 
 
-    console.log("Checklist", checkList);
-
     function clearData() {
         setIsShowError(false);
         setNameGroup('');
         setItemSelected([]);
         setCheckList([]);
+        setFrInput('');
     }
 
 
     const dispatch = useDispatch();
     useEffect(() => {
         if (isVisible) {
+            dispatch(setFriends([]));
             dispatch(fetchListFriends({
                 name: frInput
             }));
         }
-    }, [isVisible, frInput]);
+    }, [frInput]);
 
 
 
@@ -66,53 +66,28 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
     const handleCancel = () => {
         if (onCancel) {
             clearData();
+            dispatch(fetchListFriends({
+                name: ''
+            }));
             onCancel(false)
         }
     };
 
-    const handleCheckBoxChange = (checkedValues) => {
 
-
-        console.log("Checkbox", checkedValues);
-
-        setCheckList(checkedValues);
-
-        let itemCheck = [];
-
-        checkedValues.forEach((check) => {
-            friends.forEach((temp) => {
-                if (check === temp._id) {
-                    itemCheck.push(temp);
-                }
-            });
-        });
-
-        setItemSelected(itemCheck);
-
-
-    };
 
     const handleRemoveItem = (id) => {
-        let tempList = [];
 
-        checkList.forEach(value => {
-            if (value !== id) {
-                tempList.push(value);
-            }
-        })
-        setCheckList(tempList);
+        let checkListTemp = [...checkList];
+        let itemSelectedTemp = [...itemSelected];
 
-        let tempItemChecked = [];
+        itemSelectedTemp = itemSelectedTemp.filter(element => element._id !== id);
 
-        tempList.forEach((tempL) => {
-            friends.forEach((tempD) => {
-                if (tempL === tempD._id) {
-                    tempItemChecked.push(tempD);
-                }
-            });
-        });
+        checkListTemp = checkListTemp.filter(element => element !== id);
 
-        setItemSelected(tempItemChecked);
+        setCheckList(checkListTemp);
+        setItemSelected(itemSelectedTemp);
+
+        setFrInput('');
 
     }
 
@@ -128,6 +103,35 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
     const handleChangeFriend = (e) => {
         const value = e.target.value;
         setFrInput(value);
+    }
+
+    const handleChangeCheckBox = (e) => {
+        const value = e.target.value;
+
+        // check xem có trong checklist chưa
+        const index = checkList.findIndex(element => element === value);
+        let checkListTemp = [...checkList];
+        let itemSelectedTemp = [...itemSelected];
+
+
+        // nếu như đã có
+        if (index !== -1) {
+            itemSelectedTemp = itemSelectedTemp.filter(element => element._id !== value);
+
+            checkListTemp = checkListTemp.filter(element => element !== value);
+            // chưa có
+        } else {
+            checkListTemp.push(value);
+            const index = friends.findIndex(element => element._id === value);
+
+            if (index !== -1) {
+                itemSelectedTemp.push(friends[index]);
+            }
+        }
+
+        setCheckList(checkListTemp);
+        setItemSelected(itemSelectedTemp);
+
     }
 
 
@@ -191,14 +195,14 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
                         <div className="checkbox-list-friend">
                             <Checkbox.Group
                                 style={{ width: '100%' }}
-                                onChange={handleCheckBoxChange}
+                                // onChange={handleCheckBoxChange}
                                 value={checkList}
                             >
                                 <Row gutter={[0, 12]}>
 
                                     {friends.map((element, index) => (
                                         <Col span={24} key={index}>
-                                            <Checkbox value={element._id}>
+                                            <Checkbox value={element._id} onChange={handleChangeCheckBox}>
                                                 <div className="item-checkbox">
                                                     <PersonalIcon
                                                         demention={36}

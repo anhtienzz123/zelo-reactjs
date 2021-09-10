@@ -38,6 +38,24 @@ export const fetchListMessages = createAsyncThunk(
     }
 );
 
+
+export const fetchNextPageMessage = createAsyncThunk(
+    `${KEY}/fetchNextPageMessage`,
+    async (params, thunkApi) => {
+        const { conversationId, page, size } = params;
+
+        const messages = await messageApi.fetchListMessages(
+            conversationId,
+            page,
+            size
+        );
+
+        return {
+            messages,
+        };
+    }
+);
+
 // FRIEND API
 
 
@@ -75,6 +93,24 @@ export const fetchConversationById = createAsyncThunk(
     }
 );
 
+export const deleteConversation = createAsyncThunk(
+    `${KEY}/deleteConversation/`,
+    async (params, thunkApi) => {
+        const { conversationId } = params;
+        await conversationApi.deleteConversation(conversationId);
+        return conversationId;
+    }
+)
+
+export const getMembersConversation = createAsyncThunk(
+    `${KEY}/getMembersConversation`,
+    async (params, thunkApi) => {
+        const { conversationId } = params;
+        const members = await conversationApi.getMemberInConversation(conversationId);
+        return members;
+    }
+)
+
 
 
 
@@ -83,10 +119,14 @@ const chatSlice = createSlice({
     initialState: {
         isLoading: false,
         conversations: [],
-        messagesPage: {},
+        // messagesPage: {},
         currentConversation: '',
         messages: [],
         friends: [],
+        memberInConversation: [],
+        type: false,
+        currentPage: '',
+        totalPages: ''
 
     },
     reducers: {
@@ -121,6 +161,29 @@ const chatSlice = createSlice({
 
             state.conversations = [seachConversation, ...conversationTempt];
         },
+        setRaisePage: (state, action) => {
+            if (state.currentPage < state.totalPages - 1) {
+                state.currentPage = state.currentPage + 1
+            }
+        },
+
+
+        setFriends: (state, action) => {
+            state.friends = action.payload;
+        },
+
+        removeConversation: (state, action) => {
+            const conversationId = action.payload;
+            const newConversations = state.conversations.filter(ele => ele._id !== conversationId);
+            state.conversations = newConversations;
+        },
+
+        setTypeOfConversation: (state, action) => {
+            const conversationId = action.payload;
+            const conversation = state.conversations.find(ele => ele._id === conversationId);
+            state.type = conversation.type;
+
+        }
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -149,9 +212,20 @@ const chatSlice = createSlice({
 
             state.currentConversation = conversationId;
 
-            state.messagesPage = action.payload.messages;
+            // state.messagesPage = action.payload.messages;
             state.messages = action.payload.messages.data;
+            state.currentPage = action.payload.messages.page;
+            state.totalPages = action.payload.messages.totalPages;
         },
+        [fetchNextPageMessage.fulfilled]: (state, action) => {
+
+
+            console.log("data check", action.payload);
+            state.messages = [...action.payload.messages.data, ...state.messages];
+            state.currentPage = action.payload.messages.page;
+
+        }
+        ,
 
         // FRIEND
         [fetchListFriends.pending]: (state, action) => {
@@ -169,13 +243,34 @@ const chatSlice = createSlice({
             const conversations = action.payload;
             state.conversations = [conversations, ...state.conversations];
 
-        }
+        },
+
+        [getMembersConversation.fulfilled]: (state, action) => {
+
+            const tempMembers = [...action.payload];
+            const temp = [];
+
+            tempMembers.forEach(member => {
+                state.friends.forEach(friend => {
+                    if (member._id == friend._id) {
+                        member = { ...member, isFriend: true };
+                        return;
+                    }
+
+                })
+                temp.push(member);
+            });
+
+            state.memberInConversation = temp;
+        },
+
+
 
 
     },
 });
 
 const { reducer, actions } = chatSlice;
-export const { addMessage } = actions;
+export const { addMessage, setFriends, removeConversation, setTypeOfConversation, setRaisePage } = actions;
 
 export default reducer;

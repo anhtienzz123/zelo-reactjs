@@ -56,8 +56,9 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            max-height: calc(100vh - 68px);
 
-            &--view {
+            #main_chat-body--view {
                 height: calc(100% - 68px);
                 background: $white-smoke;
                 flex-grow: 1;
