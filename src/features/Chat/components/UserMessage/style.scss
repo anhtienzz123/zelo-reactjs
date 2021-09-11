@@ -2,7 +2,19 @@
 #user-message {
     padding: 0 2rem;
 }
+
+#user-message.top {
+    margin-top: 4rem;
+}
+
+#user-message.bottom {
+    margin-bottom: 4rem;
+}
 #user-message {
+    transition: visibility 0.4s;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.4s;
     .interact-conversation {
         display: flex;
         flex-direction: row;
@@ -15,7 +27,7 @@
     .list-conversation {
         display: flex;
         flex-direction: column;
-        width: 100%;
+        width: calc(100% - 40px);
 
         .message {
             .sub-message {
@@ -34,9 +46,15 @@
                     border-radius: 0.8rem;
                     box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.18);
                     position: relative;
+                    white-space: pre;
+                    max-width: 75%;
 
                     &-description {
-                        word-break: break-all;
+                        // word-break: break-all;
+                        // word-spacing: break;
+
+                        white-space: normal;
+                        word-break: break-word;
                     }
 
                     .reacted-block {
@@ -220,6 +238,7 @@
             margin-left: 1rem;
             margin-right: 1rem;
             justify-content: center;
+            max-width: 25%;
 
             border-radius: 6px;
             visibility: hidden;

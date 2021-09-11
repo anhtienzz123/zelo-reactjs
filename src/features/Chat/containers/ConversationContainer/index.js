@@ -19,7 +19,7 @@ function ConversationContainer(props) {
 
 
     const handleConversationClick = (conversationId) => {
-        dispatch(fetchListMessages({ conversationId, size: 5 }));
+        dispatch(fetchListMessages({ conversationId, size: 10 }));
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
     };
@@ -76,6 +76,7 @@ function ConversationContainer(props) {
 
                             return (
                                 <Dropdown
+                                    key={index}
                                     overlay={
                                         <Menu onClick={(e) => handleOnClickItem(e, conversationEle._id)}>
                                             <Menu.Item danger key="1" icon={<DeleteFilled />}>Xoá hội thoại</Menu.Item>

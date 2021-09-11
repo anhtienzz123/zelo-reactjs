@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
 import {
-    LikeFilled,
-    LikeOutlined,
     LikeTwoTone,
     SendOutlined,
-    SmileOutlined,
+    SmileOutlined
 } from '@ant-design/icons';
-import './style.scss';
-import TextEditor from 'features/Chat/components/TextEditor';
 import { Input } from 'antd';
 import messageApi from 'api/messageApi';
+import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
+import TextEditor from 'features/Chat/components/TextEditor';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-FooterChatContainer.propTypes = {};
+import './style.scss';
+FooterChatContainer.propTypes = {
+    onScrollWhenSentText: PropTypes.func,
+};
+
+FooterChatContainer.defaultProps = {
+    onScrollWhenSentText: null,
+};
 
 const style_EditorText = {
     flexDirection: 'column',
@@ -25,7 +29,7 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer(props) {
+function FooterChatContainer({ onScrollWhenSentText }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations } = useSelector((state) => state.chat);
     const [isShowLike, setShowLike] = useState(true);
@@ -39,6 +43,7 @@ function FooterChatContainer(props) {
 
     const handleClickTextFormat = () => {
         setShowTextFormat(!showTextFormat);
+        setValueText('');
     };
 
     function sendMessage(value, type) {
@@ -50,13 +55,26 @@ function FooterChatContainer(props) {
 
         messageApi
             .sendTextMessage(newMessage)
-            .then((res) => console.log('Send Message Success'))
+            .then((res) => {
+                const { _id } = res;
+                console.log('Send Message Success');
+                if (onScrollWhenSentText) {
+                    onScrollWhenSentText(_id);
+                }
+            })
             .catch((err) => console.log('Send Message Fail'));
+
 
     };
 
     const handleSentMessage = () => {
-        sendMessage(valueText, 'TEXT');
+        if (showTextFormat) {
+            sendMessage(valueText, 'HTML');
+        } else {
+            sendMessage(valueText, 'TEXT');
+        }
+
+        setValueText('');
     }
 
     const handleOnChageInput = (e) => {
@@ -65,14 +83,20 @@ function FooterChatContainer(props) {
         setValueText(value);
     }
 
+    const handleShowLike = (value) => {
+        setShowLike(value);
+    }
+
     const handleKeyPress = (event) => {
-        console.log("keycode", event.keyCode);
         if (event.keyCode === 13) {
 
             if (!event.shiftKey) {
                 const valueInput = event.target.value;
-                setValueText('');
-                sendMessage(valueInput, 'TEXT');
+                if (valueInput.trim().length > 0) {
+                    sendMessage(valueInput, 'TEXT');
+                    setValueText('');
+                }
+
                 event.preventDefault();
 
             }
@@ -90,6 +114,13 @@ function FooterChatContainer(props) {
         setHightLight(false)
     }
 
+    const handleSetValueEditor = (content) => {
+        setValueText(content)
+    }
+
+
+
+
     return (
         <div id='main-footer-chat'>
             <div className='navigation'>
@@ -103,7 +134,15 @@ function FooterChatContainer(props) {
 
                     {
                         showTextFormat
-                            ? (<TextEditor showFormat={showTextFormat} />)
+                            ? (<TextEditor
+                                showFormat={showTextFormat}
+                                onFocus={handleOnFocus}
+                                onBlur={handleOnBlur}
+                                showLike={handleShowLike}
+                                valueHtml={valueText}
+                                onSetValue={handleSetValueEditor}
+
+                            />)
                             : (<TextArea
                                 autoSize={{ minRows: 1, maxRows: 5 }}
                                 placeholder={`Nhập @, tin nhắt tới ${detailConver.name}`}

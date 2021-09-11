@@ -9,6 +9,8 @@ import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { LikeOutlined, LikeTwoTone } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import { date } from 'yup/lib/locale';
+import { useSelector } from 'react-redux';
+import parse from 'html-react-parser';
 
 UserMessage.propTypes = {
     message: PropTypes.object,
@@ -21,12 +23,26 @@ UserMessage.defaultProps = {
 };
 
 function UserMessage({ message, isMyMessage }) {
-    const { _id, content, user, createdAt } = message;
+    const { _id, content, user, createdAt, type } = message;
     const { name, avatar } = user;
+    const { messages } = useSelector(state => state.chat);
+
+
+    const setMarginTopAndBottom = (id) => {
+        const index = messages.findIndex(message => message._id === id);
+        if (index === 0) {
+            return 'top';
+        }
+
+        if (index === messages.length - 1) {
+            return 'bottom';
+        }
+    }
 
     const dateAt = new Date(createdAt);
     return (
-        <div id='user-message'>
+        // <div id={`user-message ${setMarginTopAndBottom(_id)}`}>
+        <div id='user-message' className={`${setMarginTopAndBottom(_id)}`}>
             <div
                 className={`interact-conversation ${isMyMessage ? 'reverse' : ''
                     }  `}>
@@ -44,7 +60,16 @@ function UserMessage({ message, isMyMessage }) {
                                 }   `}>
                             <div className='content-message'>
                                 <span className='author-message'>{name}</span>
-                                <div className='content-message-description'>{content}</div>
+                                <div className='content-message-description'>
+                                    {
+                                        (type === 'HTML') ?
+                                            parse(content) :
+                                            (type === 'TEXT') ?
+                                                content : content
+
+                                    }
+
+                                </div>
 
                                 <div className='reaction'>
                                     <div className='reaction-thumbnail'>

@@ -1,6 +1,7 @@
+import { DownOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
 import Slider from 'components/Slider';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import io from 'socket.io-client';
@@ -24,6 +25,10 @@ function Chat(props) {
     const { conversations, isLoading, currentConversation } = useSelector((state) => state.chat);
     const { path } = useRouteMatch();
     const { user } = useSelector((state) => state.global);
+    const [scrollId, setScrollId] = useState('');
+    const [idNewMessage, setIdNewMessage] = useState('');
+    const [isShow, setIsShow] = useState(false);
+    const [isScroll, setIsScroll] = useState(false);
 
 
     useEffect(() => {
@@ -51,19 +56,36 @@ function Chat(props) {
 
     useEffect(() => {
         socket.on('new-message', (conversationId, newMessage) => {
+
             dispatch(addMessage(newMessage));
+            setIdNewMessage(newMessage._id);
+
         });
 
         socket.on('create-conversation', (conversationId) => {
             dispatch(fetchConversationById({ conversationId }));
         });
-        // socket: io.emit('delete-conversation', conversationId ).
         socket.on('delete-conversation', (conversationId) => {
 
-            console.log("nhận được id khi deleee", conversationId);
             dispatch(removeConversation(conversationId));
         })
     }, []);
+
+    const handleScrollWhenSent = (value) => {
+        setScrollId(value);
+    }
+
+    const hanldeOnClickScroll = () => {
+        setIsScroll(true);
+    }
+
+    const handleBackToBottom = (value) => {
+        setIsShow(value);
+    }
+
+    const hanldeResetScrollButton = (value) => {
+        setIsScroll(value);
+    }
 
     return (
         <div id='main-chat-wrapper'>
@@ -95,11 +117,31 @@ function Chat(props) {
 
                                     <div className='main_chat-body'>
                                         <div id='main_chat-body--view'>
-                                            <BodyChatContainer />
+                                            <BodyChatContainer
+                                                scrollId={scrollId}
+                                                onSCrollDown={idNewMessage}
+                                                onBackToBottom={handleBackToBottom}
+                                                onResetScrollButton={hanldeResetScrollButton}
+                                                turnOnScrollButoon={isScroll}
+
+                                            />
+
+
+                                            <div
+                                                id="back-top-button"
+                                                className={`${isShow ? 'show' : 'hide'}`}
+                                                onClick={hanldeOnClickScroll}
+                                            >
+                                                <DownOutlined />
+                                            </div>
+
+
                                         </div>
 
                                         <div className='main_chat-body--input'>
-                                            <FooterChatContainer />
+                                            <FooterChatContainer
+                                                onScrollWhenSentText={handleScrollWhenSent}
+                                            />
                                         </div>
                                     </div>
                                 </div>

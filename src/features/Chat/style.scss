@@ -62,6 +62,37 @@
                 height: calc(100% - 68px);
                 background: $white-smoke;
                 flex-grow: 1;
+                position: relative;
+                #back-top-button {
+                    position: absolute;
+                    bottom: 5%;
+                    right: 2%;
+                    height: 32px;
+
+                    width: 32px;
+                    border-radius: 50%;
+                    background: #fff;
+                    display: flex;
+
+                    align-items: center;
+                    justify-content: center;
+                    color: #adb6be;
+                    transition: 0.2s;
+                    cursor: pointer;
+                }
+
+                #back-top-button.show {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                #back-top-button.hide {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+                #back-top-button:hover {
+                    color: #58aeff;
+                }
             }
 
             &--input {
