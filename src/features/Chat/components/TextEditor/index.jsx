@@ -65,6 +65,9 @@ function TextEditor(props) {
 
     const regEx = new RegExp('^(<p><br></p>)+$');
     const handleOnChange = (content, delta, source, editor) => {
+
+        console.log('EDITOR CHANGE', content);
+
         if (onSetValue) {
             onSetValue(content)
         }
@@ -93,7 +96,7 @@ function TextEditor(props) {
                 theme='snow'
                 value={valueHtml}
                 onChange={handleOnChange}
-                placeholder='Nhập @, tin nhắn tới Phúc'
+                placeholder='Nhập tin nhắn'
                 onFocus={handleFocus}
                 onBlur={handleOnBlur}
                 modules={{ toolbar: showFormat ? formats : false }}

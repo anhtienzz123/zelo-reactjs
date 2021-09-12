@@ -7,6 +7,8 @@ import {
     LinkOutlined,
 } from '@ant-design/icons';
 import { IoText } from "react-icons/io5";
+import { Button } from 'antd';
+import UploadFile from 'customfield/upLoadFile';
 
 NavigationChatBox.propTypes = {
     onClickTextFormat: PropTypes.func,
@@ -21,6 +23,17 @@ NavigationChatBox.defaultProps = {
 const styleBorder = {
     borderColor: '#396edd'
 }
+
+const styleButton = {
+    background: 'none',
+    outline: 'none',
+    border: 'red',
+    padding: '0px',
+    borderRadius: '50%',
+    fontSize: '2.2rem',
+}
+
+
 
 
 function NavigationChatBox(props) {
@@ -45,16 +58,40 @@ function NavigationChatBox(props) {
                 </li>
 
                 <li className='item-chat-box'>
-                    <div title='Gửi hình ảnh'>
-                        <FileImageOutlined />
-                    </div>
+
+                    <UploadFile
+                        type='Image'
+
+                    >
+                        <Button
+                            title='Gửi hình ảnh'
+                            type="text"
+                            style={styleButton}
+                        >
+                            <FileImageOutlined />
+                        </Button>
+                    </UploadFile>
+
                 </li>
 
 
                 <li className='item-chat-box'>
-                    <div title='Gửi file'>
-                        <LinkOutlined />
-                    </div>
+                    <UploadFile
+                        type='File'
+
+                    >
+                        <Button
+                            title='Gửi file'
+                            type="text"
+                            style={styleButton}
+                        >
+                            <LinkOutlined />
+                        </Button>
+                    </UploadFile>
+
+
+
+
                 </li>
 
                 <li className='item-chat-box'>

@@ -15,6 +15,16 @@ const messageApi = {
     sendTextMessage: (message) => {
         return axiosClient.post(`${API_URL}/text`, message);
     },
+
+    sendFileThroughMessage: (file, attachInfo) => {
+        const { type, conversationId } = attachInfo;
+        return axiosClient.post(`${API_URL}/files`, file, {
+            params: {
+                type,
+                conversationId,
+            }
+        })
+    }
 };
 
 export default messageApi;

@@ -41,13 +41,6 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
         }
     }, [turnOnScrollButoon])
 
-    // useEffect(() => {
-    //     scrollbars.current.view.scroll({
-    //         top: 1000,
-    //         left: 0,
-    //         behavior: 'smooth'
-    //     });
-    // }, [])
 
     useEffect(() => {
         if (scrollId) {
@@ -56,9 +49,7 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
         }
     }, [scrollId])
 
-    useEffect(() => {
-        scrollbars.current.scrollToBottom();
-    }, [currentConversation])
+
 
     useEffect(() => {
         async function fetchNextListMessage() {
@@ -171,6 +162,10 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
         setPosition(tempPosition.current);
     }
 
+    useEffect(() => {
+        scrollbars.current.scrollToBottom();
+    }, [currentConversation])
+
 
     return (
         <Scrollbars
@@ -180,18 +175,22 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
             ref={scrollbars}
             onScrollFrame={handleOnScrolling}
             onScrollStop={handleOnStop}
-            style={{
-                scrollBehavior: 'smooth'
-            }}
 
         >
             {/* <div className='main-body-conversation'> */}
+
 
 
             <div className='spinning-custom'>
                 <Spin spinning={isSpinning} />
             </div>
             {renderMessages(messages)}
+
+            {/* <button onClick={() => {
+                document.getElementById('613d9c592f1e724484d09804').scrollIntoView();
+            }}>
+                nust test
+            </button> */}
 
 
             {/* </div>  */}

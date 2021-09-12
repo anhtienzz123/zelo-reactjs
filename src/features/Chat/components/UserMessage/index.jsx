@@ -7,10 +7,11 @@ import { FaReplyAll } from 'react-icons/fa';
 import { MdQuestionAnswer } from 'react-icons/md';
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { LikeOutlined, LikeTwoTone } from '@ant-design/icons';
-import { Button, Popover } from 'antd';
+import { Button, Image, Popover } from 'antd';
 import { date } from 'yup/lib/locale';
 import { useSelector } from 'react-redux';
 import parse from 'html-react-parser';
+import { fallback } from 'assets/images/fallbackImage';
 
 UserMessage.propTypes = {
     message: PropTypes.object,
@@ -54,7 +55,7 @@ function UserMessage({ message, isMyMessage }) {
                     />
                 </div>
                 <div className='list-conversation'>
-                    <div className='message'>
+                    <div className='message' id={`${_id}`}>
                         <div
                             className={`sub-message ${isMyMessage ? 'reverse' : ''
                                 }   `}>
@@ -65,7 +66,20 @@ function UserMessage({ message, isMyMessage }) {
                                         (type === 'HTML') ?
                                             parse(content) :
                                             (type === 'TEXT') ?
-                                                content : content
+                                                content :
+                                                (type === 'IMAGE') ?
+                                                    <Image
+                                                        width={200}
+                                                        height={200}
+                                                        src={content}
+                                                        fallback={fallback}
+                                                    />
+                                                    :
+                                                    (type === 'VIDEO') ?
+                                                        <video controls style={{ maxHeight: '240px', maxWidth: '100%' }} >
+                                                            <source src={content} type="video/mp4" />
+                                                        </video> :
+                                                        <div>{content}</div>
 
                                     }
 

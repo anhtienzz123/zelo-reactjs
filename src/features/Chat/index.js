@@ -37,6 +37,9 @@ function Chat(props) {
         }));
     }, []);
 
+
+
+
     useEffect(() => {
         const userId = user._id;
         if (userId) socket.emit('join', userId);
