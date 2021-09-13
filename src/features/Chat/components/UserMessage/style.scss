@@ -37,6 +37,18 @@
                 align-items: center;
                 position: relative;
 
+                .content-message.content-media {
+                    padding: 0;
+                    background: none;
+                    box-shadow: none;
+
+                    .messsage-image-wrapper {
+                        .ant-image-mask {
+                            border-radius: 8px;
+                        }
+                    }
+                }
+
                 .content-message {
                     background: $white-color;
                     padding: 1.4rem 1.4rem;
@@ -55,6 +67,29 @@
 
                         white-space: normal;
                         word-break: break-word;
+                        .messsage-image-wrapper,
+                        .message-video-wrapper {
+                            position: relative;
+                        }
+                    }
+
+                    .reacted-block.media {
+                        position: absolute;
+                        bottom: 0;
+                        transform: translateY(-50%);
+
+                        .list-user-react,
+                        .your-react {
+                            background: #fff;
+                        }
+                        // display: none;
+                    }
+
+                    .reacted-block.right {
+                        right: 1.4rem;
+                    }
+                    .reacted-block.left {
+                        left: 1.4rem;
                     }
 
                     .reacted-block {
@@ -154,6 +189,10 @@
                         }
                     }
 
+                    .reaction.media {
+                        position: absolute;
+                    }
+
                     .reaction {
                         font-size: 14px;
                         padding: 2.2px 6px;
@@ -166,11 +205,18 @@
                         border-radius: 50%;
                         display: inline;
 
-                        right: 10%;
+                        // right: 10%;
                         bottom: 0;
                         transform: translateY(50%);
                         visibility: hidden;
                         z-index: 100;
+                    }
+
+                    .reaction.right {
+                        right: 1.4rem;
+                    }
+                    .reaction.left {
+                        left: 1.4rem;
                     }
 
                     .list_icon-reaction::after {
@@ -276,6 +322,10 @@
         .message .sub-message .content-message .reacted-block .your-react:hover .list_icon-reaction {
             display: flex;
         }
+
+        // .message .sub-message .content-message .reaction-thumbnail:hover .interaction {
+        //     visibility: hidden;
+        // }
     }
 
     .last-message {

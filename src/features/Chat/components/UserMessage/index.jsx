@@ -23,6 +23,19 @@ UserMessage.defaultProps = {
     isMyMessage: false,
 };
 
+const imageStyle = {
+    maxHeight: '250px',
+    maxWidth: '100%',
+    borderRadius: '8px'
+
+}
+
+const videoStyle = {
+    maxHeight: '240px',
+    maxWidth: '100%',
+    borderRadius: '8px'
+}
+
 function UserMessage({ message, isMyMessage }) {
     const { _id, content, user, createdAt, type } = message;
     const { name, avatar } = user;
@@ -38,6 +51,7 @@ function UserMessage({ message, isMyMessage }) {
         if (index === messages.length - 1) {
             return 'bottom';
         }
+        return '';
     }
 
     const dateAt = new Date(createdAt);
@@ -49,7 +63,7 @@ function UserMessage({ message, isMyMessage }) {
                     }  `}>
                 <div className='avatar-user'>
                     <PersonalIcon
-                        isHost={true}
+                        // isHost={true}
                         demention={40}
                         avatar={avatar}
                     />
@@ -57,50 +71,103 @@ function UserMessage({ message, isMyMessage }) {
                 <div className='list-conversation'>
                     <div className='message' id={`${_id}`}>
                         <div
-                            className={`sub-message ${isMyMessage ? 'reverse' : ''
-                                }   `}>
-                            <div className='content-message'>
-                                <span className='author-message'>{name}</span>
+                            className={`sub-message ${isMyMessage ? 'reverse' : ''}`}
+                        >
+                            <div className={`content-message ${(type === 'IMAGE' || type === 'VIDEO') && 'content-media'}`}>
+                                <span className='author-message'>{isMyMessage ? '' : name}</span>
                                 <div className='content-message-description'>
                                     {
-                                        (type === 'HTML') ?
-                                            parse(content) :
-                                            (type === 'TEXT') ?
-                                                content :
+                                        (type === 'HTML') ? parse(content) :
+
+                                            (type === 'TEXT') ? content :
+
                                                 (type === 'IMAGE') ?
-                                                    <Image
-                                                        width={200}
-                                                        height={200}
-                                                        src={content}
-                                                        fallback={fallback}
-                                                    />
-                                                    :
+                                                    <div className='messsage-image-wrapper'>
+                                                        <div className="message-image--main">
+                                                            <Image
+                                                                // width={200}
+                                                                height={200}
+                                                                src={content}
+                                                                fallback={fallback}
+                                                                style={imageStyle}
+                                                            />
+                                                        </div>
+
+                                                        {(type === 'IMAGE') &&
+
+                                                            <div className={`reaction ${isMyMessage ? 'left' : 'right'} media `}>
+                                                                <div className='reaction-thumbnail'>
+                                                                    <LikeOutlined />
+
+                                                                    <div className='list_icon-reaction'>
+                                                                        <span>👍</span>
+                                                                        <span>❤️</span>
+                                                                        <span>😆</span>
+                                                                        <span>😮</span>
+                                                                        <span>😭</span>
+                                                                        <span>😡</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+
+                                                    </div> :
+
                                                     (type === 'VIDEO') ?
-                                                        <video controls style={{ maxHeight: '240px', maxWidth: '100%' }} >
-                                                            <source src={content} type="video/mp4" />
-                                                        </video> :
+                                                        <div className="message-video-wrapper">
+                                                            <div className="message-video-main">
+                                                                <video controls style={videoStyle} >
+                                                                    <source src={content} type="video/mp4" />
+                                                                </video>
+                                                            </div>
+
+
+                                                            {(type === 'VIDEO') &&
+
+                                                                <div className={`reaction ${isMyMessage ? 'left' : 'right'} media `}>
+                                                                    <div className='reaction-thumbnail'>
+                                                                        <LikeOutlined />
+
+                                                                        <div className='list_icon-reaction'>
+                                                                            <span>👍</span>
+                                                                            <span>❤️</span>
+                                                                            <span>😆</span>
+                                                                            <span>😮</span>
+                                                                            <span>😭</span>
+                                                                            <span>😡</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div> :
                                                         <div>{content}</div>
 
                                     }
 
                                 </div>
 
-                                <div className='reaction'>
-                                    <div className='reaction-thumbnail'>
-                                        <LikeOutlined />
+                                {
+                                    (type === 'TEXT' || type === 'HTML') &&
 
-                                        <div className='list_icon-reaction'>
-                                            <span>👍</span>
-                                            <span>❤️</span>
-                                            <span>😆</span>
-                                            <span>😮</span>
-                                            <span>😭</span>
-                                            <span>😡</span>
+
+                                    <div className={`reaction ${isMyMessage ? 'left' : 'right'} `}>
+                                        <div className='reaction-thumbnail'>
+                                            <LikeOutlined />
+
+                                            <div className='list_icon-reaction'>
+                                                <span>👍</span>
+                                                <span>❤️</span>
+                                                <span>😆</span>
+                                                <span>😮</span>
+                                                <span>😭</span>
+                                                <span>😡</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
 
-                                <div className='reacted-block'>
+                                {/* <div className={`reacted-block ${(type === 'IMAGE' || type === 'VIDEO') && 'media'} ${isMyMessage ? 'left' : 'right'} `}>
                                     <div className='list-user-react'>
                                         <div className='list-user-react-icon'>
                                             <div>
@@ -133,7 +200,7 @@ function UserMessage({ message, isMyMessage }) {
                                             <span>😡</span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className='time-send'>
                                     <span>

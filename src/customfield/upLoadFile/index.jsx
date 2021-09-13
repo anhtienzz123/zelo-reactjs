@@ -6,16 +6,24 @@ import messageApi from 'api/messageApi';
 import { useSelector } from 'react-redux';
 
 UploadFile.propTypes = {
-
+    type: PropTypes.string,
 };
 
+UploadFile.defaultProp = {
+    type: '',
+};
+
+
 function UploadFile(props) {
+    const { type } = props;
 
     const ACCEPT_IMG_AND_VIDEO = 'image/*,video/*';
     const [fileList, setFileList] = useState([]);
     const { user } = useSelector(state => state.global);
     const { currentConversation } = useSelector(state => state.chat);
 
+
+    console.log('Type of upload', type);
 
     const handleChange = async (info) => {
 
@@ -88,7 +96,7 @@ function UploadFile(props) {
 
     return (
         <Upload
-            accept={ACCEPT_IMG_AND_VIDEO}
+            accept={type === 'Image' && ACCEPT_IMG_AND_VIDEO}
             action={handleAction}
             fileList={fileList}
             onChange={handleChange}
@@ -98,7 +106,7 @@ function UploadFile(props) {
         // showUploadList={false}
         >
             {props.children}
-        </Upload>
+        </Upload >
     );
 }
 
