@@ -31,8 +31,7 @@ function ConversationSingle({ conversation, onClick }) {
 
                         <div className='lastest-message'>
                             <span>
-
-                                {totalMembers > 2 ? `${user.name}: ${content}` : content}
+                                {`${totalMembers > 2 && user.name}:${content ? content : 'Tin nhắn đã thu hồi'}`}
                             </span>
                         </div>
                     </div>

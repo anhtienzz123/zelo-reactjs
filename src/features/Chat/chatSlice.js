@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import conversationApi from 'api/conversationApi';
 import messageApi from 'api/messageApi';
 import dateUtils from 'utils/dateUtils';
-import friendApi from 'api/friendApi';
-import { ConsoleSqlOutlined } from '@ant-design/icons';
+
 
 const KEY = 'chat';
 
@@ -126,7 +125,8 @@ const chatSlice = createSlice({
         memberInConversation: [],
         type: false,
         currentPage: '',
-        totalPages: ''
+        totalPages: '',
+        toTalUnread: 0,
 
     },
     reducers: {
@@ -183,6 +183,42 @@ const chatSlice = createSlice({
             const conversation = state.conversations.find(ele => ele._id === conversationId);
             state.type = conversation.type;
 
+        },
+
+        setRedoMessage: (state, action) => {
+            const id = action.payload;
+            // lấy mesage đã thu hồi
+            const oldMessage = state.messages.find(message => message._id == id);
+            const { _id, user, createdAt } = oldMessage;
+
+            // lấy index của message
+            const index = state.messages.findIndex(message => message._id == id);
+
+            // tạo message mới
+            const newMessage = {
+                _id,
+                user,
+                createdAt,
+                isDeleted: 'true'
+            }
+            // chèn vào vị trí index 'message đã thu hồi'
+            state.messages[index] = newMessage;
+
+        },
+        deleteMessageClient: (state, action) => {
+            const id = action.payload;
+            const newMessages = state.messages.filter(message => message._id !== id);
+            state.messages = newMessages;
+
+        },
+
+        setToTalUnread: (state, action) => {
+            let tempCount = 0;
+            state.conversations.forEach((ele, index) => {
+                if (ele.numberUnread > 0)
+                    tempCount += 1;
+            })
+            state.toTalUnread = tempCount;
         }
     },
     extraReducers: {
@@ -220,7 +256,6 @@ const chatSlice = createSlice({
         [fetchNextPageMessage.fulfilled]: (state, action) => {
 
 
-            console.log("data check", action.payload);
             state.messages = [...action.payload.messages.data, ...state.messages];
             state.currentPage = action.payload.messages.page;
 
@@ -271,6 +306,13 @@ const chatSlice = createSlice({
 });
 
 const { reducer, actions } = chatSlice;
-export const { addMessage, setFriends, removeConversation, setTypeOfConversation, setRaisePage } = actions;
+export const { addMessage,
+    setFriends,
+    removeConversation,
+    setTypeOfConversation,
+    setRaisePage,
+    setRedoMessage,
+    deleteMessageClient,
+    setToTalUnread } = actions;
 
 export default reducer;

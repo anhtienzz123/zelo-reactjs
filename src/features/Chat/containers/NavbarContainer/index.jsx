@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { BellOutlined, CheckSquareOutlined, ContactsOutlined, LogoutOutlined, MessageOutlined, SettingOutlined, StarOutlined, UserOutlined } from '@ant-design/icons';
 import './style.scss';
 import { Avatar, Badge, Button, Popover, Modal } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setToTalUnread } from '../../chatSlice';
 NavbarContainer.propTypes = {
 
 };
@@ -15,6 +16,12 @@ function NavbarContainer(props) {
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { user } = useSelector(state => state.global);
+    const { conversations, toTalUnread } = useSelector(state => state.chat);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setToTalUnread())
+    }, [conversations])
 
 
     const showModal = () => {
@@ -117,7 +124,7 @@ function NavbarContainer(props) {
                         <Link to='/chat' >
                             <div className='sidebar_nav_item--icon'>
 
-                                <Badge count={5}>
+                                <Badge count={toTalUnread > 0 ? toTalUnread : 0}>
                                     <MessageOutlined />
                                 </Badge>
 

@@ -1,11 +1,17 @@
 import { DownOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
 import Slider from 'components/Slider';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import io from 'socket.io-client';
-import { addMessage, fetchConversationById, removeConversation, fetchListFriends } from './chatSlice';
+import {
+    addMessage,
+    fetchConversationById,
+    removeConversation,
+    fetchListFriends,
+    setRedoMessage
+} from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
 import FooterChatContainer from './containers/FooterChatContainer';
@@ -22,13 +28,15 @@ Chat.propTypes = {};
 function Chat(props) {
 
     const dispatch = useDispatch();
-    const { conversations, isLoading, currentConversation } = useSelector((state) => state.chat);
+    const { conversations, currentConversation } = useSelector((state) => state.chat);
     const { path } = useRouteMatch();
     const { user } = useSelector((state) => state.global);
     const [scrollId, setScrollId] = useState('');
     const [idNewMessage, setIdNewMessage] = useState('');
     const [isShow, setIsShow] = useState(false);
     const [isScroll, setIsScroll] = useState(false);
+
+    console.log('Current test 1', currentConversation);
 
 
     useEffect(() => {
@@ -38,8 +46,6 @@ function Chat(props) {
     }, []);
 
 
-
-
     useEffect(() => {
         const userId = user._id;
         if (userId) socket.emit('join', userId);
@@ -47,6 +53,7 @@ function Chat(props) {
 
 
     useEffect(() => {
+        console.log('Current test 2', currentConversation);
         if (conversations.length === 0) return;
 
         const conversationIds = conversations.map(
@@ -55,6 +62,12 @@ function Chat(props) {
 
         socket.emit('join-conversations', conversationIds);
     }, [conversations]);
+
+    const refCurrentConversation = useRef();
+
+    useEffect(() => {
+        refCurrentConversation.current = currentConversation;
+    }, [currentConversation]);
 
 
     useEffect(() => {
@@ -71,8 +84,24 @@ function Chat(props) {
         socket.on('delete-conversation', (conversationId) => {
 
             dispatch(removeConversation(conversationId));
-        })
+        });
+
+        socket.on('delete-message', (conversationId, id) => {
+            handleDeleteMessage(conversationId, id, refCurrentConversation);
+
+        });
     }, []);
+
+    console.log('CurrentConver 96', currentConversation);
+    const handleDeleteMessage = (conversationId, id, refCurrentConversation) => {
+
+        if (refCurrentConversation.current === conversationId) {
+            dispatch(setRedoMessage(id));
+        }
+
+    }
+
+
 
     const handleScrollWhenSent = (value) => {
         setScrollId(value);

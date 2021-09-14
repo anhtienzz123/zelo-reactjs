@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
-import DividerCustom from '../DividerCustom';
+import { LikeOutlined, PushpinOutlined, UndoOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Image, Menu } from 'antd';
+import { fallback } from 'assets/images/fallbackImage';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import parse from 'html-react-parser';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { FaReplyAll } from 'react-icons/fa';
 import { MdQuestionAnswer } from 'react-icons/md';
-import { BiDotsHorizontalRounded } from 'react-icons/bi';
-import { LikeOutlined, LikeTwoTone } from '@ant-design/icons';
-import { Button, Image, Popover } from 'antd';
-import { date } from 'yup/lib/locale';
-import { useSelector } from 'react-redux';
-import parse from 'html-react-parser';
-import { fallback } from 'assets/images/fallbackImage';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteMessageClient } from '../../chatSlice';
+import messageApi from 'api/messageApi';
+import './style.scss';
 
 UserMessage.propTypes = {
     message: PropTypes.object,
@@ -33,13 +33,70 @@ const imageStyle = {
 const videoStyle = {
     maxHeight: '240px',
     maxWidth: '100%',
-    borderRadius: '8px'
+    borderRadius: '8px',
+
 }
 
+const styleButton = {
+    background: 'none',
+    outline: 'none',
+    padding: '0px',
+    border: 'none',
+
+    fontSize: '1.7rem',
+    color: '#606c7a',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}
+
+const dropDownStyle = {
+    fontWeight: '500',
+    fontSize: '1.3rem'
+}
+
+
+
 function UserMessage({ message, isMyMessage }) {
-    const { _id, content, user, createdAt, type } = message;
+    const { _id, content, user, createdAt, type, isDeleted } = message;
     const { name, avatar } = user;
     const { messages } = useSelector(state => state.chat);
+    const dispatch = useDispatch();
+
+
+    const handleOnClick = async ({ item, key }) => {
+        if (key == 1) {
+
+        } else if (key == 2) {
+            await messageApi.redoMessage(_id);
+        } else if (key == 3) {
+            await messageApi.deleteMessageClientSide(_id);
+            dispatch(deleteMessageClient(_id))
+        }
+    }
+
+    //  gọi api
+    // hứng socket
+    // tìm tin nhắn và set nó đã thu hồi
+
+    const handleUndoMessage = (id) => {
+
+
+    }
+
+
+
+
+
+    const menu = (
+        <Menu onClick={handleOnClick}>
+            <Menu.Item key='1' icon={<PushpinOutlined />} style={dropDownStyle} title='Ghim tin nhắn'>Ghim tin nhắn</Menu.Item>
+            {isMyMessage && <Menu.Item key='2' icon={<UndoOutlined />} style={dropDownStyle} title='Thu hồi tin nhắn'>Thu hồi tin nhắn</Menu.Item>}
+            <Menu.Item key='3' icon={<DeleteOutlined />} style={dropDownStyle} danger title='Chỉ xóa ở phía tôi'>Chỉ xóa ở phía tôi</Menu.Item>
+        </Menu>
+    );
+
+
 
 
     const setMarginTopAndBottom = (id) => {
@@ -53,6 +110,9 @@ function UserMessage({ message, isMyMessage }) {
         }
         return '';
     }
+
+
+
 
     const dateAt = new Date(createdAt);
     return (
@@ -145,6 +205,10 @@ function UserMessage({ message, isMyMessage }) {
 
                                     }
 
+                                    {
+                                        isDeleted && <span className="undo-message">Tin nhắn đã được thu hồi</span>
+                                    }
+
                                 </div>
 
                                 {
@@ -210,17 +274,45 @@ function UserMessage({ message, isMyMessage }) {
                                 </div>
                             </div>
 
-                            <div className='interaction'>
+                            <div
+                                className={`interaction ${isDeleted ? 'hidden' : ''}`}
+
+                            >
                                 <div className='reply icon-interact'>
-                                    <MdQuestionAnswer />
+                                    <Button
+                                        style={styleButton}
+
+                                    >
+                                        <MdQuestionAnswer />
+                                    </Button>
                                 </div>
 
+
+
                                 <div className='forward icon-interact'>
-                                    <FaReplyAll />
+                                    <Button
+                                        style={styleButton}
+
+
+                                    >
+                                        <FaReplyAll />
+                                    </Button>
                                 </div>
 
                                 <div className='additional icon-interact'>
-                                    <BiDotsHorizontalRounded />
+                                    {/* <BiDotsHorizontalRounded /> */}
+                                    <Dropdown
+                                        overlay={menu}
+                                        trigger={['click']}
+                                    >
+                                        <Button
+                                            // type='text'
+                                            style={styleButton}
+
+                                        >
+                                            <BiDotsHorizontalRounded />
+                                        </Button>
+                                    </Dropdown>
                                 </div>
                             </div>
                         </div>

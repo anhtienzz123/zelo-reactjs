@@ -65,6 +65,10 @@
                         // word-break: break-all;
                         // word-spacing: break;
 
+                        .undo-message {
+                            color: $silver;
+                        }
+
                         white-space: normal;
                         word-break: break-word;
                         .messsage-image-wrapper,
@@ -289,16 +293,23 @@
             border-radius: 6px;
             visibility: hidden;
             box-shadow: 0 0.5px 0 0 rgba(0, 0, 0, 0.18);
+
+            .ant-btn:hover,
+            .ant-btn:focus {
+                color: $blue-light !important;
+            }
+        }
+        .interaction.hidden {
+            display: none;
         }
 
         .icon-interact {
             margin-left: 1rem;
             color: $normal-text;
             font-size: 1.7rem;
-            padding: 0.4rem;
+            padding: 0 0.4rem;
 
             cursor: pointer;
-
             display: flex;
             align-items: center;
             justify-content: center;

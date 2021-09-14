@@ -23,15 +23,13 @@ function UploadFile(props) {
     const { currentConversation } = useSelector(state => state.chat);
 
 
-    console.log('Type of upload', type);
 
     const handleChange = async (info) => {
 
         // console.log("chay file")
 
-        const { file, fileList } = info;
+        // const { file, fileList } = info;
 
-        console.log(file);
 
         // if (info.file.status !== 'uploading') {
         //     console.log(info.file, info.fileList);
@@ -59,7 +57,7 @@ function UploadFile(props) {
 
     };
 
-    console.log(fileList);
+    // console.log(fileList);
 
 
 
@@ -72,25 +70,34 @@ function UploadFile(props) {
     const handleCustomRequest = async ({ onSuccess, onError, file, onProgress }) => {
         console.log({ onSuccess, onError, file, onProgress });
         const fmData = new FormData();
-        const typeFile = file.type.startsWith('image') ? true : false;
-        console.log(fmData)
+        // const typeFile = file.type.startsWith('image') ? true : false;
+        let typeFile;
+
+        if (type === 'Image') {
+            typeFile = file.type.startsWith('image') ? 'IMAGE' : "VIDEO";
+        } else {
+            typeFile = 'FILE'
+        }
+
+        // console.log("file type", file.type);
+
 
         fmData.append("file", file);
 
         const attachInfo = {
-            type: typeFile ? 'IMAGE' : 'VIDEO',
+            type: typeFile,
             conversationId: currentConversation
-
         }
         try {
 
-            await messageApi.sendFileThroughMessage(fmData, attachInfo);
+            const result = await messageApi.sendFileThroughMessage(fmData, attachInfo, (percentCompleted) => {
+                console.log('value', percentCompleted);
+            });
+
             message.success(`${file.name} file uploaded successfully`);
         } catch (e) {
             message.error(`${file.name} file upload failed.`);
         }
-
-
 
     }
 
@@ -101,6 +108,7 @@ function UploadFile(props) {
             fileList={fileList}
             onChange={handleChange}
             multiple={true}
+            progress
 
             customRequest={handleCustomRequest}
         // showUploadList={false}

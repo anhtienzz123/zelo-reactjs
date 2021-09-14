@@ -37,7 +37,6 @@ function FooterChatContainer({ onScrollWhenSentText }) {
     const [valueText, setValueText] = useState('');
     const [isHightLight, setHightLight] = useState(false);
 
-    console.log("value  text", valueText);
 
 
 
