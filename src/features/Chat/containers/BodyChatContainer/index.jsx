@@ -74,13 +74,13 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
     }, [currentPage]);
 
     useEffect(() => {
-        if (onSCrollDown) {
+        if (onSCrollDown && scrollbars.current.getScrollHeight() > scrollbars.current.getClientHeight()) {
             if (position >= 0.99) {
 
                 scrollbars.current.scrollToBottom();
             } else {
                 if (onBackToBottom) {
-                    onBackToBottom(true)
+                    onBackToBottom(true, 'Có tin nhắn mới')
                 }
             }
         }
@@ -96,22 +96,35 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
             const senderId = currentMessage.user._id;
             const isMyMessage = senderId === user._id ? true : false;
 
+
+            // chổ này có thể sai
             if (i === 0) {
                 result.push(
                     <UserMessage
                         key={i}
                         message={currentMessage}
                         isMyMessage={isMyMessage}
+
                     />
                 );
                 continue;
             }
 
+            const isSameUser = currentMessage.user._id === preMessage.user._id ? true : false;
+
+
+            // Check tin nhắn sau có cùng người gửi vs tin nhắn trước
+
+
+
+
+
             const dateTempt1 = new Date(preMessage.createdAt);
             const dateTempt2 = new Date(currentMessage.createdAt);
 
             if (
-                dateTempt2.setMinutes(dateTempt2.getMinutes() - 5) > dateTempt1
+                // chổ này đang so sánh 5 phút nên để lại 6hours
+                dateTempt2.setHours(dateTempt2.getHours() - 6) > dateTempt1
             ) {
                 result.push(
                     <div key={i}>
@@ -120,6 +133,7 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
                             key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
+
                         />
                     </div>
                 );
@@ -129,6 +143,7 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
                         key={i}
                         message={currentMessage}
                         isMyMessage={isMyMessage}
+                        isSameUser={isSameUser}
                     />
                 );
         }
@@ -141,8 +156,14 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
 
     const handleOnScrolling = ({ scrollTop, scrollHeight, top }) => {
         tempPosition.current = top;
+
+        console.log("CHay scroll");
+        if (scrollbars.current.getScrollHeight() === scrollbars.current.getClientHeight()) {
+            onBackToBottom(false);
+            return;
+        }
+
         if (scrollTop === 0) {
-            console.log("Previous scroll height", scrollHeight);
             previousHieight.current = scrollHeight;
             dispatch(setRaisePage());
         }
@@ -164,7 +185,14 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
 
     useEffect(() => {
         scrollbars.current.scrollToBottom();
-    }, [currentConversation])
+        console.log(scrollbars.current.getScrollHeight(), ':', scrollbars.current.getClientHeight());
+
+    }, [currentConversation]);
+
+
+    const handleOnScroll = (e) => {
+
+    }
 
 
     return (
@@ -175,6 +203,7 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
             ref={scrollbars}
             onScrollFrame={handleOnScrolling}
             onScrollStop={handleOnStop}
+
 
         >
             {/* <div className='main-body-conversation'> */}

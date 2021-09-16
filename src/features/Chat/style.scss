@@ -1,5 +1,11 @@
 @import "../../scss/variables";
 
+.db-arrow-new-message {
+    .arrow span {
+        transform: rotate(-90deg);
+    }
+}
+
 #main-chat-wrapper {
     .landing-app {
         padding: 8% 0;
@@ -69,7 +75,7 @@
                     right: 2%;
                     height: 32px;
 
-                    width: 32px;
+                    min-width: 32px;
                     border-radius: 50%;
                     background: #fff;
                     display: flex;
@@ -77,8 +83,31 @@
                     align-items: center;
                     justify-content: center;
                     color: #adb6be;
-                    transition: 0.2s;
+                    transition: color 0.2s;
                     cursor: pointer;
+                }
+
+                #back-top-button.new-message {
+                    border-radius: 10px;
+                    font-size: 12px;
+                    padding: 0 1rem;
+                    color: #58aeff;
+
+                    animation-duration: 3s;
+                    animation-name: float-top-down;
+                    animation-iteration-count: infinite;
+                }
+
+                @keyframes float-top-down {
+                    0% {
+                        transform: translateY(0%);
+                    }
+                    50% {
+                        transform: translateY(-50%);
+                    }
+                    100% {
+                        transform: translateY(0%);
+                    }
                 }
 
                 #back-top-button.show {

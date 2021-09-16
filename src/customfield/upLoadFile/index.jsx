@@ -103,7 +103,7 @@ function UploadFile(props) {
 
     return (
         <Upload
-            accept={type === 'Image' && ACCEPT_IMG_AND_VIDEO}
+            accept={type === 'Image' ? ACCEPT_IMG_AND_VIDEO : ''}
             action={handleAction}
             fileList={fileList}
             onChange={handleChange}
@@ -111,7 +111,7 @@ function UploadFile(props) {
             progress
 
             customRequest={handleCustomRequest}
-        // showUploadList={false}
+            showUploadList={false}
         >
             {props.children}
         </Upload >

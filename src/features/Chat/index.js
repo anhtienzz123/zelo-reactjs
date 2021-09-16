@@ -1,4 +1,4 @@
-import { DownOutlined } from '@ant-design/icons';
+import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
 import Slider from 'components/Slider';
 import React, { useEffect, useRef, useState } from 'react';
@@ -10,7 +10,8 @@ import {
     fetchConversationById,
     removeConversation,
     fetchListFriends,
-    setRedoMessage
+    setRedoMessage,
+    setReactionMessage
 } from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
@@ -35,8 +36,8 @@ function Chat(props) {
     const [idNewMessage, setIdNewMessage] = useState('');
     const [isShow, setIsShow] = useState(false);
     const [isScroll, setIsScroll] = useState(false);
+    const [hasMessage, setHasMessage] = useState('');
 
-    console.log('Current test 1', currentConversation);
 
 
     useEffect(() => {
@@ -53,7 +54,6 @@ function Chat(props) {
 
 
     useEffect(() => {
-        console.log('Current test 2', currentConversation);
         if (conversations.length === 0) return;
 
         const conversationIds = conversations.map(
@@ -90,9 +90,18 @@ function Chat(props) {
             handleDeleteMessage(conversationId, id, refCurrentConversation);
 
         });
+
+
+
+        socket.on('add-reaction', (conversationId, messageId, user, type) => {
+            if (conversationId === refCurrentConversation.current) {
+                dispatch(setReactionMessage({ messageId, user, type }));
+            }
+        });
     }, []);
 
-    console.log('CurrentConver 96', currentConversation);
+
+
     const handleDeleteMessage = (conversationId, id, refCurrentConversation) => {
 
         if (refCurrentConversation.current === conversationId) {
@@ -111,7 +120,12 @@ function Chat(props) {
         setIsScroll(true);
     }
 
-    const handleBackToBottom = (value) => {
+    const handleBackToBottom = (value, message) => {
+        if (message) {
+            setHasMessage(message);
+        } else {
+            setHasMessage('');
+        }
         setIsShow(value);
     }
 
@@ -161,10 +175,16 @@ function Chat(props) {
 
                                             <div
                                                 id="back-top-button"
-                                                className={`${isShow ? 'show' : 'hide'}`}
+                                                className={`${isShow ? 'show' : 'hide'} ${hasMessage ? 'new-message' : ''}`}
                                                 onClick={hanldeOnClickScroll}
                                             >
-                                                <DownOutlined />
+                                                {hasMessage ?
+                                                    <div className='db-arrow-new-message'>
+                                                        <span className='arrow'><DoubleLeftOutlined /></span>
+                                                        <span>&nbsp;{hasMessage}</span>
+                                                    </div>
+
+                                                    : <DownOutlined />}
                                             </div>
 
 

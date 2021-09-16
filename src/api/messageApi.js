@@ -43,8 +43,8 @@ const messageApi = {
         return axiosClient.delete(`${API_URL}/${idMessage}/only`);
     },
 
-    dropReactional: (idMessage, type) => {
-        return axiosClient.delete(`${API_URL}/${idMessage}/reacts/${type}`);
+    dropReaction: (idMessage, type) => {
+        return axiosClient.post(`${API_URL}/${idMessage}/reacts/${type}`);
     }
 
 

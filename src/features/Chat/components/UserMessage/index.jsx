@@ -4,7 +4,7 @@ import { fallback } from 'assets/images/fallbackImage';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import parse from 'html-react-parser';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { FaReplyAll } from 'react-icons/fa';
 import { MdQuestionAnswer } from 'react-icons/md';
@@ -16,15 +16,17 @@ import './style.scss';
 UserMessage.propTypes = {
     message: PropTypes.object,
     isMyMessage: PropTypes.bool,
+    isSameUser: PropTypes.bool
 };
 
 UserMessage.defaultProps = {
     message: {},
     isMyMessage: false,
+    isSameUser: false
 };
 
 const imageStyle = {
-    maxHeight: '250px',
+    maxHeight: '300px',
     maxWidth: '100%',
     borderRadius: '8px'
 
@@ -57,12 +59,39 @@ const dropDownStyle = {
 
 
 
-function UserMessage({ message, isMyMessage }) {
-    const { _id, content, user, createdAt, type, isDeleted } = message;
+function UserMessage({ message, isMyMessage, isSameUser }) {
+    const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
     const { name, avatar } = user;
     const { messages } = useSelector(state => state.chat);
+    const global = useSelector(state => state.global);
+
+    const [listReactionCurrent, setListReactionCurrent] = useState([]);
+
+    const myReact = reacts && reacts.length > 0 && reacts.find(ele => ele.user._id === global.user._id);
     const dispatch = useDispatch();
 
+    const listReaction = ['👍', '❤️', '😆', '😮', '😭', '😡'];
+    useEffect(() => {
+        let temp = []
+        if (reacts && reacts.length > 0) {
+            reacts.forEach(ele => {
+                if (!temp.includes(ele.type)) {
+                    temp.push(ele.type);
+                }
+            });
+
+            setListReactionCurrent(temp);
+        }
+
+    }, [message])
+
+    const transferIcon = (type) => {
+        return listReaction[parseInt(type) - 1];
+    }
+
+    const handleClickLike = () => {
+        sendReaction(1);
+    }
 
     const handleOnClick = async ({ item, key }) => {
         if (key == 1) {
@@ -75,16 +104,14 @@ function UserMessage({ message, isMyMessage }) {
         }
     }
 
-    //  gọi api
-    // hứng socket
-    // tìm tin nhắn và set nó đã thu hồi
-
-    const handleUndoMessage = (id) => {
-
-
+    const handleClickReaction = (value) => {
+        const type = listReaction.findIndex(element => element === value) + 1;
+        sendReaction(type);
     }
 
-
+    const sendReaction = async (type) => {
+        await messageApi.dropReaction(_id, type);
+    }
 
 
 
@@ -115,13 +142,14 @@ function UserMessage({ message, isMyMessage }) {
 
 
     const dateAt = new Date(createdAt);
+
     return (
         // <div id={`user-message ${setMarginTopAndBottom(_id)}`}>
         <div id='user-message' className={`${setMarginTopAndBottom(_id)}`}>
             <div
                 className={`interact-conversation ${isMyMessage ? 'reverse' : ''
                     }  `}>
-                <div className='avatar-user'>
+                <div className={`avatar-user ${isSameUser ? 'hidden' : ''}`}>
                     <PersonalIcon
                         // isHost={true}
                         demention={40}
@@ -131,10 +159,19 @@ function UserMessage({ message, isMyMessage }) {
                 <div className='list-conversation'>
                     <div className='message' id={`${_id}`}>
                         <div
-                            className={`sub-message ${isMyMessage ? 'reverse' : ''}`}
+                            className={`sub-message ${isMyMessage ? 'reverse' : ''} ${isSameUser ? 'same-user' : ''}`}
                         >
-                            <div className={`content-message ${(type === 'IMAGE' || type === 'VIDEO') && 'content-media'}`}>
-                                <span className='author-message'>{isMyMessage ? '' : name}</span>
+                            <div
+                                className={`content-message ${(type === 'IMAGE' || type === 'VIDEO') ? 'content-media' : ''} 
+                                ${(isMyMessage && type !== 'IMAGE' && type !== 'VIDEO') ? 'my-message-bg' : ''}`}
+                            >
+                                <span className='author-message'>
+                                    {isSameUser && isMyMessage ? '' :
+                                        isSameUser && !isMyMessage ? '' :
+                                            !isSameUser && isMyMessage ? '' : name
+
+                                    }
+                                </span>
                                 <div className='content-message-description'>
                                     {
                                         (type === 'HTML') ? parse(content) :
@@ -145,29 +182,26 @@ function UserMessage({ message, isMyMessage }) {
                                                     <div className='messsage-image-wrapper'>
                                                         <div className="message-image--main">
                                                             <Image
-                                                                // width={200}
-                                                                height={200}
+
+
                                                                 src={content}
                                                                 fallback={fallback}
                                                                 style={imageStyle}
                                                             />
                                                         </div>
 
-                                                        {(type === 'IMAGE') &&
+                                                        {(type === 'IMAGE') && !myReact &&
 
                                                             <div className={`reaction ${isMyMessage ? 'left' : 'right'} media `}>
-                                                                <div className='reaction-thumbnail'>
+                                                                {<div className='reaction-thumbnail' onClick={handleClickLike}>
                                                                     <LikeOutlined />
 
                                                                     <div className='list_icon-reaction'>
-                                                                        <span>👍</span>
-                                                                        <span>❤️</span>
-                                                                        <span>😆</span>
-                                                                        <span>😮</span>
-                                                                        <span>😭</span>
-                                                                        <span>😡</span>
+                                                                        {listReaction.map(ele => (
+                                                                            <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                                        ))}
                                                                     </div>
-                                                                </div>
+                                                                </div>}
                                                             </div>
                                                         }
 
@@ -182,25 +216,20 @@ function UserMessage({ message, isMyMessage }) {
                                                                 </video>
                                                             </div>
 
-
-                                                            {(type === 'VIDEO') &&
-
+                                                            {!myReact &&
                                                                 <div className={`reaction ${isMyMessage ? 'left' : 'right'} media `}>
-                                                                    <div className='reaction-thumbnail'>
+                                                                    <div className='reaction-thumbnail' onClick={handleClickLike}>
                                                                         <LikeOutlined />
 
                                                                         <div className='list_icon-reaction'>
-                                                                            <span>👍</span>
-                                                                            <span>❤️</span>
-                                                                            <span>😆</span>
-                                                                            <span>😮</span>
-                                                                            <span>😭</span>
-                                                                            <span>😡</span>
+                                                                            {listReaction.map(ele => (
+                                                                                <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                                            ))}
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            }
-                                                        </div> :
+
+                                                            }                                                        </div> :
                                                         <div>{content}</div>
 
                                     }
@@ -211,67 +240,98 @@ function UserMessage({ message, isMyMessage }) {
 
                                 </div>
 
+
                                 {
-                                    (type === 'TEXT' || type === 'HTML') &&
+                                    (reacts && reacts.length > 0 && (type !== 'IMAGE' || type !== 'VIDEO')) &&
+                                    <div className='time-send'>
+                                        <span>
+                                            {`0${dateAt.getHours()}`.slice(-2)}:
+                                            {`0${dateAt.getMinutes()}`.slice(-2)}
+                                        </span>
+                                    </div>
+
+                                }
+
+                                {
+                                    (type === 'TEXT' || type === 'HTML') && !myReact &&
 
 
                                     <div className={`reaction ${isMyMessage ? 'left' : 'right'} `}>
-                                        <div className='reaction-thumbnail'>
+
+                                        <div className='reaction-thumbnail' onClick={handleClickLike}>
                                             <LikeOutlined />
 
                                             <div className='list_icon-reaction'>
-                                                <span>👍</span>
-                                                <span>❤️</span>
-                                                <span>😆</span>
-                                                <span>😮</span>
-                                                <span>😭</span>
-                                                <span>😡</span>
+                                                {listReaction.map(ele => (
+                                                    <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                ))}
                                             </div>
                                         </div>
+
                                     </div>
                                 }
 
-                                {/* <div className={`reacted-block ${(type === 'IMAGE' || type === 'VIDEO') && 'media'} ${isMyMessage ? 'left' : 'right'} `}>
-                                    <div className='list-user-react'>
-                                        <div className='list-user-react-icon'>
-                                            <div>
-                                                <span>😭</span>
-                                                <span>😡</span>
-                                                <span className='count-reated'>
-                                                    2
-                                                </span>
-                                            </div>
+                                <div className={`reacted-block ${(type === 'IMAGE' || type === 'VIDEO') && 'media'} ${isMyMessage ? 'left' : 'right'} `}>
+                                    {
+                                        listReactionCurrent.length > 0 && !isDeleted && (
+                                            <div className={`list-user-react ${(isMyMessage) ? 'bg-white' : ''}`}>
+                                                <div className='list-user-react-icon'>
+                                                    <div>
+                                                        {
+                                                            listReactionCurrent.map(ele => (
+                                                                <span>{transferIcon(ele)}</span>
 
-                                            <div className='list-user-detail'>
-                                                <span>Bạn</span>
-                                                <span>Tiên Huỳnh</span>
-                                                <span>Nhật Hào</span>
-                                                <span>Đức Bo</span>
+                                                            ))
+                                                        }
+                                                        <span className='count-reated'>
+                                                            {reacts && reacts.length > 0 && reacts.length}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className='list-user-detail'>
+                                                        {reacts && reacts.length > 0 &&
+                                                            reacts.map((ele, index) => (
+                                                                <>
+                                                                    {index < 5 && <span>{ele.user.name}</span>}
+                                                                </>
+                                                            ))
+
+                                                        }
+                                                        {reacts && reacts.length > 5 &&
+                                                            <span>{`và ${reacts.length - 5} người khác`}</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+
+                                    {myReact && !isDeleted && (
+                                        <div className={`your-react ${isMyMessage ? 'bg-white' : ''}`}>
+                                            <span className='react-current'>
+                                                {myReact ? transferIcon(myReact.type) : ''}
+                                            </span>
+                                            <div className='list_icon-reaction'>
+                                                {listReaction.map(ele => (
+                                                    <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                ))}
                                             </div>
                                         </div>
-                                    </div>
+                                    )
 
-                                    <div className='your-react'>
-                                        <span className='react-current'>
-                                            😡
-                                        </span>
-                                        <div className='list_icon-reaction'>
-                                            <span>👍</span>
-                                            <span>❤️</span>
-                                            <span>😆</span>
-                                            <span>😮</span>
-                                            <span>😭</span>
-                                            <span>😡</span>
-                                        </div>
-                                    </div>
-                                </div> */}
-
-                                <div className='time-send'>
-                                    <span>
-                                        {dateAt.getHours()}:
-                                        {dateAt.getMinutes()}
-                                    </span>
+                                    }
                                 </div>
+
+                                {
+                                    (reacts && reacts.length <= 0 && (type === 'IMAGE' || type === 'VIDEO')) &&
+                                    <div className='time-send'>
+                                        <span>
+                                            {`0${dateAt.getHours()}`.slice(-2)}:
+                                            {`0${dateAt.getMinutes()}`.slice(-2)}
+                                        </span>
+                                    </div>
+
+                                }
                             </div>
 
                             <div
@@ -317,63 +377,6 @@ function UserMessage({ message, isMyMessage }) {
                             </div>
                         </div>
 
-                        {/* <div className='sub-message'>
-                            <div className='content-message'>
-                                <span>
-                                    Ta thường mơ về một thoáng chốc được bên
-                                    nàng
-                                </span>
-
-                                <div className='reaction'>
-                                    <LikeOutlined />
-                                </div>
-                            </div>
-                            <div className='interaction'>
-                                <div className='reply icon-interact'>
-                                    <MdQuestionAnswer />
-                                </div>
-
-                                <div className='forward icon-interact'>
-                                    <FaReplyAll />
-                                </div>
-
-                                <div className='additional icon-interact'>
-                                    <BiDotsHorizontalRounded />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='sub-message '>
-                            <div className='content-message'>
-                                <span>
-                                    Ta thường mơ về một thoáng chốc được bên
-                                    nàng Tâm hồn say lạc giữa thành phố một đêm
-                                    vàng Giữa một rừng thanh âm chỉ nghe thấy
-                                    tiếng em trong vắt
-                                </span>
-
-                                <div className='reaction'>
-                                    <LikeOutlined />
-                                </div>
-
-                                <div className='time-send'>
-                                    <span>15:40</span>
-                                </div>
-                            </div>
-                            <div className='interaction'>
-                                <div className='reply icon-interact'>
-                                    <MdQuestionAnswer />
-                                </div>
-
-                                <div className='forward icon-interact'>
-                                    <FaReplyAll />
-                                </div>
-
-                                <div className='additional icon-interact'>
-                                    <BiDotsHorizontalRounded />
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
             </div>

@@ -1,4 +1,8 @@
 @import "../../../../scss/variables";
+
+.bg-white {
+    background: #fff;
+}
 #user-message {
     padding: 0 2rem;
 }
@@ -18,6 +22,9 @@
     .interact-conversation {
         display: flex;
         flex-direction: row;
+        .avatar-user.hidden {
+            visibility: hidden;
+        }
     }
 
     .reverse {
@@ -30,6 +37,9 @@
         width: calc(100% - 40px);
 
         .message {
+            .sub-message.same-user {
+                margin-top: 0;
+            }
             .sub-message {
                 display: flex;
                 flex-direction: row;
@@ -48,7 +58,9 @@
                         }
                     }
                 }
-
+                .content-message.my-message-bg {
+                    background: $blue-700;
+                }
                 .content-message {
                     background: $white-color;
                     padding: 1.4rem 1.4rem;
@@ -103,6 +115,10 @@
                         cursor: pointer;
 
                         .list-user-react-icon {
+                            > div {
+                                display: flex;
+                                align-items: center;
+                            }
                             position: relative;
 
                             .list-user-detail {
@@ -153,12 +169,12 @@
 
                             .list_icon-reaction {
                                 position: absolute;
-                                top: -200%;
+                                top: -140%;
                                 left: 14px;
                                 transform: translateX(-50%);
 
                                 border: 1px solid black;
-                                padding: 0.6rem 1rem;
+                                padding: 0.6rem 0.5rem;
                                 display: none;
 
                                 border-radius: 5px;
@@ -167,9 +183,9 @@
                                 border: 0.05rem solid $grey-300;
 
                                 span {
-                                    font-size: 20px;
+                                    font-size: 16px;
                                     transition: 0.2s;
-                                    margin: 0 0.8rem;
+                                    margin: 0 0.4rem;
                                 }
 
                                 span:hover {
@@ -180,7 +196,7 @@
                             .list_icon-reaction::after {
                                 content: "";
                                 width: 100%;
-                                height: 10px;
+                                height: 20px;
                                 bottom: -25%;
 
                                 left: 0;
@@ -226,16 +242,17 @@
                     .list_icon-reaction::after {
                         content: "";
                         width: 100%;
-                        height: 10px;
-                        bottom: -20%;
+                        height: 20px;
+                        bottom: -30%;
 
                         left: 0;
                         position: absolute;
+                        // background: red;
                     }
 
                     .list_icon-reaction {
                         position: absolute;
-                        top: -200%;
+                        top: -150%;
                         left: 14px;
                         transform: translateX(-50%);
 
@@ -249,9 +266,9 @@
                         border: 0.05rem solid $grey-300;
 
                         span {
-                            font-size: 20px;
+                            font-size: 16px;
                             transition: 0.2s;
-                            margin: 0 0.8rem;
+                            margin: 0 0.4rem;
                         }
 
                         span:hover {

@@ -1,3 +1,4 @@
+import { react } from '@babel/types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import conversationApi from 'api/conversationApi';
 import messageApi from 'api/messageApi';
@@ -219,6 +220,28 @@ const chatSlice = createSlice({
                     tempCount += 1;
             })
             state.toTalUnread = tempCount;
+        },
+        setReactionMessage: (state, action) => {
+            const { messageId, user, type } = action.payload;
+
+            console.log('duwx lieu truyen xuong', { messageId, user, type });
+
+            const index = state.messages.findIndex((message) => message._id === messageId);
+            const currentMessage = state.messages.find((message) => message._id === messageId);
+
+            const checkIsExist = currentMessage.reacts.findIndex(ele => ele.user._id === user._id);
+            //  có 2 trường hợp
+
+
+            //  người dùng thả 1 react mới
+            if (checkIsExist >= 0) {
+                state.messages[index].reacts[checkIsExist] = { ...state.messages[index].reacts[checkIsExist], type }
+            } else {
+                let reacts = [...currentMessage.reacts, { user, type }];
+                state.messages[index].reacts = reacts;
+            }
+
+
         }
     },
     extraReducers: {
@@ -313,6 +336,8 @@ export const { addMessage,
     setRaisePage,
     setRedoMessage,
     deleteMessageClient,
-    setToTalUnread } = actions;
+    setToTalUnread,
+    setReactionMessage
+} = actions;
 
 export default reducer;
