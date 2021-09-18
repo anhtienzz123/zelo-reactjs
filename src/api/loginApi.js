@@ -6,25 +6,24 @@ const loginApi = {
 
         return axiosClient.post(url, { username, password });
     },
-    registry: (username, password,passwordconfirm) => {
+    registry: (name,username, password) => {
         const url = '/auth/registry';
 
-        return axiosClient.post(url, { username, password ,passwordconfirm});
+        return axiosClient.post(url, { name,username, password });
     },
     forgot: (username) => {
-        const url = '/auth/forgot';
+        const url = '/auth/reset-otp';
 
         return axiosClient.post(url, { username});
     },
-    confirmAccount: (username, password) => {
+    confirmAccount: (username, otp) => {
 		const url = '/auth/confirm-account';
-		return axiosClient.post(url, { username, password });
+		return axiosClient.post(url, { username, otp });
 	},
-	confirmPassword: (username, password) => {
+	confirmPassword: (username,otp, password) => {
 		const url = '/auth/confirm-password';
-		return axiosClient.post(url, { username, password });
+		return axiosClient.post(url, { username,otp, password });
 	},
-
 	fetchUser: (username) => {
 		const url = `/auth/users/${username}`;
 		return axiosClient.get(url);

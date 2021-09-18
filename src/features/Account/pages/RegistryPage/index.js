@@ -7,42 +7,35 @@ import React, { useState } from 'react';
 import './style.scss'
 import {  setRegistry } from 'app/globalSlice';
 import { setLoading } from 'features/Account/accountSlice';
-import { Link, Redirect} from 'react-router-dom';
+import { Link, Redirect,useHistory} from 'react-router-dom';
 import { registryValues } from 'features/Account/initValues';
 import InputField from 'customfield/InputField';
 import loginApi from 'api/loginApi';
 
 
 const { Text, Title } = Typography;
-
-function RegistryPage(props) {
-
+function RegistryPage(props) {  
+    const history = useHistory();
     const dispatch = useDispatch();
     const { isRegistry } = useSelector((state) => state.global);
-    const [isError, setError] = useState(false);
-
-    const handleRegistry = async (values, actions) => {
-        const { username} = values;
-
+    const [isError, setError] = useState("");
+         
+    const handleRegistry = async (values) => {
+        const { name,username,password} = values;
         try {
             dispatch(setLoading(true));
-            const response  = await loginApi.registry(values);
+            const response = await loginApi.registry(name,username,password); 
+            props.history.push( {pathname: "/account/confirm",
+            state: { values }});
             dispatch(setRegistry(true));
-
-            if (response.data?.status) {
-                const account = await loginApi.fetchUser(username);
-                console.log('ok')
-            } else {
-                console.log(' not ok')
-            }
         } catch (error) {
-            setError(true);
-            console.log(' fail')
+            setError("Email/SĐT đã được sử dụng ");
+            console.log('fail register');
         }
         dispatch(setLoading(false));
     };
-
-    if (isRegistry) return <Redirect to="/account/login" />;
+    if (isRegistry) return <Redirect to= "./confirm"/>;
+  
      return( 
      <div className="email-registry-page">
          <div className='main'>
@@ -52,11 +45,12 @@ function RegistryPage(props) {
                 <Divider />
                 <Formik
                      initialValues={{ ...registryValues.initial }}
-                     onSubmit={handleRegistry}
+                     onSubmit={(values) => handleRegistry(values)}
                      validationSchema={registryValues.validationSchema}
                      enableReinitialize={true}
                 >
-                    {(formikProps) => {
+                    {(formikProps) => { 
+                    const {handleChange} = formikProps;
                         return (
                             <Form>
                                 <Row gutter={[0, 16]}>
@@ -67,7 +61,7 @@ function RegistryPage(props) {
                                             type="text"
                                             title="Tên "
                                             placeholder="Nhập tên đầy đủ"
-                                            maxLength={50}
+                                            maxLength={50}                
                                             titleCol={8}
                                             inputCol={16}
                                         ></FastField>
@@ -78,8 +72,8 @@ function RegistryPage(props) {
                                             component={InputField}
                                             type="text"
                                             title="Tài khoản"
-                                            placeholder="Nhập email đăng ký"
-                                            maxLength={50}
+                                            placeholder="Nhập email/SĐT đăng ký"
+                                            maxLength={50}    
                                             titleCol={8}
                                             inputCol={16}
                                         ></FastField>
@@ -118,17 +112,15 @@ function RegistryPage(props) {
                                                     fontWeight: 'bold',
                                                 }}
                                                 icon={<CloseCircleOutlined />}
-                                            >
-                                                Tài khoản không hợp lệ
+                                            >{isError}
                                             </Tag>
                                         </Col>
                                     ) : (
                                         ''
                                     )}
                                     <Col offset={8}>
-                                        <Button type="primary"
-                                            htmlType="submit">
-                        
+                                        <Button type="primary" 
+                                        htmlType="submit">             
                                             Đăng Ký
                                         </Button>
                                         

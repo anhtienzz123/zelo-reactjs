@@ -21,12 +21,10 @@ function LoginPage(props) {
     const { isLogin } = useSelector((state) => state.global);
     const [isError, setError] = useState(false);
 
-    const handleSubmit = async (values, actions) => {
+    const handleSubmit = async (values) => {
         const { username, password } = values;
-
         try {
             dispatch(setLoading(true));
-           
             const { token } = await loginApi.login(username, password);
             localStorage.setItem('token', token);
             dispatch(setLogin(true));
@@ -49,7 +47,7 @@ function LoginPage(props) {
                 <Divider />
                 <Formik
                     initialValues={{ ...loginValues.initial }}
-                    onSubmit={handleSubmit}
+                    onSubmit={(values) => handleSubmit(values)}
                     validationSchema={loginValues.validationSchema}
                     enableReinitialize={true}
                 >

@@ -3,7 +3,6 @@ import { Alert, Button, Col, Divider, Row, Tag, Typography } from 'antd';
 import { setForgot } from 'app/globalSlice';
 import InputField from 'customfield/InputField';
 import { setLoading } from 'features/Account/accountSlice';
-
 import { FastField, Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +12,7 @@ import { forgotValues } from 'features/Account/initValues';
 import loginApi from 'api/loginApi';
 
 
+
 const { Text, Title } = Typography;
 
 function ForgotPage(props) {
@@ -20,33 +20,30 @@ function ForgotPage(props) {
     const dispatch = useDispatch();
 
     const { isForgot } = useSelector((state) => state.global);
-    const [isError, setError] = useState(false);
+    const [isError, setError] = useState("");
 
-    const handleForgot = async (values, actions) => {
-        const { username } = values;
-
+    const handleForgot = async (values) => {
+        const { username,password} = values;
         try {
             dispatch(setLoading(true));
             const response = await loginApi.forgot(username);
-            console.log(response.data);
-            // account was actived 
-		 if (response.data) { //no have account
-            console.log('tài khoản không tồn tại')
-		 } else {
+            props.history.push( {pathname: "/account/otp",
+            state: { values }});
+            // account was actived         
 		 	const account = await loginApi.fetchUser(username);
-			console.log(account);
-            // if (account.isActived)
-			if (account){
-                console.log('ok')
-                dispatch(setForgot(true));
-			}else{
-                console.log('not ok')
-			}
-		}
-            dispatch(setForgot(true));
+            console.log("actived",account.isActived);
+		        if (account.isActived===true){            
+                    dispatch(setForgot(true));                         
+                    console.log('account is actived !!'); 
+			    }else{  
+                    setError("Tài khoản không tồn tại");
+                    dispatch(setForgot(false));  
+                    console.log('not account imposible !!');
+		            }
+		    
         } catch (error) {
-            setError(true);
-            console.log('fail')
+            setError("Tài khoản không tồn tại");
+            console.log('fail forgot');
         }
         dispatch(setLoading(false));
     };
@@ -64,7 +61,7 @@ function ForgotPage(props) {
 
                 <Formik
                     initialValues={{ ...forgotValues.initial }}
-                    onSubmit={handleForgot}
+                    onSubmit={(values) => handleForgot(values)}
                     validationSchema={forgotValues.validationSchema}
                     enableReinitialize={true}
                 >
@@ -99,7 +96,7 @@ function ForgotPage(props) {
                                             name="password"
                                             component={InputField}
                                             type="password"
-                                            title="Mật khẩu"
+                                            title="Mật khẩu mới"
                                             placeholder="Nhập mật khẩu"
                                             maxLength={200}
                                             titleCol={8}
@@ -129,7 +126,7 @@ function ForgotPage(props) {
                                                 }}
                                                 icon={<CloseCircleOutlined />}
                                             >
-                                                Tài khoản không hợp lệ
+                                               {isError}
                                             </Tag>
                                         </Col>
                                     ) : (
