@@ -23,7 +23,8 @@ function ItemsSelected({ items, onRemove }) {
     return (
         <>
             {
-                items.length > 0 &&
+
+                items && items.length > 0 &&
                 items.map((item, index) => (
                     <div className='item-selected--text' key={index}>
                         <div className='item-selected-avatar'>

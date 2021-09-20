@@ -110,14 +110,10 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
                 continue;
             }
 
-            const isSameUser = currentMessage.user._id === preMessage.user._id ? true : false;
+            const isSameUser = (currentMessage.user._id === preMessage.user._id && preMessage.type !== 'NOTIFY') ? true : false;
 
 
             // Check tin nhắn sau có cùng người gửi vs tin nhắn trước
-
-
-
-
 
             const dateTempt1 = new Date(preMessage.createdAt);
             const dateTempt2 = new Date(currentMessage.createdAt);

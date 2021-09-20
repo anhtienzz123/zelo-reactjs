@@ -1,14 +1,18 @@
 import { SearchOutlined, SplitCellsOutlined, TagOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
+import conversationApi from 'api/conversationApi';
+import { createGroup } from 'features/Chat/chatSlice';
 import PropTypes from 'prop-types';
-import React from 'react';
-import PersonalIcon from '../PersonalIcon';
-import ThumbnailMutiple from '../ThumbnailMutiple';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ConversationAvatar from '../ConversationAvatar';
+import ModalAddMemberToConver from '../ModalAddMemberToConver';
 import './style.scss';
+
 HeaderOptional.propTypes = {
     avatar: PropTypes.array || PropTypes.string,
     totalMembers: PropTypes.number,
     name: PropTypes.string,
+    typeConver: PropTypes.bool.isRequired,
 };
 
 HeaderOptional.defaultProps = {
@@ -18,14 +22,54 @@ HeaderOptional.defaultProps = {
 };
 
 function HeaderOptional(props) {
-    const { avatar, totalMembers, name } = props;
+    const { avatar, totalMembers, name, typeConver } = props;
     const type = typeof avatar;
+    const { currentConversation } = useSelector(state => state.chat);
+    const [isVisible, setIsvisible] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [typeModal, setTypeModal] = useState(1);
+    const dispatch = useDispatch();
+
+    // false đơn, true là nhóm
+    const handleAddMemberToGroup = () => {
+        setIsvisible(true);
+        if (typeConver) {
+            setTypeModal(2);
+        } else {
+            setTypeModal(1);
+        }
+    }
+
+    const handleOk = async (userIds, name) => {
+        if (typeModal === 1) {
+
+            setConfirmLoading(true);
+            dispatch(createGroup({
+                name,
+                userIds
+            }));
+            setConfirmLoading(false);
+
+        } else {
+            // socket (đối với user đc add): io.emit('added-group', conversationId).
+            setConfirmLoading(true);
+            await conversationApi.addMembersToConver(userIds, currentConversation);
+            setConfirmLoading(false);
+        }
+
+        setIsvisible(false);
+    }
+
+    const hanleOnCancel = (value) => {
+        setIsvisible(value);
+    }
+
+
     return (
         <div id='header-optional'>
             <div className="header_wrapper">
                 <div className="header_leftside">
                     <div className='icon_user'>
-
                         {<ConversationAvatar avatar={avatar} />}
                     </div>
 
@@ -52,7 +96,7 @@ function HeaderOptional(props) {
                 </div>
 
                 <div className="header_rightside">
-                    <div className='create-group'>
+                    <div className='create-group' onClick={handleAddMemberToGroup}>
                         <UsergroupAddOutlined />
                     </div>
                     <div className="search-message">
@@ -63,6 +107,16 @@ function HeaderOptional(props) {
                     </div>
                 </div>
             </div>
+
+
+            <ModalAddMemberToConver
+                isVisible={isVisible}
+                onCancel={hanleOnCancel}
+                onOk={handleOk}
+                loading={confirmLoading}
+                typeModal={typeModal}
+
+            />
         </div>
     );
 }

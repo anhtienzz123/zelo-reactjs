@@ -26,44 +26,15 @@ function UploadFile(props) {
 
     const handleChange = async (info) => {
 
-        // console.log("chay file")
-
-        // const { file, fileList } = info;
-
-
-        // if (info.file.status !== 'uploading') {
-        //     console.log(info.file, info.fileList);
-        // }
-        // if (info.file.status === 'done') {
-        //     message.success(`${info.file.name} file uploaded successfully`);
-
-        // } else if (info.file.status === 'error') {
-        //     message.error(`${info.file.name} file upload failed.`);
-        // }
-
-        // setFileList(fileList);
-
-
-        // const { file, fileList } = info;
-
-        // if (!file.url && !file.preview) {
-        //     file.preview = await commonFuc.getBase64(file.originFileObj);
-        // }
-        // // console.log({ info });
-        // const lastItem = fileList.length - 1;
-        // setFileList([{ ...fileList[lastItem], status: "done" }]);
-
 
 
     };
 
-    // console.log(fileList);
 
 
 
     const handleAction = (file) => {
 
-        // console.log("chay action", file);
 
     };
 
@@ -79,7 +50,7 @@ function UploadFile(props) {
             typeFile = 'FILE'
         }
 
-        // console.log("file type", file.type);
+
 
 
         fmData.append("file", file);

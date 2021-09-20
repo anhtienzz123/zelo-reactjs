@@ -36,21 +36,13 @@ function SearchContainer(props) {
     }
 
     const handleOklModalCreatGroup = (value) => {
+
         setConfirmLoading(true);
-
         dispatch(createGroup(value));
-
         setConfirmLoading(false);
         setIsModalCreateGroupVisible(false);
 
-
-
-
     }
-
-
-
-
 
 
     return (

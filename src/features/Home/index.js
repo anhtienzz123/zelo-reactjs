@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 function Home(props) {
     return (<div className="home">
 
-
+        home page
 
     </div>
     );

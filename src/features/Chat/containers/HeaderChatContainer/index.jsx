@@ -8,12 +8,10 @@ HeaderChatContainer.propTypes = {
 
 };
 
-function HeaderChatContainer(props) {
+function HeaderChatContainer() {
 
     const { currentConversation, conversations } = useSelector(state => state.chat);
     const detailConver = conversations.find(conver => conver._id === currentConversation);
-
-    console.log("Detail conversation", detailConver);
 
 
 
@@ -24,6 +22,8 @@ function HeaderChatContainer(props) {
                 avatar={detailConver.avatar}
                 totalMembers={detailConver.totalMembers}
                 name={detailConver.name}
+                typeConver={detailConver.type}
+
             />
         </div>
     );

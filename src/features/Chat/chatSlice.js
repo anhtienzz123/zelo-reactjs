@@ -3,6 +3,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import conversationApi from 'api/conversationApi';
 import messageApi from 'api/messageApi';
 import dateUtils from 'utils/dateUtils';
+import friendApi from 'api/friendApi';
+import { StarFilled } from '@ant-design/icons';
 
 
 const KEY = 'chat';
@@ -63,8 +65,9 @@ export const fetchListFriends = createAsyncThunk(
     `${KEY}/fetchListFriends`,
     async (params, thunkApi) => {
         const { name } = params;
-
         const friends = await friendApi.fetchFriends(name);
+        console.log('Friend')
+        console.log('Friend', friends)
         return friends;
     }
 );
@@ -119,7 +122,6 @@ const chatSlice = createSlice({
     initialState: {
         isLoading: false,
         conversations: [],
-        // messagesPage: {},
         currentConversation: '',
         messages: [],
         friends: [],
@@ -177,6 +179,7 @@ const chatSlice = createSlice({
             const conversationId = action.payload;
             const newConversations = state.conversations.filter(ele => ele._id !== conversationId);
             state.conversations = newConversations;
+            state.currentConversation = '';
         },
 
         setTypeOfConversation: (state, action) => {
@@ -242,7 +245,69 @@ const chatSlice = createSlice({
             }
 
 
-        }
+        },
+        updateConversationWhenAddMember: (state, action) => {
+            const { newMembers, conversationId } = action.payload;
+
+            console.log('newMembers', newMembers,);
+            console.log('conversationId', conversationId,);
+
+
+            const index = state.conversations.findIndex(ele => ele._id === conversationId);
+            const conversation = state.conversations.find(ele => ele._id === conversationId);
+
+
+            console.log('Conversation avatar', conversation);
+
+            // lấy ra vị trí, lấy ra giá trị
+            // sau đó clone ra 1 mảng avatar ms và gán vào
+            // lấy totalMember + newMember.lenght
+
+            const avatar = [...conversation.avatar, ...newMembers.map(ele => ele.avatar)];
+            const totalMembers = conversation.totalMembers + newMembers.length;
+            state.conversations[index] = { ...state.conversations[index], avatar, totalMembers };
+
+
+            const temp = [];
+            newMembers.forEach(member => {
+                state.friends.forEach(friend => {
+                    if (member._id == friend._id) {
+                        member = { ...member, isFriend: true };
+                        return;
+                    }
+
+                })
+                temp.push(member);
+            });
+
+            if (state.currentConversation === conversationId) {
+                state.memberInConversation = [...state.memberInConversation, ...temp];
+            }
+
+        },
+
+        updateMemberLeaveGroup: (state, action) => {
+            const { conversationId, newMessage, } = action.payload;
+
+            const index = state.conversations.findIndex(ele => ele._id === conversationId);
+            const conversation = state.conversations.find(ele => ele._id === conversationId);
+
+
+
+            const avatar = conversation.avatar.filter(ele => ele !== newMessage.user.avatar);
+
+            const totalMembers = conversation.totalMembers - 1;
+            state.memberInConversation = state.memberInConversation.filter(ele => ele._id !== newMessage.user._id);
+            state.conversations[index] = { ...state.conversations[index], avatar, totalMembers };
+
+        },
+        leaveGroup: (state, action) => {
+            const conversationId = action.payload;
+            const newConvers = state.conversations.filter(ele => ele._id !== conversationId);
+            state.conversations = newConvers;
+            state.currentConversation = '';
+
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -337,7 +402,10 @@ export const { addMessage,
     setRedoMessage,
     deleteMessageClient,
     setToTalUnread,
-    setReactionMessage
+    setReactionMessage,
+    updateConversationWhenAddMember,
+    leaveGroup,
+    updateMemberLeaveGroup,
 } = actions;
 
 export default reducer;

@@ -1,5 +1,5 @@
 import { DeleteFilled, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Dropdown, Menu, Modal } from 'antd';
+import { Dropdown, Menu, Modal, message } from 'antd';
 import {
     fetchListConversations,
     fetchListMessages
@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteConversation, getMembersConversation, setTypeOfConversation } from '../../chatSlice';
+import conversationApi from 'api/conversationApi';
 import './style.scss';
 ConversationContainer.propTypes = {};
 
@@ -38,10 +39,14 @@ function ConversationContainer(props) {
         }
     };
 
-    const deleteConver = (id) => {
-        dispatch(deleteConversation({
-            conversationId: id
-        }));
+    const deleteConver = async (id) => {
+        try {
+            await conversationApi.deleteConversation(id);
+            message.success('Xóa thành công');
+        } catch (error) {
+            message.error('Bạn không thể xóa nhóm này! Hãy chọn tính năng rời nhóm');
+        }
+
     }
 
 

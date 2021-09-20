@@ -63,7 +63,7 @@ function InfoFriendSearch(props) {
 
                     <div className="info_friend-searchbar-and-title">
                         <div className="info_friend-search-title">
-                            <strong>{`Danh sách thành viên (${members.length - 1})`}</strong>
+                            <strong>{`Danh sách thành viên (${members.length})`}</strong>
                         </div>
 
                         <div className="info_friend-searchbar">

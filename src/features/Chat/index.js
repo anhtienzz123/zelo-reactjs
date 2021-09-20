@@ -11,7 +11,9 @@ import {
     removeConversation,
     fetchListFriends,
     setRedoMessage,
-    setReactionMessage
+    setReactionMessage,
+    updateConversationWhenAddMember,
+    updateMemberLeaveGroup
 } from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
@@ -37,6 +39,13 @@ function Chat(props) {
     const [isShow, setIsShow] = useState(false);
     const [isScroll, setIsScroll] = useState(false);
     const [hasMessage, setHasMessage] = useState('');
+    const [hasModalMode, setHasModalMode] = useState('Tạo nhóm');
+
+
+    const checkIsExistConver = (idConver) => {
+        const index = conversations.findIndex(ele => ele._id === idConver);
+        return index > -1;
+    }
 
 
 
@@ -71,7 +80,27 @@ function Chat(props) {
 
 
     useEffect(() => {
+
+
+
         socket.on('new-message', (conversationId, newMessage) => {
+            const { type, content, manipulatedUsers } = newMessage;
+
+
+            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm' && checkIsExistConver(conversationId)) {
+                console.log('Chay new messsage');
+                dispatch(updateConversationWhenAddMember({
+                    newMembers: manipulatedUsers,
+                    conversationId
+                }))
+            }
+
+            if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
+                dispatch(updateMemberLeaveGroup({
+                    conversationId,
+                    newMessage,
+                }))
+            }
 
             dispatch(addMessage(newMessage));
             setIdNewMessage(newMessage._id);
@@ -81,10 +110,11 @@ function Chat(props) {
         socket.on('create-conversation', (conversationId) => {
             dispatch(fetchConversationById({ conversationId }));
         });
-        socket.on('delete-conversation', (conversationId) => {
 
+        socket.on('delete-conversation', (conversationId) => {
             dispatch(removeConversation(conversationId));
         });
+
 
         socket.on('delete-message', (conversationId, id) => {
             handleDeleteMessage(conversationId, id, refCurrentConversation);
@@ -92,14 +122,14 @@ function Chat(props) {
         });
 
 
-
-        socket.on('add-reaction', (conversationId, messageId, user, type) => {
-            if (conversationId === refCurrentConversation.current) {
-                dispatch(setReactionMessage({ messageId, user, type }));
-            }
+        socket.on('added-group', (conversationId) => {
+            console.log('Chay added group', conversationId);
+            dispatch(fetchConversationById({ conversationId }));
         });
-    }, []);
 
+
+
+    }, []);
 
 
     const handleDeleteMessage = (conversationId, id, refCurrentConversation) => {
@@ -109,7 +139,6 @@ function Chat(props) {
         }
 
     }
-
 
 
     const handleScrollWhenSent = (value) => {
@@ -133,13 +162,19 @@ function Chat(props) {
         setIsScroll(value);
     }
 
+    // Xử lý modal mode
+
+
+
     return (
         <div id='main-chat-wrapper'>
             <Row gutter={[0, 0]}>
                 <Col span={5}>
                     <div className='main-conversation'>
                         <div className='main-conversation_search-bar'>
-                            <SearchContainer />
+                            <SearchContainer
+                                modalMode={hasModalMode}
+                            />
                         </div>
 
                         <div className='divider-layout'>
