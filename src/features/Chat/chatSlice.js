@@ -131,6 +131,7 @@ const chatSlice = createSlice({
         totalPages: '',
         toTalUnread: 0,
 
+
     },
     reducers: {
         addMessage: (state, action) => {
@@ -308,6 +309,9 @@ const chatSlice = createSlice({
             state.currentConversation = '';
 
         },
+
+
+
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {

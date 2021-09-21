@@ -7,7 +7,7 @@ ItemsSelected.propTypes = {
     items: PropTypes.array,
 };
 
-ItemsSelected.propTypes = {
+ItemsSelected.defaultProps = {
     items: [],
 };
 

@@ -6,6 +6,7 @@ import conversationApi from 'api/conversationApi';
 import { leaveGroup } from '../../chatSlice';
 import './style.scss';
 import { message, Modal } from 'antd';
+import { socket } from 'utils/socketClient';
 AnotherSetting.propTypes = {
 
 };
@@ -47,6 +48,9 @@ function AnotherSetting(props) {
                 try {
                     await conversationApi.leaveGroup(currentConversation);
                     message.success(`Rời nhóm thành công`);
+
+                    socket.emit('leave-conversation', currentConversation);
+
                     dispatch(leaveGroup(currentConversation));
                 } catch (error) {
                     message.error(`Rời nhóm thất bại`);

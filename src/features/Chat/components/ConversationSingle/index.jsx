@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
 import ConversationAvatar from '../ConversationAvatar';
+import { useSelector } from 'react-redux';
 
 ConversationSingle.propTypes = {
     conversation: PropTypes.object,
@@ -11,6 +12,7 @@ ConversationSingle.propTypes = {
 function ConversationSingle({ conversation, onClick }) {
     const { _id, name, avatar, numberUnread, lastMessage, totalMembers } = conversation;
     const { content, type, createdAt, user } = lastMessage;
+    const global = useSelector(state => state.global);
 
     const handleClick = () => {
         if (onClick) onClick(_id);
@@ -31,7 +33,7 @@ function ConversationSingle({ conversation, onClick }) {
 
                         <div className='lastest-message'>
                             <span>
-                                {`${totalMembers > 2 && user.name}:${content ? content : 'Tin nhắn đã thu hồi'}`}
+                                {`${global.user.name === user.name ? 'Bạn' : user.name}:${content ? content : 'Tin nhắn đã thu hồi'}`}
                             </span>
                         </div>
                     </div>

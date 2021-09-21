@@ -98,11 +98,14 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
     }
 
     const handleOnClick = async ({ item, key }) => {
+
+        console.log('CLick menu', key);
+
         if (key === 1) {
 
-        } else if (key === 2) {
+        } else if (key == 2) {
             await messageApi.redoMessage(_id);
-        } else if (key === 3) {
+        } else if (key == 3) {
             await messageApi.deleteMessageClientSide(_id);
             dispatch(deleteMessageClient(_id))
         }
@@ -110,10 +113,13 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
 
     const handleClickReaction = (value) => {
         const type = listReaction.findIndex(element => element === value) + 1;
+        console.log('type', type, value);
+
         sendReaction(type);
     }
 
     const sendReaction = async (type) => {
+        console.log('icon truyeefn di', type);
         await messageApi.dropReaction(_id, type);
     }
 
@@ -167,25 +173,11 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
     }
 
 
-    const manipulateUserName = manipulatedUsers && manipulatedUsers.length > 0 &&
-        manipulatedUsers.map(ele => ele.name);
+    // const manipulateUserName = manipulatedUsers && manipulatedUsers.length > 0 &&
+    //     manipulatedUsers.map(ele => ele.name);
 
 
-    // .join(' ,')
-
-    // ;
     const isMyActive = user._id === global.user._id ? 'Bạn' : user.name;
-    // console.log('manipulateUserName', manipulateUserName);
-
-
-
-
-
-
-
-
-
-
 
 
     return (
@@ -193,7 +185,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
             {type === 'NOTIFY' ?
                 (<div className='notify-message-wrapper'>
 
-                    {/* {manipulateUserName} */}
+
 
 
                     <div className="notify-message-content">
@@ -219,7 +211,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                         <>
                                             {
                                                 index < 3 &&
-                                                <div div className="notify-message-content_per-avatar" >
+                                                <div key={index} div className="notify-message-content_per-avatar" >
                                                     <Avatar
                                                         size='small'
                                                         src={ele.avatar}
@@ -271,7 +263,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
 
                                 {manipulatedUsers && manipulatedUsers.length > 0 &&
                                     manipulatedUsers.map((ele, index) => (
-                                        <span className="user-name-strong">
+                                        <span className="user-name-strong" key={index}>
                                             {index < 3 &&
                                                 (index === 0) ? ` ${ele._id === global.user._id ? 'bạn' : ele.name}` : `, ${ele._id === global.user._id ? 'bạn' : ele.name}`
                                             }
@@ -354,12 +346,13 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                                 {(type === 'IMAGE') && !myReact &&
 
                                                                     <div className={`reaction ${isMyMessage ? 'left' : 'right'} media `}>
-                                                                        {<div className='reaction-thumbnail' onClick={handleClickLike}>
-                                                                            <LikeOutlined />
+                                                                        {<div className='reaction-thumbnail' >
+                                                                            {/* onClick={handleClickLike} */}
+                                                                            <div onClick={handleClickLike}  ><LikeOutlined /></div>
 
                                                                             <div className='list_icon-reaction'>
-                                                                                {listReaction.map(ele => (
-                                                                                    <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                                                {listReaction.map((ele, index) => (
+                                                                                    <span key={index} onClick={() => handleClickReaction(ele)}>{ele}</span>
                                                                                 ))}
                                                                             </div>
                                                                         </div>}
@@ -379,12 +372,12 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
 
                                                                     {!myReact &&
                                                                         <div className={`reaction ${isMyMessage ? 'left' : 'right'} media `}>
-                                                                            <div className='reaction-thumbnail' onClick={handleClickLike}>
-                                                                                <LikeOutlined />
+                                                                            <div className='reaction-thumbnail' >
+                                                                                <div onClick={handleClickLike}  ><LikeOutlined /></div>
 
                                                                                 <div className='list_icon-reaction'>
-                                                                                    {listReaction.map(ele => (
-                                                                                        <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                                                    {listReaction.map((ele, index) => (
+                                                                                        <span key={index} onClick={() => handleClickReaction(ele)}>{ele}</span>
                                                                                     ))}
                                                                                 </div>
                                                                             </div>
@@ -419,12 +412,12 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
 
                                             <div className={`reaction ${isMyMessage ? 'left' : 'right'} `}>
 
-                                                <div className='reaction-thumbnail' onClick={handleClickLike}>
-                                                    <LikeOutlined />
+                                                <div className='reaction-thumbnail' >
+                                                    <div onClick={handleClickLike}  ><LikeOutlined /></div>
 
                                                     <div className='list_icon-reaction'>
-                                                        {listReaction.map(ele => (
-                                                            <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                        {listReaction.map((ele, index) => (
+                                                            <span key={index} onClick={() => handleClickReaction(ele)}>{ele}</span>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -439,8 +432,8 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                         <div className='list-user-react-icon'>
                                                             <div>
                                                                 {
-                                                                    listReactionCurrent.map(ele => (
-                                                                        <span>{transferIcon(ele)}</span>
+                                                                    listReactionCurrent.map((ele, index) => (
+                                                                        <span key={index}>{transferIcon(ele)}</span>
 
                                                                     ))
                                                                 }
@@ -453,7 +446,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                                 {reacts && reacts.length > 0 &&
                                                                     reacts.map((ele, index) => (
                                                                         <>
-                                                                            {index < 5 && <span>{ele.user.name}</span>}
+                                                                            {index < 5 && <span key={index}>{ele.user.name}</span>}
                                                                         </>
                                                                     ))
 
@@ -473,8 +466,8 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                         {myReact ? transferIcon(myReact.type) : ''}
                                                     </span>
                                                     <div className='list_icon-reaction'>
-                                                        {listReaction.map(ele => (
-                                                            <span onClick={() => handleClickReaction(ele)}>{ele}</span>
+                                                        {listReaction.map((ele, index) => (
+                                                            <span key={index} onClick={() => handleClickReaction(ele)}>{ele}</span>
                                                         ))}
                                                     </div>
                                                 </div>

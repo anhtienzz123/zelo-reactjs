@@ -13,7 +13,8 @@ import {
     setRedoMessage,
     setReactionMessage,
     updateConversationWhenAddMember,
-    updateMemberLeaveGroup
+    updateMemberLeaveGroup,
+    setSocket
 } from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
@@ -21,10 +22,12 @@ import FooterChatContainer from './containers/FooterChatContainer';
 import HeaderChatContainer from './containers/HeaderChatContainer';
 import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
+import { socket, init } from 'utils/socketClient';
 import './style.scss';
 
+init();
 
-let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
+// let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
 
 Chat.propTypes = {};
 
@@ -42,18 +45,15 @@ function Chat(props) {
     const [hasModalMode, setHasModalMode] = useState('Tạo nhóm');
 
 
-    const checkIsExistConver = (idConver) => {
-        const index = conversations.findIndex(ele => ele._id === idConver);
-        return index > -1;
-    }
-
-
 
     useEffect(() => {
         dispatch(fetchListFriends({
             name: ''
         }));
     }, []);
+
+
+
 
 
     useEffect(() => {
@@ -87,7 +87,7 @@ function Chat(props) {
             const { type, content, manipulatedUsers } = newMessage;
 
 
-            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm' && checkIsExistConver(conversationId)) {
+            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
                 console.log('Chay new messsage');
                 dispatch(updateConversationWhenAddMember({
                     newMembers: manipulatedUsers,
@@ -107,6 +107,9 @@ function Chat(props) {
 
         });
 
+
+
+
         socket.on('create-conversation', (conversationId) => {
             dispatch(fetchConversationById({ conversationId }));
         });
@@ -125,6 +128,12 @@ function Chat(props) {
         socket.on('added-group', (conversationId) => {
             console.log('Chay added group', conversationId);
             dispatch(fetchConversationById({ conversationId }));
+        });
+
+        socket.on('add-reaction', (conversationId, messageId, user, type) => {
+            if (conversationId === refCurrentConversation.current) {
+                dispatch(setReactionMessage({ messageId, user, type }));
+            }
         });
 
 

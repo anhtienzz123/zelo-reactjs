@@ -39,7 +39,12 @@ const conversationApi = {
 
     leaveGroup: (conversationId) => {
         return axiosClient.delete(`${API_URL}/${conversationId}/members/leave`)
-    }
+    },
+
+    deleteMember: (conversationId, userId) => {
+        return axiosClient.delete(`${API_URL}/${conversationId}/members/${userId}`)
+    },
+
 };
 
 export default conversationApi;
