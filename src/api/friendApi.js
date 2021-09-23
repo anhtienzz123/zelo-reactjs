@@ -9,7 +9,7 @@ const friendApi = {
                 name
             }
         });
-    }
+    },
 }
 
 export default friendApi;

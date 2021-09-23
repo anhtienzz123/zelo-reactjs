@@ -45,7 +45,11 @@ const messageApi = {
 
     dropReaction: (idMessage, type) => {
         return axiosClient.post(`${API_URL}/${idMessage}/reacts/${type}`);
-    }
+    },
+
+
+
+
 
 
 };
