@@ -43,6 +43,13 @@ function Chat(props) {
     const [isScroll, setIsScroll] = useState(false);
     const [hasMessage, setHasMessage] = useState('');
     const [hasModalMode, setHasModalMode] = useState('Tạo nhóm');
+    const [usersTyping, setUsersTyping] = useState([]);
+
+
+    useEffect(() => {
+        console.log('User typing', usersTyping);
+    }, [usersTyping]);
+
 
 
 
@@ -51,9 +58,6 @@ function Chat(props) {
             name: ''
         }));
     }, []);
-
-
-
 
 
     useEffect(() => {
@@ -88,7 +92,7 @@ function Chat(props) {
 
 
             if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
-                console.log('Chay new messsage');
+
                 dispatch(updateConversationWhenAddMember({
                     newMembers: manipulatedUsers,
                     conversationId
@@ -126,7 +130,7 @@ function Chat(props) {
 
 
         socket.on('added-group', (conversationId) => {
-            console.log('Chay added group', conversationId);
+
             dispatch(fetchConversationById({ conversationId }));
         });
 
@@ -137,8 +141,32 @@ function Chat(props) {
         });
 
 
+        socket.on('typing', (conversationId, user) => {
+
+            if (conversationId === refCurrentConversation.current) {
+
+                const index = usersTyping.findIndex(ele => ele._id === user._id);//khoo
+
+                if (usersTyping.length === 0 || index < 0) {
+
+                    setUsersTyping([...usersTyping, user]);
+                }
+            }
+        })
+
+        socket.on('not-typing', (conversationId, user) => {
+            if (conversationId === refCurrentConversation.current) {
+                const index = usersTyping.findIndex(ele => ele._id === user._id);
+                const newUserTyping = usersTyping.filter(ele => ele._id !== user._id);
+                console.log('newUserTyping', newUserTyping);
+                setUsersTyping(newUserTyping);
+
+            }
+        })
 
     }, []);
+
+
 
 
     const handleDeleteMessage = (conversationId, id, refCurrentConversation) => {
@@ -230,6 +258,54 @@ function Chat(props) {
 
                                                     : <DownOutlined />}
                                             </div>
+
+
+
+                                            {usersTyping.length > 0 &&
+                                                <div className="typing-message">
+
+                                                    {usersTyping.map((ele, index) => (
+                                                        <span>
+                                                            {index < 3 &&
+                                                                <>
+                                                                    {index === usersTyping.length - 1 ? `${ele.name} ` : `${ele.name}, `}
+                                                                </>
+                                                            }
+                                                        </span>
+                                                    ))}
+
+                                                    {usersTyping.length > 3 ? `và ${usersTyping.length - 3} người khác` : ''}
+
+                                                    <span>&nbsp;đang nhập</span>
+
+
+                                                    {/* {usersTyping.map(ele => (
+                                                        ele))}
+                                                    <div>
+                                                        {usersTyping.map((ele, index) => (
+                                                            <>
+                                                                {
+                                                                    index < 3 &&
+                                                                    `${index === usersTyping.length - 1 ? ele.name : `${ele.name}, `}`
+
+                                                                }
+                                                            </>
+                                                        ))}
+
+                                                        {usersTyping.length > 3 && `và ${usersTyping.length - 3}`}
+
+
+                                                        đang nhập
+
+                                                    </div> */}
+                                                    <div className="dynamic-dot">
+                                                        <div className='dot'></div>
+                                                        <div className='dot'></div>
+                                                        <div className='dot'></div>
+                                                    </div>
+                                                </div>
+                                            }
+
 
 
                                         </div>

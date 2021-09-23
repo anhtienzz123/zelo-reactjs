@@ -10,6 +10,7 @@ import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { socket } from 'utils/socketClient';
 import './style.scss';
 FooterChatContainer.propTypes = {
     onScrollWhenSentText: PropTypes.func,
@@ -36,6 +37,7 @@ function FooterChatContainer({ onScrollWhenSentText }) {
     const { TextArea } = Input;
     const [valueText, setValueText] = useState('');
     const [isHightLight, setHightLight] = useState(false);
+    const { user } = useSelector(state => state.global);
 
 
 
@@ -82,6 +84,12 @@ function FooterChatContainer({ onScrollWhenSentText }) {
         const value = e.target.value;
         value.length > 0 ? setShowLike(false) : setShowLike(true);
         setValueText(value);
+        if (value.length > 0) {
+            socket.emit('typing', currentConversation, user);
+        } else {
+            socket.emit('not-typing', currentConversation, user);
+        }
+
     }
 
     const handleShowLike = (value) => {
@@ -107,12 +115,13 @@ function FooterChatContainer({ onScrollWhenSentText }) {
     }
 
     const handleOnFocus = (e) => {
-        setHightLight(true)
+        setHightLight(true);
     }
 
 
     const handleOnBlur = (e) => {
-        setHightLight(false)
+        setHightLight(false);
+        socket.emit('not-typing', currentConversation, user);
     }
 
     const handleSetValueEditor = (content) => {
