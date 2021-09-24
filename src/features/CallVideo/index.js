@@ -23,6 +23,8 @@ function CallVideo(props) {
     const pc = pcRef.current;
     const [myStream, setMyStream] = useState(null);
     const [userStreams, setUserStreams] = useState([]);
+    const [isVideo, setIsVideo] = useState(true);
+    const [isAudio, setIsAudio] = useState(true);
 
     // khởi tạo kết nối
     const init = async (createOffer, partnerName) => {
@@ -88,14 +90,13 @@ function CallVideo(props) {
 
         // lắng nghe sự kiện thằng khác làm gì
         pc[partnerName].onconnectionstatechange = (d) => {
+            console.log(
+                `status ${partnerName}: `,
+                pc[partnerName].iceConnectionState
+            );
             switch (pc[partnerName].iceConnectionState) {
                 case 'disconnected':
                 case 'failed':
-                    //h.closeVideo(partnerName);
-
-                    closeVideo(partnerName);
-                    break;
-
                 case 'closed':
                     closeVideo(partnerName);
                     break;
@@ -110,6 +111,21 @@ function CallVideo(props) {
                     break;
             }
         };
+    };
+
+    const broadcastNewTracks = (stream, type, mirrorMode = true) => {
+        let track =
+            type == 'audio'
+                ? stream.getAudioTracks()[0]
+                : stream.getVideoTracks()[0];
+
+        for (let p in pc) {
+            let pName = pc[p];
+
+            if (typeof pc[pName] == 'object') {
+                h.replaceTrack(track, pc[pName]);
+            }
+        }
     };
 
     const closeVideo = (userId) => {
@@ -183,11 +199,6 @@ function CallVideo(props) {
 
             h.getUserFullMedia()
                 .then(async (stream) => {
-                    // if (!document.getElementById('local').srcObject) {
-                    //     h.setLocalStream(stream);
-                    // }
-
-                    //save my stream
                     setMyStream(stream);
 
                     stream.getTracks().forEach((track) => {
@@ -211,23 +222,52 @@ function CallVideo(props) {
             await pc[data.sender].setRemoteDescription(
                 new RTCSessionDescription(data.description)
             );
+            setUserStreams([...userStreams]);
         }
     };
 
+    const handleToggleVideo = () => {
+        if (myStream.getVideoTracks()[0].enabled) {
+            myStream.getVideoTracks()[0].enabled = false;
+            setIsVideo(false);
+        } else {
+            myStream.getVideoTracks()[0].enabled = true;
+            setIsVideo(true);
+        }
+
+        broadcastNewTracks(myStream, 'video');
+        setIsVideo(isVideo);
+    };
+
+    const handleToggleAudio = () => {
+        if (myStream.getAudioTracks()[0].enabled) {
+            myStream.getAudioTracks()[0].enabled = false;
+        } else {
+            myStream.getAudioTracks()[0].enabled = true;
+        }
+
+        broadcastNewTracks(myStream, 'video');
+    };
+
+    console.log('isVideo: ', isVideo);
     return (
         <div id='call-video'>
-            <ActionNavbar />
+            <ActionNavbar
+                onToggleVideo={handleToggleVideo}
+                onToggleAudio={handleToggleAudio}
+            />
+
             <div className='local-video'>
                 {myStream && <MyVideo stream={myStream} />}
             </div>
 
-            {/* <Row className='user-videos'>
+            <Row className='user-videos'>
                 {userStreams.map((userStreamEle) => (
                     <Col span={6}>
                         <MyVideo stream={userStreamEle.stream} />
                     </Col>
                 ))}
-            </Row> */}
+            </Row>
         </div>
     );
 }
