@@ -14,7 +14,9 @@ import {
     setReactionMessage,
     updateConversationWhenAddMember,
     updateMemberLeaveGroup,
-    setSocket
+    fetchListClassify,
+    fetchListColor,
+
 } from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
@@ -52,12 +54,19 @@ function Chat(props) {
 
 
 
-
     useEffect(() => {
         dispatch(fetchListFriends({
             name: ''
         }));
     }, []);
+
+    useEffect(() => {
+        dispatch(fetchListClassify());
+    }, []);
+
+    useEffect(() => {
+        dispatch(fetchListColor());
+    }, [])
 
 
     useEffect(() => {

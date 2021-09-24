@@ -4,10 +4,30 @@ import conversationApi from 'api/conversationApi';
 import messageApi from 'api/messageApi';
 import dateUtils from 'utils/dateUtils';
 import friendApi from 'api/friendApi';
-import { StarFilled } from '@ant-design/icons';
+import ClassifyApi from 'api/ClassifyApi';
+
 
 
 const KEY = 'chat';
+
+
+// Classify
+
+export const fetchListColor = createAsyncThunk(
+    `${KEY}/fetchListColor`,
+    async (params, thunkApi) => {
+        const colors = await ClassifyApi.getColors();
+        return colors;
+    }
+)
+
+export const fetchListClassify = createAsyncThunk(
+    `${KEY}/fetchListClassify`,
+    async (params, thunkApi) => {
+        const classifies = await ClassifyApi.getClassifies();
+        return classifies;
+    }
+);
 
 export const fetchListConversations = createAsyncThunk(
     `${KEY}/fetchListConversations`,
@@ -130,6 +150,8 @@ const chatSlice = createSlice({
         currentPage: '',
         totalPages: '',
         toTalUnread: 0,
+        classifies: [],
+        colors: []
 
 
     },
@@ -228,7 +250,7 @@ const chatSlice = createSlice({
         setReactionMessage: (state, action) => {
             const { messageId, user, type } = action.payload;
 
-            console.log('duwx lieu truyen xuong', { messageId, user, type });
+
 
             const index = state.messages.findIndex((message) => message._id === messageId);
             const currentMessage = state.messages.find((message) => message._id === messageId);
@@ -390,6 +412,24 @@ const chatSlice = createSlice({
 
             state.memberInConversation = temp;
         },
+
+        // classify
+        [fetchListClassify.fulfilled]: (state, action) => {
+            state.classifies = action.payload;
+            state.isLoading = false;
+        },
+        [fetchListClassify.rejected]: (state, action) => {
+            state.classifies = action.payload;
+            state.isLoading = false;
+        },
+        [fetchListClassify.pending]: (state, action) => {
+            state.isLoading = true;
+        },
+
+        [fetchListColor.fulfilled]: (state, action) => {
+            state.colors = action.payload;
+        }
+
 
 
 

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
 import ConversationAvatar from '../ConversationAvatar';
 import { useSelector } from 'react-redux';
-
+import { TagTwoTone } from '@ant-design/icons';
+import './style.scss';
 ConversationSingle.propTypes = {
     conversation: PropTypes.object,
     onClick: PropTypes.func,
@@ -32,6 +33,10 @@ function ConversationSingle({ conversation, onClick }) {
                         <span className='name-box'>{name}</span>
 
                         <div className='lastest-message'>
+
+                            <span className='tag-classify'>
+                                <TagTwoTone twoToneColor="#db342e" />
+                            </span>
                             <span>
                                 {`${global.user.name === user.name ? 'Bạn' : user.name}:${content ? content : 'Tin nhắn đã thu hồi'}`}
                             </span>

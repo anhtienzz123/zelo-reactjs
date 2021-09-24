@@ -1,4 +1,4 @@
-import { DeleteFilled, ExclamationCircleOutlined } from '@ant-design/icons';
+import { DeleteFilled, ExclamationCircleOutlined, TagTwoTone } from '@ant-design/icons';
 import { Dropdown, Menu, Modal, message } from 'antd';
 import {
     fetchListConversations,
@@ -16,7 +16,8 @@ ConversationContainer.propTypes = {};
 
 function ConversationContainer(props) {
     const dispatch = useDispatch();
-    const { conversations } = useSelector((state) => state.chat);
+    const { conversations, classifies } = useSelector((state) => state.chat);
+    const { SubMenu } = Menu;
 
 
     const handleConversationClick = (conversationId) => {
@@ -32,6 +33,8 @@ function ConversationContainer(props) {
 
 
     const handleOnClickItem = (e, id) => {
+
+        console.log("click", e.key, id);
 
         if (e.key == 1) {
             confirm(id);
@@ -84,6 +87,18 @@ function ConversationContainer(props) {
                                     key={index}
                                     overlay={
                                         <Menu onClick={(e) => handleOnClickItem(e, conversationEle._id)}>
+
+
+                                            <SubMenu title="Phân loại">
+
+                                                {
+                                                    classifies.length > 0 &&
+                                                    classifies.map(ele => (
+                                                        <Menu.Item key={ele._id} icon={<TagTwoTone twoToneColor={ele.color.code} />}>{ele.name}</Menu.Item>
+                                                    ))
+                                                }
+
+                                            </SubMenu>
                                             <Menu.Item danger key="1" icon={<DeleteFilled />}>Xoá hội thoại</Menu.Item>
                                         </Menu>
                                     }

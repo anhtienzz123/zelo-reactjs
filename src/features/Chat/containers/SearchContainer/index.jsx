@@ -1,11 +1,12 @@
 import { AlignLeftOutlined, AppstoreAddOutlined, SearchOutlined, UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Input, Radio } from 'antd';
-import { options } from 'constants/searchOption';
 import { createGroup } from 'features/Chat/chatSlice';
+import ModalClassify from 'features/Chat/components/ModalClassify';
 import ModalCreateGroup from 'features/Chat/components/ModalCreateGroup';
 import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import './style.scss';
 SearchContainer.propTypes = {
 
@@ -15,7 +16,24 @@ function SearchContainer(props) {
     const [valueSearch, setValueSearch] = useState(0);
     const [isModalCreateGroupVisible, setIsModalCreateGroupVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const { classifies } = useSelector(state => state.chat);
+    const [isShowModalClasify, setIsShowModalClasify] = useState(false);
     const dispatch = useDispatch();
+
+    // -----  handle modal classify
+
+    const handleCreateClasify = () => {
+        setIsShowModalClasify(true);
+    }
+
+    const handleCancelClassifyModal = () => {
+        setIsShowModalClasify(false);
+    }
+
+    const handleOpenModalClassify = () => {
+        setIsShowModalClasify(true)
+    }
+    // ------ 
 
 
 
@@ -71,7 +89,7 @@ function SearchContainer(props) {
                             <AlignLeftOutlined /> &nbsp;
                             <span>Phân loại</span>
                         </div>
-                        <div className='add-classify'>
+                        <div className='add-classify' onClick={handleCreateClasify}>
                             <AppstoreAddOutlined />
                         </div>
 
@@ -85,7 +103,14 @@ function SearchContainer(props) {
                             style={{ height: '42px', width: '100%' }}
                         >
 
-                            <Radio.Group options={options} onChange={handleOnChange} value={valueSearch} />
+                            <Radio.Group onChange={handleOnChange} value={valueSearch} size='small' >
+                                <Radio value={0}>Tất cả</Radio>
+                                {classifies.map(ele => (
+                                    <Radio value={ele._id}>{ele.name}</Radio>
+                                ))}
+
+
+                            </Radio.Group>
 
 
 
@@ -96,12 +121,27 @@ function SearchContainer(props) {
             </div>
 
 
+
+
+
+
             <ModalCreateGroup
                 isVisible={isModalCreateGroupVisible}
                 onCancel={handleCancelModalCreatGroup}
                 onOk={handleOklModalCreatGroup}
                 loading={confirmLoading}
             />
+
+
+            <ModalClassify
+                isVisible={isShowModalClasify}
+                onCancel={handleCancelClassifyModal}
+                onOpen={handleOpenModalClassify}
+            />
+
+
+
+
         </div>
     );
 }
