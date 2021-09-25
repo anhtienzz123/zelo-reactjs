@@ -1,5 +1,5 @@
 import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
-import { Col, Row } from 'antd';
+import { Col, Row, message } from 'antd';
 import Slider from 'components/Slider';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +16,8 @@ import {
     updateMemberLeaveGroup,
     fetchListClassify,
     fetchListColor,
+    isDeletedFromGroup,
+    setCurrentConversation,
 
 } from './chatSlice';
 import BodyChatContainer from './containers/BodyChatContainer';
@@ -52,8 +54,6 @@ function Chat(props) {
         console.log('User typing', usersTyping);
     }, [usersTyping]);
 
-
-
     useEffect(() => {
         dispatch(fetchListFriends({
             name: ''
@@ -86,10 +86,15 @@ function Chat(props) {
     }, [conversations]);
 
     const refCurrentConversation = useRef();
+    const refConversations = useRef();
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;
     }, [currentConversation]);
+
+    useEffect(() => {
+        refConversations.current = conversations;
+    }, [conversations]);
 
 
     useEffect(() => {
@@ -171,6 +176,17 @@ function Chat(props) {
                 setUsersTyping(newUserTyping);
 
             }
+        })
+
+        socket.on('deleted-group', (conversationId) => {
+            const conversation = refConversations.current.find(ele => ele._id === conversationId);
+            message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`);
+            if (conversationId === refCurrentConversation.current) {
+                dispatch(setCurrentConversation(''))
+            }
+            dispatch(isDeletedFromGroup(conversationId));
+            socket.emit('leave-conversation', conversationId);
+
         })
 
     }, []);

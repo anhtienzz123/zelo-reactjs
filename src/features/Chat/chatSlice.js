@@ -331,6 +331,14 @@ const chatSlice = createSlice({
             state.currentConversation = '';
 
         },
+        isDeletedFromGroup: (state, action) => {
+            const idConver = action.payload;
+            const newConver = state.conversations.filter(ele => ele._id !== idConver);
+            state.conversations = newConver;
+        },
+        setCurrentConversation: (state, action) => {
+            state.currentConversation = action.payload;
+        }
 
 
 
@@ -450,6 +458,8 @@ export const { addMessage,
     updateConversationWhenAddMember,
     leaveGroup,
     updateMemberLeaveGroup,
+    isDeletedFromGroup,
+    setCurrentConversation,
 } = actions;
 
 export default reducer;
