@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal, message, Popover } from 'antd';
 import './style.scss';
-import { DeleteOutlined, EditOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined, TagTwoTone } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined, TagTwoTone } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input } from 'antd';
 import Text from 'antd/lib/typography/Text';
@@ -22,9 +22,10 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
     const [isShowModalAdd, setIsShowModalAdd] = useState(false);
     const [nameTag, setNameTag] = useState('');
     const [color, setColor] = useState({});
-    const [isVisblePopup, setIsVisblePopup] = useState(false);
     const [isShowError, setIsShowError] = useState(false);
+    const [isModalEdit, setIsModalEdit] = useState(false);
     const dispatch = useDispatch();
+    const previousName = useRef();
 
     useEffect(() => {
         if (colors.length > 0) {
@@ -46,6 +47,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
     const handleShowModalAdd = () => {
         setIsShowModalAdd(true);
+        setNameTag('');
         if (onCancel) {
             onCancel();
         }
@@ -73,18 +75,32 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
     const handleClickColor = (color) => {
         setColor(color);
-        setIsVisblePopup(false);
+
     }
 
     const handleCreateClassify = async () => {
-        try {
-            await ClassifyApi.addClassify(nameTag, color._id);
-            message.success('Thêm thành công');
-            setIsShowModalAdd(false);
-            dispatch(fetchListClassify());
+        if (isModalEdit) {
+            try {
+                await ClassifyApi.updateClassify(previousName.current._id, nameTag, color._id);
+                message.success('Cập nhật thành công');
+                setIsShowModalAdd(false);
+                dispatch(fetchListClassify());
+                if (onOpen) {
+                    onOpen();
+                }
+            } catch (error) {
+                message.error('Cập nhật thất bại');
+            }
+        } else {
+            try {
+                await ClassifyApi.addClassify(nameTag, color._id);
+                message.success('Thêm thành công');
+                setIsShowModalAdd(false);
+                dispatch(fetchListClassify());
 
-        } catch (error) {
-            message.error('Thêm thất bại');
+            } catch (error) {
+                message.error('Thêm thất bại');
+            }
         }
 
     }
@@ -106,6 +122,40 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
         </div>
     );
+
+    const handleEditClasify = (value) => {
+        setIsModalEdit(true);
+        setIsShowModalAdd(true);
+        if (onCancel) {
+            onCancel();
+        }
+        setNameTag(value.name);
+        setColor(value.color)
+        previousName.current = value;
+    }
+
+    const handleDeleteClasify = async (value) => {
+        try {
+            await ClassifyApi.deleteClassify(value._id);
+            message.success('Xóa thành công');
+            dispatch(fetchListClassify());
+        } catch (error) {
+            message.error('Xóa thất bại');
+        }
+    }
+
+    function confirm(value) {
+        Modal.confirm({
+            title: 'Cảnh báo',
+            icon: <ExclamationCircleOutlined />,
+            content: `Bạn có thực sự muốn xóa ? `,
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk: () => {
+                handleDeleteClasify(value)
+            }
+        });
+    }
 
 
     return (
@@ -137,11 +187,11 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                                     </div>
 
                                     <div className="modal-classify-item--right">
-                                        <div className="classify-item-edit icon-classify">
+                                        <div className="classify-item-edit icon-classify" onClick={() => handleEditClasify(ele)}>
                                             <EditOutlined />
                                         </div>
 
-                                        <div className="classify-item-remove icon-classify">
+                                        <div className="classify-item-remove icon-classify" onClick={() => confirm(ele)}>
                                             <DeleteOutlined />
                                         </div>
                                     </div>
@@ -172,14 +222,14 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                         <div className="modal-add_header--icon" onClick={handleBackModal}>
                             <LeftOutlined />
                         </div>
-                        <span>Thêm thẻ phân loại</span>
+                        <span>{isModalEdit ? 'Chi Tiết thẻ phân loại' : 'Thêm thẻ phân loại'}</span>
                     </div>
                 }
                 visible={isShowModalAdd}
                 onOk={handleCreateClassify}
                 onCancel={handleCancelModalAdd}
-                okButtonProps={{ disabled: (nameTag.trim().length > 0 ? false : true) || isShowError }}
-                okText='Thêm phân loại'
+                okButtonProps={{ disabled: (nameTag.trim().length > 0 ? false : true) || isShowError || previousName.current.name === nameTag }}
+                okText={isModalEdit ? 'Cập nhật' : 'Thêm phân loại'}
                 cancelText='Hủy'
             >
                 <div className="modal-add-classify_wrapper">
@@ -199,7 +249,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                                     <Popover
                                         content={content}
                                         trigger="click"
-                                        visible={isVisblePopup}
+
                                     >
                                         <Button
                                             onClick={() => setIsVisblePopup(true)}

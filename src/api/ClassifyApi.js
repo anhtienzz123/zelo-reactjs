@@ -28,6 +28,13 @@ const classifiesApi = {
     removeClassifyFromConversation: (idClassify, idConversation) => {
         return axiosClient.delete(`${API_URL}/${idClassify}/conversations/${idConversation}`);
 
+    },
+
+    updateClassify: (classifyId, name, colorId) => {
+        return axiosClient.put(`${API_URL}/${classifyId}`, {
+            name,
+            colorId,
+        });
     }
 
 
