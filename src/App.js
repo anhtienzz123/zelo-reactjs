@@ -1,6 +1,7 @@
 import NotFoundPage from 'components/NotFoundPage';
 import ProtectedRoute from 'components/ProtectedRoute';
 import Account from 'features/Account';
+import CallVideo from 'features/CallVideo';
 import Home from 'features/Home';
 import AdminLayout from 'layout/AdminLayout';
 import ChatLayout from 'layout/ChatLayout';
@@ -15,7 +16,10 @@ function App() {
                     <Route exact path='/' component={Home} />
 
                     <ProtectedRoute path='/chat' component={ChatLayout} />
-
+                    <ProtectedRoute
+                        path='/call-video/:conversationId'
+                        component={CallVideo}
+                    />
                     <ProtectedRoute
                         exact
                         path='/admin'
