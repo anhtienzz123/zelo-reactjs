@@ -35,6 +35,10 @@ const dateUtils = {
 
         return 'Vài giây';
     },
+
+    transferDateString: (day, month, year) => {
+        return `0${day}`.slice(-2) + '/' + `0${month}`.slice(-2) + '/' + `${year}`;
+    }
 };
 
 module.exports = dateUtils;

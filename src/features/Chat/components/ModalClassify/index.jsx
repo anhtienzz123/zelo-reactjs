@@ -26,6 +26,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
     const [isModalEdit, setIsModalEdit] = useState(false);
     const dispatch = useDispatch();
     const previousName = useRef();
+    // const [isVisiblePopup, setIsVisblePopup] = useState(false);
 
     useEffect(() => {
         if (colors.length > 0) {
@@ -110,8 +111,9 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
             <span>Thay đổi màu thẻ</span>
             <div className="list-color">
                 {colors.length > 0 &&
-                    colors.map(ele => (
+                    colors.map((ele, index) => (
                         <div
+                            key={index}
                             onClick={() => handleClickColor(ele)}
                             className="popup-color-item"
                             style={{ background: ele.code }}
@@ -174,8 +176,8 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                     <div className="modal-classify_list-classify">
 
                         {
-                            classifies.map(ele => (
-                                <div className="modal-classify-item">
+                            classifies.map((ele, index) => (
+                                <div className="modal-classify-item" key={index}>
                                     <div className="modal-classify-item--left">
                                         <div className="classify-item-tag">
                                             <TagTwoTone twoToneColor={ele.color.code} />
@@ -228,7 +230,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                 visible={isShowModalAdd}
                 onOk={handleCreateClassify}
                 onCancel={handleCancelModalAdd}
-                okButtonProps={{ disabled: (nameTag.trim().length > 0 ? false : true) || isShowError || previousName.current.name === nameTag }}
+                okButtonProps={{ disabled: (nameTag.trim().length > 0 ? false : true) || isShowError || previousName.current?.name === nameTag }}
                 okText={isModalEdit ? 'Cập nhật' : 'Thêm phân loại'}
                 cancelText='Hủy'
             >
@@ -252,7 +254,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
                                     >
                                         <Button
-                                            onClick={() => setIsVisblePopup(true)}
+                                            // onClick={() => setIsVisblePopup(true)}
                                             type="text"
                                             icon={<TagTwoTone twoToneColor={color.code} />}
                                         />

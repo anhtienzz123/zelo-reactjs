@@ -39,9 +39,11 @@ function NavbarContainer(props) {
     };
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setVisible(false);
     };
+
+
+
 
 
 
@@ -138,7 +140,6 @@ function NavbarContainer(props) {
 
                                 <Badge count={5}>
                                     <ContactsOutlined />
-
                                 </Badge>
 
                             </div>

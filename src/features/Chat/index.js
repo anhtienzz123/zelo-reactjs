@@ -19,7 +19,10 @@ import {
     isDeletedFromGroup,
     setCurrentConversation,
 
+
 } from './chatSlice';
+
+
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
 import FooterChatContainer from './containers/FooterChatContainer';
@@ -46,7 +49,6 @@ function Chat(props) {
     const [isShow, setIsShow] = useState(false);
     const [isScroll, setIsScroll] = useState(false);
     const [hasMessage, setHasMessage] = useState('');
-    const [hasModalMode, setHasModalMode] = useState('Tạo nhóm');
     const [usersTyping, setUsersTyping] = useState([]);
 
 
@@ -66,7 +68,11 @@ function Chat(props) {
 
     useEffect(() => {
         dispatch(fetchListColor());
-    }, [])
+    }, []);
+
+
+
+    // fetchListRequestFriend
 
 
     useEffect(() => {
@@ -234,9 +240,7 @@ function Chat(props) {
                 <Col span={5}>
                     <div className='main-conversation'>
                         <div className='main-conversation_search-bar'>
-                            <SearchContainer
-                                modalMode={hasModalMode}
-                            />
+                            <SearchContainer />
                         </div>
 
                         <div className='divider-layout'>
@@ -303,26 +307,6 @@ function Chat(props) {
 
                                                     <span>&nbsp;đang nhập</span>
 
-
-                                                    {/* {usersTyping.map(ele => (
-                                                        ele))}
-                                                    <div>
-                                                        {usersTyping.map((ele, index) => (
-                                                            <>
-                                                                {
-                                                                    index < 3 &&
-                                                                    `${index === usersTyping.length - 1 ? ele.name : `${ele.name}, `}`
-
-                                                                }
-                                                            </>
-                                                        ))}
-
-                                                        {usersTyping.length > 3 && `và ${usersTyping.length - 3}`}
-
-
-                                                        đang nhập
-
-                                                    </div> */}
                                                     <div className="dynamic-dot">
                                                         <div className='dot'></div>
                                                         <div className='dot'></div>
