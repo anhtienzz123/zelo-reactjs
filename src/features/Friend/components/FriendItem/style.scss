@@ -1,0 +1,33 @@
+@import "../../../../scss//variables";
+
+#friend-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.4rem;
+    height: 68px;
+    transition: all 0.4s;
+    cursor: pointer;
+    .friend-item {
+        &_left {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        &_right {
+            // transition: visibility 0.2s;
+            visibility: hidden;
+        }
+    }
+}
+
+#friend-item:hover {
+    background: $grey-500;
+}
+
+#friend-item:hover .friend-item_right {
+    transition: visibility 0.4s;
+    visibility: visible;
+}

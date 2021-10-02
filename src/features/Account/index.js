@@ -29,6 +29,7 @@ function Account(props) {
                 <Route path={`${url}/forgot`} component={ForgotPage} />
                 <Route path={`${url}/otp`} component={ConfirmOTPPage} />
                 <Route path={`${url}/confirm`} component={ConfirmAccountPage} />
+
                 <Route component={NotFoundPage} />
             </Switch>
         </Spin>

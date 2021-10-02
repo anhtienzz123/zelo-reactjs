@@ -1,0 +1,80 @@
+@import "../../scss/variables";
+#main-friend_wrapper {
+    .divider-layout {
+        height: 2vh;
+        padding: 0 1rem;
+        display: flex;
+        align-items: flex-end;
+
+        // background-color: red;
+        > div {
+            height: 0.1px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+    .main-friend_sidebar {
+        border-right: 0.05px solid rgba(0, 0, 0, 0.2);
+        &_search-bar {
+            height: 18vh;
+        }
+
+        &_bottom {
+            height: 80vh;
+
+            .main-friend_sidebar_option {
+                cursor: pointer;
+                padding: 0 1.4rem;
+                height: 72px;
+                transition: 0.2s;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                &_img img {
+                    width: 52px;
+                    height: 52px;
+                }
+                &_text {
+                    font-size: 18px;
+                    font-weight: 400;
+                    margin-left: 1rem;
+                }
+            }
+
+            .main-friend_sidebar_list-friend {
+                &_title {
+                    padding: 0 1.4rem;
+                    height: 4vh;
+                    display: flex;
+                    align-items: center;
+                }
+                height: calc(80vh - 2vh - 4vh - 72px - 72px);
+            }
+            .main-friend_sidebar_option:hover {
+                background: $grey-500;
+            }
+        }
+    }
+
+    .main-friend_body {
+        background: $ghost-white;
+        &__section {
+        }
+        &__filter {
+            height: 50px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5rem;
+        }
+        &__filter--left,
+        &__filter--right {
+            cursor: pointer;
+        }
+
+        &_item {
+            height: calc(100vh - 68px - 50px);
+        }
+    }
+}

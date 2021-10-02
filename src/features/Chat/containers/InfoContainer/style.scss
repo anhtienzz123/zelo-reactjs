@@ -1,0 +1,17 @@
+@import "../../../../scss/variables";
+#main-info {
+    background: $grey-400;
+    height: 100%;
+
+    .body-info {
+        > div ~ div {
+            margin-top: 0.6rem;
+        }
+    }
+    // > div:nth-child(n + 3) {
+    //     margin-top: 0.6rem;
+    // }
+    // .info_member-wrapper {
+    //     margin: 0.2rem 0;
+    // }
+}

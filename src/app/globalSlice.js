@@ -7,7 +7,7 @@ export const fetchUserProfile = createAsyncThunk(
     `${KEY}/fetchUser`,
     async (params, thunkApi) => {
         const user = await meApi.fetchProfile();
-
+        console.log('User', user);
         return user;
     }
 );

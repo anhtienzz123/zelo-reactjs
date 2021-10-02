@@ -4,6 +4,7 @@ import NotFoundPage from 'components/NotFoundPage';
 import ProtectedRoute from 'components/ProtectedRoute';
 import Account from 'features/Account';
 import Admin from 'features/Admin';
+import CallVideo from 'features/CallVideo';
 import Home from 'features/Home';
 import ChatLayout from 'layout/ChatLayout';
 import { useEffect, useState } from 'react';
@@ -35,9 +36,14 @@ function App() {
                 <Switch>
                     <Route exact path='/' component={Home} />
 
+
                     <ProtectedRoute path='/chat' component={ChatLayout} />
 
                     <AdminProtectedRoute path='/admin' component={Admin} />
+                    <ProtectedRoute
+                        path='/call-video/:conversationId'
+                        component={CallVideo}
+                    />
 
                     <Route path='/account' component={Account} />
 

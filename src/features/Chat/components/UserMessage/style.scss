@@ -1,0 +1,418 @@
+@import "../../../../scss/variables";
+
+.bg-white {
+    background: #fff;
+}
+
+.user-name-strong {
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.user-name-strong .blue {
+    color: $blue-zelo;
+}
+
+.user-name-strong .blue:hover {
+    text-decoration: underline;
+}
+
+//  tin nhắn thông báo
+
+.notify-message-wrapper {
+    display: flex;
+    justify-content: center;
+    .notify-message-content {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
+
+        word-wrap: break-word;
+        max-width: 90%;
+        padding: 7px 14px;
+        font-size: 13px;
+
+        margin: 1rem 0;
+        background: #fff;
+        border-radius: 10px;
+
+        &_group-avatar {
+            display: flex;
+            flex-direction: row;
+        }
+
+        &_per-avatar:nth-child(n + 2) {
+            margin-left: -8px;
+        }
+
+        &-title {
+            margin-left: 1rem;
+        }
+    }
+}
+
+// Tin nhắn bình thường
+#user-message {
+    padding: 0 2rem;
+}
+
+#user-message.top {
+    margin-top: 4rem;
+}
+
+#user-message.bottom {
+    margin-bottom: 4rem;
+}
+#user-message {
+    transition: visibility 0.4s;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.4s;
+    .interact-conversation {
+        display: flex;
+        flex-direction: row;
+        .avatar-user.hidden {
+            visibility: hidden;
+        }
+    }
+
+    .reverse {
+        flex-direction: row-reverse !important;
+    }
+
+    .list-conversation {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 40px);
+
+        .message {
+            .sub-message.same-user {
+                margin-top: 0;
+            }
+            .sub-message {
+                display: flex;
+                flex-direction: row;
+                margin: 1rem;
+                align-items: center;
+                position: relative;
+
+                .content-message.content-media {
+                    padding: 0;
+                    background: none;
+                    box-shadow: none;
+
+                    .messsage-image-wrapper {
+                        .ant-image-mask {
+                            border-radius: 8px;
+                        }
+                    }
+                }
+                .content-message.my-message-bg {
+                    background: $blue-700;
+                }
+                .content-message {
+                    background: $white-color;
+                    padding: 1.4rem 1.4rem;
+                    display: flex;
+                    flex-direction: column;
+
+                    border-radius: 0.8rem;
+                    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.18);
+                    position: relative;
+                    white-space: pre;
+                    max-width: 75%;
+
+                    &-description {
+                        // word-break: break-all;
+                        // word-spacing: break;
+
+                        .undo-message {
+                            color: $silver;
+                        }
+
+                        white-space: normal;
+                        word-break: break-word;
+                        .messsage-image-wrapper,
+                        .message-video-wrapper {
+                            position: relative;
+                        }
+                    }
+
+                    .reacted-block.media {
+                        position: absolute;
+                        bottom: 0;
+                        transform: translateY(-50%);
+
+                        .list-user-react,
+                        .your-react {
+                            background: #fff;
+                        }
+                        // display: none;
+                    }
+
+                    .reacted-block.right {
+                        right: 1.4rem;
+                    }
+                    .reacted-block.left {
+                        left: 1.4rem;
+                    }
+
+                    &-description {
+                        word-break: break-all;
+                    }
+
+                    .reacted-block {
+                        margin-top: 1rem;
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
+
+                        .list-user-react-icon {
+                            > div {
+                                display: flex;
+                                align-items: center;
+                            }
+                            position: relative;
+
+                            .list-user-detail {
+                                position: absolute;
+                                background: $blue-1f4;
+                                color: $white-color;
+                                top: 0;
+
+                                left: 0;
+                                transform: translateY(-115%);
+                                font-size: 13px;
+                                display: none;
+
+                                flex-direction: column;
+                                padding: 0.4rem 1rem;
+                                border-radius: 4px;
+                                white-space: nowrap;
+                                transition: 0.2s;
+                            }
+
+                            .list-user-detail::before {
+                                position: absolute;
+                                content: "";
+                                height: 10px;
+                                width: 10px;
+
+                                background: $blue-1f4;
+                                bottom: -4px;
+                                left: 50%;
+                                transform: translateX(-50%);
+
+                                transform: rotate(45deg);
+                            }
+                        }
+
+                        .list-user-react {
+                            padding: 0.4rem 0.8rem;
+                            border: 0.05rem solid $grey-300;
+                            border-radius: 14px;
+                        }
+
+                        .your-react {
+                            margin-left: 0.6rem;
+                            padding: 0.3rem;
+                            border-radius: 50%;
+                            border: 0.05rem solid $grey-300;
+                            position: relative;
+
+                            .list_icon-reaction {
+                                position: absolute;
+                                top: -140%;
+                                left: 14px;
+                                transform: translateX(-50%);
+
+                                border: 1px solid black;
+                                padding: 0.6rem 0.5rem;
+                                display: none;
+
+                                border-radius: 5px;
+                                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                                background: $white-color;
+                                border: 0.05rem solid $grey-300;
+                                z-index: 1000;
+
+                                span {
+                                    font-size: 16px;
+                                    transition: 0.2s;
+                                    margin: 0 0.4rem;
+                                }
+
+                                span:hover {
+                                    transform: scale(1.5);
+                                }
+                            }
+
+                            .list_icon-reaction::after {
+                                content: "";
+                                width: 100%;
+                                height: 20px;
+                                bottom: -25%;
+
+                                left: 0;
+                                position: absolute;
+                            }
+                        }
+
+                        .list-user-react:hover .list-user-detail {
+                            display: flex;
+                        }
+                    }
+
+                    .reaction.media {
+                        position: absolute;
+                    }
+
+                    .reaction {
+                        font-size: 14px;
+                        padding: 2.2px 6px;
+                        text-align: center;
+
+                        background: $white-color;
+                        cursor: pointer;
+                        border: 0.05rem solid $grey-300;
+                        position: absolute;
+                        border-radius: 50%;
+                        display: inline;
+
+                        // right: 10%;
+                        bottom: 0;
+                        transform: translateY(50%);
+                        visibility: hidden;
+                        z-index: 100;
+                    }
+
+                    .reaction.right {
+                        right: 1.4rem;
+                    }
+                    .reaction.left {
+                        left: 1.4rem;
+
+                    }
+
+                    .list_icon-reaction::after {
+                        content: "";
+                        width: 100%;
+                        height: 20px;
+                        bottom: -30%;
+
+                        left: 0;
+                        position: absolute;
+                        // background: red;
+                    }
+
+                    .list_icon-reaction {
+                        position: absolute;
+                        top: -150%;
+                        left: 14px;
+                        transform: translateX(-50%);
+
+                        border: 1px solid black;
+                        padding: 0.6rem 1rem;
+                        display: none;
+
+                        border-radius: 5px;
+                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                        background: $white-color;
+                        border: 0.05rem solid $grey-300;
+
+                        span {
+                            font-size: 16px;
+                            transition: 0.2s;
+                            margin: 0 0.4rem;
+                        }
+
+                        span:hover {
+                            transform: scale(1.5);
+                        }
+                    }
+
+                    .reaction.reaction-reverse {
+                        right: initial;
+                        left: 10%;
+                    }
+
+                    .author-message {
+                        font-size: 1.3rem;
+                        color: $normal-text;
+                        padding-bottom: 0.4rem;
+                    }
+
+                    .time-send {
+                        font-size: 1.3rem;
+                        color: $thumbnail-text;
+                        padding-top: 0.4rem;
+                    }
+                }
+            }
+        }
+
+        .interaction {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: $ghost-white;
+
+            margin-left: 1rem;
+            margin-right: 1rem;
+            justify-content: center;
+            max-width: 25%;
+
+            border-radius: 6px;
+            visibility: hidden;
+            box-shadow: 0 0.5px 0 0 rgba(0, 0, 0, 0.18);
+
+            .ant-btn:hover,
+            .ant-btn:focus {
+                color: $blue-light !important;
+            }
+        }
+        .interaction.hidden {
+            display: none;
+        }
+
+        .icon-interact {
+            margin-left: 1rem;
+            color: $normal-text;
+            font-size: 1.7rem;
+            padding: 0 0.4rem;
+
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-interact:hover {
+            color: $blue-light;
+        }
+
+        .message .sub-message:hover .interaction,
+        .message .sub-message:hover .reaction,
+        .message .sub-message:hover .reaction-reverse {
+            visibility: visible;
+        }
+
+        .message .sub-message .reaction-reverse:hover + .list_icon-reaction,
+        .message .sub-message .content-message .reaction .reaction-thumbnail:hover .list_icon-reaction {
+            display: flex;
+        }
+
+        .message .sub-message .content-message .reacted-block .your-react:hover .list_icon-reaction {
+            display: flex;
+        }
+
+        // .message .sub-message .content-message .reaction-thumbnail:hover .interaction {
+        //     visibility: hidden;
+        // }
+    }
+
+    .last-message {
+        padding-bottom: 3rem;
+    }
+}
