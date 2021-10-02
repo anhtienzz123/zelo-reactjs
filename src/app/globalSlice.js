@@ -17,7 +17,7 @@ const globalSlice = createSlice({
     initialState: {
         isLoading: false,
         isLogin: false,
-        user: {},
+        user: null,
     },
 
     reducers: {
