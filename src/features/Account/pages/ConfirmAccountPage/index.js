@@ -175,7 +175,7 @@ function ConfirmAccountPage(props) {
 
                                         <Col offset={8}>
                                             <Button
-                                                //onClick={handleConfirmAccount}
+                                                onClick={handleConfirmAccount}
                                                 type='primary'
                                                 htmlType='submit'>
                                                 Xác nhận

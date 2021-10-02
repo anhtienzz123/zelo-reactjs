@@ -19,8 +19,9 @@ import { setLoading } from 'features/Account/accountSlice';
 
 import { FastField, Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams, Link, Redirect } from 'react-router-dom';
+import { useDispatch, useSelector, } from 'react-redux';
+import { useParams, Link, Redirect,useRouteMatch } from 'react-router-dom';
+import { useHistory } from 'react-router';
 import './style.scss';
 import { otpValues } from 'features/Account/initValues';
 import loginApi from 'api/loginApi';
@@ -34,6 +35,7 @@ function ConfirmOTPPage(props) {
     const account = useState(''); //lấy otp
     const user = props.location.state.values; //lấy username,password
     const [isError, setError] = useState('');
+    const history = useHistory();
 
     const success = () => {
         message.success('Đổi mật khẩu thành công', 10);
@@ -110,7 +112,7 @@ function ConfirmOTPPage(props) {
                 account.otpValue,
                 user.password
             );
-
+            history.pushState('./login');
             console.log('is respone', response.data.message);
             success();
             console.log('kích hoạt thành công');
