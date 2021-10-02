@@ -17,7 +17,7 @@ const globalSlice = createSlice({
     initialState: {
         isLoading: false,
         isLogin: false,
-        user: {},
+        user: null,
     },
 
     reducers: {
@@ -26,12 +26,6 @@ const globalSlice = createSlice({
         },
         setLogin: (state, action) => {
             state.isLogin = action.payload;
-        },
-        setRegistry:(state,action)=>{
-            state.isRegistry = action.payload;
-        },
-        setForgot:(state,action)=>{
-            state.isForgot = action.payload;
         },
     },
 
@@ -55,5 +49,5 @@ const globalSlice = createSlice({
 });
 
 const { reducer, actions } = globalSlice;
-export const { setLoading, setLogin,setRegistry,setForgot } = actions;
+export const { setLoading, setLogin } = actions;
 export default reducer;

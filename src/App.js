@@ -1,28 +1,45 @@
+import { fetchUserProfile } from 'app/globalSlice';
+import AdminProtectedRoute from 'components/AdminProtectedRoute';
 import NotFoundPage from 'components/NotFoundPage';
 import ProtectedRoute from 'components/ProtectedRoute';
 import Account from 'features/Account';
+import Admin from 'features/Admin';
 import Home from 'features/Home';
-import AdminLayout from 'layout/AdminLayout';
 import ChatLayout from 'layout/ChatLayout';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './scss/App.scss';
 
 function App() {
+    const dispatch = useDispatch();
+    const [isFetch, setIsFetch] = useState(false);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const token = localStorage.getItem('token');
+
+            if (token) await dispatch(fetchUserProfile());
+
+            setIsFetch(true);
+        };
+
+        fetchProfile();
+    }, []);
+
+    if (!isFetch) return '';
+
     return (
         <BrowserRouter>
-            <div className="App">
+            <div className='App'>
                 <Switch>
-                    <Route exact path="/" component={Home} />
+                    <Route exact path='/' component={Home} />
 
-                    <Route path="/chat" component={ChatLayout} />
+                    <ProtectedRoute path='/chat' component={ChatLayout} />
 
-                    <ProtectedRoute
-                        exact
-                        path="/admin"
-                        component={AdminLayout}
-                    />
+                    <AdminProtectedRoute path='/admin' component={Admin} />
 
-                    <Route path="/account" component={Account} />
+                    <Route path='/account' component={Account} />
 
                     <Route component={NotFoundPage} />
                 </Switch>
