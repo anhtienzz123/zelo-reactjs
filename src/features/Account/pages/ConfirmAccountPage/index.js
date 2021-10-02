@@ -31,6 +31,7 @@ const { Text, Title } = Typography;
 function ConfirmAccountPage(props) {
     const dispatch = useDispatch();
     const account = props.location.state.values;
+    const otp = useState(''); //lấy otp
     const { isLogin } = useSelector((state) => state.global);
     const [isError, setError] = useState('');
 
@@ -86,21 +87,22 @@ function ConfirmAccountPage(props) {
         dispatch(setLoading(false));
     }, []);
 
-    const handleLogin = async () => {
-        const { username, password } = account;
-        try {
-            dispatch(setLoading(true));
-            const { token } = await loginApi.login(username, password);
-            localStorage.setItem('token', token);
-            dispatch(setLogin(true));
-        } catch (error) {
-            setError('fail login');
-        }
+    // const handleLogin = async () => {
+    //     const { username, password } = account;
+    //     try {
+    //         dispatch(setLoading(true));
+    //         const { token } = await loginApi.login(username, password);
+    //         localStorage.setItem('token', token);
+    //         dispatch(setLogin(true));
+    //     } catch (error) {
+    //         setError('fail login');
+    //     }
 
-        dispatch(setLoading(false));
-    };
+    //     dispatch(setLoading(false));
+    // };
 
     const handleConfirmAccount = async (account) => {
+        console.log('is user',account);
         try {
             dispatch(setLoading(true));
             console.log(account);
@@ -108,12 +110,12 @@ function ConfirmAccountPage(props) {
                 account.username,
                 account.otpValue
             );
-            console.log('response: ', response);
             console.log('kích hoạt thành công');
             success();
-            handleLogin();
             dispatch(setLoading(true));
         } catch (error) {
+            console.log('is user',account);
+            console.log('is otp',account.otpValue);
             message.error('Kích hoạt thất bại', 10);
             setError('OTP không hợp lệ hoặc hết hạn');
         }
@@ -130,7 +132,7 @@ function ConfirmAccountPage(props) {
                 <Divider />
                 <Formik
                     initialValues={{ ...forgotValues.initial }}
-                    onSubmit={(account) => handleConfirmAccount(account)}
+                  //  onSubmit={(account) => handleConfirmAccount(account)}
                     validationSchema={forgotValues.validationSchema}
                     enableReinitialize={true}>
                     {(formikProps) => {
@@ -175,9 +177,9 @@ function ConfirmAccountPage(props) {
 
                                         <Col offset={8}>
                                             <Button
-                                                onClick={handleConfirmAccount}
                                                 type='primary'
-                                                htmlType='submit'>
+                                                htmlType='submit'
+                                                >
                                                 Xác nhận
                                             </Button>
                                         </Col>
