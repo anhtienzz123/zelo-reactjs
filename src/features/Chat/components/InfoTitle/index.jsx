@@ -6,16 +6,18 @@ InfoTitle.propTypes = {
     text: PropTypes.string,
     onBack: PropTypes.func,
     isBack: PropTypes.bool,
+    isSelected: PropTypes.bool,
 };
 
 InfoTitle.defaultProps = {
     text: "",
     onBack: null,
     isBack: false,
+    isSelected: false,
 }
 
 function InfoTitle(props) {
-    const { text, onBack, isBack } = props;
+    const { text, onBack, isBack, isSelected } = props;
 
     const handleOnClick = () => {
         if (onBack) {
@@ -39,7 +41,7 @@ function InfoTitle(props) {
 
             <span>{text}</span>
 
-            {isBack &&
+            {isSelected &&
                 (
                     <div className="select-text" onClick={handleSelect}>
                         <span>Chọn</span>

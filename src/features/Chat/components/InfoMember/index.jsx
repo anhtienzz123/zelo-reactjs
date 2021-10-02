@@ -5,6 +5,7 @@ import { GrGroup } from "react-icons/gr";
 import { useState } from 'react'
 InfoMember.propTypes = {
     viewMemberClick: PropTypes.func,
+    quantity: PropTypes.number.isRequired,
 };
 
 InfoMember.defaultProps = {
@@ -12,7 +13,7 @@ InfoMember.defaultProps = {
 }
 
 function InfoMember(props) {
-    const { viewMemberClick } = props;
+    const { viewMemberClick, quantity } = props;
     const [isDrop, setIsDrop] = useState(true);
     const styleIconDrop = {
 
@@ -44,19 +45,19 @@ function InfoMember(props) {
                     Thành viên nhóm
                 </div>
 
-                <div className="info_member-header-icon" style={isDrop ? { } : styleIconDrop}>
+                <div className="info_member-header-icon" style={isDrop ? {} : styleIconDrop}>
                     <CaretDownOutlined />
                 </div>
             </div>
 
-            <div className="info_member-interact" style={isDrop ? { } : styleInteract}>
+            <div className="info_member-interact" style={isDrop ? {} : styleInteract}>
                 <div className="info_member-interact-amount" onClick={handleViewAll}>
                     <div className="info_member-interact-amount-icon">
                         <GrGroup />
                     </div>
 
                     <div className="info_member-interact-amount-text">
-                        <span>100</span>
+                        <span>{quantity}</span>
                     </div>
                 </div>
             </div>

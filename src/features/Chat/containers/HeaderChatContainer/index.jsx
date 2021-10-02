@@ -4,19 +4,15 @@ import './style.scss';
 import { useSelector } from 'react-redux';
 import HeaderOptional from 'features/Chat/components/HeaderOptional';
 
-HeaderChatContainer.propTypes = {
+HeaderChatContainer.propTypes = {};
 
-};
-
-function HeaderChatContainer(props) {
-
-    const { currentConversation, conversations } = useSelector(state => state.chat);
-    const detailConver = conversations.find(conver => conver._id === currentConversation);
-
-    console.log("Detail conversation", detailConver);
-
-
-
+function HeaderChatContainer() {
+    const { currentConversation, conversations } = useSelector(
+        (state) => state.chat
+    );
+    const detailConver = conversations.find(
+        (conver) => conver._id === currentConversation
+    );
 
     return (
         <div id='header-main'>
@@ -24,6 +20,7 @@ function HeaderChatContainer(props) {
                 avatar={detailConver.avatar}
                 totalMembers={detailConver.totalMembers}
                 name={detailConver.name}
+                typeConver={detailConver.type}
             />
         </div>
     );

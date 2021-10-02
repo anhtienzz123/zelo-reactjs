@@ -8,7 +8,7 @@ import InfoNameAndThumbnail from 'features/Chat/components/InfoNameAndThumbnail'
 import InfoTitle from 'features/Chat/components/InfoTitle';
 import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-
+import { useSelector } from 'react-redux';
 import './style.scss';
 InfoContainer.propTypes = {
 
@@ -17,6 +17,8 @@ InfoContainer.propTypes = {
 function InfoContainer(props) {
 
     const [isFind, setFind] = useState(0);
+    const { memberInConversation, type } = useSelector(state => state.chat);
+
 
     const handleViewMemberClick = (value) => {
         setFind(value);
@@ -61,10 +63,14 @@ function InfoContainer(props) {
                                         <InfoNameAndThumbnail />
                                     </div>
 
-                                    <div className="info_member-wrapper">
-                                        <InfoMember viewMemberClick={handleViewMemberClick} />
-
-                                    </div>
+                                    {type && (
+                                        <div className="info_member-wrapper">
+                                            <InfoMember
+                                                viewMemberClick={handleViewMemberClick}
+                                                quantity={memberInConversation.length}
+                                            />
+                                        </div>
+                                    )}
 
                                     <div className='info_archive-media-wrapper'>
                                         <ArchiveMedia viewMediaClick={handleViewMediaClick} />
@@ -78,7 +84,7 @@ function InfoContainer(props) {
                                         <AnotherSetting />
                                     </div>
 
-                              
+
                                 </div>
 
                             </Scrollbars>
@@ -88,10 +94,16 @@ function InfoContainer(props) {
                         return (
                             <InfoMediaSearch
                                 onBack={handleOnBack}
+
                             />
                         )
                     } else {
-                        return (<InfoFriendSearch />)
+                        return (
+                            <InfoFriendSearch
+                                onBack={handleOnBack}
+                                members={memberInConversation}
+                            />
+                        )
                     }
                 })()
 

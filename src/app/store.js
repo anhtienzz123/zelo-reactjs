@@ -3,6 +3,7 @@ import global from './globalSlice';
 import account from 'features/Account/accountSlice';
 import chat from 'features/Chat/chatSlice';
 import friend from 'features/Friend/friendSlice';
+import admin from 'features/Admin/adminSlice';
 import callVideo from 'features/CallVideo/callVideoSlice';
 
 const rootReducer = {
@@ -10,6 +11,7 @@ const rootReducer = {
     account,
     chat,
     friend,
+    admin,
     callVideo,
 };
 

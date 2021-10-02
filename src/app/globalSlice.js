@@ -7,7 +7,7 @@ export const fetchUserProfile = createAsyncThunk(
     `${KEY}/fetchUser`,
     async (params, thunkApi) => {
         const user = await meApi.fetchProfile();
-
+        console.log('User', user);
         return user;
     }
 );
@@ -17,9 +17,7 @@ const globalSlice = createSlice({
     initialState: {
         isLoading: false,
         isLogin: false,
-        user: {},
-      
-
+        user: null,
     },
 
     reducers: {
@@ -29,7 +27,6 @@ const globalSlice = createSlice({
         setLogin: (state, action) => {
             state.isLogin = action.payload;
         },
-    
     },
 
     extraReducers: {

@@ -11,6 +11,40 @@ const conversationApi = {
             },
         });
     },
+
+    createGroup: (name, userIds) => {
+        return axiosClient.post(`${API_URL}/groups`, {
+            name,
+            userIds,
+        });
+    },
+
+    getConversationById: (id) => {
+        return axiosClient.get(`${API_URL}/${id}`);
+    },
+
+    deleteConversation: (id) => {
+        return axiosClient.delete(`${API_URL}/${id}`)
+    },
+
+    getMemberInConversation: (id) => {
+        return axiosClient.get(`${API_URL}/${id}/members`);
+    },
+
+    addMembersToConver: (userIds, coversationIds) => {
+        return axiosClient.post(`${API_URL}/${coversationIds}/members`, {
+            userIds
+        });
+    },
+
+    leaveGroup: (conversationId) => {
+        return axiosClient.delete(`${API_URL}/${conversationId}/members/leave`)
+    },
+
+    deleteMember: (conversationId, userId) => {
+        return axiosClient.delete(`${API_URL}/${conversationId}/members/${userId}`)
+    },
+
 };
 
 export default conversationApi;

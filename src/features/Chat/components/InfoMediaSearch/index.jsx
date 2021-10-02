@@ -38,6 +38,7 @@ function InfoMediaSearch(props) {
                     isBack={true}
                     text="Kho lưu trữ"
                     onBack={handleOnBack}
+                    isSelected={true}
                 />
             </div>
 

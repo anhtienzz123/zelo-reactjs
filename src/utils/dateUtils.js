@@ -9,32 +9,36 @@ const dateUtils = {
 
         //  tính năm
         if (nowTempt.getFullYear() - date.getFullYear() > 0)
-            return `${date.getDate()}/${
-                date.getMonth() + 1
-            }/${date.getFullYear()}`;
+            return `${date.getDate()}/${date.getMonth() + 1
+                }/${date.getFullYear()}`;
 
         const dateWasMinus7day = nowTempt.setDate(nowTempt.getDate() - 7);
 
         if (date < dateWasMinus7day)
-            return `${date.getDate()}/${date.getMonth() + 1}`;
+            return `0${date.getDate()}/${date.getMonth() + 1}`.slice(-2);
 
         const now = new Date();
         const numberMiliseconds = now - date;
 
         // tính ngày
         const day = Math.floor(numberMiliseconds / DAY_MILISECONDS);
-        if (day > 0) return `${day} ngày`;
+        if (day > 0) return `0${day} ngày`.slice(-2);
+        // `0${date.getHours()}`.slice(-2);
 
         // tính giờ
         const hour = Math.floor(numberMiliseconds / HOURSE_MILISECONDS);
-        if (hour > 0) return `${hour} giờ`;
+        if (hour > 0) return `0${hour} giờ`.slice(-2);
 
         // tính phút
         const minute = Math.floor(numberMiliseconds / MINUTE_MILISECONDS);
-        if (minute > 0) return `${minute} phút`;
+        if (minute > 0) return `0${minute} phút`.slice(-2);
 
-        return 'Vài giây trước';
+        return 'Vài giây';
     },
+
+    transferDateString: (day, month, year) => {
+        return `0${day}`.slice(-2) + '/' + `0${month}`.slice(-2) + '/' + `${year}`;
+    }
 };
 
 module.exports = dateUtils;
