@@ -18,8 +18,6 @@ const globalSlice = createSlice({
         isLoading: false,
         isLogin: false,
         user: {},
-
-
     },
 
     reducers: {
@@ -29,7 +27,6 @@ const globalSlice = createSlice({
         setLogin: (state, action) => {
             state.isLogin = action.payload;
         },
-
     },
 
     extraReducers: {

@@ -18,10 +18,7 @@ import {
     fetchListColor,
     isDeletedFromGroup,
     setCurrentConversation,
-
-
 } from './chatSlice';
-
 
 import BodyChatContainer from './containers/BodyChatContainer';
 import ConversationContainer from './containers/ConversationContainer';
@@ -39,9 +36,10 @@ init();
 Chat.propTypes = {};
 
 function Chat(props) {
-
     const dispatch = useDispatch();
-    const { conversations, currentConversation } = useSelector((state) => state.chat);
+    const { conversations, currentConversation } = useSelector(
+        (state) => state.chat
+    );
     const { path } = useRouteMatch();
     const { user } = useSelector((state) => state.global);
     const [scrollId, setScrollId] = useState('');
@@ -51,15 +49,16 @@ function Chat(props) {
     const [hasMessage, setHasMessage] = useState('');
     const [usersTyping, setUsersTyping] = useState([]);
 
-
     useEffect(() => {
         console.log('User typing', usersTyping);
     }, [usersTyping]);
 
     useEffect(() => {
-        dispatch(fetchListFriends({
-            name: ''
-        }));
+        dispatch(
+            fetchListFriends({
+                name: '',
+            })
+        );
     }, []);
 
     useEffect(() => {
@@ -70,16 +69,12 @@ function Chat(props) {
         dispatch(fetchListColor());
     }, []);
 
-
-
     // fetchListRequestFriend
-
 
     useEffect(() => {
         const userId = user._id;
         if (userId) socket.emit('join', userId);
     }, [user]);
-
 
     useEffect(() => {
         if (conversations.length === 0) return;
@@ -102,37 +97,31 @@ function Chat(props) {
         refConversations.current = conversations;
     }, [conversations]);
 
-
     useEffect(() => {
-
-
-
         socket.on('new-message', (conversationId, newMessage) => {
             const { type, content, manipulatedUsers } = newMessage;
 
-
             if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
-
-                dispatch(updateConversationWhenAddMember({
-                    newMembers: manipulatedUsers,
-                    conversationId
-                }))
+                dispatch(
+                    updateConversationWhenAddMember({
+                        newMembers: manipulatedUsers,
+                        conversationId,
+                    })
+                );
             }
 
             if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
-                dispatch(updateMemberLeaveGroup({
-                    conversationId,
-                    newMessage,
-                }))
+                dispatch(
+                    updateMemberLeaveGroup({
+                        conversationId,
+                        newMessage,
+                    })
+                );
             }
 
             dispatch(addMessage(newMessage));
             setIdNewMessage(newMessage._id);
-
         });
-
-
-
 
         socket.on('create-conversation', (conversationId) => {
             dispatch(fetchConversationById({ conversationId }));
@@ -142,15 +131,11 @@ function Chat(props) {
             dispatch(removeConversation(conversationId));
         });
 
-
         socket.on('delete-message', (conversationId, id) => {
             handleDeleteMessage(conversationId, id, refCurrentConversation);
-
         });
 
-
         socket.on('added-group', (conversationId) => {
-
             dispatch(fetchConversationById({ conversationId }));
         });
 
@@ -160,62 +145,61 @@ function Chat(props) {
             }
         });
 
-
         socket.on('typing', (conversationId, user) => {
-
             if (conversationId === refCurrentConversation.current) {
-
-                const index = usersTyping.findIndex(ele => ele._id === user._id);//khoo
+                const index = usersTyping.findIndex(
+                    (ele) => ele._id === user._id
+                ); //khoo
 
                 if (usersTyping.length === 0 || index < 0) {
-
                     setUsersTyping([...usersTyping, user]);
                 }
             }
-        })
+        });
 
         socket.on('not-typing', (conversationId, user) => {
             if (conversationId === refCurrentConversation.current) {
-                const index = usersTyping.findIndex(ele => ele._id === user._id);
-                const newUserTyping = usersTyping.filter(ele => ele._id !== user._id);
+                const index = usersTyping.findIndex(
+                    (ele) => ele._id === user._id
+                );
+                const newUserTyping = usersTyping.filter(
+                    (ele) => ele._id !== user._id
+                );
                 console.log('newUserTyping', newUserTyping);
                 setUsersTyping(newUserTyping);
-
             }
-        })
+        });
 
         socket.on('deleted-group', (conversationId) => {
-            const conversation = refConversations.current.find(ele => ele._id === conversationId);
+            const conversation = refConversations.current.find(
+                (ele) => ele._id === conversationId
+            );
             message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`);
             if (conversationId === refCurrentConversation.current) {
-                dispatch(setCurrentConversation(''))
+                dispatch(setCurrentConversation(''));
             }
             dispatch(isDeletedFromGroup(conversationId));
             socket.emit('leave-conversation', conversationId);
-
-        })
-
+        });
     }, []);
 
-
-
-
-    const handleDeleteMessage = (conversationId, id, refCurrentConversation) => {
-
+    const handleDeleteMessage = (
+        conversationId,
+        id,
+        refCurrentConversation
+    ) => {
         if (refCurrentConversation.current === conversationId) {
             dispatch(setRedoMessage(id));
         }
-
-    }
-
+    };
 
     const handleScrollWhenSent = (value) => {
         setScrollId(value);
-    }
+    };
 
     const hanldeOnClickScroll = () => {
         setIsScroll(true);
-    }
+    };
 
     const handleBackToBottom = (value, message) => {
         if (message) {
@@ -224,15 +208,13 @@ function Chat(props) {
             setHasMessage('');
         }
         setIsShow(value);
-    }
+    };
 
     const hanldeResetScrollButton = (value) => {
         setIsScroll(value);
-    }
+    };
 
     // Xử lý modal mode
-
-
 
     return (
         <div id='main-chat-wrapper'>
@@ -253,116 +235,126 @@ function Chat(props) {
                     </div>
                 </Col>
 
-                {
-                    path === '/chat' && currentConversation ? (
-                        <>
-                            <Col span={13}>
-                                <div className='main_chat'>
-                                    <div className='main_chat-header'>
-                                        <HeaderChatContainer />
-                                    </div>
+                {path === '/chat' && currentConversation ? (
+                    <>
+                        <Col span={13}>
+                            <div className='main_chat'>
+                                <div className='main_chat-header'>
+                                    <HeaderChatContainer />
+                                </div>
 
-                                    <div className='main_chat-body'>
-                                        <div id='main_chat-body--view'>
-                                            <BodyChatContainer
-                                                scrollId={scrollId}
-                                                onSCrollDown={idNewMessage}
-                                                onBackToBottom={handleBackToBottom}
-                                                onResetScrollButton={hanldeResetScrollButton}
-                                                turnOnScrollButoon={isScroll}
-
-                                            />
-
-
-                                            <div
-                                                id="back-top-button"
-                                                className={`${isShow ? 'show' : 'hide'} ${hasMessage ? 'new-message' : ''}`}
-                                                onClick={hanldeOnClickScroll}
-                                            >
-                                                {hasMessage ?
-                                                    <div className='db-arrow-new-message'>
-                                                        <span className='arrow'><DoubleLeftOutlined /></span>
-                                                        <span>&nbsp;{hasMessage}</span>
-                                                    </div>
-
-                                                    : <DownOutlined />}
-                                            </div>
-
-
-
-                                            {usersTyping.length > 0 &&
-                                                <div className="typing-message">
-
-                                                    {usersTyping.map((ele, index) => (
-                                                        <span>
-                                                            {index < 3 &&
-                                                                <>
-                                                                    {index === usersTyping.length - 1 ? `${ele.name} ` : `${ele.name}, `}
-                                                                </>
-                                                            }
-                                                        </span>
-                                                    ))}
-
-                                                    {usersTyping.length > 3 ? `và ${usersTyping.length - 3} người khác` : ''}
-
-                                                    <span>&nbsp;đang nhập</span>
-
-                                                    <div className="dynamic-dot">
-                                                        <div className='dot'></div>
-                                                        <div className='dot'></div>
-                                                        <div className='dot'></div>
-                                                    </div>
-                                                </div>
+                                <div className='main_chat-body'>
+                                    <div id='main_chat-body--view'>
+                                        <BodyChatContainer
+                                            scrollId={scrollId}
+                                            onSCrollDown={idNewMessage}
+                                            onBackToBottom={handleBackToBottom}
+                                            onResetScrollButton={
+                                                hanldeResetScrollButton
                                             }
+                                            turnOnScrollButoon={isScroll}
+                                        />
 
-
-
+                                        <div
+                                            id='back-top-button'
+                                            className={`${
+                                                isShow ? 'show' : 'hide'
+                                            } ${
+                                                hasMessage ? 'new-message' : ''
+                                            }`}
+                                            onClick={hanldeOnClickScroll}>
+                                            {hasMessage ? (
+                                                <div className='db-arrow-new-message'>
+                                                    <span className='arrow'>
+                                                        <DoubleLeftOutlined />
+                                                    </span>
+                                                    <span>
+                                                        &nbsp;{hasMessage}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <DownOutlined />
+                                            )}
                                         </div>
 
-                                        <div className='main_chat-body--input'>
-                                            <FooterChatContainer
-                                                onScrollWhenSentText={handleScrollWhenSent}
-                                            />
-                                        </div>
+                                        {usersTyping.length > 0 && (
+                                            <div className='typing-message'>
+                                                {usersTyping.map(
+                                                    (ele, index) => (
+                                                        <span>
+                                                            {index < 3 && (
+                                                                <>
+                                                                    {index ===
+                                                                    usersTyping.length -
+                                                                        1
+                                                                        ? `${ele.name} `
+                                                                        : `${ele.name}, `}
+                                                                </>
+                                                            )}
+                                                        </span>
+                                                    )
+                                                )}
+
+                                                {usersTyping.length > 3
+                                                    ? `và ${
+                                                          usersTyping.length - 3
+                                                      } người khác`
+                                                    : ''}
+
+                                                <span>&nbsp;đang nhập</span>
+
+                                                <div className='dynamic-dot'>
+                                                    <div className='dot'></div>
+                                                    <div className='dot'></div>
+                                                    <div className='dot'></div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className='main_chat-body--input'>
+                                        <FooterChatContainer
+                                            onScrollWhenSentText={
+                                                handleScrollWhenSent
+                                            }
+                                        />
                                     </div>
                                 </div>
-                            </Col>
-                            <Col span={6}>
-                                <div className='main-info'>
-                                    <InfoContainer />
-                                </div>
-                            </Col>
-                        </>
-                    ) : (
-                        <Col span={19}>
-
-                            <div className="landing-app">
-                                <div className="title-welcome">
-                                    <div className="title-welcome-heading">
-                                        <span>Chào mừng đến với <b>Zelo</b></span>
-                                    </div>
-
-                                    <div className="title-welcome-detail">
-                                        <span>
-                                            Khám phá những tiện ích hỗ trợ làm việc và trò chuyện cùng người thân, bạn bè được tối ưu hoá cho máy tính của bạn.
-                                        </span>
-                                    </div>
+                            </div>
+                        </Col>
+                        <Col span={6}>
+                            <div className='main-info'>
+                                <InfoContainer />
+                            </div>
+                        </Col>
+                    </>
+                ) : (
+                    <Col span={19}>
+                        <div className='landing-app'>
+                            <div className='title-welcome'>
+                                <div className='title-welcome-heading'>
+                                    <span>
+                                        Chào mừng đến với <b>Zelo</b>
+                                    </span>
                                 </div>
 
-
-                                <div className="carousel-slider">
-                                    <Slider />
+                                <div className='title-welcome-detail'>
+                                    <span>
+                                        Khám phá những tiện ích hỗ trợ làm việc
+                                        và trò chuyện cùng người thân, bạn bè
+                                        được tối ưu hoá cho máy tính của bạn.
+                                    </span>
                                 </div>
                             </div>
 
-
-                        </Col>
-                    )
-
-                }
-
+                            <div className='carousel-slider'>
+                                <Slider />
+                            </div>
+                        </div>
+                    </Col>
+                )}
             </Row>
-        </div >
+        </div>
     );
 }
 

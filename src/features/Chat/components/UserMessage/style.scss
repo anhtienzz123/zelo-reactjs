@@ -158,6 +158,10 @@
                         left: 1.4rem;
                     }
 
+                    &-description {
+                        word-break: break-all;
+                    }
+
                     .reacted-block {
                         margin-top: 1rem;
                         display: flex;
@@ -288,6 +292,7 @@
                     }
                     .reaction.left {
                         left: 1.4rem;
+
                     }
 
                     .list_icon-reaction::after {

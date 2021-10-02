@@ -14,18 +14,24 @@ BodyChatContainer.propTypes = {
     onBackToBottom: PropTypes.func,
 };
 
-
 BodyChatContainer.defaultProps = {
-    scrollId: "",
+    scrollId: '',
     onSCrollDown: '',
     onBackToBottom: null,
 };
 
-
 const HOURS_MINUS = 6;
 
-function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScrollButton, turnOnScrollButoon }) {
-    const { messages, currentConversation, currentPage } = useSelector((state) => state.chat);
+function BodyChatContainer({
+    scrollId,
+    onSCrollDown,
+    onBackToBottom,
+    onResetScrollButton,
+    turnOnScrollButoon,
+}) {
+    const { messages, currentConversation, currentPage } = useSelector(
+        (state) => state.chat
+    );
     const { user } = useSelector((state) => state.global);
     const [isSpinning, setIsSpinning] = useState(false);
     const scrollbars = useRef();
@@ -39,52 +45,53 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
             scrollbars.current.scrollToBottom();
             onResetScrollButton(false);
         }
-    }, [turnOnScrollButoon])
-
+    }, [turnOnScrollButoon]);
 
     useEffect(() => {
         if (scrollId) {
-
             scrollbars.current.scrollToBottom();
         }
-    }, [scrollId])
-
-
+    }, [scrollId]);
 
     useEffect(() => {
         async function fetchNextListMessage() {
             if (currentPage > 0) {
                 setIsSpinning(true);
 
-                await dispatch(fetchNextPageMessage({
-                    conversationId: currentConversation,
-                    page: currentPage,
-                    size: 10
-
-                }));
+                await dispatch(
+                    fetchNextPageMessage({
+                        conversationId: currentConversation,
+                        page: currentPage,
+                        size: 10,
+                    })
+                );
                 setIsSpinning(false);
 
-                scrollbars.current.scrollTop(scrollbars.current.getScrollHeight() - previousHieight.current);
-
+                scrollbars.current.scrollTop(
+                    scrollbars.current.getScrollHeight() -
+                        previousHieight.current
+                );
             }
         }
 
         fetchNextListMessage();
-
     }, [currentPage]);
 
     useEffect(() => {
-        if (onSCrollDown && scrollbars.current.getScrollHeight() > scrollbars.current.getClientHeight()) {
+        if (
+            onSCrollDown &&
+            scrollbars.current.getScrollHeight() >
+                scrollbars.current.getClientHeight()
+        ) {
             if (position >= 0.99) {
-
                 scrollbars.current.scrollToBottom();
             } else {
                 if (onBackToBottom) {
-                    onBackToBottom(true, 'Có tin nhắn mới')
+                    onBackToBottom(true, 'Có tin nhắn mới');
                 }
             }
         }
-    }, [onSCrollDown])
+    }, [onSCrollDown]);
 
     const renderMessages = (messages) => {
         const result = [];
@@ -96,7 +103,6 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
             const senderId = currentMessage.user._id;
             const isMyMessage = senderId === user._id ? true : false;
 
-
             // chổ này có thể sai
             if (i === 0) {
                 result.push(
@@ -104,14 +110,16 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
                         key={i}
                         message={currentMessage}
                         isMyMessage={isMyMessage}
-
                     />
                 );
                 continue;
             }
 
-            const isSameUser = (currentMessage.user._id === preMessage.user._id && preMessage.type !== 'NOTIFY') ? true : false;
-
+            const isSameUser =
+                currentMessage.user._id === preMessage.user._id &&
+                preMessage.type !== 'NOTIFY'
+                    ? true
+                    : false;
 
             // Check tin nhắn sau có cùng người gửi vs tin nhắn trước
 
@@ -129,7 +137,6 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
                             key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
-
                         />
                     </div>
                 );
@@ -147,14 +154,14 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
         return result;
     };
 
-
-
-
     const handleOnScrolling = ({ scrollTop, scrollHeight, top }) => {
         tempPosition.current = top;
 
-        console.log("CHay scroll");
-        if (scrollbars.current.getScrollHeight() === scrollbars.current.getClientHeight()) {
+        console.log('CHay scroll');
+        if (
+            scrollbars.current.getScrollHeight() ===
+            scrollbars.current.getClientHeight()
+        ) {
             onBackToBottom(false);
             return;
         }
@@ -173,23 +180,22 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
                 onBackToBottom(false);
             }
         }
-    }
+    };
 
     const handleOnStop = (value) => {
         setPosition(tempPosition.current);
-    }
+    };
 
     useEffect(() => {
         scrollbars.current.scrollToBottom();
-        console.log(scrollbars.current.getScrollHeight(), ':', scrollbars.current.getClientHeight());
-
+        console.log(
+            scrollbars.current.getScrollHeight(),
+            ':',
+            scrollbars.current.getClientHeight()
+        );
     }, [currentConversation]);
 
-
-    const handleOnScroll = (e) => {
-
-    }
-
+    const handleOnScroll = (e) => {};
 
     return (
         <Scrollbars
@@ -198,13 +204,8 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
             autoHideDuration={200}
             ref={scrollbars}
             onScrollFrame={handleOnScrolling}
-            onScrollStop={handleOnStop}
-
-
-        >
+            onScrollStop={handleOnStop}>
             {/* <div className='main-body-conversation'> */}
-
-
 
             <div className='spinning-custom'>
                 <Spin spinning={isSpinning} />
@@ -212,19 +213,14 @@ function BodyChatContainer({ scrollId, onSCrollDown, onBackToBottom, onResetScro
 
             {renderMessages(messages)}
 
-
-
             {/* <button onClick={() => {
                 document.getElementById('613dddc02f1e724484d09d82').scrollIntoView();
             }}>
                 nust test
             </button> */}
 
-
             {/* </div>  */}
-
-
-        </Scrollbars >
+        </Scrollbars>
     );
 }
 
