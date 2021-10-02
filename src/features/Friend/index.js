@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Row, Col, Spin } from 'antd';
 import SearchContainer from 'features/Chat/containers/SearchContainer';
@@ -8,12 +8,16 @@ import ICON_GROUP from 'assets/images/icon/icon_group.png';
 import './style.scss';
 import ListFriend from './components/ListFriend';
 import HeaderFriend from './components/HeaderFiend';
-import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
-import ListFriendCard from './components/ListFriendCard';
+import ListRequestFriend from './components/ListRequestFriend';
+import ListMyFriendRequest from './components/ListMyRequestFriend';
+import GroupCard from './components/GroupCard';
+import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
+import ListGroup from './components/ListGroup';
 
 function Friend(props) {
     const { isLoading } = useSelector((state) => state.friend);
+    const [subTab, setSubTab] = useState(0);
     return (
 
 
@@ -30,7 +34,10 @@ function Friend(props) {
                         </div>
 
                         <div className='main-friend_sidebar_bottom'>
-                            <div className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend">
+                            <div
+                                className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend"
+                                onClick={() => setSubTab(0)}
+                            >
                                 <div className="main-friend_sidebar_option_img">
                                     <img
                                         src={ICON_FRIEND}
@@ -44,7 +51,10 @@ function Friend(props) {
 
                             </div>
 
-                            <div className="main-friend_sidebar_option main-friend_sidebar_option--groups">
+                            <div
+                                className="main-friend_sidebar_option main-friend_sidebar_option--groups"
+                                onClick={() => setSubTab(1)}
+                            >
                                 <div className="main-friend_sidebar_option_img">
                                     <img
                                         src={ICON_GROUP}
@@ -80,15 +90,7 @@ function Friend(props) {
                             <HeaderFriend />
                         </div>
                         <div className="main-friend_body__section">
-                            <div className="main-friend_body__filter">
-                                <div className="main-friend_body__filter--left">
-                                    Tất cả (23) <CaretDownOutlined />
-                                </div>
 
-                                <div className="main-friend_body__filter--right">
-                                    <FilterOutlined /> Theo tên nhóm từ A-Z
-                                </div>
-                            </div>
 
                             <div className="main-friend_body_item">
                                 <Scrollbars
@@ -100,13 +102,40 @@ function Friend(props) {
 
                                 >
 
-                                    <ListFriendCard />
+                                    {
+                                        subTab ? (
+                                            <>
+                                                <div className="main-friend_body__filter">
+                                                    <div className="main-friend_body__filter--left">
+                                                        Tất cả (23) <CaretDownOutlined />
+                                                    </div>
+
+                                                    <div className="main-friend_body__filter--right">
+                                                        <FilterOutlined /> Theo tên nhóm từ A-Z
+                                                    </div>
+                                                </div>
+
+                                                <div className="main-friend_body__list-group">
+                                                    <ListGroup />
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="main-friend_body_list-request">
+
+                                                <div className="main-friend_body_title-list">
+                                                    Lời mới kết bạn (1)
+                                                </div>
+                                                <ListRequestFriend />
+
+                                                <div className="main-friend_body_title-list">
+                                                    Đã gửi yêu cầu kết bạn (1)
+                                                </div>
+                                                <ListMyFriendRequest />
 
 
-
-
-
-
+                                            </div>
+                                        )
+                                    }
                                 </Scrollbars>
                             </div>
                         </div>

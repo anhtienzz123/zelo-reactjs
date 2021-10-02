@@ -4,10 +4,15 @@ import './style.scss';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { Button } from 'antd';
 FriendCard.propTypes = {
-
+    isMyRequest: PropTypes.bool,
 };
 
-function FriendCard(props) {
+FriendCard.defaultProps = {
+    isMyRequest: false,
+};
+
+
+function FriendCard({ isMyRequest }) {
     return (
         <div className='friend-card'>
             <div className="friend-card_info-user">
@@ -23,17 +28,31 @@ function FriendCard(props) {
             </div>
 
             <div className="friend-card_interact">
-                <div className="friend-card_button friend-card_button--deny">
-                    <Button type="default" shape="round" >
-                        Bỏ qua
-                    </Button>
-                </div>
+                {isMyRequest ? (
+                    <div className="friend-card_button friend-card_button--accept">
+                        <Button type="danger" shape="round" >
+                            Hủy yêu cầu
+                        </Button>
+                    </div>
+                ) : (
+                    <>
+                        <div className="friend-card_button friend-card_button--deny">
+                            <Button type="default" shape="round" >
+                                Bỏ qua
+                            </Button>
+                        </div>
 
-                <div className="friend-card_button friend-card_button--accept">
-                    <Button type="primary" shape="round" >
-                        Đồng ý
-                    </Button>
-                </div>
+                        <div className="friend-card_button friend-card_button--accept">
+                            <Button type="primary" shape="round" >
+                                Đồng ý
+                            </Button>
+                        </div>
+                    </>
+                )}
+
+
+
+
             </div>
         </div>
     );

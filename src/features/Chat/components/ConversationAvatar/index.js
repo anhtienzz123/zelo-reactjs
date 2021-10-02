@@ -1,40 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, Tooltip } from 'antd';
+import COVERSATION_STYLE from './ConversationAvatarStyle';
 import './style.scss';
 ConversationAvatar.propTypes = {
     avatar: PropTypes.array || PropTypes.string,
     demension: PropTypes.number,
+    isGroupCard: PropTypes.bool,
 
 };
 
 ConversationAvatar.defaultProps = {
     avatar: [] || "",
     demension: 28,
+    isGroupCard: false
 };
 
-ConversationAvatar.defaultProps = {};
 
-const styleGroup3 = {
-    position: 'relative',
-    left: '50%',
-    transform: 'translateX(-50%)'
-}
 
-const styleGroup2 = {
-    display: 'flex',
-    alignItems: 'center',
-}
-
-function ConversationAvatar({ avatar, demension }) {
+function ConversationAvatar({ avatar, demension, isGroupCard }) {
     const typeOf = typeof avatar;
     const quantity = typeof avatar === 'object' && avatar.length;
 
 
     const renderAvatar = () => avatar.map((avatarEle, index) => (
-        <Avatar key={index} style={quantity === 3 && index === 2 ? styleGroup3 : {}} size={demension} src={avatarEle} />
+        <Avatar key={index} style={quantity === 3 && index === 2 ? COVERSATION_STYLE.styleGroup3 : {}} size={demension} src={avatarEle} />
     ));
 
+    console.log("test", isGroupCard, COVERSATION_STYLE.friendCardAvatar(demension));
 
 
 
@@ -53,10 +46,12 @@ function ConversationAvatar({ avatar, demension }) {
                         quantity === 3 ? (
                             <div className='conversation-item_box'>
                                 <div className="left-side-box">
-                                    <div className="icon-users-group">
+                                    <div
+                                        style={isGroupCard ? COVERSATION_STYLE.friendCardAvatar(demension) : {}}
+                                        className="icon-users-group"
+                                    >
                                         <Avatar.Group
                                             maxCount={3}
-                                            size={28}
                                             maxPopoverPlacement={false}
                                         >
                                             {renderAvatar()}
@@ -70,10 +65,13 @@ function ConversationAvatar({ avatar, demension }) {
                         ) : quantity === 2 ? (
                             <div className='conversation-item_box'>
                                 <div className="left-side-box">
-                                    <div className="icon-users-group" style={styleGroup2}>
+                                    <div
+                                        lassName="icon-users-group"
+                                        style={isGroupCard ? COVERSATION_STYLE.friendCardAvatarMixStyle2(demension) : COVERSATION_STYLE.styleGroup2}
+
+                                    >
                                         <Avatar.Group
                                             maxCount={3}
-                                            size={28}
                                             maxPopoverPlacement='none'
                                             vi
                                         >
@@ -89,25 +87,28 @@ function ConversationAvatar({ avatar, demension }) {
                         ) : (
                             <div className='conversation-item_box'>
                                 <div className="left-side-box">
-                                    <div className="icon-users-group">
+                                    <div
+                                        className="icon-users-group"
+                                        style={isGroupCard ? COVERSATION_STYLE.friendCardAvatar(demension) : {}}
+                                    >
                                         <div id='group-many-user'>
 
                                             <div className='per-user'>
                                                 <Avatar
-                                                    size={28}
+                                                    size={demension}
                                                     src={avatar && avatar[0]}
                                                 />
                                             </div>
 
                                             <div className='per-user'>
                                                 <Avatar
-                                                    size={28}
+                                                    size={demension}
                                                     src={avatar && avatar[1]} />
                                             </div>
 
                                             <div className='per-user'>
                                                 <Avatar
-                                                    size={28}
+                                                    size={demension}
                                                     style={{
                                                         backgroundColor: '#1890ff',
                                                     }}
@@ -120,7 +121,7 @@ function ConversationAvatar({ avatar, demension }) {
                                                             backgroundColor: '#e8eaef',
                                                             color: '#848f9b'
                                                         }}
-                                                        size={28}
+                                                        size={demension}
 
                                                     >
                                                         {`+${avatar && avatar.length - 3}`}
@@ -143,8 +144,9 @@ function ConversationAvatar({ avatar, demension }) {
 
 
                 </>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
 
