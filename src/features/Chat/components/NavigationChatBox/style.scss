@@ -20,6 +20,7 @@
 
     .item-chat-box:hover {
         background-color: $light-grey;
+        color: inherit !important;
     }
     // .item-chat-box ~ .item-chat-box {
     //     margin-right: 1rem;

@@ -5,11 +5,12 @@
     list-style: none;
     transition: 0.2s;
     cursor: pointer;
-
+    height: 68px;
 
     .conversation-item_box {
         width: 100%;
         display: flex;
+        align-items: center;
     }
 
     .left-side-box {
@@ -25,12 +26,19 @@
         flex: 1;
         padding-left: 0.8rem;
         padding-right: 0.4rem;
+        width: calc(100% - 94px);
+
         .name-box {
             font-weight: 500;
+            text-overflow: ellipsis;
         }
         .lastest-message {
             font-size: 14px;
             color: $thumbnail-text;
+            word-wrap: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 
@@ -38,9 +46,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        min-width: 4.6rem;
         .lastest-time {
             font-size: 1.2rem;
             color: $thumbnail-text;
+            text-align: center;
         }
         .message-count {
             display: none;
@@ -56,11 +66,6 @@
             font-size: 1.2rem;
         }
     }
-
-    // adjust antd
-    // .ant-popover-content {
-    //     display: none;
-    // }
 
     .line-group {
         .second-line-group {
@@ -98,4 +103,3 @@
 .conversation-item:hover {
     background-color: $light-grey;
 }
-
