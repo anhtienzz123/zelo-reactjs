@@ -1,44 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './style.scss';
 import ConversationAvatar from 'features/Chat/components/ConversationAvatar';
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { Badge } from 'antd';
+import { useSelector } from 'react-redux';
+import classifyUtils from 'utils/classifyUtils'
 GroupCard.propTypes = {
+    data: PropTypes.object,
 
 };
 
-function GroupCard(props) {
+GroupCard.defaultProps = {
+    data: {},
 
-    const avatar1 = [
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
+};
 
-    ]
+function GroupCard({ data }) {
+    const { classifies } = useSelector(state => state.chat);
+    const [classify, setClassify] = useState(null);
 
-    const avatar2 = [
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-
-
-    ]
+    useEffect(() => {
+        if (classifies.length > 0) {
+            setClassify(classifyUtils.getClassifyOfObject(data._id, classifies));
+            console.log('check eror', classifyUtils.getClassifyOfObject(data._id, classifies));
+        }
+    }, [data]);
 
 
-    const avatar3 = [
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-        "https://gamek.mediacdn.vn/133514250583805952/2020/11/27/thao-trang-16064463501642042849142.jpg",
-
-
-    ]
-
-
-    return (
+    const mainCard = (
         <div className='group-card'>
+
             <div className="group-card__avatar-group">
                 <ConversationAvatar
-                    avatar={avatar3}
+                    avatar={data.avatar}
                     demension={52}
                     isGroupCard={true}
                 />
@@ -46,13 +41,33 @@ function GroupCard(props) {
             </div>
 
             <div className="group-card__name-group">
-                "Tài liệu học tập"
+                {data.name}
             </div>
 
             <div className="group-card__total-member">
-                30 thành viên
+                {`${data.totalMembers} thành viên`}
             </div>
+            <div className="group-card__interact">
+                <BsThreeDotsVertical />
+            </div>
+
+
         </div>
+    )
+
+
+
+    return (
+        <>
+            {classify ? (<Badge.Ribbon text={classify.name} color={classify.color.code} placement='start'>
+                {mainCard}
+            </Badge.Ribbon>) : (
+                mainCard
+            )}
+
+        </>
+
+
     );
 }
 

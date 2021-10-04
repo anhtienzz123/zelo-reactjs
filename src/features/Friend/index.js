@@ -1,26 +1,53 @@
 
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Row, Col, Spin } from 'antd';
-import SearchContainer from 'features/Chat/containers/SearchContainer';
+import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
+import { Button, Col, Dropdown, Menu, Row } from 'antd';
 import ICON_FRIEND from 'assets/images/icon/icon_friend.png';
 import ICON_GROUP from 'assets/images/icon/icon_group.png';
-import './style.scss';
-import ListFriend from './components/ListFriend';
-import HeaderFriend from './components/HeaderFiend';
+import SearchContainer from 'features/Chat/containers/SearchContainer';
+import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import ListRequestFriend from './components/ListRequestFriend';
-import ListMyFriendRequest from './components/ListMyRequestFriend';
-import GroupCard from './components/GroupCard';
-import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import HeaderFriend from './components/HeaderFiend';
+import ListFriend from './components/ListFriend';
 import ListGroup from './components/ListGroup';
+import ListMyFriendRequest from './components/ListMyRequestFriend';
+import ListRequestFriend from './components/ListRequestFriend';
+import FRIEND_STYLE from './friendStyle';
+import classifyUtils from 'utils/classifyUtils';
+import './style.scss';
 
 function Friend(props) {
-    const { isLoading } = useSelector((state) => state.friend);
+    const { isLoading, requestFriends, myRequestFriend, groups } = useSelector((state) => state.friend);
     const [subTab, setSubTab] = useState(0);
+
+
+
+
+
+
+    const menu = (
+        <Menu>
+            <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                    1st menu item
+                </a>
+            </Menu.Item>
+            <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                    2nd menu item
+                </a>
+            </Menu.Item>
+            <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+                    3rd menu item
+                </a>
+            </Menu.Item>
+        </Menu>
+
+    );
+
+
     return (
-
-
         <div id="main-friend_wrapper">
             <Row gutter={[0, 0]}>
                 <Col span={5}>
@@ -107,30 +134,56 @@ function Friend(props) {
                                             <>
                                                 <div className="main-friend_body__filter">
                                                     <div className="main-friend_body__filter--left">
-                                                        Tất cả (23) <CaretDownOutlined />
+
+                                                        <Dropdown overlay={menu} placement="bottomLeft">
+                                                            <Button
+                                                                icon={<CaretDownOutlined />}
+                                                                type='text'
+                                                                style={FRIEND_STYLE.BUTTON_FILTER}
+                                                            >
+                                                                Tất cả (23)
+                                                            </Button>
+                                                        </Dropdown>
                                                     </div>
 
                                                     <div className="main-friend_body__filter--right">
-                                                        <FilterOutlined /> Theo tên nhóm từ A-Z
+
+
+                                                        <Dropdown overlay={menu} placement="bottomLeft">
+                                                            <Button
+                                                                icon={<FilterOutlined />}
+                                                                type='text'
+                                                                style={FRIEND_STYLE.BUTTON_FILTER}
+                                                            >
+                                                                Theo tên nhóm từ A-Z
+                                                            </Button>
+                                                        </Dropdown>
                                                     </div>
                                                 </div>
 
                                                 <div className="main-friend_body__list-group">
-                                                    <ListGroup />
+                                                    <ListGroup
+                                                        data={groups}
+                                                    />
                                                 </div>
                                             </>
                                         ) : (
                                             <div className="main-friend_body_list-request">
 
                                                 <div className="main-friend_body_title-list">
-                                                    Lời mới kết bạn (1)
+                                                    Lời mới kết bạn ({requestFriends.length})
                                                 </div>
-                                                <ListRequestFriend />
+                                                <ListRequestFriend
+                                                    data={requestFriends}
+
+                                                />
 
                                                 <div className="main-friend_body_title-list">
-                                                    Đã gửi yêu cầu kết bạn (1)
+                                                    Đã gửi yêu cầu kết bạn ({myRequestFriend.length})
                                                 </div>
-                                                <ListMyFriendRequest />
+                                                <ListMyFriendRequest
+                                                    data={myRequestFriend}
+                                                />
 
 
                                             </div>

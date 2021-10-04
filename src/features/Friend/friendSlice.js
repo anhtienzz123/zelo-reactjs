@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import friendApi from 'api/friendApi';
+import conversationApi from 'api/conversationApi';
 const KEY = 'friend';
 
 export const fetchListRequestFriend = createAsyncThunk(
@@ -10,18 +11,42 @@ export const fetchListRequestFriend = createAsyncThunk(
     }
 )
 
-// export const fetchListMyRequestFriend = createAsyncThunk(
-//     `${KEY}/fetchListMyRequestFriend`,
-//     async (params, thunkApi) => {
-//         const data = await friendApi.;
-//         return data;
-//     }
+export const fetchListMyRequestFriend = createAsyncThunk(
+    `${KEY}/fetchListMyRequestFriend`,
+    async (params, thunkApi) => {
+        const data = await friendApi.fetchMyRequestFriend();
+        return data;
+    }
+)
+
+export const fetchFriends = createAsyncThunk(
+    `${KEY}/fetchFriends`,
+    async (params, thunkApi) => {
+        const { name } = params;
+        const data = await friendApi.fetchFriends(name);
+        return data;
+    }
+)
+export const fetchListGroup = createAsyncThunk(
+    `${KEY}/fetchListGroup`,
+    async (param, thunkApi) => {
+        const { name, type } = param;
+        const data = await conversationApi.fetchListConversations(name, type);
+        return data;
+
+    }
+)
+
+
 
 const friendSlice = createSlice({
     name: KEY,
     initialState: {
         isLoading: false,
-        requestFriends: []
+        requestFriends: [],
+        myRequestFriend: [],
+        friends: [],
+        groups: []
     },
     reducers: {
         setLoading: (state, action) => {
@@ -38,6 +63,15 @@ const friendSlice = createSlice({
         },
         [fetchListRequestFriend.rejected]: (state, action) => {
             state.isLoading = false;
+        },
+        [fetchListMyRequestFriend.fulfilled]: (state, action) => {
+            state.myRequestFriend = action.payload;
+        },
+        [fetchFriends.fulfilled]: (state, action) => {
+            state.friends = action.payload;
+        },
+        [fetchListGroup.fulfilled]: (state, action) => {
+            state.groups = action.payload;
         }
     },
 });

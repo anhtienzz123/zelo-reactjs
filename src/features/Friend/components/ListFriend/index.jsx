@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import Scrollbars from 'react-custom-scrollbars';
 import FriendItem from '../FriendItem';
+import { useSelector } from 'react-redux';
 ListFriend.propTypes = {
 
 };
 
 function ListFriend(props) {
+    const { friends } = useSelector(state => state.friend)
     return (
 
         <Scrollbars
@@ -18,16 +20,17 @@ function ListFriend(props) {
 
         >
 
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
-            <FriendItem />
+            {
+                friends.length > 0 &&
+                friends.map((ele, index) => (
+                    <FriendItem
+                        key={index}
+                        data={ele}
+                    />
+                ))
+            }
+
+
 
         </Scrollbars>
 

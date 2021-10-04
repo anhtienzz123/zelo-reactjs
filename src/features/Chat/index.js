@@ -61,15 +61,6 @@ function Chat(props) {
         );
     }, []);
 
-    useEffect(() => {
-        dispatch(fetchListClassify());
-    }, []);
-
-    useEffect(() => {
-        dispatch(fetchListColor());
-    }, []);
-
-    // fetchListRequestFriend
 
     useEffect(() => {
         const userId = user._id;
@@ -257,11 +248,9 @@ function Chat(props) {
 
                                         <div
                                             id='back-top-button'
-                                            className={`${
-                                                isShow ? 'show' : 'hide'
-                                            } ${
-                                                hasMessage ? 'new-message' : ''
-                                            }`}
+                                            className={`${isShow ? 'show' : 'hide'
+                                                } ${hasMessage ? 'new-message' : ''
+                                                }`}
                                             onClick={hanldeOnClickScroll}>
                                             {hasMessage ? (
                                                 <div className='db-arrow-new-message'>
@@ -285,7 +274,7 @@ function Chat(props) {
                                                             {index < 3 && (
                                                                 <>
                                                                     {index ===
-                                                                    usersTyping.length -
+                                                                        usersTyping.length -
                                                                         1
                                                                         ? `${ele.name} `
                                                                         : `${ele.name}, `}
@@ -296,9 +285,8 @@ function Chat(props) {
                                                 )}
 
                                                 {usersTyping.length > 3
-                                                    ? `và ${
-                                                          usersTyping.length - 3
-                                                      } người khác`
+                                                    ? `và ${usersTyping.length - 3
+                                                    } người khác`
                                                     : ''}
 
                                                 <span>&nbsp;đang nhập</span>

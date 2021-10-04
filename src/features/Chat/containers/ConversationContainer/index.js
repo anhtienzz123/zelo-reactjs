@@ -1,15 +1,14 @@
 import { DeleteFilled, ExclamationCircleOutlined, TagTwoTone } from '@ant-design/icons';
-import { Dropdown, Menu, Modal, message } from 'antd';
+import { Dropdown, Menu, message, Modal } from 'antd';
+import conversationApi from 'api/conversationApi';
 import {
-    fetchListConversations,
     fetchListMessages
 } from 'features/Chat/chatSlice';
 import ConversationSingle from 'features/Chat/components/ConversationSingle';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteConversation, getMembersConversation, setTypeOfConversation } from '../../chatSlice';
-import conversationApi from 'api/conversationApi';
+import { getMembersConversation, setTypeOfConversation } from '../../chatSlice';
 import './style.scss';
 ConversationContainer.propTypes = {};
 
@@ -25,10 +24,6 @@ function ConversationContainer(props) {
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
     };
-
-    useEffect(() => {
-        dispatch(fetchListConversations({}));
-    }, []);
 
 
 

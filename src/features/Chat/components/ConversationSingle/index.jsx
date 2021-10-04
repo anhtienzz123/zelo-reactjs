@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
 import ConversationAvatar from '../ConversationAvatar';
 import { useSelector } from 'react-redux';
 import { TagTwoTone } from '@ant-design/icons';
 import './style.scss';
+import classifyUtils from 'utils/classifyUtils';
 ConversationSingle.propTypes = {
     conversation: PropTypes.object,
     onClick: PropTypes.func,
@@ -15,13 +16,17 @@ function ConversationSingle({ conversation, onClick }) {
         conversation;
     const { content, type, createdAt, user } = lastMessage;
     const global = useSelector((state) => state.global);
+    const { classifies } = useSelector(state => state.chat);
+    const [classify, setClassify] = useState({});
 
-    const handleLengthText = (text) => {
-        if (text.length >= 23) {
-            return text.slice(0, 20) + '...';
+    useEffect(() => {
+        if (classifies.length > 0) {
+            setClassify(classifyUtils.getClassifyOfObject(_id, classifies));
         }
-        return text;
-    };
+    }, [conversation])
+
+
+
 
     const handleClick = () => {
         if (onClick) onClick(_id);
@@ -41,15 +46,20 @@ function ConversationSingle({ conversation, onClick }) {
                         <span className='name-box'>{name}</span>
 
                         <div className='lastest-message'>
-                            <span className='tag-classify'>
-                                <TagTwoTone twoToneColor='#db342e' />
-                            </span>
+                            {
+                                classify && (
+                                    <span className='tag-classify'>
+                                        <TagTwoTone twoToneColor={classify.color?.code} />
+                                    </span>
+                                )
+                            }
                             <span>
-                                {`${
-                                    global.user.name === user.name
+                                {
+                                    `${global.user.name === user.name
                                         ? 'Bạn'
                                         : user.name
-                                }:${content ? content : 'Tin nhắn đã thu hồi'}`}
+                                    }:${content ? content : 'Tin nhắn đã thu hồi'}`
+                                }
                             </span>
                         </div>
                     </div>

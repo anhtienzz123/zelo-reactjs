@@ -5,50 +5,28 @@ import GroupCard from '../GroupCard';
 import { Row, Col } from 'antd';
 
 ListGroup.propTypes = {
-
+    data: PropTypes.array,
 };
 
 ListGroup.defaultProps = {
-
+    data: []
 };
 
 
 
-function ListGroup(props) {
+function ListGroup({ data }) {
     return (
 
         <Row gutter={[16, 16]}>
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
-
-            <Col span={6} >
-                <GroupCard />
-            </Col>
+            {data && data.length > 0 && (
+                data.map((ele, index) => (
+                    <Col span={6} >
+                        <GroupCard
+                            data={ele}
+                            key={index}
+                        />
+                    </Col>
+                )))}
 
         </Row>
 

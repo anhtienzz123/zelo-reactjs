@@ -4,22 +4,26 @@ import './style.scss';
 import { DashOutlined } from '@ant-design/icons';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 FriendItem.propTypes = {
+    data: PropTypes.object.isRequired,
+};
+
+FriendItem.defaultProps = {
 
 };
 
-function FriendItem(props) {
+function FriendItem({ data }) {
     return (
         <div id='friend-item'>
             <div className="friend-item_left">
                 <div className="friend-item-avatar">
                     <PersonalIcon
                         isActive={true}
-                        avatar='https://gamek.mediacdn.vn/133514250583805952/2020/11/7/photo-1-16047368104351907433833.jpg'
+                        avatar={data.avatar}
                     />
                 </div>
 
                 <div className="friend-item-name">
-                    Mean Nghi
+                    {data.name}
                 </div>
             </div>
             <div className="friend-item_right">

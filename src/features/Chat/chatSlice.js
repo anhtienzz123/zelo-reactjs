@@ -1,10 +1,9 @@
-import { react } from '@babel/types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import ClassifyApi from 'api/ClassifyApi';
 import conversationApi from 'api/conversationApi';
+import friendApi from 'api/friendApi';
 import messageApi from 'api/messageApi';
 import dateUtils from 'utils/dateUtils';
-import friendApi from 'api/friendApi';
-import ClassifyApi from 'api/ClassifyApi';
 
 const KEY = 'chat';
 
@@ -81,8 +80,6 @@ export const fetchListFriends = createAsyncThunk(
     async (params, thunkApi) => {
         const { name } = params;
         const friends = await friendApi.fetchFriends(name);
-        console.log('Friend');
-        console.log('Friend', friends);
         return friends;
     }
 );
@@ -358,6 +355,9 @@ const chatSlice = createSlice({
         setCurrentConversation: (state, action) => {
             state.currentConversation = action.payload;
         },
+        updateClassifyToConver: (state, action) => {
+            state.conversations = action.payload;
+        }
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -447,6 +447,8 @@ const chatSlice = createSlice({
         [fetchListColor.fulfilled]: (state, action) => {
             state.colors = action.payload;
         },
+
+
     },
 });
 
@@ -466,6 +468,7 @@ export const {
     updateMemberLeaveGroup,
     isDeletedFromGroup,
     setCurrentConversation,
+    updateClassifyToConver
 } = actions;
 
 export default reducer;
