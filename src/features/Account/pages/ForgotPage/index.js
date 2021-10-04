@@ -1,43 +1,104 @@
 import { CloseCircleOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Row, Tag, Typography } from 'antd';
+import { Button, Col, Divider,message, Row, Tag, Typography } from 'antd';
 import loginApi from 'api/loginApi';
+import { setLogin } from 'app/globalSlice';
 import InputField from 'customfield/InputField';
 import { setLoading } from 'features/Account/accountSlice';
 import { forgotValues } from 'features/Account/initValues';
 import { FastField, Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import './style.scss';
-
+const RESEND_OTP_TIME_LIMIT = 1;
 const { Text, Title } = Typography;
-
 function ForgotPage(props) {
     const dispatch = useDispatch();
-
+    let resendOTPTimerInterval;
     const [isError, setError] = useState('');
+    const history = useHistory();
+    //set time counter
+    const [counter, setCounter] = useState(RESEND_OTP_TIME_LIMIT);
+    //set OTP value
+    const [otpValue, setOTPValue] = useState('');
+    
 
     const handleForgot = async (values) => {
-        const { username, password } = values;
+        const {username,password,passwordconfirm} = values
+      //  console.log('actived',username);
+        console.log('actived',username);
         try {
             dispatch(setLoading(true));
-            const response = await loginApi.forgot(username);
-            props.history.push({ pathname: '/account/otp', state: { values } });
-            // account was actived
+            setOTPValue('');
+            setCounter(RESEND_OTP_TIME_LIMIT);
+            startResendOTPTimer();   
+           // account was actived
             const account = await loginApi.fetchUser(username);
-            console.log('actived', account.isActived);
+          if(password===passwordconfirm && password.length===8)
             if (account.isActived === true) {
+                const response = await loginApi.forgot(username);  
                 console.log('account is actived !!');
+                message.success('Đã gửi mã OTP', 10);
             } else {
                 setError('Tài khoản không tồn tại');
-                console.log('not account imposible !!');
-            }
+            }else{
+                console.log('mk không khớp hoặc không đủ 6 ký tự !!');
+            } 
         } catch (error) {
             setError('Tài khoản không tồn tại');
             console.log('fail forgot');
         }
         dispatch(setLoading(false));
     };
+
+    //------------------ otp-------------------------
+    const success = () => {
+        message.success('Đổi mật khẩu thành công', 10);
+    };
+    //start time from 30 to '0'
+    const startResendOTPTimer = () => {
+        if (resendOTPTimerInterval) {
+            clearInterval(resendOTPTimerInterval);
+        }
+        resendOTPTimerInterval = setInterval(() => {
+            if (counter <= 0) {
+                clearInterval(resendOTPTimerInterval);
+            } else {
+                setCounter(counter - 1);
+            }
+        }, 1000);
+    };
+
+    //useEffect khi counter thay đổi
+    useEffect(() => {
+        startResendOTPTimer();
+        return () => {
+            if (resendOTPTimerInterval) {
+                clearInterval(resendOTPTimerInterval);
+            }
+        };
+    }, [counter]);
+
+    const handleConfirmOTP = async (values) => {
+        try {
+            dispatch(setLoading(true));
+            const response = await loginApi.confirmPassword(
+                values.username,
+                values.otpValue,
+                values.password
+            );
+            success();
+            console.log('kích hoạt thành công');
+            history.push('/account/login');
+            dispatch(setLoading(true));
+        } catch (error) {
+            setError('OTP không hợp lệ hoặc hết hạn');
+            message.error('Đổi mật khẩu thất bại', 10);
+        }
+        dispatch(setLoading(false));
+    };
+      
 
     return (
         <div className='forgot-page'>
@@ -49,7 +110,7 @@ function ForgotPage(props) {
 
                 <Formik
                     initialValues={{ ...forgotValues.initial }}
-                    onSubmit={(values) => handleForgot(values)}
+                    onSubmit={(values) => handleConfirmOTP(values) }
                     validationSchema={forgotValues.validationSchema}
                     enableReinitialize={true}>
                     {(formikProps) => {
@@ -101,6 +162,17 @@ function ForgotPage(props) {
                                             titleCol={8}
                                             inputCol={16}></FastField>
                                     </Col>
+                                    <Col span ={24}>
+                                    <FastField 
+                                            name='otpValue'
+                                            component={InputField}
+                                            type='text'
+                                            title='Xác nhận'
+                                            placeholder='Nhập 6 ký tự OTP'
+                                            maxLength={50}
+                                            titleCol={8}
+                                            inputCol={16}></FastField>
+                                            </Col>
 
                                     {isError ? (
                                         <Col offset={8} span={16}>
@@ -117,13 +189,32 @@ function ForgotPage(props) {
                                         ''
                                     )}
 
-                                    <Col offset={8}>
+                                    <Col offset={8} span={16}>
                                         <Button
                                             type='primary'
-                                            htmlType='submit'>
-                                            Gửi OTP
+                                           
+                                            htmlType='submit'
+                                            >
+
+                                            Xác nhận
                                         </Button>
+                                            {' '}
+                                            {counter > 0 ? (
+                                                <Button
+                                                type='primary'
+                                               >     
+                                                Gửi lại mã OTP 00:{counter}
+                                               </Button>
+                                            ) : (
+                                                <Button
+                                                    type='primary'
+                                                    onClick={()=>handleForgot(formikProps.values) }>     
+                                                    Gửi lại mã OTP
+                                                </Button>
+                                            )}
                                     </Col>
+
+                                    
                                 </Row>
                                 <Divider />
                                 <p
