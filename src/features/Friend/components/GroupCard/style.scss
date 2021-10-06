@@ -9,6 +9,7 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    cursor: pointer;
 
     &__name-group {
         font-weight: 500;
@@ -18,7 +19,7 @@
     &__total-member {
         font-size: 13px;
         color: $thumbnail-text;
-        transition: 0.2s;
+        // transition: 0.2s;
     }
 
     &__total-member:hover {
@@ -33,12 +34,11 @@
         right: 5%;
         top: 5%;
         cursor: pointer;
-
-        visibility: hidden;
+        opacity: 0;
         transition: 0.2s;
     }
-}
-
-.group-card:hover .group-card__interact {
-    visibility: visible;
+    &:hover &__interact {
+        opacity: 1;
+        display: block;
+    }
 }

@@ -1,15 +1,77 @@
-import React from 'react';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { message, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import './style.scss';
+import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useDispatch, useSelector } from 'react-redux';
 import FriendItem from '../FriendItem';
-import { useSelector } from 'react-redux';
-ListFriend.propTypes = {
+import friendApi from 'api/friendApi';
+import { fetchFriends } from '../../friendSlice';
+import './style.scss';
+import UserCard from 'components/UserCard';
 
+ListFriend.propTypes = {
+    data: PropTypes.array,
 };
 
-function ListFriend(props) {
-    const { friends } = useSelector(state => state.friend)
+ListFriend.defaultProps = {
+    data: [],
+};
+
+
+
+
+function ListFriend({ data }) {
+
+    const dispatch = useDispatch();
+    const [isVisible, setIsVisible] = useState(false);
+    const [userIsFind, setUserIsFind] = useState({})
+
+    const handleOnClickMenu = (key, id) => {
+        if (key === "2") {
+            confirm(id);
+        } else {
+            setIsVisible(true);
+            setUserIsFind(data.find(ele => ele._id === id));
+        }
+    }
+
+    const handleCancelModalUserCard = () => {
+        setIsVisible(false)
+    }
+
+    const handleOkModal = async (id) => {
+        try {
+            await friendApi.deleteFriend(id);
+            dispatch(fetchFriends({ name: '' }))
+            message.success('Xóa thành công');
+            setIsVisible(false);
+        } catch (error) {
+            message.error('Xóa thất bại');
+        }
+    }
+
+    const handleOnDeleteFriend = (id) => {
+        setIsVisible(true);
+        confirm(id);
+
+    }
+
+
+
+    function confirm(id) {
+        Modal.confirm({
+            title: 'Xác nhận',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Bạn có thực sự muốn xóa <b>{data.find(ele => ele._id === id).name}</b> khỏi danh sách bạn bè </span>,
+            okText: 'Xóa',
+            cancelText: 'Hủy',
+            onOk: () => handleOkModal(id),
+
+        });
+    }
+
+
     return (
 
         <Scrollbars
@@ -21,14 +83,23 @@ function ListFriend(props) {
         >
 
             {
-                friends.length > 0 &&
-                friends.map((ele, index) => (
+                data.length > 0 &&
+                data.map((ele, index) => (
                     <FriendItem
                         key={index}
                         data={ele}
+                        onClickMenu={handleOnClickMenu}
                     />
                 ))
             }
+
+            <UserCard
+                user={userIsFind}
+                isVisible={isVisible}
+                onCancel={handleCancelModalUserCard}
+                isMyFriend={true}
+                onDeleteFriend={handleOnDeleteFriend}
+            />
 
 
 

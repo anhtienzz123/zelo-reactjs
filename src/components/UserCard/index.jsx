@@ -3,48 +3,70 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import { Button, Image, Input, Modal } from 'antd';
 import UserCardStyle from './UserCardStyle';
-import FriendUtils from 'utils/friendUtils';
 import { useSelector } from 'react-redux';
 import dateUtils from 'utils/dateUtils';
-import { DeleteFilled } from '@ant-design/icons';
+import { DeleteFilled, UserDeleteOutlined } from '@ant-design/icons';
 UserCard.propTypes = {
     title: PropTypes.string,
     user: PropTypes.object.isRequired,
     isVisible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
     onAddFriend: PropTypes.func,
+    isMyFriend: PropTypes.bool,
+    onDeleteFriend: PropTypes.func,
+    isMyRequest: PropTypes.bool,
+    isRequestToMe: PropTypes.bool,
 };
 
 UserCard.defaultProps = {
     title: 'Thông tin',
     onCancel: null,
     onAddFriend: null,
-
-    // coverImage: 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg',
-    // avatar: 'https://splynt.co/wp-content/uploads/2021/02/blank-profile.jpg'
+    isMyFriend: false,
+    onDeleteFriend: null,
+    isMyRequest: false,
+    isRequestToMe: false,
 };
 
 
 function UserCard(props) {
-    const { title, isVisible, user, onCancel, onAddFriend } = props;
+    const {
+        title,
+        isVisible,
+        user, onCancel,
+        onAddFriend,
+        isMyFriend,
+        onDeleteFriend,
+        isMyRequest,
+        isRequestToMe
+    } = props;
+
     const { friends } = useSelector(state => state.chat);
     const { requestFriends } = useSelector(state => state.friend);
     const [isShowButton, setIsShowButton] = useState(true);
     const [isShowButtonComfirm, setIsShowButtonConfirm] = useState(false);
     // const [isShowButtonCancel, setIsShowButtonCancel] = useState(false);
 
-    useEffect(() => {
-        setIsShowButton(!FriendUtils.checkIsFriend(user, friends));
-        setIsShowButtonConfirm(FriendUtils.checkIsSentRequest(user, requestFriends));
-        // setIsShowButtonCancel(FriendUtils.checkIsMyRequestFriend(user, friends));
+    // useEffect(() => {
+    //     // setIsShowButton(!FriendUtils.checkIsFriend(user, friends));
+    //     // setIsShowButtonConfirm(FriendUtils.checkIsSentRequest(user, requestFriends));
+    //     // setIsShowButtonCancel(FriendUtils.checkIsMyRequestFriend(user, friends));
 
-        console.log(user, FriendUtils.checkIsSentRequest(user, requestFriends));
-    }, [user]);
+
+
+    //     // console.log(user, FriendUtils.checkIsSentRequest(user, requestFriends));
+    // }, [user]);
 
 
     const handleOnCancle = () => {
         if (onCancel) {
             onCancel();
+        }
+    }
+
+    const handleDeleteFriend = () => {
+        if (onDeleteFriend) {
+            onDeleteFriend(user._id);
         }
     }
 
@@ -82,6 +104,7 @@ function UserCard(props) {
                     <div className="user-card_cover-image">
                         <Image
                             src={coverImage}
+                            preview={false}
                             style={UserCardStyle.CoverImageStyle}
                         />
 
@@ -101,7 +124,7 @@ function UserCard(props) {
 
                     <div className="user-card-button">
                         {
-                            (isShowButton && !isShowButtonComfirm) &&
+                            (!isMyFriend && !isRequestToMe && !isMyRequest) &&
                             (
                                 <div className="user-card-button--addFriend" onClick={handleAddFriend}>
                                     <Button
@@ -115,7 +138,7 @@ function UserCard(props) {
                             // user-card-button--no-margin
                         }
 
-                        {isShowButtonComfirm &&
+                        {isRequestToMe &&
                             <>
                                 <div className="user-card-button--message confirm--friend" onClick={handleConfirmFriend}>
                                     <Button
@@ -138,15 +161,30 @@ function UserCard(props) {
                         }
 
 
+                        {isMyRequest &&
+                            <>
+                                <div className="user-card-button--message ">
+                                    <Button
+                                        type="danger"
+                                        style={{ width: '124px' }}
+                                    >
+                                        Hủy yêu cầu
+                                    </Button>
+                                </div>
+                            </>
+                        }
 
 
-                        <div className={`user-card-button--message ${!isShowButton ? 'user-card-button--no-margin' : ''}`}>
+
+
+                        <div className={`user-card-button--message ${(isMyFriend) ? 'user-card-button--no-margin' : ''}`}>
                             <Button
                                 type="default"
-                                style={isShowButtonComfirm ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
+                                style={(isRequestToMe) ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
                             >Nhắn tin
                             </Button>
                         </div>
+
                     </div>
 
                     <div className="user-card-infomation">
@@ -183,14 +221,15 @@ function UserCard(props) {
                     </div>
 
 
-                    <div className={`user-card-button-optional ${isShowButton ? 'user-card-button-optional--hidden' : ''}`}>
+                    <div className={`user-card-button-optional ${(isShowButton && !isMyFriend) ? 'user-card-button-optional--hidden' : ''}`}>
                         <Button
                             danger
-                            icon={<DeleteFilled />}
+                            icon={<UserDeleteOutlined />}
                             style={UserCardStyle.buttonFullSize}
                             size='large'
+                            onClick={handleDeleteFriend}
                         >
-                            Xóa
+                            Hủy kết bạn
                         </Button>
                     </div>
 

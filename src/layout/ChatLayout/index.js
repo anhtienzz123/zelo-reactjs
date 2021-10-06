@@ -1,33 +1,33 @@
-import React, { useEffect } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import Chat from 'features/Chat';
-import NotFoundPage from 'components/NotFoundPage';
-import Friend from 'features/Friend';
 import { Col, Row } from 'antd';
-import HeaderChatContainer from 'features/Chat/containers/HeaderChatContainer';
-import NavbarContainer from 'features/Chat/containers/NavbarContainer';
-import {
-    fetchListRequestFriend,
-    fetchListMyRequestFriend,
-    fetchFriends,
-    fetchListGroup,
-
-} from 'features/Friend/friendSlice';
-
+import NotFoundPage from 'components/NotFoundPage';
+import Chat from 'features/Chat';
 import {
     fetchListClassify,
     fetchListColor,
-    fetchListConversations,
-    updateClassifyToConver,
+    fetchListConversations
 } from 'features/Chat/chatSlice';
+import NavbarContainer from 'features/Chat/containers/NavbarContainer';
+import Friend from 'features/Friend';
+import {
+    fetchFriends,
+    fetchListGroup,
+    fetchListMyRequestFriend,
+    fetchListRequestFriend
+} from 'features/Friend/friendSlice';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import classifyUtils from 'utils/classifyUtils';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { init, socket } from 'utils/socketClient';
 
 
+
+
+init();
 function ChatLayout(props) {
     const { url } = useRouteMatch();
     const dispatch = useDispatch();
     const { classifies, conversations } = useSelector((state) => state.chat);
+    const { user } = useSelector((state) => state.global);
 
     useEffect(() => {
         dispatch(fetchListRequestFriend());
@@ -63,14 +63,24 @@ function ChatLayout(props) {
         dispatch(fetchListConversations({}));
     }, []);
 
-    // useEffect(() => {
-    //     if (classifies.length > 0 && conversations.length > 0) {
-    //         const data = classifyUtils.addClassifyToConver(classifies, conversations);
-    //         // dispatch(updateClassifyToConver(data));
-    //         // console.log("check data", data);
 
-    //     }
-    // }, [classifies, conversations])
+    useEffect(() => {
+        const userId = user._id;
+        if (userId) socket.emit('join', userId);
+    }, [user]);
+
+
+    useEffect(() => {
+        if (conversations.length === 0) return;
+
+        const conversationIds = conversations.map(
+            (conversationEle) => conversationEle._id
+        );
+
+        socket.emit('join-conversations', conversationIds);
+    }, [conversations]);
+
+
 
 
     return (

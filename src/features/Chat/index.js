@@ -26,10 +26,10 @@ import FooterChatContainer from './containers/FooterChatContainer';
 import HeaderChatContainer from './containers/HeaderChatContainer';
 import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
-import { socket, init } from 'utils/socketClient';
+import { socket } from 'utils/socketClient';
 import './style.scss';
 
-init();
+
 
 // let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
 
@@ -41,7 +41,7 @@ function Chat(props) {
         (state) => state.chat
     );
     const { path } = useRouteMatch();
-    const { user } = useSelector((state) => state.global);
+
     const [scrollId, setScrollId] = useState('');
     const [idNewMessage, setIdNewMessage] = useState('');
     const [isShow, setIsShow] = useState(false);
@@ -61,21 +61,6 @@ function Chat(props) {
         );
     }, []);
 
-
-    useEffect(() => {
-        const userId = user._id;
-        if (userId) socket.emit('join', userId);
-    }, [user]);
-
-    useEffect(() => {
-        if (conversations.length === 0) return;
-
-        const conversationIds = conversations.map(
-            (conversationEle) => conversationEle._id
-        );
-
-        socket.emit('join-conversations', conversationIds);
-    }, [conversations]);
 
     const refCurrentConversation = useRef();
     const refConversations = useRef();

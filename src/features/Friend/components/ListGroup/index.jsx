@@ -1,8 +1,14 @@
-import React from 'react';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Col, message, Modal, Row } from 'antd';
+import conversationApi from 'api/conversationApi';
+import { fetchListGroup } from 'features/Friend/friendSlice';
 import PropTypes from 'prop-types';
-import './style.scss';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { socket } from 'utils/socketClient';
 import GroupCard from '../GroupCard';
-import { Row, Col } from 'antd';
+import './style.scss';
+
 
 ListGroup.propTypes = {
     data: PropTypes.array,
@@ -15,6 +21,36 @@ ListGroup.defaultProps = {
 
 
 function ListGroup({ data }) {
+    const dispatch = useDispatch();
+
+    const handleOnRemoveGroup = (key, id) => {
+        confirm(id);
+    }
+
+    function confirm(id) {
+        Modal.confirm({
+            title: 'Cảnh báo',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Bạn có thực sự muốn rời khỏi nhóm',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk: async () => {
+                try {
+                    console.log('Chay try')
+                    await conversationApi.leaveGroup(id);
+                    message.success(`Rời nhóm thành công`);
+                    socket.emit('leave-conversation', id);
+                    dispatch(fetchListGroup({ name: '', type: 2 }));
+
+                } catch (error) {
+                    console.log('Chay catch')
+                    message.error(`Rời nhóm thất bại`);
+                }
+
+            }
+        });
+    }
+
     return (
 
         <Row gutter={[16, 16]}>
@@ -24,6 +60,7 @@ function ListGroup({ data }) {
                         <GroupCard
                             data={ele}
                             key={index}
+                            onRemove={handleOnRemoveGroup}
                         />
                     </Col>
                 )))}

@@ -30,11 +30,6 @@ function AnotherSetting(props) {
         setIsDrop(!isDrop);
     }
 
-    const handleLeaveGroup = async () => {
-
-        // await conversationApi.leaveGroup(currentConversation);
-        // dispatch(leaveGroup(currentConversation));
-    }
 
 
     function confirm() {

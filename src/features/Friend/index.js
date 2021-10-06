@@ -4,9 +4,9 @@ import { Button, Col, Dropdown, Menu, Row } from 'antd';
 import ICON_FRIEND from 'assets/images/icon/icon_friend.png';
 import ICON_GROUP from 'assets/images/icon/icon_group.png';
 import SearchContainer from 'features/Chat/containers/SearchContainer';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import HeaderFriend from './components/HeaderFiend';
 import ListFriend from './components/ListFriend';
 import ListGroup from './components/ListGroup';
@@ -15,13 +15,29 @@ import ListRequestFriend from './components/ListRequestFriend';
 import FRIEND_STYLE from './friendStyle';
 import classifyUtils from 'utils/classifyUtils';
 import './style.scss';
+import { socket } from 'utils/socketClient';
+import { setNewFriend, setNewRequestFriend, setMyRequestFriend } from './friendSlice';
 
 function Friend(props) {
-    const { isLoading, requestFriends, myRequestFriend, groups } = useSelector((state) => state.friend);
+    const { isLoading, requestFriends, myRequestFriend, groups, friends } = useSelector((state) => state.friend);
     const [subTab, setSubTab] = useState(0);
+    const dispatch = useDispatch();
 
 
 
+    useEffect(() => {
+        socket.on('accept-friend', (value) => {
+            console.log('socket accpet', value);
+            dispatch(setNewFriend(value));
+            dispatch(setMyRequestFriend(value._id));
+
+        });
+
+        socket.on('send-friend-invite', (value) => {
+            console.log('socket invite', value);
+            dispatch(setNewRequestFriend(value));
+        })
+    }, []);
 
 
 
@@ -100,9 +116,11 @@ function Friend(props) {
 
                             <div className="main-friend_sidebar_list-friend">
                                 <div className="main-friend_sidebar_list-friend_title">
-                                    Bạn bè (68)
+                                    Bạn bè ({friends.length})
                                 </div>
-                                <ListFriend />
+                                <ListFriend
+                                    data={friends}
+                                />
                             </div>
                         </div>
                     </div>

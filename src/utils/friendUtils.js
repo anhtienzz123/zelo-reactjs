@@ -3,7 +3,7 @@ const FriendUtils = {
     checkIsFriend: (user, listFriend) => {
         return listFriend.some(friend => friend._id === user._id);
     },
-    checkIsSentRequest: (user, listRequest) => {
+    checkIsRequestSentToMe: (user, listRequest) => {
         return listRequest.some(req => req._id === user._id)
     }
     ,
