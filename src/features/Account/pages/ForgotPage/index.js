@@ -11,7 +11,9 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import './style.scss';
-const RESEND_OTP_TIME_LIMIT = 1;
+import * as Yup from 'yup';
+
+const RESEND_OTP_TIME_LIMIT = 60;
 const { Text, Title } = Typography;
 function ForgotPage(props) {
     const dispatch = useDispatch();
@@ -19,7 +21,7 @@ function ForgotPage(props) {
     const [isError, setError] = useState('');
     const history = useHistory();
     //set time counter
-    const [counter, setCounter] = useState(RESEND_OTP_TIME_LIMIT);
+    const [counter, setCounter] = useState(0);
     //set OTP value
     const [otpValue, setOTPValue] = useState('');
     
@@ -43,7 +45,7 @@ function ForgotPage(props) {
             } else {
                 setError('Tài khoản không tồn tại');
             }else{
-                console.log('mk không khớp hoặc không đủ 6 ký tự !!');
+                console.log('mk không khớp hoặc không đủ 8 ký tự !!');
             } 
         } catch (error) {
             setError('Tài khoản không tồn tại');
@@ -52,6 +54,15 @@ function ForgotPage(props) {
         dispatch(setLoading(false));
     };
 
+    const valide=(values)=>{
+        const {name, username, password,passwordconfirm } = values;
+        if(name === null||username === null||password === null||passwordconfirm === null){
+            setError("thông tin chưa đầy đủ");
+        }else{
+        
+        }
+       
+    };
     //------------------ otp-------------------------
     const success = () => {
         message.success('Đổi mật khẩu thành công', 10);
@@ -82,23 +93,26 @@ function ForgotPage(props) {
 
     const handleConfirmOTP = async (values) => {
         try {
+            valide(values);
             dispatch(setLoading(true));
             const response = await loginApi.confirmPassword(
                 values.username,
                 values.otpValue,
                 values.password
             );
+           
             success();
             console.log('kích hoạt thành công');
             history.push('/account/login');
+           
             dispatch(setLoading(true));
+           
         } catch (error) {
             setError('OTP không hợp lệ hoặc hết hạn');
             message.error('Đổi mật khẩu thất bại', 10);
         }
         dispatch(setLoading(false));
     };
-      
 
     return (
         <div className='forgot-page'>
@@ -110,7 +124,7 @@ function ForgotPage(props) {
 
                 <Formik
                     initialValues={{ ...forgotValues.initial }}
-                    onSubmit={(values) => handleConfirmOTP(values) }
+                    onSubmit={(values) => handleForgot(values) }
                     validationSchema={forgotValues.validationSchema}
                     enableReinitialize={true}>
                     {(formikProps) => {
@@ -192,8 +206,8 @@ function ForgotPage(props) {
                                     <Col offset={8} span={16}>
                                         <Button
                                             type='primary'
+                                            onClick={()=>handleConfirmOTP(formikProps.values)}
                                            
-                                            htmlType='submit'
                                             >
 
                                             Xác nhận
@@ -208,7 +222,7 @@ function ForgotPage(props) {
                                             ) : (
                                                 <Button
                                                     type='primary'
-                                                    onClick={()=>handleForgot(formikProps.values) }>     
+                                                    htmlType='submit'>     
                                                     Gửi lại mã OTP
                                                 </Button>
                                             )}
