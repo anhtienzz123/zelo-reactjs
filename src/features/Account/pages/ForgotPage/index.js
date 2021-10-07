@@ -1,12 +1,12 @@
 import { CloseCircleOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { Button, Col, Divider,message, Row, Tag, Typography } from 'antd';
+import { Button, Col, Divider, message, Row, Tag, Typography } from 'antd';
 import loginApi from 'api/loginApi';
 import { setLogin } from 'app/globalSlice';
 import InputField from 'customfield/InputField';
 import { setLoading } from 'features/Account/accountSlice';
 import { forgotValues } from 'features/Account/initValues';
 import { FastField, Form, Formik } from 'formik';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
@@ -24,29 +24,27 @@ function ForgotPage(props) {
     const [counter, setCounter] = useState(0);
     //set OTP value
     const [otpValue, setOTPValue] = useState('');
-    
+    const [account, setAccount] = useState(null);
 
     const handleForgot = async (values) => {
-        const {username,password,passwordconfirm} = values
-      //  console.log('actived',username);
-        console.log('actived',username);
+        const { username, password, passwordconfirm } = values;
+        //  console.log('actived',username);
+        console.log('actived', username);
         try {
             dispatch(setLoading(true));
             setOTPValue('');
             setCounter(RESEND_OTP_TIME_LIMIT);
-            startResendOTPTimer();   
-           // account was actived
+            startResendOTPTimer();
+            // account was actived
             const account = await loginApi.fetchUser(username);
-          if(password===passwordconfirm && password.length===8)
-            if (account.isActived === true) {
-                const response = await loginApi.forgot(username);  
+            setAccount(account);
+            if (password === passwordconfirm && password.length >= 8) {
+                await loginApi.forgot(username);
                 console.log('account is actived !!');
                 message.success('Đã gửi mã OTP', 10);
             } else {
-                setError('Tài khoản không tồn tại');
-            }else{
                 console.log('mk không khớp hoặc không đủ 8 ký tự !!');
-            } 
+            }
         } catch (error) {
             setError('Tài khoản không tồn tại');
             console.log('fail forgot');
@@ -54,14 +52,17 @@ function ForgotPage(props) {
         dispatch(setLoading(false));
     };
 
-    const valide=(values)=>{
-        const {name, username, password,passwordconfirm } = values;
-        if(name === null||username === null||password === null||passwordconfirm === null){
-            setError("thông tin chưa đầy đủ");
-        }else{
-        
+    const valide = (values) => {
+        const { name, username, password, passwordconfirm } = values;
+        if (
+            name === null ||
+            username === null ||
+            password === null ||
+            passwordconfirm === null
+        ) {
+            setError('thông tin chưa đầy đủ');
+        } else {
         }
-       
     };
     //------------------ otp-------------------------
     const success = () => {
@@ -95,18 +96,27 @@ function ForgotPage(props) {
         try {
             valide(values);
             dispatch(setLoading(true));
-            const response = await loginApi.confirmPassword(
-                values.username,
-                values.otpValue,
-                values.password
-            );
-           
+
+            if (account.isActived) {
+                await loginApi.confirmPassword(
+                    values.username,
+                    values.otpValue,
+                    values.password
+                );
+            } else {
+                await loginApi.confirmAccount(values.username, values.otpValue);
+                await loginApi.confirmPassword(
+                    values.username,
+                    values.otpValue,
+                    values.password
+                );
+            }
+
             success();
             console.log('kích hoạt thành công');
             history.push('/account/login');
-           
+
             dispatch(setLoading(true));
-           
         } catch (error) {
             setError('OTP không hợp lệ hoặc hết hạn');
             message.error('Đổi mật khẩu thất bại', 10);
@@ -124,7 +134,7 @@ function ForgotPage(props) {
 
                 <Formik
                     initialValues={{ ...forgotValues.initial }}
-                    onSubmit={(values) => handleForgot(values) }
+                    onSubmit={(values) => handleForgot(values)}
                     validationSchema={forgotValues.validationSchema}
                     enableReinitialize={true}>
                     {(formikProps) => {
@@ -176,8 +186,8 @@ function ForgotPage(props) {
                                             titleCol={8}
                                             inputCol={16}></FastField>
                                     </Col>
-                                    <Col span ={24}>
-                                    <FastField 
+                                    <Col span={24}>
+                                        <FastField
                                             name='otpValue'
                                             component={InputField}
                                             type='text'
@@ -186,7 +196,7 @@ function ForgotPage(props) {
                                             maxLength={50}
                                             titleCol={8}
                                             inputCol={16}></FastField>
-                                            </Col>
+                                    </Col>
 
                                     {isError ? (
                                         <Col offset={8} span={16}>
@@ -206,29 +216,25 @@ function ForgotPage(props) {
                                     <Col offset={8} span={16}>
                                         <Button
                                             type='primary'
-                                            onClick={()=>handleConfirmOTP(formikProps.values)}
-                                           
-                                            >
-
+                                            onClick={() =>
+                                                handleConfirmOTP(
+                                                    formikProps.values
+                                                )
+                                            }>
                                             Xác nhận
-                                        </Button>
-                                            {' '}
-                                            {counter > 0 ? (
-                                                <Button
-                                                type='primary'
-                                               >     
+                                        </Button>{' '}
+                                        {counter > 0 ? (
+                                            <Button type='primary'>
                                                 Gửi lại mã OTP 00:{counter}
-                                               </Button>
-                                            ) : (
-                                                <Button
-                                                    type='primary'
-                                                    htmlType='submit'>     
-                                                    Gửi lại mã OTP
-                                                </Button>
-                                            )}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                type='primary'
+                                                htmlType='submit'>
+                                                Gửi lại mã OTP
+                                            </Button>
+                                        )}
                                     </Col>
-
-                                    
                                 </Row>
                                 <Divider />
                                 <p
