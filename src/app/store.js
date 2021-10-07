@@ -4,6 +4,7 @@ import account from 'features/Account/accountSlice';
 import chat from 'features/Chat/chatSlice';
 import friend from 'features/Friend/friendSlice';
 import admin from 'features/Admin/adminSlice';
+import media from 'features/Chat/mediaSlice';
 import callVideo from 'features/CallVideo/callVideoSlice';
 
 const rootReducer = {
@@ -12,6 +13,7 @@ const rootReducer = {
     chat,
     friend,
     admin,
+    media,
     callVideo,
 };
 
