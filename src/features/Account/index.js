@@ -7,8 +7,6 @@ import { useHistory } from 'react-router';
 import RegistryPage from './pages/RegistryPage';
 import ForgotPage from './pages/ForgotPage';
 import LoginPage from './pages/LoginPage';
-import ConfirmOTPPage from './pages/ConfirmOTPPage';
-import ConfirmAccountPage from './pages/ConfirmAccountPage';
 
 function Account(props) {
     const { url } = useRouteMatch();
@@ -27,8 +25,6 @@ function Account(props) {
                 <Route path={`${url}/login`} component={LoginPage} />
                 <Route path={`${url}/registry`} component={RegistryPage} />
                 <Route path={`${url}/forgot`} component={ForgotPage} />
-                <Route path={`${url}/otp`} component={ConfirmOTPPage} />
-                <Route path={`${url}/confirm`} component={ConfirmAccountPage} />
 
                 <Route component={NotFoundPage} />
             </Switch>
