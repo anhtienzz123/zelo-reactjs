@@ -42,6 +42,7 @@ export const forgotValues = {
         username: '',
         password: '',
         passwordconfirm: '',
+        otpValue: '',
     },
 
     validationSchema: Yup.object().shape({
@@ -60,9 +61,23 @@ export const forgotValues = {
 
 export const otpValues = {
     initial: {
+        username: '',
+        password: '',
+        passwordconfirm: '',
         otpValue: '',
     },
+   
     validationSchema: Yup.object().shape({
+        username: Yup.string()
+            .required('Tài khoản không được bỏ trống.')
+            .email('Email không hợp lệ'),
+        password: Yup.string()
+            .required('Mật khẩu không được bỏ trống')
+            .min(8, 'Mật khẩu phải từ 8-50 ký tự')
+            .max(50, 'Mật khẩu phải từ 8-50 ký tự'),
+        passwordconfirm: Yup.string()
+            .required('không được bỏ trống')
+            .oneOf([Yup.ref('password'), null], 'Mật khẩu không khớp'),
         otpValue: Yup.string()
             .required('OTP không được bỏ trống.')
             .min(6, 'OTP không đủ 6 ký tự')
