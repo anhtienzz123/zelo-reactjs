@@ -6,113 +6,125 @@ import InfoMediaSearch from 'features/Chat/components/InfoMediaSearch';
 import InfoMember from 'features/Chat/components/InfoMember';
 import InfoNameAndThumbnail from 'features/Chat/components/InfoNameAndThumbnail';
 import InfoTitle from 'features/Chat/components/InfoTitle';
-import React, { useState } from 'react';
+import { fetchAllMedia } from 'features/Chat/mediaSlice';
+import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import './style.scss';
-InfoContainer.propTypes = {
-
-};
+InfoContainer.propTypes = {};
 
 function InfoContainer(props) {
-
+    const dispatch = useDispatch();
     const [isFind, setFind] = useState(0);
-    const { memberInConversation, type } = useSelector(state => state.chat);
-
+    const { memberInConversation, type, currentConversation } = useSelector(
+        (state) => state.chat
+    );
+    const { media } = useSelector((state) => state.media);
 
     const handleViewMemberClick = (value) => {
         setFind(value);
-    }
+    };
 
     const handleViewMediaClick = (value) => {
         setFind(value);
-    }
+    };
 
     const handleOnBack = (value) => {
         setFind(value);
-    }
+    };
+
+    useEffect(() => {
+        if (currentConversation)
+            dispatch(fetchAllMedia({ conversationId: currentConversation }));
+    }, []);
     return (
-
-
-
         <div id='main-info'>
-            {
-                (() => {
-                    if (isFind === 0) {
-                        return (<>
-
-
-
-                            <div className="info_title-wrapper">
+            {(() => {
+                if (isFind === 0) {
+                    return (
+                        <>
+                            <div className='info_title-wrapper'>
                                 <InfoTitle
                                     onBack={handleOnBack}
-                                    text="Thông tin nhóm"
+                                    text='Thông tin nhóm'
                                 />
                             </div>
                             <Scrollbars
                                 autoHide={true}
                                 autoHideTimeout={1000}
                                 autoHideDuration={200}
-                                style={{ width: '100%', height: 'calc(100vh - 68px)' }}
-
-
-                            >
-
-                                <div className="body-info">
-                                    <div className="info_name-and-thumbnail-wrapper">
+                                style={{
+                                    width: '100%',
+                                    height: 'calc(100vh - 68px)',
+                                }}>
+                                <div className='body-info'>
+                                    <div className='info_name-and-thumbnail-wrapper'>
                                         <InfoNameAndThumbnail />
                                     </div>
 
                                     {type && (
-                                        <div className="info_member-wrapper">
+                                        <div className='info_member-wrapper'>
                                             <InfoMember
-                                                viewMemberClick={handleViewMemberClick}
-                                                quantity={memberInConversation.length}
+                                                viewMemberClick={
+                                                    handleViewMemberClick
+                                                }
+                                                quantity={
+                                                    memberInConversation.length
+                                                }
                                             />
                                         </div>
                                     )}
 
                                     <div className='info_archive-media-wrapper'>
-                                        <ArchiveMedia viewMediaClick={handleViewMediaClick} />
+                                        <ArchiveMedia
+                                            viewMediaClick={
+                                                handleViewMediaClick
+                                            }
+                                            name='Ảnh'
+                                            items={media.images}
+                                        />
+                                    </div>
+
+                                    <div className='info_archive-media-wrapper'>
+                                        <ArchiveMedia
+                                            viewMediaClick={
+                                                handleViewMediaClick
+                                            }
+                                            name='Video'
+                                            items={media.videos}
+                                        />
                                     </div>
 
                                     <div className='info_archive-file-wrapper'>
-                                        <ArchiveFile viewMediaClick={handleViewMediaClick} />
+                                        <ArchiveFile
+                                            viewMediaClick={
+                                                handleViewMediaClick
+                                            }
+                                            items={media.files}
+                                        />
                                     </div>
 
                                     <div className='info_another-setting-wrapper'>
                                         <AnotherSetting />
                                     </div>
-
-
                                 </div>
-
                             </Scrollbars>
-
-                        </>)
-                    } else if (isFind === 2) {
-                        return (
-                            <InfoMediaSearch
-                                onBack={handleOnBack}
-
-                            />
-                        )
-                    } else {
-                        return (
-                            <InfoFriendSearch
-                                onBack={handleOnBack}
-                                members={memberInConversation}
-                            />
-                        )
-                    }
-                })()
-
-
-            }
-
+                        </>
+                    );
+                } else if (isFind === 2) {
+                    return <InfoMediaSearch onBack={handleOnBack} />;
+                } else {
+                    return (
+                        <InfoFriendSearch
+                            onBack={handleOnBack}
+                            members={memberInConversation}
+                        />
+                    );
+                }
+            })()}
         </div>
         // </Scrollbars >
-
     );
 }
 
