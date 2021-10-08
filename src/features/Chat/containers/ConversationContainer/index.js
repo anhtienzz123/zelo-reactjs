@@ -1,6 +1,7 @@
 import { DeleteFilled, ExclamationCircleOutlined, TagTwoTone } from '@ant-design/icons';
 import { Dropdown, Menu, message, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
+import SubMenuClassify from 'components/SubMenuClassify';
 import {
     fetchListMessages
 } from 'features/Chat/chatSlice';
@@ -82,9 +83,14 @@ function ConversationContainer(props) {
                                     key={index}
                                     overlay={
                                         <Menu onClick={(e) => handleOnClickItem(e, conversationEle._id)}>
+                                            <SubMenuClassify
+                                                data={classifies}
+                                                idConver={conversationEle._id}
+                                            />
 
 
-                                            <SubMenu title="Phân loại">
+
+                                            {/* <SubMenu title="Phân loại">
 
                                                 {
                                                     classifies.length > 0 &&
@@ -93,7 +99,7 @@ function ConversationContainer(props) {
                                                     ))
                                                 }
 
-                                            </SubMenu>
+                                            </SubMenu> */}
                                             <Menu.Item danger key="1" icon={<DeleteFilled />}>Xoá hội thoại</Menu.Item>
                                         </Menu>
                                     }

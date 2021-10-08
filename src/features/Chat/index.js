@@ -26,21 +26,32 @@ import FooterChatContainer from './containers/FooterChatContainer';
 import HeaderChatContainer from './containers/HeaderChatContainer';
 import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
-import { socket } from 'utils/socketClient';
 import './style.scss';
+import PropTypes from 'prop-types';
+import { setJoinChatLayout, setJoinFriendLayout } from 'app/globalSlice';
 
 
 
 // let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
 
-Chat.propTypes = {};
+Chat.propTypes = {
+    socket: PropTypes.object,
+};
 
-function Chat(props) {
+Chat.defaultProps = {
+    socket: {}
+}
+
+function Chat({ socket }) {
+
     const dispatch = useDispatch();
     const { conversations, currentConversation } = useSelector(
         (state) => state.chat
     );
+
     const { path } = useRouteMatch();
+
+
 
     const [scrollId, setScrollId] = useState('');
     const [idNewMessage, setIdNewMessage] = useState('');
@@ -48,6 +59,12 @@ function Chat(props) {
     const [isScroll, setIsScroll] = useState(false);
     const [hasMessage, setHasMessage] = useState('');
     const [usersTyping, setUsersTyping] = useState([]);
+    const { isJoinChatLayout, isJoinFriendLayout } = useSelector((state) => state.global);
+
+
+
+
+
 
     useEffect(() => {
         console.log('User typing', usersTyping);
@@ -61,7 +78,6 @@ function Chat(props) {
         );
     }, []);
 
-
     const refCurrentConversation = useRef();
     const refConversations = useRef();
 
@@ -74,90 +90,96 @@ function Chat(props) {
     }, [conversations]);
 
     useEffect(() => {
-        socket.on('new-message', (conversationId, newMessage) => {
-            const { type, content, manipulatedUsers } = newMessage;
+        if (!isJoinChatLayout) {
+            socket.on('new-message', (conversationId, newMessage) => {
+                const { type, content, manipulatedUsers } = newMessage;
 
-            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
-                dispatch(
-                    updateConversationWhenAddMember({
-                        newMembers: manipulatedUsers,
-                        conversationId,
-                    })
-                );
-            }
-
-            if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
-                dispatch(
-                    updateMemberLeaveGroup({
-                        conversationId,
-                        newMessage,
-                    })
-                );
-            }
-
-            dispatch(addMessage(newMessage));
-            setIdNewMessage(newMessage._id);
-        });
-
-        socket.on('create-conversation', (conversationId) => {
-            dispatch(fetchConversationById({ conversationId }));
-        });
-
-        socket.on('delete-conversation', (conversationId) => {
-            dispatch(removeConversation(conversationId));
-        });
-
-        socket.on('delete-message', (conversationId, id) => {
-            handleDeleteMessage(conversationId, id, refCurrentConversation);
-        });
-
-        socket.on('added-group', (conversationId) => {
-            dispatch(fetchConversationById({ conversationId }));
-        });
-
-        socket.on('add-reaction', (conversationId, messageId, user, type) => {
-            if (conversationId === refCurrentConversation.current) {
-                dispatch(setReactionMessage({ messageId, user, type }));
-            }
-        });
-
-        socket.on('typing', (conversationId, user) => {
-            if (conversationId === refCurrentConversation.current) {
-                const index = usersTyping.findIndex(
-                    (ele) => ele._id === user._id
-                ); //khoo
-
-                if (usersTyping.length === 0 || index < 0) {
-                    setUsersTyping([...usersTyping, user]);
+                if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
+                    dispatch(
+                        updateConversationWhenAddMember({
+                            newMembers: manipulatedUsers,
+                            conversationId,
+                        })
+                    );
                 }
-            }
-        });
 
-        socket.on('not-typing', (conversationId, user) => {
-            if (conversationId === refCurrentConversation.current) {
-                const index = usersTyping.findIndex(
-                    (ele) => ele._id === user._id
-                );
-                const newUserTyping = usersTyping.filter(
-                    (ele) => ele._id !== user._id
-                );
-                console.log('newUserTyping', newUserTyping);
-                setUsersTyping(newUserTyping);
-            }
-        });
+                if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
+                    dispatch(
+                        updateMemberLeaveGroup({
+                            conversationId,
+                            newMessage,
+                        })
+                    );
+                }
 
-        socket.on('deleted-group', (conversationId) => {
-            const conversation = refConversations.current.find(
-                (ele) => ele._id === conversationId
-            );
-            message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`);
-            if (conversationId === refCurrentConversation.current) {
-                dispatch(setCurrentConversation(''));
-            }
-            dispatch(isDeletedFromGroup(conversationId));
-            socket.emit('leave-conversation', conversationId);
-        });
+                dispatch(addMessage(newMessage));
+                setIdNewMessage(newMessage._id);
+            });
+
+            socket.on('create-conversation', (conversationId) => {
+                dispatch(fetchConversationById({ conversationId }));
+            });
+
+            socket.on('delete-conversation', (conversationId) => {
+                dispatch(removeConversation(conversationId));
+            });
+
+            socket.on('delete-message', (conversationId, id) => {
+                handleDeleteMessage(conversationId, id, refCurrentConversation);
+            });
+
+            socket.on('added-group', (conversationId) => {
+                dispatch(fetchConversationById({ conversationId }));
+            });
+
+            socket.on('add-reaction', (conversationId, messageId, user, type) => {
+                if (conversationId === refCurrentConversation.current) {
+                    dispatch(setReactionMessage({ messageId, user, type }));
+                }
+            });
+
+            socket.on('typing', (conversationId, user) => {
+                if (conversationId === refCurrentConversation.current) {
+                    const index = usersTyping.findIndex(
+                        (ele) => ele._id === user._id
+                    ); //khoo
+
+                    if (usersTyping.length === 0 || index < 0) {
+                        setUsersTyping([...usersTyping, user]);
+                    }
+                }
+            });
+
+            socket.on('not-typing', (conversationId, user) => {
+                if (conversationId === refCurrentConversation.current) {
+                    const index = usersTyping.findIndex(
+                        (ele) => ele._id === user._id
+                    );
+                    const newUserTyping = usersTyping.filter(
+                        (ele) => ele._id !== user._id
+                    );
+                    console.log('newUserTyping', newUserTyping);
+                    setUsersTyping(newUserTyping);
+                }
+            });
+
+            socket.on('deleted-group', (conversationId) => {
+                const conversation = refConversations.current.find(
+                    (ele) => ele._id === conversationId
+                );
+                message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`);
+                if (conversationId === refCurrentConversation.current) {
+                    dispatch(setCurrentConversation(''));
+                }
+                dispatch(isDeletedFromGroup(conversationId));
+                socket.emit('leave-conversation', conversationId);
+            });
+        }
+        dispatch(setJoinChatLayout(true));
+
     }, []);
+
+
 
     const handleDeleteMessage = (
         conversationId,
@@ -297,7 +319,9 @@ function Chat(props) {
                         </Col>
                         <Col span={6}>
                             <div className='main-info'>
-                                <InfoContainer />
+                                <InfoContainer
+                                    socket={socket}
+                                />
                             </div>
                         </Col>
                     </>

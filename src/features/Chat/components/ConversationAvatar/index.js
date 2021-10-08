@@ -27,9 +27,6 @@ function ConversationAvatar({ avatar, demension, isGroupCard }) {
         <Avatar key={index} style={quantity === 3 && index === 2 ? COVERSATION_STYLE.styleGroup3 : {}} size={demension} src={avatarEle} />
     ));
 
-    console.log("test", isGroupCard, COVERSATION_STYLE.friendCardAvatar(demension));
-
-
 
 
 

@@ -6,10 +6,15 @@ import conversationApi from 'api/conversationApi';
 import { leaveGroup } from '../../chatSlice';
 import './style.scss';
 import { message, Modal } from 'antd';
-import { socket } from 'utils/socketClient';
-AnotherSetting.propTypes = {
 
+AnotherSetting.propTypes = {
+    socket: PropTypes.object,
 };
+
+AnotherSetting.defaultProps = {
+    socket: {}
+};
+
 
 const styleIconDrop = {
     transform: 'rotate(-90deg)'
@@ -20,7 +25,7 @@ const styleInteract = {
 }
 
 
-function AnotherSetting(props) {
+function AnotherSetting({ socket }) {
     const [isDrop, setIsDrop] = useState(true);
     const { currentConversation } = useSelector(state => state.chat);
     const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import FriendItem from '../FriendItem';
@@ -9,6 +9,7 @@ import friendApi from 'api/friendApi';
 import { fetchFriends } from '../../friendSlice';
 import './style.scss';
 import UserCard from 'components/UserCard';
+import userApi from 'api/userApi';
 
 ListFriend.propTypes = {
     data: PropTypes.array,
@@ -27,14 +28,18 @@ function ListFriend({ data }) {
     const [isVisible, setIsVisible] = useState(false);
     const [userIsFind, setUserIsFind] = useState({})
 
-    const handleOnClickMenu = (key, id) => {
+    const handleOnClickMenu = async (key, id) => {
         if (key === "2") {
             confirm(id);
         } else {
             setIsVisible(true);
-            setUserIsFind(data.find(ele => ele._id === id));
+            const tempUser = data.find(ele => ele._id === id);
+            const realUser = await userApi.fetchUser(tempUser.username);
+            setUserIsFind(realUser);
+
         }
     }
+
 
     const handleCancelModalUserCard = () => {
         setIsVisible(false)

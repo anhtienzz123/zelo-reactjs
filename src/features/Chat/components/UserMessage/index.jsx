@@ -208,12 +208,12 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                         <div className='notify-message-content_group-avatar'>
                             {(transferTextToValue(content) === 3 ||
                                 transferTextToValue(content) === 5) && (
-                                <div
-                                    div
-                                    className='notify-message-content_per-avatar'>
-                                    <Avatar size='small' src={avatar} />
-                                </div>
-                            )}
+                                    <div
+                                        div
+                                        className='notify-message-content_per-avatar'>
+                                        <Avatar size='small' src={avatar} />
+                                    </div>
+                                )}
 
                             {manipulatedUsers &&
                                 manipulatedUsers.length > 0 &&
@@ -261,14 +261,14 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                             {transferTextToValue(content) === 1
                                                 ? 'đã thêm'
                                                 : transferTextToValue(
-                                                      content
-                                                  ) === 2
-                                                ? 'đã xóa'
-                                                : transferTextToValue(
-                                                      content
-                                                  ) === 3
-                                                ? 'đã tạo nhóm'
-                                                : ''}
+                                                    content
+                                                ) === 2
+                                                    ? 'đã xóa'
+                                                    : transferTextToValue(
+                                                        content
+                                                    ) === 3
+                                                        ? 'đã tạo nhóm'
+                                                        : ''}
                                         </span>
                                     </>
                                 }
@@ -280,18 +280,16 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                             className='user-name-strong'
                                             key={index}>
                                             {index < 3 && index === 0
-                                                ? ` ${
-                                                      ele._id ===
-                                                      global.user._id
-                                                          ? 'bạn'
-                                                          : ele.name
-                                                  }`
-                                                : `, ${
-                                                      ele._id ===
-                                                      global.user._id
-                                                          ? 'bạn'
-                                                          : ele.name
-                                                  }`}
+                                                ? ` ${ele._id ===
+                                                    global.user._id
+                                                    ? 'bạn'
+                                                    : ele.name
+                                                }`
+                                                : `, ${ele._id ===
+                                                    global.user._id
+                                                    ? 'bạn'
+                                                    : ele.name
+                                                }`}
                                         </span>
                                     ))}
 
@@ -299,9 +297,8 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                     manipulatedUsers.length > 3 && (
                                         <span className='user-name-strong'>
                                             {` và`}{' '}
-                                            <span className='blue'>{`${
-                                                manipulatedUsers.length - 3
-                                            } người khác`}</span>
+                                            <span className='blue'>{`${manipulatedUsers.length - 3
+                                                } người khác`}</span>
                                         </span>
                                     )}
 
@@ -317,13 +314,11 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                     id='user-message'
                     className={`${setMarginTopAndBottom(_id)}`}>
                     <div
-                        className={`interact-conversation ${
-                            isMyMessage ? 'reverse' : ''
-                        }  `}>
+                        className={`interact-conversation ${isMyMessage ? 'reverse' : ''
+                            }  `}>
                         <div
-                            className={`avatar-user ${
-                                isSameUser ? 'hidden' : ''
-                            }`}>
+                            className={`avatar-user ${isSameUser ? 'hidden' : ''
+                                }`}>
                             <PersonalIcon
                                 // isHost={true}
                                 demention={40}
@@ -333,30 +328,27 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                         <div className='list-conversation'>
                             <div className='message' id={`${_id}`}>
                                 <div
-                                    className={`sub-message ${
-                                        isMyMessage ? 'reverse' : ''
-                                    } ${isSameUser ? 'same-user' : ''}`}>
+                                    className={`sub-message ${isMyMessage ? 'reverse' : ''
+                                        } ${isSameUser ? 'same-user' : ''}`}>
                                     <div
-                                        className={`content-message ${
-                                            type === 'IMAGE' || type === 'VIDEO'
+                                        className={`content-message ${type === 'IMAGE' || type === 'VIDEO'
                                                 ? 'content-media'
                                                 : ''
-                                        } 
-                                ${
-                                    isMyMessage &&
-                                    type !== 'IMAGE' &&
-                                    type !== 'VIDEO'
-                                        ? 'my-message-bg'
-                                        : ''
-                                }`}>
+                                            } 
+                                ${isMyMessage &&
+                                                type !== 'IMAGE' &&
+                                                type !== 'VIDEO'
+                                                ? 'my-message-bg'
+                                                : ''
+                                            }`}>
                                         <span className='author-message'>
                                             {isSameUser && isMyMessage
                                                 ? ''
                                                 : isSameUser && !isMyMessage
-                                                ? ''
-                                                : !isSameUser && isMyMessage
-                                                ? ''
-                                                : name}
+                                                    ? ''
+                                                    : !isSameUser && isMyMessage
+                                                        ? ''
+                                                        : name}
                                         </span>
                                         <div className='content-message-description'>
                                             {type === 'HTML' ? (
@@ -376,11 +368,10 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                     {type === 'IMAGE' &&
                                                         !myReact && (
                                                             <div
-                                                                className={`reaction ${
-                                                                    isMyMessage
+                                                                className={`reaction ${isMyMessage
                                                                         ? 'left'
                                                                         : 'right'
-                                                                } media `}>
+                                                                    } media `}>
                                                                 {
                                                                     <div className='reaction-thumbnail'>
                                                                         {/* onClick={handleClickLike} */}
@@ -432,11 +423,10 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                     </div>
                                                     {!myReact && (
                                                         <div
-                                                            className={`reaction ${
-                                                                isMyMessage
+                                                            className={`reaction ${isMyMessage
                                                                     ? 'left'
                                                                     : 'right'
-                                                            } media `}>
+                                                                } media `}>
                                                             <div className='reaction-thumbnail'>
                                                                 <div
                                                                     onClick={
@@ -502,11 +492,10 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                         {(type === 'TEXT' || type === 'HTML') &&
                                             !myReact && (
                                                 <div
-                                                    className={`reaction ${
-                                                        isMyMessage
+                                                    className={`reaction ${isMyMessage
                                                             ? 'left'
                                                             : 'right'
-                                                    } `}>
+                                                        } `}>
                                                     <div className='reaction-thumbnail'>
                                                         <div
                                                             onClick={
@@ -540,21 +529,18 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                             )}
 
                                         <div
-                                            className={`reacted-block ${
-                                                (type === 'IMAGE' ||
+                                            className={`reacted-block ${(type === 'IMAGE' ||
                                                     type === 'VIDEO') &&
                                                 'media'
-                                            } ${
-                                                isMyMessage ? 'left' : 'right'
-                                            } `}>
+                                                } ${isMyMessage ? 'left' : 'right'
+                                                } `}>
                                             {listReactionCurrent.length > 0 &&
                                                 !isDeleted && (
                                                     <div
-                                                        className={`list-user-react ${
-                                                            isMyMessage
+                                                        className={`list-user-react ${isMyMessage
                                                                 ? 'bg-white'
                                                                 : ''
-                                                        }`}>
+                                                            }`}>
                                                         <div className='list-user-react-icon'>
                                                             <div>
                                                                 {listReactionCurrent.map(
@@ -575,7 +561,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                                 <span className='count-reated'>
                                                                     {reacts &&
                                                                         reacts.length >
-                                                                            0 &&
+                                                                        0 &&
                                                                         reacts.length}
                                                                 </span>
                                                             </div>
@@ -583,7 +569,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                             <div className='list-user-detail'>
                                                                 {reacts &&
                                                                     reacts.length >
-                                                                        0 &&
+                                                                    0 &&
                                                                     reacts.map(
                                                                         (
                                                                             ele,
@@ -592,27 +578,26 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                                             <>
                                                                                 {index <
                                                                                     5 && (
-                                                                                    <span
-                                                                                        key={
-                                                                                            index
-                                                                                        }>
-                                                                                        {
-                                                                                            ele
-                                                                                                .user
-                                                                                                .name
-                                                                                        }
-                                                                                    </span>
-                                                                                )}
+                                                                                        <span
+                                                                                            key={
+                                                                                                index
+                                                                                            }>
+                                                                                            {
+                                                                                                ele
+                                                                                                    .user
+                                                                                                    .name
+                                                                                            }
+                                                                                        </span>
+                                                                                    )}
                                                                             </>
                                                                         )
                                                                     )}
                                                                 {reacts &&
                                                                     reacts.length >
-                                                                        5 && (
-                                                                        <span>{`và ${
-                                                                            reacts.length -
+                                                                    5 && (
+                                                                        <span>{`và ${reacts.length -
                                                                             5
-                                                                        } người khác`}</span>
+                                                                            } người khác`}</span>
                                                                     )}
                                                             </div>
                                                         </div>
@@ -621,16 +606,15 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
 
                                             {myReact && !isDeleted && (
                                                 <div
-                                                    className={`your-react ${
-                                                        isMyMessage
+                                                    className={`your-react ${isMyMessage
                                                             ? 'bg-white'
                                                             : ''
-                                                    }`}>
+                                                        }`}>
                                                     <span className='react-current'>
                                                         {myReact
                                                             ? transferIcon(
-                                                                  myReact.type
-                                                              )
+                                                                myReact.type
+                                                            )
                                                             : ''}
                                                     </span>
                                                     <div className='list_icon-reaction'>
@@ -671,9 +655,8 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                     </div>
 
                                     <div
-                                        className={`interaction ${
-                                            isDeleted ? 'hidden' : ''
-                                        }`}>
+                                        className={`interaction ${isDeleted ? 'hidden' : ''
+                                            }`}>
                                         <div className='reply icon-interact'>
                                             <Button style={styleButton}>
                                                 <MdQuestionAnswer />

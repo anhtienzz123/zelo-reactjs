@@ -39,7 +39,7 @@ function FriendItem({ data, onClickMenu }) {
                 <div className="friend-item_left">
                     <div className="friend-item-avatar">
                         <PersonalIcon
-                            isActive={true}
+                            isActive={data.isOnline && data.isOnline}
                             avatar={data.avatar}
                         />
                     </div>
@@ -47,6 +47,8 @@ function FriendItem({ data, onClickMenu }) {
                     <div className="friend-item-name">
                         {data.name}
                     </div>
+
+                    {data.lastLogin && data.lastLogin}
                 </div>
                 <div className="friend-item_right">
                     <div className="friend-item-interact">
@@ -60,6 +62,8 @@ function FriendItem({ data, onClickMenu }) {
                         </Dropdown>
                     </div>
                 </div>
+
+
             </div>
         </Dropdown>
 

@@ -9,12 +9,17 @@ import InfoTitle from 'features/Chat/components/InfoTitle';
 import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import './style.scss';
 InfoContainer.propTypes = {
-
+    socket: PropTypes.object,
 };
 
-function InfoContainer(props) {
+InfoContainer.defaultProps = {
+    socket: {}
+}
+
+function InfoContainer({ socket }) {
 
     const [isFind, setFind] = useState(0);
     const { memberInConversation, type } = useSelector(state => state.chat);
@@ -81,7 +86,9 @@ function InfoContainer(props) {
                                     </div>
 
                                     <div className='info_another-setting-wrapper'>
-                                        <AnotherSetting />
+                                        <AnotherSetting
+                                            socket={socket}
+                                        />
                                     </div>
 
 

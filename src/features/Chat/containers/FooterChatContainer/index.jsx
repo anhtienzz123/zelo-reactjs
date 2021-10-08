@@ -46,14 +46,14 @@ function FooterChatContainer({ onScrollWhenSentText }) {
         setValueText('');
     };
 
-    function sendMessage(value, type) {
+    async function sendMessage(value, type) {
         const newMessage = {
             content: value,
             type: type,
             conversationId: currentConversation,
         };
 
-        messageApi
+        await messageApi
             .sendTextMessage(newMessage)
             .then((res) => {
                 const { _id } = res;

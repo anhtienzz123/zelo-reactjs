@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { TagFilled } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { Avatar } from 'antd';
-import ConversationAvatar from '../ConversationAvatar';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { TagTwoTone } from '@ant-design/icons';
-import './style.scss';
 import classifyUtils from 'utils/classifyUtils';
+import ConversationAvatar from '../ConversationAvatar';
+import './style.scss';
 ConversationSingle.propTypes = {
     conversation: PropTypes.object,
     onClick: PropTypes.func,
@@ -16,15 +15,17 @@ function ConversationSingle({ conversation, onClick }) {
         conversation;
     const { content, type, createdAt, user } = lastMessage;
     const global = useSelector((state) => state.global);
-    const { classifies } = useSelector(state => state.chat);
-    const [classify, setClassify] = useState({});
+    const { classifies, conversations } = useSelector(state => state.chat);
+    const [classify, setClassify] = useState(null);
 
     useEffect(() => {
         if (classifies.length > 0) {
-            setClassify(classifyUtils.getClassifyOfObject(_id, classifies));
+            const temp = classifyUtils.getClassifyOfObject(_id, classifies);
+            if (temp) {
+                setClassify(temp);
+            }
         }
-    }, [conversation])
-
+    }, [conversation, conversations, classifies]);
 
 
 
@@ -49,7 +50,9 @@ function ConversationSingle({ conversation, onClick }) {
                             {
                                 classify && (
                                     <span className='tag-classify'>
-                                        <TagTwoTone twoToneColor={classify.color?.code} />
+                                        <TagFilled
+                                            style={{ color: `${classify.color?.code}` }}
+                                        />
                                     </span>
                                 )
                             }

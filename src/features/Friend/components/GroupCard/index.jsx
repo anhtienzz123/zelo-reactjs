@@ -24,14 +24,14 @@ GroupCard.defaultProps = {
 function GroupCard({ data, onRemove }) {
     const { classifies } = useSelector(state => state.chat);
     const [classify, setClassify] = useState(null);
-    const { SubMenu } = Menu;
+
 
 
     useEffect(() => {
         if (classifies.length > 0) {
             setClassify(classifyUtils.getClassifyOfObject(data._id, classifies));
         }
-    }, [data]);
+    }, [classifies]);
 
 
     const handleOnSelectMenu = ({ key }) => {
@@ -50,38 +50,9 @@ function GroupCard({ data, onRemove }) {
 
             <SubMenuClassify
                 data={classifies}
-
+                idConver={data._id}
             />
 
-
-            {/* <SubMenu
-                title={<span className="menu-item--highlight">Phân loại</span>}
-                key="sub-1"
-            >
-
-                {
-                    classifies.length > 0 && (
-                        classifies.map(ele => (
-                            <Menu.Item
-                                key={ele._id}
-                                icon={<TagTwoTone twoToneColor={ele.color.code} />}
-                            >
-                                {ele.name}
-                            </Menu.Item>
-                        ))
-                    )
-                }
-
-                <Divider style={{ margin: '1rem 2rem' }} />
-                <Menu.Item
-                    key="0"
-                    icon={<TagsOutlined />}
-                    onClick={() => console.log('asdfasdf')}
-                >
-                    <span className="menu-item--highlight">Quản lý thẻ phân loại</span>
-                </Menu.Item>
-
-            </SubMenu> */}
 
             <Menu.Item key="2" danger>
                 <span className="menu-item--highlight">Rời nhóm</span>

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { UserDeleteOutlined } from '@ant-design/icons';
+import { Button, Image, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import './style.scss';
-import { Button, Image, Input, Modal } from 'antd';
-import UserCardStyle from './UserCardStyle';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import dateUtils from 'utils/dateUtils';
-import { DeleteFilled, UserDeleteOutlined } from '@ant-design/icons';
+import './style.scss';
+import UserCardStyle from './UserCardStyle';
 UserCard.propTypes = {
     title: PropTypes.string,
     user: PropTypes.object.isRequired,
@@ -41,21 +40,7 @@ function UserCard(props) {
         isRequestToMe
     } = props;
 
-    const { friends } = useSelector(state => state.chat);
-    const { requestFriends } = useSelector(state => state.friend);
-    const [isShowButton, setIsShowButton] = useState(true);
-    const [isShowButtonComfirm, setIsShowButtonConfirm] = useState(false);
-    // const [isShowButtonCancel, setIsShowButtonCancel] = useState(false);
-
-    // useEffect(() => {
-    //     // setIsShowButton(!FriendUtils.checkIsFriend(user, friends));
-    //     // setIsShowButtonConfirm(FriendUtils.checkIsSentRequest(user, requestFriends));
-    //     // setIsShowButtonCancel(FriendUtils.checkIsMyRequestFriend(user, friends));
-
-
-
-    //     // console.log(user, FriendUtils.checkIsSentRequest(user, requestFriends));
-    // }, [user]);
+    const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
 
 
     const handleOnCancle = () => {
@@ -86,9 +71,6 @@ function UserCard(props) {
 
 
 
-
-
-    const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
     return (
         <Modal
             title={title}
@@ -221,7 +203,7 @@ function UserCard(props) {
                     </div>
 
 
-                    <div className={`user-card-button-optional ${(isShowButton && !isMyFriend) ? 'user-card-button-optional--hidden' : ''}`}>
+                    <div className={`user-card-button-optional ${(!isMyFriend) ? 'user-card-button-optional--hidden' : ''}`}>
                         <Button
                             danger
                             icon={<UserDeleteOutlined />}

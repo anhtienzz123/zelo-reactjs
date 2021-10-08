@@ -12,32 +12,55 @@ import ListFriend from './components/ListFriend';
 import ListGroup from './components/ListGroup';
 import ListMyFriendRequest from './components/ListMyRequestFriend';
 import ListRequestFriend from './components/ListRequestFriend';
+import { fetchFriends, fetchListMyRequestFriend, fetchListRequestFriend, setMyRequestFriend, setNewFriend, setNewRequestFriend } from './friendSlice';
 import FRIEND_STYLE from './friendStyle';
-import classifyUtils from 'utils/classifyUtils';
 import './style.scss';
-import { socket } from 'utils/socketClient';
-import { setNewFriend, setNewRequestFriend, setMyRequestFriend } from './friendSlice';
+import PropTypes from 'prop-types';
 
-function Friend(props) {
-    const { isLoading, requestFriends, myRequestFriend, groups, friends } = useSelector((state) => state.friend);
+Friend.propTypes = {
+    socket: PropTypes.object,
+};
+
+Friend.defaultProps = {
+    socket: {}
+}
+
+
+function Friend({ socket }) {
+    const { requestFriends, myRequestFriend, groups, friends } = useSelector((state) => state.friend);
     const [subTab, setSubTab] = useState(0);
     const dispatch = useDispatch();
 
 
-
     useEffect(() => {
         socket.on('accept-friend', (value) => {
-            console.log('socket accpet', value);
             dispatch(setNewFriend(value));
             dispatch(setMyRequestFriend(value._id));
 
         });
 
         socket.on('send-friend-invite', (value) => {
-            console.log('socket invite', value);
             dispatch(setNewRequestFriend(value));
-        })
+        });
+
     }, []);
+
+    useEffect(() => {
+        dispatch(fetchListRequestFriend());
+    }, []);
+
+    useEffect(() => {
+        dispatch(fetchListMyRequestFriend());
+    }, []);
+
+
+    useEffect(() => {
+        dispatch(fetchFriends({
+            name: ''
+        }));
+    }, []);
+
+
 
 
 
