@@ -5,6 +5,7 @@ import React from 'react';
 import dateUtils from 'utils/dateUtils';
 import './style.scss';
 import UserCardStyle from './UserCardStyle';
+import conversationApi from 'api/conversationApi';
 UserCard.propTypes = {
     title: PropTypes.string,
     user: PropTypes.object.isRequired,
@@ -67,6 +68,11 @@ function UserCard(props) {
 
     const handleDenyRequest = () => {
 
+    }
+
+    const handleClickMessage = async () => {
+        const response = await conversationApi.createConversationIndividual(user._id);
+        console.log(response);
     }
 
 
@@ -161,6 +167,7 @@ function UserCard(props) {
 
                         <div className={`user-card-button--message ${(isMyFriend) ? 'user-card-button--no-margin' : ''}`}>
                             <Button
+                                onClick={handleClickMessage}
                                 type="default"
                                 style={(isRequestToMe) ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
                             >Nhắn tin

@@ -17,7 +17,7 @@ ConversationContainer.propTypes = {};
 function ConversationContainer(props) {
     const dispatch = useDispatch();
     const { conversations, classifies } = useSelector((state) => state.chat);
-    const { SubMenu } = Menu;
+
 
 
     const handleConversationClick = (conversationId) => {
@@ -88,18 +88,6 @@ function ConversationContainer(props) {
                                                 idConver={conversationEle._id}
                                             />
 
-
-
-                                            {/* <SubMenu title="Phân loại">
-
-                                                {
-                                                    classifies.length > 0 &&
-                                                    classifies.map(ele => (
-                                                        <Menu.Item key={ele._id} icon={<TagTwoTone twoToneColor={ele.color.code} />}>{ele.name}</Menu.Item>
-                                                    ))
-                                                }
-
-                                            </SubMenu> */}
                                             <Menu.Item danger key="1" icon={<DeleteFilled />}>Xoá hội thoại</Menu.Item>
                                         </Menu>
                                     }
@@ -113,7 +101,8 @@ function ConversationContainer(props) {
                                         className={`conversation-item ${numberUnread === 0
                                             ? ''
                                             : 'arrived-message'
-                                            } `}>
+                                            } `}
+                                    >
                                         <ConversationSingle
                                             conversation={conversationEle}
                                             onClick={handleConversationClick}

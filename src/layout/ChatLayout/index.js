@@ -115,9 +115,6 @@ function ChatLayout(props) {
 
         await leaveApp();
 
-
-
-
     }, true);
 
 

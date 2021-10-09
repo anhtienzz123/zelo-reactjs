@@ -4,6 +4,8 @@ import './style.scss';
 import { DashOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { Menu, Dropdown, Button } from 'antd';
+import conversationApi from 'api/conversationApi';
+
 FriendItem.propTypes = {
     data: PropTypes.object.isRequired,
     onClickMenu: PropTypes.func,
@@ -21,6 +23,11 @@ function FriendItem({ data, onClickMenu }) {
         }
     }
 
+    const handleClickFriendItem = async () => {
+        const response = await conversationApi.createConversationIndividual(data._id);
+        console.log(response);
+    }
+
     const menu = (
         <Menu onClick={handleClickMenu}>
             <Menu.Item key="1" icon={<InfoCircleOutlined />}>
@@ -35,7 +42,7 @@ function FriendItem({ data, onClickMenu }) {
     return (
 
         <Dropdown overlay={menu} trigger={['contextMenu']}>
-            <div id='friend-item'>
+            <div id='friend-item' onClick={handleClickFriendItem}>
                 <div className="friend-item_left">
                     <div className="friend-item-avatar">
                         <PersonalIcon
