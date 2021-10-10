@@ -1,34 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import InfoTitle from '../InfoTitle';
 import { Tabs } from 'antd';
-import './style.scss';
-import TabPaneMedia from '../TabPaneMedia';
-import TabPaneFile from '../TabPaneFile';
-import Scrollbars from 'react-custom-scrollbars';
-import ContentTabPaneMedia from '../ContentTabPaneMedia';
-import ContentTabPaneFile from '../ContentTabPaneFile';
-import { useSelector } from 'react-redux';
 import mediaApi from 'api/mediaApi';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import { useSelector } from 'react-redux';
+import ContentTabPaneFile from '../ContentTabPaneFile';
+import ContentTabPaneMedia from '../ContentTabPaneMedia';
+import InfoTitle from '../InfoTitle';
+import TabPaneMedia from '../TabPaneMedia';
+import './style.scss';
 
 InfoMediaSearch.propTypes = {
     onBack: PropTypes.func,
+    tabpane: PropTypes.number.isRequired,
 };
 InfoMediaSearch.defaultProps = {
     onBack: null,
+
 };
 
 function InfoMediaSearch(props) {
-    const { onBack } = props;
+    const { onBack, tabpane } = props;
     const { TabPane } = Tabs;
-    const [activeKey, setActiveKey] = useState('1');
+    const [activeKey, setActiveKey] = useState(tabpane.toString());
     const { memberInConversation, currentConversation } = useSelector(
         (state) => state.chat
     );
     const [medias, setMedias] = useState([]);
+
+
+    const getTypeWithTabpane = (value) => {
+        if (tabpane === 1) {
+            return 'IMAGE';
+        }
+        if (tabpane === 2) {
+            return 'VIDEO';
+        }
+        if (tabpane === 3) {
+            return 'FILE';
+        }
+    }
+
+
+
     const [query, setQuery] = useState({
         conversationId: currentConversation,
-        type: 'IMAGE',
+        type: getTypeWithTabpane(tabpane),
     });
 
     const handleOnBack = (value) => {
@@ -37,9 +54,10 @@ function InfoMediaSearch(props) {
         }
     };
 
+
     const handleChangeTab = (activeKey) => {
         console.log('tabChange: ', activeKey);
-        setQuery({ ...query, type: getType(activeKey) });
+        setQuery({ ...query, type: getType(activeKey), senderId: '' });
         setActiveKey(activeKey);
     };
 
@@ -86,7 +104,8 @@ function InfoMediaSearch(props) {
 
             <div className='info_media-search--tabpane'>
                 <Tabs
-                    defaultActiveKey={activeKey}
+                    activeKey={activeKey}
+                    // defaultActiveKey={activeKey}
                     size='middle'
                     onChange={handleChangeTab}>
                     <TabPane tab='Ảnh' key='1'>

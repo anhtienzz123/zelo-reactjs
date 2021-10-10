@@ -9,29 +9,28 @@ import InfoTitle from 'features/Chat/components/InfoTitle';
 import { fetchAllMedia } from 'features/Chat/mediaSlice';
 import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './style.scss';
 InfoContainer.propTypes = {};
 
 function InfoContainer(props) {
     const dispatch = useDispatch();
-    const [isFind, setFind] = useState(0);
+    const [isFind, setFind] = useState({ view: 0, tabpane: 0 });
     const { memberInConversation, type, currentConversation } = useSelector(
         (state) => state.chat
     );
     const { media } = useSelector((state) => state.media);
 
     const handleViewMemberClick = (value) => {
-        setFind(value);
+        setFind({ view: value, tabpane: 0 });
     };
 
-    const handleViewMediaClick = (value) => {
-        setFind(value);
+    const handleViewMediaClick = (value, tabpane) => {
+        setFind({ view: value, tabpane });
     };
 
     const handleOnBack = (value) => {
-        setFind(value);
+        setFind({ view: value, tabpane: 0 });
     };
 
     useEffect(() => {
@@ -41,7 +40,7 @@ function InfoContainer(props) {
     return (
         <div id='main-info'>
             {(() => {
-                if (isFind === 0) {
+                if (isFind.view === 0) {
                     return (
                         <>
                             <div className='info_title-wrapper'>
@@ -112,8 +111,11 @@ function InfoContainer(props) {
                             </Scrollbars>
                         </>
                     );
-                } else if (isFind === 2) {
-                    return <InfoMediaSearch onBack={handleOnBack} />;
+                } else if (isFind.view === 2) {
+                    return (<InfoMediaSearch
+                        onBack={handleOnBack}
+                        tabpane={isFind.tabpane}
+                    />);
                 } else {
                     return (
                         <InfoFriendSearch

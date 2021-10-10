@@ -1,4 +1,9 @@
 @import "../../scss/variables";
+@import "node_modules/react-modal-video/scss/modal-video.scss";
+
+.modal-video-close-btn {
+    cursor: pointer;
+}
 #main-friend_wrapper {
     .divider-layout {
         height: 2vh;
@@ -58,8 +63,7 @@
 
     .main-friend_body {
         background: $ghost-white;
-        &__section {
-        }
+
         &__filter {
             height: 50px;
             display: flex;

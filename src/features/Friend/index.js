@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Row, Col, Spin } from 'antd';
 import SearchContainer from 'features/Chat/containers/SearchContainer';
@@ -11,13 +11,40 @@ import HeaderFriend from './components/HeaderFiend';
 import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
 import ListFriendCard from './components/ListFriendCard';
+import ModalVideo from 'react-modal-video';
+
+
+
+
+
 
 function Friend(props) {
     const { isLoading } = useSelector((state) => state.friend);
+    const [isOpen, setOpen] = useState(false);
+
+
     return (
 
 
+
         <div id="main-friend_wrapper">
+
+            {/* <React.Fragment>
+                <ModalVideo
+                    channel='custom'
+                    autoplay url={'http://res.cloudinary.com/zelo-chat/video/upload/v1633795340/cdycbcmrcx6fl80ejkhb.mp4'}
+                    isOpen={isOpen}
+                    onClose={() => setOpen(false)}
+                    animationSpeed
+                    ratio='16:9'
+                    style={{ height: "800px" }}
+
+
+                />
+
+
+            </React.Fragment>
+            <button className="btn-primary" onClick={() => setOpen(true)}>VIEW DEMO</button> */}
             <Row gutter={[0, 0]}>
                 <Col span={5}>
                     <div className="main-friend_sidebar">

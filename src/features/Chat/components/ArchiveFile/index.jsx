@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { FileIcon, defaultStyles } from 'react-file-icon';
-import fileHelpers from 'utils/fileHelpers';
-import { Row, Col } from 'antd';
+import FileItem from 'components/FileItem';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import './style.scss';
 
 ArchiveFile.propTypes = {
     viewMediaClick: PropTypes.func,
     items: PropTypes.array,
+
 };
 
 ArchiveFile.defaultProps = {
     viewMediaClick: null,
     items: [],
+
 };
 
 function ArchiveFile(props) {
@@ -33,12 +33,8 @@ function ArchiveFile(props) {
 
     const handleViewAllOnClick = () => {
         if (viewMediaClick) {
-            viewMediaClick(2);
+            viewMediaClick(2, 3);
         }
-    };
-
-    const handleItemClick = (url) => {
-        window.open(url, '_blank');
     };
 
     return (
@@ -55,33 +51,19 @@ function ArchiveFile(props) {
 
             <div
                 className='info_file-interact'
-                style={isDrop ? {} : styleInteract}>
+                style={isDrop ? {} : styleInteract}
+            >
+
                 <div className='info_file-interact-file'>
                     {items.map((itemEle, index) => {
-                        const fileName = fileHelpers.getFileName(
-                            itemEle.content
-                        );
-                        const fileExtension =
-                            fileHelpers.getFileExtension(fileName);
-                        return (
-                            <div
-                                key={index}
-                                style={{ width: '48px' }}
-                                onClick={() =>
-                                    handleItemClick(itemEle.content)
-                                }>
-                                <Row>
-                                    <Col span={16}>
-                                        <FileIcon
-                                            extension={fileExtension}
-                                            {...defaultStyles[fileExtension]}
-                                        />{' '}
-                                    </Col>
-
-                                    <Col span={8}>{fileName}</Col>
-                                </Row>
-                            </div>
-                        );
+                        if (index < 3) {
+                            return (
+                                <FileItem
+                                    key={index}
+                                    file={itemEle}
+                                />
+                            )
+                        }
                     })}
                 </div>
 
