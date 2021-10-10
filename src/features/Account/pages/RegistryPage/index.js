@@ -127,7 +127,7 @@ function RegistryPage(props) {
         <div className='email-registry-page'>
             <div className='main'>
                 <Title level={2} style={{ textAlign: 'center' }}>
-                    <Text style={{ color: '#08aeea' }}>Đăng</Text> Ký
+                    <Text style={{ color: '#08aeea' }}>Đăng</Text> Kí
                 </Title>
                 <Divider />
                 <Formik
