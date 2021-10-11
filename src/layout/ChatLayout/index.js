@@ -4,7 +4,10 @@ import Chat from 'features/Chat';
 import {
     fetchListClassify,
     fetchListColor,
-    fetchListConversations
+    fetchListConversations,
+    fetchConversationById,
+    fetchListMessages,
+    setTypeOfConversation
 } from 'features/Chat/chatSlice';
 import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import Friend from 'features/Friend';
@@ -85,6 +88,13 @@ function ChatLayout(props) {
         );
         socket.emit('join-conversations', conversationIds);
     }, [conversations]);
+
+    useEffect(() => {
+        socket.on('create-individual-conversation', (converId) => {
+            socket.emit('join-conversation', converId);
+            dispatch(fetchConversationById({ conversationId: converId }));
+        })
+    }, [])
 
     useEffect(() => {
         // window.addEventListener("unload", leaveApp);

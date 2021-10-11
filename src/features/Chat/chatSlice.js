@@ -103,6 +103,8 @@ export const fetchConversationById = createAsyncThunk(
         const conversation = await conversationApi.getConversationById(
             conversationId
         );
+
+        console.log('conver fetch', conversation);
         return conversation;
     }
 );
@@ -193,6 +195,8 @@ const chatSlice = createSlice({
         },
 
         setTypeOfConversation: (state, action) => {
+
+
             const conversationId = action.payload;
             const conversation = state.conversations.find(
                 (ele) => ele._id === conversationId

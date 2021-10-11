@@ -18,20 +18,16 @@ UserCard.propTypes = {
     isVisible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
     onAddFriend: PropTypes.func,
-    isMyFriend: PropTypes.bool,
     onDeleteFriend: PropTypes.func,
-    isMyRequest: PropTypes.bool,
-    isRequestToMe: PropTypes.bool,
+
 };
 
 UserCard.defaultProps = {
     title: 'Thông tin',
     onCancel: null,
     onAddFriend: null,
-    isMyFriend: false,
     onDeleteFriend: null,
-    isMyRequest: false,
-    isRequestToMe: false,
+
 };
 
 
@@ -41,19 +37,13 @@ function UserCard(props) {
         isVisible,
         user, onCancel,
         onAddFriend,
-        isMyFriend,
         onDeleteFriend,
-        isMyRequest,
-        isRequestToMe
     } = props;
 
     const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
     const dispatch = useDispatch();
     const history = useHistory();
-
-
-
-
+    const { status } = user;
 
     const handleClickMessage = async () => {
         const response = await conversationApi.createConversationIndividual(user._id);
@@ -64,14 +54,13 @@ function UserCard(props) {
             const conver = await conversationApi.getConversationById(_id);
             dispatch(setConversations(conver));
         }
+
+        dispatch(fetchListMessages({ conversationId: _id, size: 10 }));
         dispatch(setCurrentConversation(_id));
-        dispatch(fetchListMessages({ _id, size: 10 }));
-        dispatch(getMembersConversation({ _id }));
-        dispatch(setTypeOfConversation(_id));
+
 
         history.push({
             pathname: '/chat',
-            state: { idConver: _id }
         });
 
 
@@ -144,7 +133,8 @@ function UserCard(props) {
 
                     <div className="user-card-button">
                         {
-                            (!isMyFriend && !isRequestToMe && !isMyRequest) &&
+
+                            (status === 'NOT_FRIEND') &&
                             (
                                 <div className="user-card-button--addFriend" onClick={handleAddFriend}>
                                     <Button
@@ -158,7 +148,8 @@ function UserCard(props) {
                             // user-card-button--no-margin
                         }
 
-                        {isRequestToMe &&
+
+                        {(status === 'FOLLOWER') &&
                             <>
                                 <div className="user-card-button--message confirm--friend" onClick={handleConfirmFriend}>
                                     <Button
@@ -181,7 +172,8 @@ function UserCard(props) {
                         }
 
 
-                        {isMyRequest &&
+
+                        {(status === 'YOU_FOLLOW') &&
                             <>
                                 <div className="user-card-button--message ">
                                     <Button
@@ -197,11 +189,11 @@ function UserCard(props) {
 
 
 
-                        <div className={`user-card-button--message ${(isMyFriend) ? 'user-card-button--no-margin' : ''}`}>
+                        <div className={`user-card-button--message ${(status === 'FRIEND') ? 'user-card-button--no-margin' : ''}`}>
                             <Button
                                 onClick={handleClickMessage}
                                 type="default"
-                                style={(isRequestToMe) ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
+                                style={(status === 'FOLLOWER') ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
                             >Nhắn tin
                             </Button>
                         </div>
@@ -242,7 +234,7 @@ function UserCard(props) {
                     </div>
 
 
-                    <div className={`user-card-button-optional ${(!isMyFriend) ? 'user-card-button-optional--hidden' : ''}`}>
+                    <div className={`user-card-button-optional ${!(status === 'FRIEND') ? 'user-card-button-optional--hidden' : ''}`}>
                         <Button
                             danger
                             icon={<UserDeleteOutlined />}

@@ -4,7 +4,8 @@ import FriendCard from '../FriendCard';
 import { useDispatch } from 'react-redux';
 import friendApi from 'api/friendApi';
 import { fetchFriends, fetchListRequestFriend } from 'features/Friend/friendSlice';
-import { fetchListFriends } from 'features/Chat/chatSlice';
+import { fetchListConversations, fetchListFriends } from 'features/Chat/chatSlice';
+import conversationApi from 'api/conversationApi';
 
 ListRequestFriend.propTypes = {
     data: PropTypes.array,
@@ -29,9 +30,12 @@ function ListRequestFriend({ data }) {
 
     const handleOnAccept = async (value) => {
         await friendApi.acceptRequestFriend(value._id);
+        await conversationApi.createConversationIndividual(value._id);
         dispatch(fetchListRequestFriend());
         dispatch(fetchFriends({ name: '' }));
-        dispatch(fetchListFriends({ name: '' }))
+        dispatch(fetchListFriends({ name: '' }));
+        dispatch(fetchListConversations({ name: '', type: 0 }));
+
     }
 
 
