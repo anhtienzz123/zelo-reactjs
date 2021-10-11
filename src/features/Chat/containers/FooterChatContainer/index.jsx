@@ -4,7 +4,7 @@ import messageApi from 'api/messageApi';
 import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
 import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { socket } from 'utils/socketClient';
 import './style.scss';
@@ -36,10 +36,22 @@ function FooterChatContainer({ onScrollWhenSentText }) {
     const [valueText, setValueText] = useState('');
     const [isHightLight, setHightLight] = useState(false);
     const { user } = useSelector((state) => state.global);
+    const [detailConver, setDetailConver] = useState({});
 
-    const detailConver = conversations.find(
-        (conver) => conver._id === currentConversation
-    );
+    useEffect(() => {
+        if (currentConversation) {
+            const tempConver = conversations.find(
+                (conver) => conver._id === currentConversation
+            );
+            if (tempConver) {
+                setDetailConver(tempConver);
+            }
+        }
+
+    }, [currentConversation])
+
+
+
 
     const handleClickTextFormat = () => {
         setShowTextFormat(!showTextFormat);

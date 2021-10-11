@@ -1,11 +1,17 @@
 import { UserDeleteOutlined } from '@ant-design/icons';
 import { Button, Image, Modal } from 'antd';
+import conversationApi from 'api/conversationApi';
+import {
+    fetchListMessages,
+    getMembersConversation, setConversations, setCurrentConversation, setTypeOfConversation
+} from 'features/Chat/chatSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import dateUtils from 'utils/dateUtils';
 import './style.scss';
 import UserCardStyle from './UserCardStyle';
-import conversationApi from 'api/conversationApi';
 UserCard.propTypes = {
     title: PropTypes.string,
     user: PropTypes.object.isRequired,
@@ -42,6 +48,35 @@ function UserCard(props) {
     } = props;
 
     const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+
+
+
+
+    const handleClickMessage = async () => {
+        const response = await conversationApi.createConversationIndividual(user._id);
+        const { _id, isExists } = response;
+
+        console.log({ _id, isExists });
+        if (!isExists) {
+            const conver = await conversationApi.getConversationById(_id);
+            dispatch(setConversations(conver));
+        }
+        dispatch(setCurrentConversation(_id));
+        dispatch(fetchListMessages({ _id, size: 10 }));
+        dispatch(getMembersConversation({ _id }));
+        dispatch(setTypeOfConversation(_id));
+
+        history.push({
+            pathname: '/chat',
+            state: { idConver: _id }
+        });
+
+
+    }
+
 
 
     const handleOnCancle = () => {
@@ -70,10 +105,7 @@ function UserCard(props) {
 
     }
 
-    const handleClickMessage = async () => {
-        const response = await conversationApi.createConversationIndividual(user._id);
-        console.log(response);
-    }
+
 
 
 

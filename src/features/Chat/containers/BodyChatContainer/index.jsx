@@ -4,9 +4,10 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import UserMessage from 'features/Chat/components/UserMessage';
 import { useDispatch, useSelector } from 'react-redux';
 import DividerCustom from 'features/Chat/components/DividerCustom';
-import { setRaisePage, fetchNextPageMessage } from '../../chatSlice';
+import { setRaisePage, fetchNextPageMessage, fetchListMessages, getMembersConversation, setTypeOfConversation } from '../../chatSlice';
 import './style.scss';
 import { Spin } from 'antd';
+import { useLocation } from 'react-router';
 
 BodyChatContainer.propTypes = {
     scrollId: PropTypes.string,
@@ -39,6 +40,33 @@ function BodyChatContainer({
     const dispatch = useDispatch();
     const previousHieight = useRef();
     const tempPosition = useRef();
+    // const location = useLocation();
+    // const [idRedirectConver, setIdRedirectConver] = useState('');
+    // const tempId = location.state?.idConver;
+
+    // console.log('tempId', tempId);
+    // useEffect(() => {
+
+    //     if (tempId) {
+    //         setIdRedirectConver(tempId)
+    //     }
+    // }, [tempId]);
+
+    // useEffect(() => {
+    //     if (idRedirectConver) {
+    //         dispatch(fetchListMessages({ idRedirectConver, size: 10 }));
+    //         dispatch(getMembersConversation({ idRedirectConver }));
+    //         dispatch(setTypeOfConversation(idRedirectConver));
+    //     }
+    // }, [idRedirectConver])
+
+    // useEffect(() => {
+    //     if (currentConversation) {
+    //         dispatch(fetchListMessages({ currentConversation, size: 10 }));
+    //         dispatch(getMembersConversation({ currentConversation }));
+    //         dispatch(setTypeOfConversation(currentConversation));
+    //     }
+    // }, [currentConversation])
 
     useEffect(() => {
         if (turnOnScrollButoon) {
@@ -58,7 +86,7 @@ function BodyChatContainer({
             if (currentPage > 0) {
                 setIsSpinning(true);
 
-                await dispatch(
+                dispatch(
                     fetchNextPageMessage({
                         conversationId: currentConversation,
                         page: currentPage,
@@ -69,7 +97,7 @@ function BodyChatContainer({
 
                 scrollbars.current.scrollTop(
                     scrollbars.current.getScrollHeight() -
-                        previousHieight.current
+                    previousHieight.current
                 );
             }
         }
@@ -81,7 +109,7 @@ function BodyChatContainer({
         if (
             onSCrollDown &&
             scrollbars.current.getScrollHeight() >
-                scrollbars.current.getClientHeight()
+            scrollbars.current.getClientHeight()
         ) {
             if (position >= 0.99) {
                 scrollbars.current.scrollToBottom();
@@ -117,7 +145,7 @@ function BodyChatContainer({
 
             const isSameUser =
                 currentMessage.user._id === preMessage.user._id &&
-                preMessage.type !== 'NOTIFY'
+                    preMessage.type !== 'NOTIFY'
                     ? true
                     : false;
 
@@ -188,14 +216,9 @@ function BodyChatContainer({
 
     useEffect(() => {
         scrollbars.current.scrollToBottom();
-        console.log(
-            scrollbars.current.getScrollHeight(),
-            ':',
-            scrollbars.current.getClientHeight()
-        );
     }, [currentConversation]);
 
-    const handleOnScroll = (e) => {};
+    const handleOnScroll = (e) => { };
 
     return (
         <Scrollbars

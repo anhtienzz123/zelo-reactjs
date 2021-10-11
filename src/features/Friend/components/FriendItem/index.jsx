@@ -24,8 +24,8 @@ function FriendItem({ data, onClickMenu }) {
     }
 
     const handleClickFriendItem = async () => {
-        const response = await conversationApi.createConversationIndividual(data._id);
-        console.log(response);
+        // const response = await conversationApi.createConversationIndividual(data._id);
+        // console.log(response);
     }
 
     const menu = (

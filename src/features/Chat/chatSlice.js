@@ -357,6 +357,10 @@ const chatSlice = createSlice({
         },
         updateClassifyToConver: (state, action) => {
             state.conversations = action.payload;
+        },
+        setConversations: (state, action) => {
+            const conversation = action.payload;
+            state.conversations = [conversation, ...state.conversations];
         }
     },
     extraReducers: {
@@ -468,7 +472,8 @@ export const {
     updateMemberLeaveGroup,
     isDeletedFromGroup,
     setCurrentConversation,
-    updateClassifyToConver
+    updateClassifyToConver,
+    setConversations
 } = actions;
 
 export default reducer;

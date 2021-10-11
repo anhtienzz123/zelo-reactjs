@@ -1,20 +1,13 @@
-import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
 import { setCurrentConversation } from 'features/Chat/chatSlice';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
+
 
 const useRedirectToChatBox = (idConver) => {
     const history = useHistory();
-
-
-    const { conversations } = useSelector((state) => state.chat);
-    const hasExistConver = conversations.find((conver) => conver._id === idConver);
-
-    if (hasExistConver) {
-        history.push("/chat");
-        setCurrentConversation(idConver);
-
-    }
-
+    const dispatch = useDispatch();
+    history.push("/chat");
+    dispatch(setCurrentConversation(idConver));
 
 }
 
