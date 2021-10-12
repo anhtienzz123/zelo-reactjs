@@ -16,12 +16,6 @@ function ConversationSingle({ conversation, onClick }) {
     const { content, type, createdAt, user } = lastMessage;
     const global = useSelector((state) => state.global);
 
-    const handleLengthText = (text) => {
-        if (text.length >= 23) {
-            return text.slice(0, 20) + '...';
-        }
-        return text;
-    };
 
     const handleClick = () => {
         if (onClick) onClick(_id);
@@ -45,11 +39,10 @@ function ConversationSingle({ conversation, onClick }) {
                                 <TagTwoTone twoToneColor='#db342e' />
                             </span>
                             <span>
-                                {`${
-                                    global.user.name === user.name
+                                {`${global.user.name === user.name
                                         ? 'Bạn'
                                         : user.name
-                                }:${content ? content : 'Tin nhắn đã thu hồi'}`}
+                                    }:${content ? content : 'Tin nhắn đã thu hồi'}`}
                             </span>
                         </div>
                     </div>

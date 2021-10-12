@@ -93,7 +93,7 @@ function TabPaneFile(props) {
                         </Option>
                     </Select>
                 </Col>{' '}
-                */}
+
                 <Col span={8}>
                     <Select
                         dropdownMatchSelectWidth={false}

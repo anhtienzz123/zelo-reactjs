@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { Col, Row, Select } from 'antd';
+import RangeCalendarCustom from 'components/RangeCalendarCustom';
 import PropTypes from 'prop-types';
-import { Col, Row, Select, DatePicker } from 'antd';
+import React, { useState } from 'react';
+import fileHelpers from 'utils/fileHelpers';
 import PersonalIcon from '../PersonalIcon';
 import './style.scss';
-import FsLightbox from 'fslightbox-react';
-import RangeCalendarCustom from 'components/RangeCalendarCustom';
-import fileHelpers from 'utils/fileHelpers';
 
 TabPaneMedia.propTypes = {
     members: PropTypes.array,
@@ -24,22 +23,32 @@ function TabPaneMedia(props) {
     const [sender, setSender] = useState('');
     const [query, setQuery] = useState({});
     const handleChange = (memberId) => {
+
+
         const index = members.findIndex(
             (memberEle) => memberEle._id == memberId
         );
+        let queryTempt = {};
 
-        setSender(members[index].name);
-        const queryTempt = {
-            ...query,
-            senderId: memberId,
-        };
-        setQuery(queryTempt);
+        if (index > -1) {
+            setSender(members[index].name);
+            queryTempt = {
+                ...query,
+                senderId: memberId,
+            };
+            setQuery(queryTempt);
+        } else {
+            setSender('');
+            queryTempt = {
+                ...query,
+                senderId: '',
+            };
+            setQuery(queryTempt);
+        }
+
         if (onQueryChange) onQueryChange(queryTempt);
     };
 
-    // function onSearch(val) {
-    //     console.log('search:', val);
-    // }
 
     const handleDatePickerChange = (date, dateString) => {
         const queryTempt = {
@@ -50,11 +59,6 @@ function TabPaneMedia(props) {
         if (onQueryChange) onQueryChange(queryTempt);
     };
 
-    // const handleLenghtText = (text) => {
-    //     if (text.length > 14) {
-    //         return text.substring(0, 15) + '...';
-    //     }
-    // };
 
     return (
         <div id='tabpane-media'>
@@ -79,7 +83,9 @@ function TabPaneMedia(props) {
                             optionA.children
                                 .toLowerCase()
                                 .localeCompare(optionB.children.toLowerCase())
-                        }>
+                        }
+                        allowClear
+                    >
                         {members.map((memberEle, index) => (
                             <Option key={index} value={memberEle._id}>
                                 <div className='option-item'>
@@ -98,21 +104,12 @@ function TabPaneMedia(props) {
                         ))}
                     </Select>
                 </Col>
-                {/* <Col span={12}>
-                    <Select
-                        style={{ width: '100%' }}
-                        onChange={handleChange}
-                        placeholder='Ngày gửi'>
-                        <Option value={1}>Trong vòng 1 tuần</Option>
-                        <Option value={2}>Trong vòng 1 tháng</Option>
-                        <Option value={3}>Trong vòng 3 tháng </Option>
-                    </Select>
-                </Col> */}
 
                 <Col span={24}>
                     <RangeCalendarCustom
                         style={{ width: '100%' }}
                         onChange={handleDatePickerChange}
+                        allowClear={true}
                     />
                 </Col>
             </Row>

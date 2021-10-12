@@ -1,4 +1,6 @@
 .item-img-wrapper {
+    //
+
     position: relative;
     margin-right: 3px;
     margin-top: 3px;
@@ -15,18 +17,6 @@
         }
     }
 
-    .overlay-item {
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.4);
-        border-radius: 5px;
-        opacity: 0;
-
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        transition: 0.2s;
-    }
     .item-img-interact {
         position: absolute;
         top: 5%;

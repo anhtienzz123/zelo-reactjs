@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import { CaretDownOutlined } from '@ant-design/icons';
 import ImageItem from '../ImageItem';
+import { Image } from 'antd';
 ArchiveMedia.propTypes = {
     viewMediaClick: PropTypes.func,
     name: PropTypes.string,
@@ -31,7 +32,11 @@ function ArchiveMedia(props) {
 
     const handleViewAllOnClick = () => {
         if (viewMediaClick) {
-            viewMediaClick(2);
+            if (name === 'Ảnh') {
+                viewMediaClick(2, 1);
+            } else if (name === 'Video') {
+                viewMediaClick(2, 2);
+            }
         }
     };
 
@@ -49,16 +54,23 @@ function ArchiveMedia(props) {
 
             <div
                 className='info_media-interact'
-                style={isDrop ? {} : styleInteract}>
+                style={isDrop ? {} : styleInteract}
+            >
+
                 <div className='info_media-interact-media'>
-                    {items.map((itemEle, index) => (
-                        <ImageItem
-                            key={index}
-                            width={80}
-                            height={80}
-                            url={itemEle.content}
-                        />
-                    ))}
+                    <Image.PreviewGroup>
+
+                        {items.map((itemEle, index) => (
+                            <ImageItem
+                                key={index}
+                                width={80}
+                                height={80}
+                                url={itemEle.content}
+                            />
+                        ))}
+
+                    </Image.PreviewGroup>
+
                 </div>
 
                 <div className='info_media-interact-button'>
