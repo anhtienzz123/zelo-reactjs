@@ -5,6 +5,9 @@ import { DashOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/ic
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { Menu, Dropdown, Button } from 'antd';
 import conversationApi from 'api/conversationApi';
+import { fetchListMessages, setConversations, setCurrentConversation } from 'features/Chat/chatSlice';
+import { useHistory } from 'react-router';
+import { useDispatch } from 'react-redux';
 
 FriendItem.propTypes = {
     data: PropTypes.object.isRequired,
@@ -16,6 +19,8 @@ FriendItem.defaultProps = {
 };
 
 function FriendItem({ data, onClickMenu }) {
+    const history = useHistory();
+    const dispatch = useDispatch();
 
     const handleClickMenu = ({ key }) => {
         if (onClickMenu) {
@@ -24,8 +29,20 @@ function FriendItem({ data, onClickMenu }) {
     }
 
     const handleClickFriendItem = async () => {
-        // const response = await conversationApi.createConversationIndividual(data._id);
-        // console.log(response);
+        const response = await conversationApi.createConversationIndividual(data._id);
+        const { _id, isExists } = response;
+
+        if (!isExists) {
+            const conver = await conversationApi.getConversationById(data._id);
+            dispatch(setConversations(conver));
+        }
+
+        dispatch(fetchListMessages({ conversationId: _id, size: 10 }));
+        dispatch(setCurrentConversation(_id));
+
+        history.push({
+            pathname: '/chat',
+        });
     }
 
     const menu = (

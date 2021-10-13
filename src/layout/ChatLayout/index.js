@@ -1,139 +1,164 @@
-import { Col, Row } from 'antd';
-import NotFoundPage from 'components/NotFoundPage';
-import Chat from 'features/Chat';
+import { Col, Row } from 'antd'
+import NotFoundPage from 'components/NotFoundPage'
+import Chat from 'features/Chat'
 import {
+    addMessage,
+    fetchConversationById,
     fetchListClassify,
     fetchListColor,
     fetchListConversations,
-    fetchConversationById,
-    fetchListMessages,
-    setTypeOfConversation
-} from 'features/Chat/chatSlice';
-import NavbarContainer from 'features/Chat/containers/NavbarContainer';
-import Friend from 'features/Friend';
+    setNumberUnreadForNewFriend,
+    updateConversationWhenAddMember,
+    updateMemberLeaveGroup,
+} from 'features/Chat/chatSlice'
+import NavbarContainer from 'features/Chat/containers/NavbarContainer'
+import Friend from 'features/Friend'
 import {
     fetchFriends,
     fetchListGroup,
     fetchListMyRequestFriend,
-    fetchListRequestFriend
-} from 'features/Friend/friendSlice';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { init, socket } from 'utils/socketClient';
-import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect';
-init();
-
+    fetchListRequestFriend,
+} from 'features/Friend/friendSlice'
+import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import { init, socket } from 'utils/socketClient'
+init()
 
 function ChatLayout(props) {
-    const { url } = useRouteMatch();
-    const dispatch = useDispatch();
-    const { conversations } = useSelector((state) => state.chat);
-    const { user } = useSelector((state) => state.global);
-
-
+    const { url } = useRouteMatch()
+    const dispatch = useDispatch()
+    const { conversations } = useSelector((state) => state.chat)
+    const { isJoinChatLayout, user } = useSelector((state) => state.global)
+    const [idNewMessage, setIdNewMessage] = useState('')
 
     useEffect(() => {
         return () => {
-            socket.close();
+            socket.close()
         }
     }, [])
 
     useEffect(() => {
-        dispatch(fetchListRequestFriend());
-    }, []);
+        dispatch(fetchListRequestFriend())
+    }, [])
 
     useEffect(() => {
-        dispatch(fetchListMyRequestFriend());
-    }, []);
-
-
-    useEffect(() => {
-        dispatch(fetchFriends({
-            name: ''
-        }));
-    }, []);
+        dispatch(fetchListMyRequestFriend())
+    }, [])
 
     useEffect(() => {
-        dispatch(fetchListGroup({
-            name: '',
-            type: 2
-        }))
-    }, []);
+        dispatch(
+            fetchFriends({
+                name: '',
+            })
+        )
+    }, [])
 
     useEffect(() => {
-        dispatch(fetchListClassify());
-    }, []);
+        dispatch(
+            fetchListGroup({
+                name: '',
+                type: 2,
+            })
+        )
+    }, [])
 
     useEffect(() => {
-        dispatch(fetchListColor());
-    }, []);
+        dispatch(fetchListClassify())
+    }, [])
 
     useEffect(() => {
-        dispatch(fetchListConversations({}));
-    }, []);
-
-
-    useEffect(() => {
-        const userId = user._id;
-        if (userId) socket.emit('join', userId);
-    }, [user]);
-
+        dispatch(fetchListColor())
+    }, [])
 
     useEffect(() => {
-        if (conversations.length === 0) return;
+        dispatch(fetchListConversations({}))
+    }, [])
+
+    useEffect(() => {
+        const userId = user._id
+        if (userId) socket.emit('join', userId)
+    }, [user])
+
+    useEffect(() => {
+        if (conversations.length === 0) return
 
         const conversationIds = conversations.map(
             (conversationEle) => conversationEle._id
-        );
-        socket.emit('join-conversations', conversationIds);
-    }, [conversations]);
+        )
+        socket.emit('join-conversations', conversationIds)
+    }, [conversations])
 
     useEffect(() => {
         socket.on('create-individual-conversation', (converId) => {
-            socket.emit('join-conversation', converId);
-            dispatch(fetchConversationById({ conversationId: converId }));
+            socket.emit('join-conversation', converId)
+            dispatch(fetchConversationById({ conversationId: converId }))
         })
     }, [])
 
     useEffect(() => {
-        // window.addEventListener("unload", leaveApp);
-        // return () => {
-        //     window.addEventListener("unload", leaveApp);
-        // }
+        socket.on(
+            'create-individual-conversation-when-was-friend',
+            (conversationId) => {
+                dispatch(fetchConversationById({ conversationId }))
+                console.log('hai nguoi la')
+            }
+        )
+    }, [])
 
-        // window.addEventListener('beforeunload', function (e) {
-        //     // Cancel the event
-        //     e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
-        //     // Chrome requires returnValue to be set
-        //     localStorage.setItem('phuc', user._id);
-        //     socket.emit('leave', user._id);
-        // });
+    useEffect(() => {
+        socket.on('new-message', (conversationId, newMessage) => {
+            const { type, content, manipulatedUsers } = newMessage
 
-    }, []);
+            // nếu nottify đã là bạn bè, thì
+
+            console.log('new friend', conversationId, newMessage)
+
+            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
+                dispatch(
+                    updateConversationWhenAddMember({
+                        newMembers: manipulatedUsers,
+                        conversationId,
+                    })
+                )
+            }
+
+            if (type === 'NOTIFY' && content === 'Đã là bạn bè') {
+                console.log('chạy')
+                // dispatch(setNumberUnreadForNewFriend(conversationId))
+            }
+
+            if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
+                dispatch(
+                    updateMemberLeaveGroup({
+                        conversationId,
+                        newMessage,
+                    })
+                )
+            }
+
+            dispatch(addMessage(newMessage))
+            setIdNewMessage(newMessage._id)
+        })
+
+        socket.on('create-conversation', (conversationId) => {
+            console.log('tạo nhóm', conversationId)
+            dispatch(fetchConversationById({ conversationId }))
+        })
+    }, [])
 
     function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms))
     }
     useWindowUnloadEffect(async () => {
-
         async function leaveApp() {
-
-            socket.emit('leave', user._id);
-            await sleep(2000);
+            socket.emit('leave', user._id)
+            await sleep(2000)
         }
 
-        await leaveApp();
-
-    }, true);
-
-
-
-
-
-
-
-
+        await leaveApp()
+    }, true)
 
     return (
         <div>
@@ -152,6 +177,7 @@ function ChatLayout(props) {
                                     {...props}
                                     socket={socket}
                                     authed={true}
+                                    idNewMessage={idNewMessage}
                                 />
                             )}
                         />
@@ -173,7 +199,7 @@ function ChatLayout(props) {
                 </Col>
             </Row>
         </div>
-    );
+    )
 }
 
-export default ChatLayout;
+export default ChatLayout

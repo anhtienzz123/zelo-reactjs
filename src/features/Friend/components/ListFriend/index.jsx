@@ -1,15 +1,15 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import Scrollbars from 'react-custom-scrollbars';
-import { useDispatch, useSelector } from 'react-redux';
-import FriendItem from '../FriendItem';
 import friendApi from 'api/friendApi';
-import { fetchFriends } from '../../friendSlice';
-import './style.scss';
-import UserCard from 'components/UserCard';
 import userApi from 'api/userApi';
+import UserCard from 'components/UserCard';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import { useDispatch } from 'react-redux';
+import { fetchFriends } from '../../friendSlice';
+import FriendItem from '../FriendItem';
+import './style.scss';
 
 ListFriend.propTypes = {
     data: PropTypes.array,

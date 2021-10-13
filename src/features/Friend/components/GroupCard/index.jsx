@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
-import ConversationAvatar from 'features/Chat/components/ConversationAvatar';
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { Badge, Button, Divider } from 'antd';
-import { useSelector } from 'react-redux';
-import classifyUtils from 'utils/classifyUtils';
-import { Menu, Dropdown } from 'antd';
-import { TagsOutlined, TagTwoTone } from '@ant-design/icons';
+import { Badge, Button, Dropdown, Menu } from 'antd';
 import SubMenuClassify from 'components/SubMenuClassify';
+import { fetchListMessages, setCurrentConversation } from 'features/Chat/chatSlice';
+import ConversationAvatar from 'features/Chat/components/ConversationAvatar';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import classifyUtils from 'utils/classifyUtils';
+import './style.scss';
 
 GroupCard.propTypes = {
     data: PropTypes.object,
@@ -24,6 +24,8 @@ GroupCard.defaultProps = {
 function GroupCard({ data, onRemove }) {
     const { classifies } = useSelector(state => state.chat);
     const [classify, setClassify] = useState(null);
+    const history = useHistory();
+    const dispatch = useDispatch();
 
 
 
@@ -53,7 +55,6 @@ function GroupCard({ data, onRemove }) {
                 idConver={data._id}
             />
 
-
             <Menu.Item key="2" danger>
                 <span className="menu-item--highlight">Rời nhóm</span>
             </Menu.Item>
@@ -61,12 +62,22 @@ function GroupCard({ data, onRemove }) {
     );
 
 
+    const handleOnClick = async () => {
+
+        dispatch(fetchListMessages({ conversationId: data._id, size: 10 }));
+        dispatch(setCurrentConversation(data._id));
+        history.push({
+            pathname: '/chat',
+        });
+    }
+
+
 
     const mainCard = (
         <Dropdown overlay={menu} trigger={['contextMenu']}>
-            <div className='group-card'>
+            <div className='group-card' >
 
-                <div className="group-card__avatar-group">
+                <div className="group-card__avatar-group" onClick={handleOnClick}>
                     <ConversationAvatar
                         avatar={data.avatar}
                         demension={52}
@@ -105,7 +116,6 @@ function GroupCard({ data, onRemove }) {
             </Badge.Ribbon>) : (
                 mainCard
             )}
-
         </>
 
 

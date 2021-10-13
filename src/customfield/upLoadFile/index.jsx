@@ -39,7 +39,9 @@ function UploadFile(props) {
     };
 
     const handleCustomRequest = async ({ onSuccess, onError, file, onProgress }) => {
-        console.log({ onSuccess, onError, file, onProgress });
+
+        // const { uid, name, type } = file;
+        // console.log({ onSuccess, onError, file, onProgress });
         const fmData = new FormData();
         // const typeFile = file.type.startsWith('image') ? true : false;
         let typeFile;
@@ -51,9 +53,15 @@ function UploadFile(props) {
         }
 
 
-
+        // tempFile.type = 'rar';
+        // console.log('tempFile', { uid, name, type });
 
         fmData.append("file", file);
+        // const newFile = { ...file };
+        // file.type = 'rar';
+        // console.log(file);
+        // fmData.append("file", newFile);
+        // console.log(newFile);
 
         const attachInfo = {
             type: typeFile,

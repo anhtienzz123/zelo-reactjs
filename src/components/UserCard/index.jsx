@@ -2,8 +2,7 @@ import { UserDeleteOutlined } from '@ant-design/icons';
 import { Button, Image, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
 import {
-    fetchListMessages,
-    getMembersConversation, setConversations, setCurrentConversation, setTypeOfConversation
+    fetchListMessages, setConversations, setCurrentConversation
 } from 'features/Chat/chatSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -58,15 +57,14 @@ function UserCard(props) {
         dispatch(fetchListMessages({ conversationId: _id, size: 10 }));
         dispatch(setCurrentConversation(_id));
 
-
         history.push({
             pathname: '/chat',
         });
 
-
+        if (onCancel) {
+            onCancel();
+        }
     }
-
-
 
     const handleOnCancle = () => {
         if (onCancel) {
@@ -93,10 +91,6 @@ function UserCard(props) {
     const handleDenyRequest = () => {
 
     }
-
-
-
-
 
     return (
         <Modal
@@ -125,8 +119,6 @@ function UserCard(props) {
                         </div>
                     </div>
 
-
-
                     <div className="user-card-name">
                         {user.name}
                     </div>
@@ -145,7 +137,6 @@ function UserCard(props) {
                                     </Button>
                                 </div>
                             )
-                            // user-card-button--no-margin
                         }
 
 
