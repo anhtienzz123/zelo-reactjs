@@ -9,6 +9,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import dateUtils from 'utils/dateUtils';
+import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
 import './style.scss';
 import UserCardStyle from './UserCardStyle';
 UserCard.propTypes = {
@@ -44,11 +45,12 @@ function UserCard(props) {
     const history = useHistory();
     const { status } = user;
 
+
     const handleClickMessage = async () => {
         const response = await conversationApi.createConversationIndividual(user._id);
         const { _id, isExists } = response;
 
-        console.log({ _id, isExists });
+
         if (!isExists) {
             const conver = await conversationApi.getConversationById(_id);
             dispatch(setConversations(conver));
@@ -113,6 +115,7 @@ function UserCard(props) {
 
                         <div className="user-card_avatar">
                             <Image
+                                fallback={DEFAULT_AVATAR}
                                 src={user.avatar}
                                 style={UserCardStyle.avatarStyle}
                             />

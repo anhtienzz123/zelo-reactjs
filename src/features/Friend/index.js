@@ -58,19 +58,7 @@ function Friend({ socket }) {
         }
     }, [groups])
 
-    useEffect(() => {
-        if (!isJoinFriendLayout) {
-            socket.on('accept-friend', (value) => {
-                dispatch(setNewFriend(value))
-                dispatch(setMyRequestFriend(value._id))
-            })
 
-            socket.on('send-friend-invite', (value) => {
-                dispatch(setNewRequestFriend(value))
-            })
-            dispatch(setJoinFriendLayout(true))
-        }
-    }, [])
 
     useEffect(() => {
         dispatch(fetchListRequestFriend())
@@ -214,9 +202,8 @@ function Friend({ socket }) {
                                                             {` ${getValueFromKey(
                                                                 'LEFT',
                                                                 currentFilterLeft
-                                                            )} (${
-                                                                groupCurrent.length
-                                                            })`}
+                                                            )} (${groupCurrent.length
+                                                                })`}
                                                         </Button>
                                                     </Dropdown>
                                                 </div>

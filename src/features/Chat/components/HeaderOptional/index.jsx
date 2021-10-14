@@ -4,6 +4,7 @@ import {
     TagOutlined,
     UsergroupAddOutlined,
     UserOutlined,
+    VideoCameraOutlined
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
 import { createGroup } from 'features/Chat/chatSlice';
@@ -106,16 +107,24 @@ function HeaderOptional(props) {
 
                 <div className='header_rightside'>
                     <div
-                        className='create-group'
+                        className='icon-header create-group'
                         onClick={handleAddMemberToGroup}>
                         <UsergroupAddOutlined />
                     </div>
-                    <div className='search-message'>
+
+                    <div className='icon-header search-message'>
                         <SearchOutlined />
                     </div>
-                    <div className='pop-up-layout'>
+
+                    <div className='icon-header call-video'>
+                        <VideoCameraOutlined />
+                    </div>
+
+                    <div className='icon-header pop-up-layout'>
                         <SplitCellsOutlined />
                     </div>
+
+
                 </div>
             </div>
 

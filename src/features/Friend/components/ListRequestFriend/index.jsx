@@ -1,9 +1,9 @@
 import friendApi from 'api/friendApi';
 import { fetchListFriends } from 'features/Chat/chatSlice';
-import { fetchFriends, fetchListRequestFriend } from 'features/Friend/friendSlice';
+import { fetchFriends, fetchListRequestFriend, setAmountNotify } from 'features/Friend/friendSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FriendCard from '../FriendCard';
 
 ListRequestFriend.propTypes = {
@@ -18,6 +18,8 @@ ListRequestFriend.defaultProps = {
 function ListRequestFriend({ data }) {
     const dispatch = useDispatch();
 
+    const { amountNotify } = useSelector((state) => state.friend)
+
 
 
 
@@ -29,12 +31,12 @@ function ListRequestFriend({ data }) {
 
     const handleOnAccept = async (value) => {
 
-        console.log('value', value);
+
         await friendApi.acceptRequestFriend(value._id);
         dispatch(fetchListRequestFriend());
         dispatch(fetchFriends({ name: '' }));
         dispatch(fetchListFriends({ name: '' }));
-
+        dispatch(setAmountNotify(amountNotify - 1))
 
     }
 

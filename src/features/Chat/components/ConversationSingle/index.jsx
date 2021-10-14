@@ -37,7 +37,11 @@ function ConversationSingle({ conversation, onClick }) {
         <div className='conversation-item_box' onClick={handleClick}>
             <div className='left-side-box'>
                 <div className='icon-users'>
-                    <ConversationAvatar avatar={avatar} />
+                    <ConversationAvatar
+                        totalMembers={totalMembers}
+                        avatar={avatar}
+                        type={conversation.type}
+                    />
                 </div>
             </div>
 

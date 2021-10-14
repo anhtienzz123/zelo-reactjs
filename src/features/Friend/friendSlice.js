@@ -46,7 +46,8 @@ const friendSlice = createSlice({
         requestFriends: [],
         myRequestFriend: [],
         friends: [],
-        groups: []
+        groups: [],
+        amountNotify: 0
     },
     reducers: {
         setLoading: (state, action) => {
@@ -71,6 +72,9 @@ const friendSlice = createSlice({
         },
         setMyRequestFriend: (state, action) => {
             state.myRequestFriend = state.myRequestFriend.filter(ele => ele._id !== action.payload);
+        },
+        setAmountNotify: (state, action) => {
+            state.amountNotify = action.payload;
         }
     },
     extraReducers: {
@@ -101,6 +105,8 @@ export const { setLoading,
     setNewFriend,
     setNewRequestFriend,
     setGroup,
-    setMyRequestFriend } = actions;
+    setMyRequestFriend,
+    setAmountNotify,
+} = actions;
 
 export default reducer;

@@ -21,6 +21,7 @@ import FooterChatContainer from './containers/FooterChatContainer'
 import HeaderChatContainer from './containers/HeaderChatContainer'
 import InfoContainer from './containers/InfoContainer'
 import SearchContainer from './containers/SearchContainer'
+import FriendUtils from 'utils/friendUtils'
 import './style.scss'
 
 Chat.propTypes = {
@@ -219,6 +220,8 @@ function Chat({ socket, idNewMessage }) {
                                             }
                                             turnOnScrollButoon={isScroll}
                                         />
+
+                                        {/* {FriendUtils.checkIsFriend()} */}
 
                                         <div
                                             id="back-top-button"

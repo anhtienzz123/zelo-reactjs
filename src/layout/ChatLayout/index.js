@@ -18,6 +18,10 @@ import {
     fetchListGroup,
     fetchListMyRequestFriend,
     fetchListRequestFriend,
+    setAmountNotify,
+    setMyRequestFriend,
+    setNewFriend,
+    setNewRequestFriend,
 } from 'features/Friend/friendSlice'
 import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect'
 import React, { useEffect, useState } from 'react'
@@ -31,6 +35,7 @@ function ChatLayout(props) {
     const dispatch = useDispatch()
     const { conversations } = useSelector((state) => state.chat)
     const { isJoinChatLayout, user } = useSelector((state) => state.global)
+    const { amountNotify } = useSelector((state) => state.friend)
     const [idNewMessage, setIdNewMessage] = useState('')
 
     useEffect(() => {
@@ -40,41 +45,26 @@ function ChatLayout(props) {
     }, [])
 
     useEffect(() => {
-        dispatch(fetchListRequestFriend())
-    }, [])
-
-    useEffect(() => {
-        dispatch(fetchListMyRequestFriend())
-    }, [])
-
-    useEffect(() => {
+        dispatch(fetchListRequestFriend());
+        dispatch(fetchListMyRequestFriend());
         dispatch(
             fetchFriends({
                 name: '',
             })
-        )
-    }, [])
-
-    useEffect(() => {
+        );
         dispatch(
             fetchListGroup({
                 name: '',
                 type: 2,
             })
-        )
-    }, [])
-
-    useEffect(() => {
+        );
         dispatch(fetchListClassify())
-    }, [])
-
-    useEffect(() => {
         dispatch(fetchListColor())
-    }, [])
-
-    useEffect(() => {
         dispatch(fetchListConversations({}))
     }, [])
+
+
+
 
     useEffect(() => {
         const userId = user._id
@@ -159,6 +149,24 @@ function ChatLayout(props) {
 
         await leaveApp()
     }, true)
+
+
+    useEffect(() => {
+
+        socket.on('accept-friend', (value) => {
+            dispatch(setNewFriend(value))
+            dispatch(setMyRequestFriend(value._id))
+
+        })
+
+        socket.on('send-friend-invite', (value) => {
+            dispatch(setNewRequestFriend(value))
+            dispatch(setAmountNotify(amountNotify + 1))
+        })
+
+        // dispatch(setJoinFriendLayout(true))
+
+    }, [])
 
     return (
         <div>

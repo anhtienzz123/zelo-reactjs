@@ -40,33 +40,6 @@ function BodyChatContainer({
     const dispatch = useDispatch();
     const previousHieight = useRef();
     const tempPosition = useRef();
-    // const location = useLocation();
-    // const [idRedirectConver, setIdRedirectConver] = useState('');
-    // const tempId = location.state?.idConver;
-
-    // console.log('tempId', tempId);
-    // useEffect(() => {
-
-    //     if (tempId) {
-    //         setIdRedirectConver(tempId)
-    //     }
-    // }, [tempId]);
-
-    // useEffect(() => {
-    //     if (idRedirectConver) {
-    //         dispatch(fetchListMessages({ idRedirectConver, size: 10 }));
-    //         dispatch(getMembersConversation({ idRedirectConver }));
-    //         dispatch(setTypeOfConversation(idRedirectConver));
-    //     }
-    // }, [idRedirectConver])
-
-    // useEffect(() => {
-    //     if (currentConversation) {
-    //         dispatch(fetchListMessages({ currentConversation, size: 10 }));
-    //         dispatch(getMembersConversation({ currentConversation }));
-    //         dispatch(setTypeOfConversation(currentConversation));
-    //     }
-    // }, [currentConversation])
 
     useEffect(() => {
         if (turnOnScrollButoon) {
