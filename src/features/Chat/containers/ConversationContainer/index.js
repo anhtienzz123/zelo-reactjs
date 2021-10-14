@@ -23,6 +23,7 @@ function ConversationContainer(props) {
     const handleConversationClick = (conversationId) => {
         // dispatch(setCurrentConversation(conversationId));
         dispatch(fetchListMessages({ conversationId, size: 10 }));
+
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
 

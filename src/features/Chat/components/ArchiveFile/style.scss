@@ -1,4 +1,5 @@
 @import "../../../../scss/variables";
+$size: 3rem;
 .info_file {
     background: #fff;
     padding: 1rem 0;
@@ -9,7 +10,8 @@
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
-        padding: 0.8rem 1.2rem;
+        padding: 0.8rem 0;
+        margin: 0 1.2rem;
 
         &-title {
             font-weight: 600;
@@ -25,26 +27,27 @@
     &-interact {
         position: relative;
         overflow-y: hidden;
-        max-height: 300px;
         transition: max-height 0.2s ease;
-        padding: 0rem 1.4rem;
+
         &-file {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-
-            cursor: pointer;
+            flex-direction: column;
+            padding: 1rem 0;
         }
-        &-button button {
-            width: 100%;
-            font-weight: 600;
-            border: none;
-            outline: none;
+        &-button {
+            margin: 0 1.4rem;
+            button {
+                width: 100%;
+                font-weight: 600;
+                border: none;
+                outline: none;
 
-            padding: 0.5rem 0;
-            cursor: pointer;
-            transition: 0.2s;
+                padding: 0.5rem 0;
+                cursor: pointer;
+                transition: 0.2s;
+            }
         }
+
         &-button button:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }

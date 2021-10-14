@@ -60,6 +60,7 @@ function Friend({ socket }) {
 
 
 
+
     useEffect(() => {
         dispatch(fetchListRequestFriend())
         dispatch(fetchListMyRequestFriend())
@@ -70,6 +71,7 @@ function Friend({ socket }) {
         )
         dispatch(fetchListGroup({ name: '', type: 2 }))
     }, [])
+
 
     const handleMenuLeftSelect = ({ _, key }) => {
         setCurrentFilterLeft(key)
@@ -116,7 +118,25 @@ function Friend({ socket }) {
     )
 
     return (
+
         <div id="main-friend_wrapper">
+
+            {/* <React.Fragment>
+                <ModalVideo
+                    channel='custom'
+                    autoplay url={'http://res.cloudinary.com/zelo-chat/video/upload/v1633795340/cdycbcmrcx6fl80ejkhb.mp4'}
+                    isOpen={isOpen}
+                    onClose={() => setOpen(false)}
+                    animationSpeed
+                    ratio='16:9'
+                    style={{ height: "800px" }}
+
+
+                />
+
+
+            </React.Fragment>
+            <button className="btn-primary" onClick={() => setOpen(true)}>VIEW DEMO</button> */}
             <Row gutter={[0, 0]}>
                 <Col span={5}>
                     <div className="main-friend_sidebar">

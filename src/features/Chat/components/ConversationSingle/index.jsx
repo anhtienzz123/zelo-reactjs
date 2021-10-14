@@ -18,6 +18,7 @@ function ConversationSingle({ conversation, onClick }) {
     const { classifies, conversations } = useSelector(state => state.chat);
     const [classify, setClassify] = useState(null);
 
+
     useEffect(() => {
         if (classifies.length > 0) {
             const temp = classifyUtils.getClassifyOfObject(_id, classifies);
@@ -26,6 +27,7 @@ function ConversationSingle({ conversation, onClick }) {
             }
         }
     }, [conversation, conversations, classifies]);
+
 
 
 
@@ -67,6 +69,7 @@ function ConversationSingle({ conversation, onClick }) {
                                         : user.name
                                     }:${content ? content : 'Tin nhắn đã thu hồi'}`
                                 }
+
                             </span>
                         </div>
                     </div>

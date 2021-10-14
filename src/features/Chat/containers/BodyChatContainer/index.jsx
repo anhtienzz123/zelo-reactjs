@@ -1,7 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Spin } from 'antd';
+import DividerCustom from 'features/Chat/components/DividerCustom';
 import UserMessage from 'features/Chat/components/UserMessage';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import DividerCustom from 'features/Chat/components/DividerCustom';
 import { setRaisePage, fetchNextPageMessage, fetchListMessages, getMembersConversation, setTypeOfConversation } from '../../chatSlice';
@@ -30,7 +32,7 @@ function BodyChatContainer({
     onResetScrollButton,
     turnOnScrollButoon,
 }) {
-    const { messages, currentConversation, currentPage } = useSelector(
+    const { messages, currentConversation, currentPage, totalPages } = useSelector(
         (state) => state.chat
     );
     const { user } = useSelector((state) => state.global);
@@ -48,11 +50,7 @@ function BodyChatContainer({
         }
     }, [turnOnScrollButoon]);
 
-    useEffect(() => {
-        if (scrollId) {
-            scrollbars.current.scrollToBottom();
-        }
-    }, [scrollId]);
+
 
     useEffect(() => {
         async function fetchNextListMessage() {
@@ -72,6 +70,7 @@ function BodyChatContainer({
                     scrollbars.current.getScrollHeight() -
                     previousHieight.current
                 );
+
             }
         }
 
@@ -84,7 +83,7 @@ function BodyChatContainer({
             scrollbars.current.getScrollHeight() >
             scrollbars.current.getClientHeight()
         ) {
-            if (position >= 0.99) {
+            if (position >= 0.95) {
                 scrollbars.current.scrollToBottom();
             } else {
                 if (onBackToBottom) {
@@ -93,6 +92,8 @@ function BodyChatContainer({
             }
         }
     }, [onSCrollDown]);
+
+
 
     const renderMessages = (messages) => {
         const result = [];
@@ -157,8 +158,6 @@ function BodyChatContainer({
 
     const handleOnScrolling = ({ scrollTop, scrollHeight, top }) => {
         tempPosition.current = top;
-
-        console.log('CHay scroll');
         if (
             scrollbars.current.getScrollHeight() ===
             scrollbars.current.getClientHeight()
@@ -187,11 +186,28 @@ function BodyChatContainer({
         setPosition(tempPosition.current);
     };
 
+
+
     useEffect(() => {
-        scrollbars.current.scrollToBottom();
+        if (scrollId) {
+            scrollbars.current.scrollToBottom();
+        }
+    }, [scrollId]);
+
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            sleep(500).then(() => {
+                scrollbars.current.scrollToBottom();
+            })
+        }
     }, [currentConversation]);
 
-    const handleOnScroll = (e) => { };
+
 
     return (
         <Scrollbars
