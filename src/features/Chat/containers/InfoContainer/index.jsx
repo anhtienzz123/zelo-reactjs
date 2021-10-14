@@ -7,10 +7,11 @@ import InfoMember from 'features/Chat/components/InfoMember';
 import InfoNameAndThumbnail from 'features/Chat/components/InfoNameAndThumbnail';
 import InfoTitle from 'features/Chat/components/InfoTitle';
 import { fetchAllMedia } from 'features/Chat/mediaSlice';
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import './style.scss';
 InfoContainer.propTypes = {
     socket: PropTypes.object,
@@ -22,8 +23,10 @@ InfoContainer.defaultProps = {
 
 function InfoContainer({ socket }) {
 
-    const [isFind, setFind] = useState(0);
-    const { memberInConversation, type } = useSelector(state => state.chat);
+    const [isFind, setFind] = useState({ tapane: 0, view: 0 });
+    const { memberInConversation, type, currentConversation } = useSelector(state => state.chat);
+    const { media } = useSelector(state => state.media);
+    const dispatch = useDispatch()
 
 
 
@@ -43,6 +46,8 @@ function InfoContainer({ socket }) {
         if (currentConversation)
             dispatch(fetchAllMedia({ conversationId: currentConversation }));
     }, []);
+
+
     return (
         <div id='main-info'>
             {(() => {

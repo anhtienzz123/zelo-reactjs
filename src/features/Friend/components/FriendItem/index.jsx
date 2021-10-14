@@ -59,8 +59,8 @@ function FriendItem({ data, onClickMenu }) {
     return (
 
         <Dropdown overlay={menu} trigger={['contextMenu']}>
-            <div id='friend-item' onClick={handleClickFriendItem}>
-                <div className="friend-item_left">
+            <div id='friend-item' >
+                <div className="friend-item_left" onClick={handleClickFriendItem}>
                     <div className="friend-item-avatar">
                         <PersonalIcon
                             isActive={data.isOnline && data.isOnline}

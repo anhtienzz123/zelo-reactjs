@@ -1,4 +1,4 @@
-$size: 3rem;
+$size: 4rem;
 
 .item-file {
     display: flex;
@@ -8,6 +8,9 @@ $size: 3rem;
     cursor: pointer;
     &--icon {
         width: $size;
+        svg {
+            width: 25px;
+        }
     }
 
     &--name {
@@ -42,9 +45,6 @@ $size: 3rem;
         &--mg-right {
             margin-right: 1rem;
         }
-    }
-    &_button:hover {
-        background: rgba(0, 0, 0, 0.1);
     }
 }
 
