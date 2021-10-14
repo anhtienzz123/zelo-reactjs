@@ -5,8 +5,11 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchNextPageMessage, setRaisePage } from '../../chatSlice';
+import DividerCustom from 'features/Chat/components/DividerCustom';
+import { setRaisePage, fetchNextPageMessage, fetchListMessages, getMembersConversation, setTypeOfConversation } from '../../chatSlice';
 import './style.scss';
+import { Spin } from 'antd';
+import { useLocation } from 'react-router';
 
 BodyChatContainer.propTypes = {
     scrollId: PropTypes.string,
@@ -203,6 +206,7 @@ function BodyChatContainer({
             })
         }
     }, [currentConversation]);
+
 
 
     return (

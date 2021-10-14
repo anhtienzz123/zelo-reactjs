@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import { Avatar, Badge } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
+import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
+
 PersonalIcon.propTypes = {
     avatar: PropTypes.string,
     isActive: PropTypes.bool,
@@ -51,7 +53,7 @@ function PersonalIcon(props) {
                         ''
                     )
                 }>
-                <Avatar size={demention} src={avatar} />
+                <Avatar size={demention} src={avatar ? avatar : DEFAULT_AVATAR} />
             </Badge>
         </div>
     );

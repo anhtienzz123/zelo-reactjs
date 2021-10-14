@@ -12,6 +12,12 @@ const conversationApi = {
         });
     },
 
+    // [POST] /individuals/:userId
+
+    createConversationIndividual: (userId) => {
+        return axiosClient.post(`${API_URL}/individuals/${userId}`);
+    },
+
     createGroup: (name, userIds) => {
         return axiosClient.post(`${API_URL}/groups`, {
             name,

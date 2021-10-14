@@ -9,17 +9,23 @@ import InfoTitle from 'features/Chat/components/InfoTitle';
 import { fetchAllMedia } from 'features/Chat/mediaSlice';
 import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import './style.scss';
-InfoContainer.propTypes = {};
+InfoContainer.propTypes = {
+    socket: PropTypes.object,
+};
 
-function InfoContainer(props) {
-    const dispatch = useDispatch();
-    const [isFind, setFind] = useState({ view: 0, tabpane: 0 });
-    const { memberInConversation, type, currentConversation } = useSelector(
-        (state) => state.chat
-    );
-    const { media } = useSelector((state) => state.media);
+InfoContainer.defaultProps = {
+    socket: {}
+}
+
+function InfoContainer({ socket }) {
+
+    const [isFind, setFind] = useState(0);
+    const { memberInConversation, type } = useSelector(state => state.chat);
+
+
 
     const handleViewMemberClick = (value) => {
         setFind({ view: value, tabpane: 0 });
@@ -105,7 +111,9 @@ function InfoContainer(props) {
                                     </div>
 
                                     <div className='info_another-setting-wrapper'>
-                                        <AnotherSetting />
+                                        <AnotherSetting
+                                            socket={socket}
+                                        />
                                     </div>
                                 </div>
                             </Scrollbars>

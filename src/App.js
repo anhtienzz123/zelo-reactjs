@@ -8,13 +8,14 @@ import CallVideo from 'features/CallVideo';
 import Home from 'features/Home';
 import ChatLayout from 'layout/ChatLayout';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './scss/App.scss';
 
 function App() {
     const dispatch = useDispatch();
     const [isFetch, setIsFetch] = useState(false);
+    const { user } = useSelector(state => state.global);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -27,6 +28,7 @@ function App() {
 
         fetchProfile();
     }, []);
+
 
     if (!isFetch) return '';
 

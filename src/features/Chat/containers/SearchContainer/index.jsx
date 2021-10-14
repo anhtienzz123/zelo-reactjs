@@ -11,6 +11,8 @@ import UserCard from 'components/UserCard';
 import userApi from 'api/userApi';
 import friendApi from 'api/friendApi';
 import './style.scss';
+import { fetchListMyRequestFriend } from 'features/Friend/friendSlice';
+import friendUtils from 'utils/friendUtils';
 SearchContainer.propTypes = {
 
 };
@@ -21,6 +23,7 @@ function SearchContainer(props) {
     const [isModalCreateGroupVisible, setIsModalCreateGroupVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { classifies } = useSelector(state => state.chat);
+    const { friends, myRequestFriend, requestFriends } = useSelector(state => state.friend);
     const [isShowModalClasify, setIsShowModalClasify] = useState(false);
     const [isShowModalAddFriend, setShowModalAddFriend] = useState(false);
     const [userIsFind, setUserIsFind] = useState({});
@@ -84,16 +87,24 @@ function SearchContainer(props) {
     const handeCancelModalAddFriend = () => {
         setShowModalAddFriend(false);
     }
-    const handOnSearchUser = async (value) => {
+
+    const handFindUser = async (value) => {
         try {
             const user = await userApi.fetchUser(value);
             setUserIsFind(user);
             setVisbleUserCard(true);
             setShowModalAddFriend(false);
         } catch (error) {
-            console.log(error);
             message.error('Không tìm thấy người dùng');
         }
+    }
+    const handOnSearchUser = (value) => {
+        handFindUser(value);
+    }
+
+
+    const handleOnEnter = (value) => {
+        handFindUser(value);
     }
 
     // ------------
@@ -110,6 +121,7 @@ function SearchContainer(props) {
         try {
             await friendApi.sendRequestFriend(id);
             setVisbleUserCard(false);
+            dispatch(fetchListMyRequestFriend());
             message.success('Gửi lời mời kết bạn thành công');
         } catch (error) {
             message.error('Gửi lời mời kết bạn thất bại');
@@ -177,10 +189,6 @@ function SearchContainer(props) {
             </div>
 
 
-
-
-
-
             <ModalCreateGroup
                 isVisible={isModalCreateGroupVisible}
                 onCancel={handleCancelModalCreatGroup}
@@ -199,6 +207,7 @@ function SearchContainer(props) {
                 isVisible={isShowModalAddFriend}
                 onCancel={handeCancelModalAddFriend}
                 onSearch={handOnSearchUser}
+                onEnter={handleOnEnter}
             />
 
             <UserCard
@@ -206,6 +215,9 @@ function SearchContainer(props) {
                 isVisible={visibleUserCard}
                 onCancel={handleCancelModalUserCard}
                 onAddFriend={handleOnAddFriend}
+                isMyFriend={friendUtils.checkIsFriend(userIsFind, friends)}
+                isMyRequest={friendUtils.checkIsMyRequestFriend(userIsFind, myRequestFriend)}
+                isRequestToMe={friendUtils.checkIsRequestSentToMe(userIsFind, requestFriends)}
             />
 
 

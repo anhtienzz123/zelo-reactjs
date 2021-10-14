@@ -32,6 +32,10 @@ const friendApi = {
 
     deleteSentRequestFriend: (userId) => {
         return axiosClient.delete(`${API_URL}/invites/me/${userId}`);
+    },
+
+    fetchMyRequestFriend: () => {
+        return axiosClient.get(`${API_URL}/invites/me`)
     }
 
 

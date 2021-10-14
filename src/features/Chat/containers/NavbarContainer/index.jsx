@@ -25,6 +25,7 @@ function NavbarContainer(props) {
     const { user } = useSelector((state) => state.global);
 
     const { conversations, toTalUnread } = useSelector((state) => state.chat);
+    const { amountNotify } = useSelector((state) => state.friend);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -110,7 +111,8 @@ function NavbarContainer(props) {
                     <li className='sidebar_nav_item'>
                         <Link to='/chat/friends'>
                             <div className='sidebar_nav_item--icon'>
-                                <Badge count={5}>
+                                <Badge count={amountNotify}>
+
                                     <ContactsOutlined />
                                 </Badge>
                             </div>
@@ -120,7 +122,7 @@ function NavbarContainer(props) {
                     <li className='sidebar_nav_item'>
                         <Link to='/notify'>
                             <div className='sidebar_nav_item--icon'>
-                                <Badge count={5}>
+                                <Badge>
                                     <BellOutlined />
                                 </Badge>
                             </div>

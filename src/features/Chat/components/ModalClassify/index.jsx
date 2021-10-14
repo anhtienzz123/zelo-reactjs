@@ -10,10 +10,15 @@ import ClassifyApi from 'api/ClassifyApi';
 import { fetchListClassify } from '../../chatSlice';
 ModalClassify.propTypes = {
     isVisible: PropTypes.bool,
+    onCancel: PropTypes.func,
+    onOpen: PropTypes.func,
 };
 
 ModalClassify.defaultProps = {
     isVisible: false,
+    onCancel: null,
+    onOpen: null,
+
 };
 
 function ModalClassify({ isVisible, onCancel, onOpen }) {

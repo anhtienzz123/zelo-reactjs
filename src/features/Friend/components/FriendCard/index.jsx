@@ -3,37 +3,98 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { Button } from 'antd';
-FriendCard.propTypes = {
 
+FriendCard.propTypes = {
+    isMyRequest: PropTypes.bool,
+    data: PropTypes.object,
+    onAccept: PropTypes.func,
+    onDeny: PropTypes.func,
+    onCancel: PropTypes.func,
 };
 
-function FriendCard(props) {
+FriendCard.defaultProps = {
+    isMyRequest: false,
+    data: {},
+    onAccept: null,
+    onDeny: null,
+    onCancel: null,
+};
+
+
+function FriendCard({ isMyRequest, data, onAccept, onDeny, onCancel }) {
+
+
+    const handleRemoveMyRequest = () => {
+        if (onCancel) {
+            onCancel(data);
+        }
+    }
+
+    const handleDeniedRequest = () => {
+        if (onDeny) {
+            onDeny(data);
+        }
+    }
+
+    const handleAcceptFriend = () => {
+        if (onAccept) {
+            onAccept(data);
+        }
+    }
+
+
     return (
         <div className='friend-card'>
             <div className="friend-card_info-user">
                 <div className="friend-card_avatar">
                     <PersonalIcon
-                        avatar='https://gamek.mediacdn.vn/133514250583805952/2021/9/27/photo-1-16327266531011368258445.jpg'
+                        avatar={data.avatar}
                         demention={72}
                     />
                 </div>
                 <div className="friend-card_name">
-                    Lê Thị Bống Bang
+                    {data.name}
                 </div>
             </div>
 
             <div className="friend-card_interact">
-                <div className="friend-card_button friend-card_button--deny">
-                    <Button type="default" shape="round" >
-                        Bỏ qua
-                    </Button>
-                </div>
+                {isMyRequest ? (
+                    <div className="friend-card_button friend-card_button--accept">
+                        <Button
+                            type="danger"
+                            shape="round"
+                            onClick={handleRemoveMyRequest}
+                        >
+                            Hủy yêu cầu
+                        </Button>
+                    </div>
+                ) : (
+                    <>
+                        <div className="friend-card_button friend-card_button--deny">
+                            <Button
+                                type="default"
+                                shape="round"
+                                onClick={handleDeniedRequest}
+                            >
+                                Bỏ qua
+                            </Button>
+                        </div>
 
-                <div className="friend-card_button friend-card_button--accept">
-                    <Button type="primary" shape="round" >
-                        Đồng ý
-                    </Button>
-                </div>
+                        <div className="friend-card_button friend-card_button--accept">
+                            <Button
+                                type="primary"
+                                shape="round"
+                                onClick={handleAcceptFriend}
+                            >
+                                Đồng ý
+                            </Button>
+                        </div>
+                    </>
+                )}
+
+
+
+
             </div>
         </div>
     );

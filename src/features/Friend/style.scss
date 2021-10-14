@@ -78,7 +78,15 @@
         }
 
         &_item {
-            height: calc(100vh - 68px - 50px);
+            height: calc(100vh - 68px);
+        }
+        &_title-list {
+            font-weight: 500;
+            margin: 1.5rem 5rem;
+        }
+
+        &__list-group {
+            padding: 0 5rem;
         }
     }
 }
