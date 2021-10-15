@@ -39,7 +39,7 @@ function BodyChatContainer({
     const dispatch = useDispatch();
     const previousHieight = useRef();
     const tempPosition = useRef();
-
+    const indexMesssageBreak = useRef();
     useEffect(() => {
         if (turnOnScrollButoon) {
             scrollbars.current.scrollToBottom();
@@ -99,6 +99,9 @@ function BodyChatContainer({
             const preMessage = messages[i - 1];
             const currentMessage = messages[i];
 
+
+
+
             const senderId = currentMessage.user._id;
             const isMyMessage = senderId === user._id ? true : false;
 
@@ -109,10 +112,13 @@ function BodyChatContainer({
                         key={i}
                         message={currentMessage}
                         isMyMessage={isMyMessage}
+                        conditionTime={true}
                     />
                 );
                 continue;
             }
+            const dateTempt2 = new Date(currentMessage.createdAt);
+            const dateTempt1 = new Date(preMessage.createdAt);
 
             const isSameUser =
                 currentMessage.user._id === preMessage.user._id &&
@@ -120,15 +126,33 @@ function BodyChatContainer({
                     ? true
                     : false;
 
-            // Check tin nhắn sau có cùng người gửi vs tin nhắn trước
 
-            const dateTempt1 = new Date(preMessage.createdAt);
-            const dateTempt2 = new Date(currentMessage.createdAt);
 
-            if (
-                // chổ này đang so sánh 5 phút nên để lại 6hours
-                dateTempt2.setHours(dateTempt2.getHours() - 6) > dateTempt1
-            ) {
+
+            const timeIsEqual = dateTempt2.setHours(dateTempt2.getHours() - 6) > dateTempt1 ? true : false;
+
+            // let conditionTime = false
+            // if (isSameUser) {
+            //     if (indexMesssageBreak.current === i) {
+            //         conditionTime = true;
+            //     }
+
+            //     if (i === messages.length - 1) {
+            //         conditionTime = true;
+            //     }
+            //     indexMesssageBreak.current = i
+            // } else {
+            //     if (indexMesssageBreak.current === i) {
+            //         conditionTime = true;
+            //     }
+
+            //     if (i === messages.length - 1) {
+            //         conditionTime = true;
+            //     }
+
+            // }
+
+            if (timeIsEqual) {
                 result.push(
                     <div key={i}>
                         <DividerCustom dateString={dateTempt2} />
@@ -136,6 +160,8 @@ function BodyChatContainer({
                             key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
+                            isVisibleTime={true}
+
                         />
                     </div>
                 );
@@ -146,6 +172,7 @@ function BodyChatContainer({
                         message={currentMessage}
                         isMyMessage={isMyMessage}
                         isSameUser={isSameUser}
+                        isVisibleTime={true}
                     />
                 );
         }
