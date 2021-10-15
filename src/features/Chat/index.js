@@ -13,15 +13,16 @@ import {
     removeConversation,
     setCurrentConversation,
     setReactionMessage,
-    setRedoMessage,
+    setRedoMessage
 } from './chatSlice'
+import DrawerPinMessage from './components/DrawerPinMessage'
+import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage'
 import BodyChatContainer from './containers/BodyChatContainer'
 import ConversationContainer from './containers/ConversationContainer'
 import FooterChatContainer from './containers/FooterChatContainer'
 import HeaderChatContainer from './containers/HeaderChatContainer'
 import InfoContainer from './containers/InfoContainer'
 import SearchContainer from './containers/SearchContainer'
-import FriendUtils from 'utils/friendUtils'
 import './style.scss'
 
 Chat.propTypes = {
@@ -48,6 +49,7 @@ function Chat({ socket, idNewMessage }) {
     const [isScroll, setIsScroll] = useState(false)
     const [hasMessage, setHasMessage] = useState('')
     const [usersTyping, setUsersTyping] = useState([])
+    const [isOpenDrawer, setIsOpenDrawer] = useState(false)
     const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
         (state) => state.global
     )
@@ -221,15 +223,28 @@ function Chat({ socket, idNewMessage }) {
                                             turnOnScrollButoon={isScroll}
                                         />
 
+
+                                        <div className='pin-message'>
+                                            <DrawerPinMessage
+                                                isOpen={isOpenDrawer}
+                                                onOpen={() => setIsOpenDrawer(true)}
+                                                onClose={() => setIsOpenDrawer(false)}
+                                            />
+                                        </div>
+
+                                        {!isOpenDrawer && (
+                                            <div className='nutshell-pin-message'>
+                                                <NutshellPinMessage
+                                                    onOpenDrawer={() => setIsOpenDrawer(true)}
+                                                />
+                                            </div>
+                                        )}
+
                                         {/* {FriendUtils.checkIsFriend()} */}
 
                                         <div
                                             id="back-top-button"
-                                            className={`${
-                                                isShow ? 'show' : 'hide'
-                                            } ${
-                                                hasMessage ? 'new-message' : ''
-                                            }`}
+                                            className={`${isShow ? 'show' : 'hide'} ${hasMessage ? 'new-message' : ''}`}
                                             onClick={hanldeOnClickScroll}
                                         >
                                             {hasMessage ? (
@@ -254,7 +269,7 @@ function Chat({ socket, idNewMessage }) {
                                                             {index < 3 && (
                                                                 <>
                                                                     {index ===
-                                                                    usersTyping.length -
+                                                                        usersTyping.length -
                                                                         1
                                                                         ? `${ele.name} `
                                                                         : `${ele.name}, `}
@@ -265,9 +280,8 @@ function Chat({ socket, idNewMessage }) {
                                                 )}
 
                                                 {usersTyping.length > 3
-                                                    ? `và ${
-                                                          usersTyping.length - 3
-                                                      } người khác`
+                                                    ? `và ${usersTyping.length - 3
+                                                    } người khác`
                                                     : ''}
 
                                                 <span>&nbsp;đang nhập</span>
