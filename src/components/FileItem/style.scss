@@ -1,4 +1,4 @@
-$size: 4rem;
+$size: 2.5rem;
 
 .item-file {
     display: flex;
@@ -6,9 +6,13 @@ $size: 4rem;
     position: relative;
     padding: 0.5rem 1.4rem;
     cursor: pointer;
+    align-items: center;
     &--icon {
         width: $size;
+        display: flex;
+        align-items: center;
         svg {
+            max-width: unset !important;
             width: 25px;
         }
     }

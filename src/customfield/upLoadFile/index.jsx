@@ -1,9 +1,9 @@
 import { message, Upload } from 'antd';
 import messageApi from 'api/messageApi';
+import ACCEPT_FILE from 'constants/acceptFile';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import ACCEPT_FILE from 'constants/acceptFile'
 
 UploadFile.propTypes = {
     typeOfFile: PropTypes.string,
@@ -25,46 +25,16 @@ function UploadFile(props) {
 
     const handleCustomRequest = async ({ onSuccess, onError, file, onProgress }) => {
 
-        const { uid, name, type, lastModified, lastModifiedDate, size, webkitRelativePath } = file;
-
         const fmData = new FormData();
-        // const typeFile = file.type.startsWith('image') ? true : false;
         let typeFile
 
         if (typeOfFile === 'media') {
             typeFile = file.type.startsWith('image') ? 'IMAGE' : "VIDEO";
-            fmData.append("file", file);
         } else {
             typeFile = 'FILE';
-            if (name.slice(-4) === '.rar') {
-                // // const tempFile = {
-                // //     uid,
-                // //     name,
-                // //     lastModified,
-                // //     lastModifiedDate,
-                // //     size,
-                // //     webkitRelativePath,
-                // //     type: 'application/vnd.rar'
-
-                // // }
-
-                // // const tempFIle = file;
-                // delete file.type
-                // console.log("tempFIle", file)
-
-                // fmData.append("file", f);
-            } else {
-                fmData.append("file", file);
-            }
-
 
         }
-
-        console.log(file)
-        // console.log(typeof file)
-        // console.log(name.slice(-4));
-        // console.log('formdata', fmData);
-
+        fmData.append("file", file);
 
         const attachInfo = {
             type: typeFile,

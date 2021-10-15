@@ -1,7 +1,19 @@
 const fileHelpers = {
     getFileName: (url) => {
         const splitArrayTempt = url.split('/');
-        return splitArrayTempt[splitArrayTempt.length - 1];
+        const splitArrayName = splitArrayTempt[3].split('-');
+        if (splitArrayName.length === 3) {
+            return splitArrayName[2];
+        } else {
+            let temp = '';
+            for (let index = 2; index < splitArrayName.length; index++) {
+                console.log(index, splitArrayName[index])
+                temp = temp.concat(splitArrayName[index]);
+
+            }
+
+            return temp;
+        }
     },
     getFileExtension: (fileName) => {
         const splitArrayTempt = fileName.split('.');

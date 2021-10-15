@@ -12,9 +12,11 @@ import { BiDotsHorizontalRounded } from 'react-icons/bi'
 import { FaReplyAll } from 'react-icons/fa'
 import { MdQuestionAnswer } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
+import { checkLeader } from 'utils/groupUtils'
 import { deleteMessageClient } from '../../chatSlice'
 import ListReaction from '../ListReaction'
 import ListReactionOfUser from '../ListReactionOfUser'
+import FileMessage from '../MessageType/FileMessage'
 import HTMLMessage from '../MessageType/HTMLMessage'
 import ImageMessage from '../MessageType/ImageMessage'
 import NotifyMessage from '../MessageType/NotifyMessage'
@@ -26,6 +28,7 @@ UserMessage.propTypes = {
     message: PropTypes.object,
     isMyMessage: PropTypes.bool,
     isSameUser: PropTypes.bool,
+    isVisibleTime: PropTypes.bool.isRequired,
 }
 
 UserMessage.defaultProps = {
@@ -34,19 +37,25 @@ UserMessage.defaultProps = {
     isSameUser: false,
 }
 
-function UserMessage({ message, isMyMessage, isSameUser }) {
+function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts } = message
     const { name, avatar } = user
-    const { messages } = useSelector((state) => state.chat)
+    const { messages, currentConversation, conversations } = useSelector((state) => state.chat)
     const global = useSelector((state) => state.global)
 
-    const [listReactionCurrent, setListReactionCurrent] = useState([])
+    const [listReactionCurrent, setListReactionCurrent] = useState([]);
+    const [isLeader, setIsLeader] = useState(false);
 
     const myReact =
         reacts &&
         reacts.length > 0 &&
         reacts.find((ele) => ele.user._id === global.user._id)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        setIsLeader(checkLeader(user._id, conversations, currentConversation));
+    }, [messages])
+
 
     const listReaction = ['👍', '❤️', '😆', '😮', '😭', '😡']
 
@@ -134,6 +143,9 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
 
     const dateAt = new Date(createdAt)
 
+
+
+
     return (
         <>
             {type === 'NOTIFY' ? (
@@ -152,7 +164,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                 }`}
                         >
                             <PersonalIcon
-                                // isHost={}
+                                isHost={isLeader}
                                 demention={40}
                                 avatar={avatar}
                             />
@@ -180,6 +192,7 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                             {type === 'HTML' ? (
                                                 <HTMLMessage
                                                     content={content}
+                                                    dateAt={dateAt}
                                                 >
                                                     {!myReact && (
                                                         <ListReaction
@@ -194,6 +207,8 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                             ) : type === 'TEXT' ? (
                                                 <TextMessage
                                                     content={content}
+                                                    dateAt={dateAt}
+                                                    isVisibleTime={isVisibleTime}
                                                 >
                                                     {!myReact && (
                                                         <ListReaction
@@ -239,7 +254,22 @@ function UserMessage({ message, isMyMessage, isSameUser }) {
                                                 </VideoMessage>
 
                                             ) : (
-                                                <div>{content}</div>
+                                                <FileMessage
+                                                    content={content}
+                                                    isVisibleTime={isVisibleTime}
+                                                    dateAt={dateAt}
+
+                                                >
+                                                    {!myReact && (
+                                                        <ListReaction
+                                                            type='media'
+                                                            isMyMessage={isMyMessage}
+                                                            onClickLike={handleClickLike}
+                                                            listReaction={listReaction}
+                                                            onClickReaction={handleClickReaction}
+                                                        />
+                                                    )}
+                                                </FileMessage>
                                             )}
 
                                             {isDeleted && (
