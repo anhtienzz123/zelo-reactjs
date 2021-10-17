@@ -45,7 +45,7 @@ function CallVideo(props) {
                         pc[partnerName].addTrack(track, stream); //should trigger negotiationneeded event
                     });
 
-                    h.setLocalStream(stream);
+                    // h.setLocalStream(stream);
                 })
                 .catch((e) => {
                     console.error(`stream error: ${e}`);
@@ -54,6 +54,7 @@ function CallVideo(props) {
 
         //create offer
         if (createOffer) {
+            console.log('offer');
             pc[partnerName].onnegotiationneeded = async () => {
                 let offer = await pc[partnerName].createOffer();
 
@@ -80,12 +81,20 @@ function CallVideo(props) {
         pc[partnerName].ontrack = (e) => {
             let str = e.streams[0];
 
+            console.log('partName: ', partnerName);
+            console.log('stream: ', str);
+
             const index = userStreams.findIndex(
                 (userEle) => userEle.userId == partnerName
             );
+            console.log('onTrack: ', index);
             // nếu có rồi thì thay đổi, không có thì tạo ra
-            if (index !== -1) userStreams[index].stream = str;
-            else userStreams.push({ userId: partnerName, stream: str });
+            const userStreamsTempt = [...userStreams];
+            if (index !== -1) userStreamsTempt[index].stream = str;
+            else userStreamsTempt.push({ userId: partnerName, stream: str });
+
+            console.log('userStreams: ', userStreamsTempt);
+            setUserStreams(userStreamsTempt);
         };
 
         // lắng nghe sự kiện thằng khác làm gì
@@ -153,7 +162,6 @@ function CallVideo(props) {
         // thằng cũ khởi tạo video thằng mới vào
         socket.on('new user', (newUserId) => {
             // bắn lại id của mình cho thằng mới vào
-            console.log('new-user', newUserId);
             socket.emit('newUserStart', {
                 to: newUserId,
                 sender: _id,
@@ -165,7 +173,6 @@ function CallVideo(props) {
 
         // thằng mới vào khởi tạo video thằng cũ
         socket.on('newUserStart', (senderId) => {
-            console.log('newUserStart: ', senderId);
             pc.push(senderId);
             init(false, senderId);
         });
@@ -189,6 +196,7 @@ function CallVideo(props) {
     };
 
     const handleSDP = async (data) => {
+        console.log('handleSDP');
         if (data.description.type === 'offer') {
             // để bắt tay với nhau
             if (data.description) {
@@ -197,27 +205,30 @@ function CallVideo(props) {
                 );
             }
 
-            h.getUserFullMedia()
-                .then(async (stream) => {
-                    setMyStream(stream);
+            let stream = null;
 
+            try {
+                stream = await h.getUserFullMedia();
+            } catch (err) {
+                console.log('err: ', err);
+            } finally {
+                setMyStream(stream);
+
+                if (stream)
                     stream.getTracks().forEach((track) => {
                         pc[data.sender].addTrack(track, stream);
                     });
 
-                    let answer = await pc[data.sender].createAnswer();
+                let answer = await pc[data.sender].createAnswer();
 
-                    await pc[data.sender].setLocalDescription(answer);
+                await pc[data.sender].setLocalDescription(answer);
 
-                    socket.emit('sdp', {
-                        description: pc[data.sender].localDescription,
-                        to: data.sender,
-                        sender: _id,
-                    });
-                })
-                .catch((e) => {
-                    console.error(e);
+                socket.emit('sdp', {
+                    description: pc[data.sender].localDescription,
+                    to: data.sender,
+                    sender: _id,
                 });
+            }
         } else if (data.description.type === 'answer') {
             await pc[data.sender].setRemoteDescription(
                 new RTCSessionDescription(data.description)
@@ -249,7 +260,6 @@ function CallVideo(props) {
         broadcastNewTracks(myStream, 'video');
     };
 
-    console.log('isVideo: ', isVideo);
     return (
         <div id='call-video'>
             <ActionNavbar
