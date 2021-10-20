@@ -13,7 +13,9 @@ import Peer from 'peerjs';
 
 CallVideo.propTypes = {};
 
-let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
+let socket = io(process.env.REACT_APP_SOCKET_URL, {
+    transports: ['websocket'],
+});
 
 function CallVideo(props) {
     const match = useRouteMatch();
@@ -21,7 +23,7 @@ function CallVideo(props) {
     const { user } = useSelector((state) => state.global);
     const { _id } = user;
     const myStreamRef = useRef();
-    const [myStream, setMyStream] = useState();
+    const [myStream, setMyStream] = useState(null);
     const peerRef = useRef(new Peer());
     const peerIdRef = useRef('');
     const [callerVideos, setCallerVideos] = useState([]);
@@ -45,9 +47,18 @@ function CallVideo(props) {
 
             peerRef.current.on('call', function (call) {
                 console.log('nhan duoc call');
-                call.answer(myStreamRef.current);
+
+                let streamTempt = myStreamRef.current;
+
+                if (!myStreamRef.current) streamTempt = h.getEmptyMedia();
+
+                call.answer(streamTempt);
+                const senderId = call.metadata.userId;
                 call.on('stream', function (remoteStream) {
-                    setCallerVideos([...callerVideos, remoteStream]);
+                    setCallerVideos((pre) => [
+                        ...pre.filter((preEle) => preEle.userId != senderId),
+                        { userId: senderId, stream: remoteStream },
+                    ]);
                 });
             });
         }
@@ -62,9 +73,23 @@ function CallVideo(props) {
         socket.on('new-user-call', ({ conversationId, newUserId, peerId }) => {
             console.log('new-user-call: ', newUserId, peerId);
             console.log('myStream: ', myStreamRef.current);
-            const call = peerRef.current.call(peerId, myStreamRef.current);
+
+            let streamTempt = myStreamRef.current;
+
+            if (!myStreamRef.current) streamTempt = h.getEmptyMedia();
+
+            const call = peerRef.current.call(peerId, streamTempt, {
+                metadata: {
+                    userId: _id,
+                },
+            });
+
             call.on('stream', function (remoteStream) {
-                setCallerVideos([...callerVideos, remoteStream]);
+                console.log('remoteStream: ', remoteStream);
+                setCallerVideos((pre) => [
+                    ...pre.filter((preEle) => preEle.userId != newUserId),
+                    { userId: newUserId, stream: remoteStream },
+                ]);
             });
         });
     }, []);
@@ -77,13 +102,16 @@ function CallVideo(props) {
             />
             <div className='local-video'>
                 {myStreamRef.current && (
-                    <MyVideo stream={myStreamRef.current} />
+                    <MyVideo stream={myStreamRef.current} userId='dsdsadsa' />
                 )}
             </div>
             <Row className='user-videos'>
                 {callerVideos.map((callerVideoEle) => (
                     <Col span={6}>
-                        <MyVideo stream={callerVideoEle} />
+                        <MyVideo
+                            stream={callerVideoEle.stream}
+                            userId={callerVideoEle.userId}
+                        />
                     </Col>
                 ))}
             </Row>{' '}
