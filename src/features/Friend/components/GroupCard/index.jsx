@@ -1,6 +1,6 @@
 import { Badge, Button, Dropdown, Menu } from 'antd';
 import SubMenuClassify from 'components/SubMenuClassify';
-import { fetchListMessages, setCurrentConversation } from 'features/Chat/chatSlice';
+import { fetchListMessages, setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import ConversationAvatar from 'features/Chat/components/ConversationAvatar';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchNextPageMessage, setRaisePage } from '../../chatSlice';
+import { fetchNextPageMessage, setRaisePage } from '../../slice/chatSlice';
 import './style.scss';
 
 BodyChatContainer.propTypes = {

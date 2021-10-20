@@ -6,15 +6,6 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router'
-import {
-    fetchConversationById,
-    fetchListFriends,
-    isDeletedFromGroup,
-    removeConversation,
-    setCurrentConversation,
-    setReactionMessage,
-    setRedoMessage
-} from './chatSlice'
 import DrawerPinMessage from './components/DrawerPinMessage'
 import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage'
 import BodyChatContainer from './containers/BodyChatContainer'
@@ -23,6 +14,16 @@ import FooterChatContainer from './containers/FooterChatContainer'
 import HeaderChatContainer from './containers/HeaderChatContainer'
 import InfoContainer from './containers/InfoContainer'
 import SearchContainer from './containers/SearchContainer'
+import {
+    fetchConversationById,
+    fetchListFriends,
+    fetchPinMessages,
+    isDeletedFromGroup,
+    removeConversation,
+    setCurrentConversation,
+    setReactionMessage,
+    setRedoMessage
+} from './slice/chatSlice'
 import './style.scss'
 
 Chat.propTypes = {
@@ -37,7 +38,7 @@ Chat.defaultProps = {
 
 function Chat({ socket, idNewMessage }) {
     const dispatch = useDispatch()
-    const { conversations, currentConversation } = useSelector(
+    const { conversations, currentConversation, pinMessages } = useSelector(
         (state) => state.chat
     )
 
@@ -53,7 +54,6 @@ function Chat({ socket, idNewMessage }) {
     const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
         (state) => state.global
     )
-
     useEffect(() => {
         console.log('User typing', usersTyping)
     }, [usersTyping])
@@ -78,8 +78,10 @@ function Chat({ socket, idNewMessage }) {
     }, [conversations])
 
     useEffect(() => {
-        console.log('vao zo useEFFECT')
-        console.log('isJoinChatLayout', isJoinChatLayout)
+        dispatch(fetchPinMessages({ conversationId: currentConversation }))
+    }, [currentConversation])
+
+    useEffect(() => {
         if (!isJoinChatLayout) {
             socket.on('delete-conversation', (conversationId) => {
                 dispatch(removeConversation(conversationId))
@@ -224,20 +226,28 @@ function Chat({ socket, idNewMessage }) {
                                         />
 
 
-                                        <div className='pin-message'>
-                                            <DrawerPinMessage
-                                                isOpen={isOpenDrawer}
-                                                onOpen={() => setIsOpenDrawer(true)}
-                                                onClose={() => setIsOpenDrawer(false)}
-                                            />
-                                        </div>
+                                        {
+                                            <div className='pin-message'>
+                                                <DrawerPinMessage
+                                                    isOpen={isOpenDrawer}
+                                                    onOpen={() => setIsOpenDrawer(true)}
+                                                    onClose={() => setIsOpenDrawer(false)}
+                                                    message={pinMessages}
+                                                />
+                                            </div>
+                                        }
 
-                                        {!isOpenDrawer && (
+
+                                        {(pinMessages.length > 0) && (
                                             <div className='nutshell-pin-message'>
                                                 <NutshellPinMessage
+                                                    isItem={pinMessages.length > 1 ? false : true}
+                                                    message={pinMessages[0]}
+                                                    quantity={pinMessages.length}
                                                     onOpenDrawer={() => setIsOpenDrawer(true)}
                                                 />
                                             </div>
+
                                         )}
 
                                         {/* {FriendUtils.checkIsFriend()} */}

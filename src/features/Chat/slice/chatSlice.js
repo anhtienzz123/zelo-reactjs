@@ -4,6 +4,8 @@ import conversationApi from 'api/conversationApi'
 import friendApi from 'api/friendApi'
 import messageApi from 'api/messageApi'
 import dateUtils from 'utils/dateUtils'
+import pinMessageApi from 'api/pinMessageApi'
+
 
 const KEY = 'chat'
 
@@ -84,6 +86,7 @@ export const fetchListFriends = createAsyncThunk(
     }
 )
 
+
 // CONVERSATION API
 
 // Create a group chat
@@ -128,6 +131,21 @@ export const getMembersConversation = createAsyncThunk(
     }
 )
 
+
+// ============ PIN MESSAGE ==============
+
+
+export const fetchPinMessages = createAsyncThunk(`${KEY}/fetchPinMessages`,
+    async (params, _) => {
+        const { conversationId } = params;
+        const pinMessages = await pinMessageApi.getPinMessages(conversationId);
+        return pinMessages;
+    }
+)
+
+
+// ============
+
 const chatSlice = createSlice({
     name: KEY,
     initialState: {
@@ -143,6 +161,7 @@ const chatSlice = createSlice({
         toTalUnread: 0,
         classifies: [],
         colors: [],
+        pinMessages: []
     },
     reducers: {
         addMessage: (state, action) => {
@@ -461,6 +480,10 @@ const chatSlice = createSlice({
         [fetchListColor.fulfilled]: (state, action) => {
             state.colors = action.payload
         },
+
+        [fetchPinMessages.fulfilled]: (state, action) => {
+            state.pinMessages = action.payload.reverse();
+        }
     },
 })
 

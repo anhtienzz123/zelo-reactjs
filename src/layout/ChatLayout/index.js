@@ -10,7 +10,7 @@ import {
     setNumberUnreadForNewFriend,
     updateConversationWhenAddMember,
     updateMemberLeaveGroup,
-} from 'features/Chat/chatSlice'
+} from 'features/Chat/slice/chatSlice'
 import NavbarContainer from 'features/Chat/containers/NavbarContainer'
 import Friend from 'features/Friend'
 import {

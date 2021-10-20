@@ -9,14 +9,16 @@ DrawerPinMessage.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
+    message: PropTypes.array,
 };
 
 DrawerPinMessage.defaultProps = {
     onOpen: null,
     onClose: null,
+    message: []
 };
 
-function DrawerPinMessage({ isOpen, onOpen, onClose }) {
+function DrawerPinMessage({ isOpen, onOpen, onClose, message }) {
 
 
     const handleOnCloseDrawer = () => {
@@ -41,7 +43,7 @@ function DrawerPinMessage({ isOpen, onOpen, onClose }) {
 
                     <div className="drawer-header">
                         <div className="drawer-header-title">
-                            {`Danh sách ghim (2)`}
+                            {`Danh sách ghim (${message.length})`}
                         </div>
 
                         <div className="drawer-header-collapse" onClick={handleOnCloseDrawer}>
@@ -50,16 +52,15 @@ function DrawerPinMessage({ isOpen, onOpen, onClose }) {
                     </div>
 
                     <div className="drawer-body">
-                        <NutshellPinMessage
-                            isItem={true}
-                        />
+                        {message.map((ele, index) => (
+                            <NutshellPinMessage
+                                key={index}
+                                message={ele}
+                                isItem={true}
+                            />
+                        ))}
 
-                        <NutshellPinMessage
-                            isItem={true}
-                        />
-                        <NutshellPinMessage
-                            isItem={true}
-                        />
+
 
                     </div>
 

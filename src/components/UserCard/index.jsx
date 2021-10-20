@@ -3,7 +3,7 @@ import { Button, Image, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
 import {
     fetchListMessages, setConversations, setCurrentConversation
-} from 'features/Chat/chatSlice';
+} from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch } from 'react-redux';

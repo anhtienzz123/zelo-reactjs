@@ -1,9 +1,12 @@
 import {
     DeleteOutlined, PushpinOutlined,
     UndoOutlined
-} from '@ant-design/icons'
-import { Button, Dropdown, Menu } from 'antd'
+} from '@ant-design/icons';
+import { Button, Dropdown, Menu } from 'antd';
+import { message as mesageNotify } from 'antd';
 import messageApi from 'api/messageApi'
+import pinMessageApi from 'api/pinMessageApi'
+import ModalChangePinMessage from 'components/ModalChangePinMessage';
 import MESSAGE_STYLE from 'constants/MessageStyle/messageStyle'
 import PersonalIcon from 'features/Chat/components/PersonalIcon'
 import PropTypes from 'prop-types'
@@ -13,7 +16,7 @@ import { FaReplyAll } from 'react-icons/fa'
 import { MdQuestionAnswer } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkLeader } from 'utils/groupUtils'
-import { deleteMessageClient } from '../../chatSlice'
+import { deleteMessageClient, fetchPinMessages } from '../../slice/chatSlice'
 import ListReaction from '../ListReaction'
 import ListReactionOfUser from '../ListReactionOfUser'
 import FileMessage from '../MessageType/FileMessage'
@@ -40,11 +43,12 @@ UserMessage.defaultProps = {
 function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts } = message
     const { name, avatar } = user
-    const { messages, currentConversation, conversations } = useSelector((state) => state.chat)
+    const { messages, currentConversation, conversations, pinMessages } = useSelector((state) => state.chat)
     const global = useSelector((state) => state.global)
 
     const [listReactionCurrent, setListReactionCurrent] = useState([]);
     const [isLeader, setIsLeader] = useState(false);
+    const [isVisbleModal, setVisibleModal] = useState(false);
 
     const myReact =
         reacts &&
@@ -80,10 +84,25 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
     }
 
     const handleOnClick = async ({ item, key }) => {
-        if (key === 1) {
-        } else if (key == 2) {
+        if (key == 1) {
+            if (pinMessages.length === 3) {
+                setVisibleModal(true);
+            } else {
+                try {
+                    await pinMessageApi.pinMessage(message._id);
+                    dispatch(fetchPinMessages({ conversationId: currentConversation }))
+                    mesageNotify.success('Ghim tin nhắn thành công')
+                } catch (error) {
+                    mesageNotify.success('Ghim tin nhắn thành công')
+                }
+            }
+
+        }
+        if (key == 2) {
             await messageApi.redoMessage(_id)
-        } else if (key == 3) {
+        }
+
+        if (key == 3) {
             await messageApi.deleteMessageClientSide(_id)
             dispatch(deleteMessageClient(_id))
         }
@@ -353,6 +372,11 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                     </div>
                 </div>
             )}
+
+            <ModalChangePinMessage
+                message={pinMessages}
+                visible={isVisbleModal}
+            />
         </>
     )
 }

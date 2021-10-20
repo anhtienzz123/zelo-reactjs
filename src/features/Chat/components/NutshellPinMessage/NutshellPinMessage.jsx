@@ -7,11 +7,18 @@ import NutshellPinMessageStyle from './NutshellPinMessageStyle';
 NutshellPinMessage.propTypes = {
     isItem: PropTypes.bool,
     onOpenDrawer: PropTypes.func,
+    message: PropTypes.object,
+    quantity: PropTypes.number,
+    isCheckbox: PropTypes.bool,
 };
 
-NutshellPinMessage.propTypes = {
+NutshellPinMessage.defaultProps = {
     isItem: false,
-    onOpenDrawer: null
+    onOpenDrawer: null,
+    message: {},
+    quantity: 0,
+    isCheckbox: false
+
 };
 
 
@@ -35,7 +42,7 @@ const menu = (
     </Menu>
 );
 
-function NutshellPinMessage({ isItem, onOpenDrawer }) {
+function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, isCheckbox }) {
 
 
     const handleOnClickVisbleList = () => {
@@ -55,7 +62,7 @@ function NutshellPinMessage({ isItem, onOpenDrawer }) {
                         Tin nhắn
                     </div>
                     <div className="nutshell-pin-container_detail">
-                        {`Tư cần: Pin con cặt`}
+                        {`${message.user.name}: ${message.content}`}
                     </div>
 
                 </div>
@@ -78,10 +85,11 @@ function NutshellPinMessage({ isItem, onOpenDrawer }) {
                             type="primary" ghost
                             onClick={handleOnClickVisbleList}
                         >
-                            {`1 ghim tin khác`}<CaretDownOutlined />
+                            {`${quantity} ghim tin khác`}<CaretDownOutlined />
                         </Button>
 
                     )
+
                 }
             </div>
         </div>
