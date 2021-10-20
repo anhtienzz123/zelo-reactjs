@@ -3,22 +3,31 @@ import PropTypes from 'prop-types';
 import { Drawer } from 'antd';
 import './style.scss';
 import DrawerPinMessageStyle from './DrawerPinMessageStyle'
-import { CaretUpOutlined } from '@ant-design/icons';
+import { CaretUpOutlined, RightOutlined } from '@ant-design/icons';
 import NutshellPinMessage from '../NutshellPinMessage/NutshellPinMessage';
 DrawerPinMessage.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
     message: PropTypes.array,
+    onViewNews: PropTypes.func,
 };
 
 DrawerPinMessage.defaultProps = {
     onOpen: null,
     onClose: null,
-    message: []
+    message: [],
+    onViewNews: null
 };
 
-function DrawerPinMessage({ isOpen, onOpen, onClose, message }) {
+function DrawerPinMessage({ isOpen, onOpen, onClose, message, onViewNews }) {
+
+    const handlViewNews = () => {
+        if (onViewNews && onClose) {
+            onViewNews()
+            onClose()
+        }
+    }
 
 
     const handleOnCloseDrawer = () => {
@@ -57,11 +66,13 @@ function DrawerPinMessage({ isOpen, onOpen, onClose, message }) {
                                 key={index}
                                 message={ele}
                                 isItem={true}
+                                onViewNews={onViewNews}
                             />
                         ))}
+                    </div>
 
-
-
+                    <div className="drawer-footer" onClick={handlViewNews}>
+                        Xem tất cả ở bảng tin nhóm <RightOutlined />
                     </div>
 
                 </Drawer>

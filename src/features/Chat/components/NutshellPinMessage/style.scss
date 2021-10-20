@@ -1,13 +1,28 @@
 @import "../../../../scss/variables";
 
-#nutshell-pin-container {
+.nutshell-pin-container {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 0.3rem 2rem;
     background: #fff;
     border-bottom: 0.05px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+}
+
+.nutshell-pin-container.select:hover {
+    background: $grey-500;
+}
+.nutshell-pin-container.no-hover:hover {
+    background: #fff;
+}
+
+.nutshell-pin-container.select:hover .nutshell-pin-container_right {
+    background: $grey-500;
+    display: block;
 }
 
 .nutshell-pin-container {
@@ -23,11 +38,19 @@
         margin-left: 1rem;
     }
     &_right {
+        position: absolute;
+        right: 2rem;
+        transition: 0.2s;
+
+        border-radius: 50%;
         button .nutshell-pin-container_button-interact {
             font-size: 1.3rem;
             padding: 0.2rem 1rem;
             border-radius: 50%;
         }
+    }
+    &_right.no-display {
+        display: none;
     }
 
     &_icon {
@@ -51,7 +74,6 @@
         border-radius: 50%;
         transition: 0.2s;
         border: none;
-        background: #fff;
         svg {
             font-size: 2rem;
         }

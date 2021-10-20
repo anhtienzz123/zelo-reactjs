@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router'
 import DrawerPinMessage from './components/DrawerPinMessage'
+import GroupNews from './components/GroupNews'
 import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage'
 import BodyChatContainer from './containers/BodyChatContainer'
 import ConversationContainer from './containers/ConversationContainer'
@@ -22,7 +23,7 @@ import {
     removeConversation,
     setCurrentConversation,
     setReactionMessage,
-    setRedoMessage
+    setRedoMessage,
 } from './slice/chatSlice'
 import './style.scss'
 
@@ -43,7 +44,6 @@ function Chat({ socket, idNewMessage }) {
     )
 
     const { path } = useRouteMatch()
-
     const [scrollId, setScrollId] = useState('')
     // const [idNewMessage, setIdNewMessage] = useState('')
     const [isShow, setIsShow] = useState(false)
@@ -54,6 +54,8 @@ function Chat({ socket, idNewMessage }) {
     const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
         (state) => state.global
     )
+    const [visibleNews, setVisibleNews] = useState(false)
+
     useEffect(() => {
         console.log('User typing', usersTyping)
     }, [usersTyping])
@@ -184,6 +186,13 @@ function Chat({ socket, idNewMessage }) {
         setIsScroll(value)
     }
 
+    const handleOnBack = () => {
+        setVisibleNews(false)
+    }
+    const handleViewNews = () => {
+        setVisibleNews(true)
+    }
+
     // Xử lý modal mode
 
     return (
@@ -225,36 +234,52 @@ function Chat({ socket, idNewMessage }) {
                                             turnOnScrollButoon={isScroll}
                                         />
 
-
-                                        {
-                                            <div className='pin-message'>
+                                        {pinMessages.length > 1 && (
+                                            <div className="pin-message">
                                                 <DrawerPinMessage
                                                     isOpen={isOpenDrawer}
-                                                    onOpen={() => setIsOpenDrawer(true)}
-                                                    onClose={() => setIsOpenDrawer(false)}
+                                                    onOpen={() =>
+                                                        setIsOpenDrawer(true)
+                                                    }
+                                                    onClose={() =>
+                                                        setIsOpenDrawer(false)
+                                                    }
                                                     message={pinMessages}
+                                                    onViewNews={handleViewNews}
                                                 />
                                             </div>
-                                        }
+                                        )}
 
-
-                                        {(pinMessages.length > 0) && (
-                                            <div className='nutshell-pin-message'>
+                                        {pinMessages.length > 0 && (
+                                            <div className="nutshell-pin-message">
                                                 <NutshellPinMessage
-                                                    isItem={pinMessages.length > 1 ? false : true}
+                                                    isHover={false}
+                                                    isItem={
+                                                        pinMessages.length > 1
+                                                            ? false
+                                                            : true
+                                                    }
                                                     message={pinMessages[0]}
-                                                    quantity={pinMessages.length}
-                                                    onOpenDrawer={() => setIsOpenDrawer(true)}
+                                                    quantity={
+                                                        pinMessages.length
+                                                    }
+                                                    onOpenDrawer={() =>
+                                                        setIsOpenDrawer(true)
+                                                    }
+                                                    onViewNews={handleViewNews}
                                                 />
                                             </div>
-
                                         )}
 
                                         {/* {FriendUtils.checkIsFriend()} */}
 
                                         <div
                                             id="back-top-button"
-                                            className={`${isShow ? 'show' : 'hide'} ${hasMessage ? 'new-message' : ''}`}
+                                            className={`${
+                                                isShow ? 'show' : 'hide'
+                                            } ${
+                                                hasMessage ? 'new-message' : ''
+                                            }`}
                                             onClick={hanldeOnClickScroll}
                                         >
                                             {hasMessage ? (
@@ -279,7 +304,7 @@ function Chat({ socket, idNewMessage }) {
                                                             {index < 3 && (
                                                                 <>
                                                                     {index ===
-                                                                        usersTyping.length -
+                                                                    usersTyping.length -
                                                                         1
                                                                         ? `${ele.name} `
                                                                         : `${ele.name}, `}
@@ -290,8 +315,9 @@ function Chat({ socket, idNewMessage }) {
                                                 )}
 
                                                 {usersTyping.length > 3
-                                                    ? `và ${usersTyping.length - 3
-                                                    } người khác`
+                                                    ? `và ${
+                                                          usersTyping.length - 3
+                                                      } người khác`
                                                     : ''}
 
                                                 <span>&nbsp;đang nhập</span>
@@ -318,7 +344,11 @@ function Chat({ socket, idNewMessage }) {
                         </Col>
                         <Col span={6}>
                             <div className="main-info">
-                                <InfoContainer socket={socket} />
+                                {visibleNews ? (
+                                    <GroupNews onBack={handleOnBack} />
+                                ) : (
+                                    <InfoContainer socket={socket} />
+                                )}
                             </div>
                         </Col>
                     </>

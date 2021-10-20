@@ -19,6 +19,13 @@
             cursor: pointer;
         }
     }
+    .drawer-footer {
+        padding: 0.6rem;
+        text-align: center;
+        font-size: 1.3rem;
+        background: $grey-500;
+        cursor: pointer;
+    }
 
     .ant-drawer-content-wrapper,
     .ant-drawer-body {

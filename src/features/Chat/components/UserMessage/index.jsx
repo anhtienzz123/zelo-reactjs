@@ -41,20 +41,22 @@ UserMessage.defaultProps = {
 }
 
 function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
-    const { _id, content, user, createdAt, type, isDeleted, reacts } = message
-    const { name, avatar } = user
-    const { messages, currentConversation, conversations, pinMessages } = useSelector((state) => state.chat)
-    const global = useSelector((state) => state.global)
+    const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
+    const { name, avatar } = user;
+    const { messages, currentConversation, conversations, pinMessages } = useSelector((state) => state.chat);
+    const global = useSelector((state) => state.global);
 
     const [listReactionCurrent, setListReactionCurrent] = useState([]);
     const [isLeader, setIsLeader] = useState(false);
     const [isVisbleModal, setVisibleModal] = useState(false);
+    const isGroup = conversations.find(ele => ele._id === currentConversation).type;
 
     const myReact =
         reacts &&
         reacts.length > 0 &&
-        reacts.find((ele) => ele.user._id === global.user._id)
-    const dispatch = useDispatch()
+        reacts.find((ele) => ele.user._id === global.user._id);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setIsLeader(checkLeader(user._id, conversations, currentConversation));
@@ -83,6 +85,10 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
         sendReaction(1)
     }
 
+    const handleOnCloseModal = () => {
+        setVisibleModal(false)
+    }
+
     const handleOnClick = async ({ item, key }) => {
         if (key == 1) {
             if (pinMessages.length === 3) {
@@ -93,7 +99,7 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                     dispatch(fetchPinMessages({ conversationId: currentConversation }))
                     mesageNotify.success('Ghim tin nhắn thành công')
                 } catch (error) {
-                    mesageNotify.success('Ghim tin nhắn thành công')
+                    mesageNotify.error('Ghim tin nhắn thất bại')
                 }
             }
 
@@ -119,14 +125,18 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
 
     const menu = (
         <Menu onClick={handleOnClick}>
-            <Menu.Item
-                key="1"
-                icon={<PushpinOutlined />}
-                style={MESSAGE_STYLE.dropDownStyle}
-                title="Ghim tin nhắn"
-            >
-                Ghim tin nhắn
-            </Menu.Item>
+            {
+                isGroup &&
+                <Menu.Item
+                    key="1"
+                    icon={<PushpinOutlined />}
+                    style={MESSAGE_STYLE.dropDownStyle}
+                    title="Ghim tin nhắn"
+                >
+                    Ghim tin nhắn
+                </Menu.Item>
+            }
+
             {isMyMessage && (
                 <Menu.Item
                     key="2"
@@ -136,7 +146,8 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                 >
                     Thu hồi tin nhắn
                 </Menu.Item>
-            )}
+            )
+            }
             <Menu.Item
                 key="3"
                 icon={<DeleteOutlined />}
@@ -376,6 +387,8 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
             <ModalChangePinMessage
                 message={pinMessages}
                 visible={isVisbleModal}
+                idMessage={_id}
+                onCloseModal={handleOnCloseModal}
             />
         </>
     )
