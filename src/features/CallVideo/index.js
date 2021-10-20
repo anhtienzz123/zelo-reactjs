@@ -8,6 +8,8 @@ import ActionNavbar from './components/ActionNavbar';
 import MyVideo from './components/MyVideo';
 import { Col, Row } from 'antd';
 import './style.scss';
+import peerjs from 'peerjs';
+import Peer from 'peerjs';
 
 CallVideo.propTypes = {};
 
@@ -18,247 +20,54 @@ function CallVideo(props) {
     const { conversationId } = match.params;
     const { user } = useSelector((state) => state.global);
     const { _id } = user;
+    const myStreamRef = useRef();
+    const [myStream, setMyStream] = useState();
+    const peerRef = useRef(new Peer());
+    const peerIdRef = useRef('');
+    const [callerVideos, setCallerVideos] = useState([]);
 
-    const pcRef = useRef([]);
-    const pc = pcRef.current;
-    const [myStream, setMyStream] = useState(null);
-    const [userStreams, setUserStreams] = useState([]);
-    const [isVideo, setIsVideo] = useState(true);
-    const [isAudio, setIsAudio] = useState(true);
+    const handleToggleVideo = () => {};
 
-    // khởi tạo kết nối
-    const init = async (createOffer, partnerName) => {
-        // tạo kết nối giữa 2 thằng
-        pc[partnerName] = new RTCPeerConnection(h.getIceServer());
-
-        if (myStream) {
-            myStream.getTracks().forEach((track) => {
-                pc[partnerName].addTrack(track, myStream); //should trigger negotiationneeded event
-            });
-        } else {
-            h.getUserFullMedia()
-                .then((stream) => {
-                    //save my stream
-                    setMyStream(stream);
-
-                    stream.getTracks().forEach((track) => {
-                        pc[partnerName].addTrack(track, stream); //should trigger negotiationneeded event
-                    });
-
-                    // h.setLocalStream(stream);
-                })
-                .catch((e) => {
-                    console.error(`stream error: ${e}`);
-                });
-        }
-
-        //create offer
-        if (createOffer) {
-            console.log('offer');
-            pc[partnerName].onnegotiationneeded = async () => {
-                let offer = await pc[partnerName].createOffer();
-
-                await pc[partnerName].setLocalDescription(offer);
-
-                socket.emit('sdp', {
-                    description: pc[partnerName].localDescription,
-                    to: partnerName,
-                    sender: _id,
-                });
-            };
-        }
-
-        //send ice candidate to partnerNames
-        pc[partnerName].onicecandidate = ({ candidate }) => {
-            socket.emit('ice candidates', {
-                candidate: candidate,
-                to: partnerName,
-                sender: _id,
-            });
-        };
-        //add
-        // lấy stream thằng này để hiển thị
-        pc[partnerName].ontrack = (e) => {
-            let str = e.streams[0];
-
-            console.log('partName: ', partnerName);
-            console.log('stream: ', str);
-
-            const index = userStreams.findIndex(
-                (userEle) => userEle.userId == partnerName
-            );
-            console.log('onTrack: ', index);
-            // nếu có rồi thì thay đổi, không có thì tạo ra
-            const userStreamsTempt = [...userStreams];
-            if (index !== -1) userStreamsTempt[index].stream = str;
-            else userStreamsTempt.push({ userId: partnerName, stream: str });
-
-            console.log('userStreams: ', userStreamsTempt);
-            setUserStreams(userStreamsTempt);
-        };
-
-        // lắng nghe sự kiện thằng khác làm gì
-        pc[partnerName].onconnectionstatechange = (d) => {
-            console.log(
-                `status ${partnerName}: `,
-                pc[partnerName].iceConnectionState
-            );
-            switch (pc[partnerName].iceConnectionState) {
-                case 'disconnected':
-                case 'failed':
-                case 'closed':
-                    closeVideo(partnerName);
-                    break;
-            }
-        };
-
-        pc[partnerName].onsignalingstatechange = (d) => {
-            switch (pc[partnerName].signalingState) {
-                case 'closed':
-                    console.log("Signalling state is 'closed'");
-                    closeVideo(partnerName);
-                    break;
-            }
-        };
-    };
-
-    const broadcastNewTracks = (stream, type, mirrorMode = true) => {
-        let track =
-            type == 'audio'
-                ? stream.getAudioTracks()[0]
-                : stream.getVideoTracks()[0];
-
-        for (let p in pc) {
-            let pName = pc[p];
-
-            if (typeof pc[pName] == 'object') {
-                h.replaceTrack(track, pc[pName]);
-            }
-        }
-    };
-
-    const closeVideo = (userId) => {
-        const userStreamsTempt = userStreams.filter(
-            (userStreamEle) => userStreamEle.userId != userId
-        );
-        setUserStreams(userStreamsTempt);
-    };
+    const handleToggleAudio = () => {};
 
     useEffect(() => {
-        socket.emit('join', _id);
-        socket.emit('join-conversation', conversationId);
-        h.getUserFullMedia()
-            .then((stream) => {
-                setMyStream(stream);
-            })
-            .catch((e) => {
-                console.error(`stream error: ${e}`);
+        if (_id) {
+            peerRef.current.on('open', function (id) {
+                console.log('My peer ID is: ' + id);
+                peerIdRef.current = id;
+
+                socket.emit('subscribe-call-video', {
+                    conversationId,
+                    newUserId: _id,
+                    peerId: id,
+                });
             });
+
+            peerRef.current.on('call', function (call) {
+                console.log('nhan duoc call');
+                call.answer(myStreamRef.current);
+                call.on('stream', function (remoteStream) {
+                    setCallerVideos([...callerVideos, remoteStream]);
+                });
+            });
+        }
+
+        h.getUserFullMedia().then((stream) => {
+            myStreamRef.current = stream;
+            setMyStream(stream);
+        });
     }, []);
 
     useEffect(() => {
-        socket.emit('subscribe-call-video', conversationId, _id);
-
-        // thằng cũ khởi tạo video thằng mới vào
-        socket.on('new user', (newUserId) => {
-            // bắn lại id của mình cho thằng mới vào
-            socket.emit('newUserStart', {
-                to: newUserId,
-                sender: _id,
+        socket.on('new-user-call', ({ conversationId, newUserId, peerId }) => {
+            console.log('new-user-call: ', newUserId, peerId);
+            console.log('myStream: ', myStreamRef.current);
+            const call = peerRef.current.call(peerId, myStreamRef.current);
+            call.on('stream', function (remoteStream) {
+                setCallerVideos([...callerVideos, remoteStream]);
             });
-            pc.push(newUserId);
-            // khởi tạo video của thằng mới vào
-            init(true, newUserId);
-        });
-
-        // thằng mới vào khởi tạo video thằng cũ
-        socket.on('newUserStart', (senderId) => {
-            pc.push(senderId);
-            init(false, senderId);
-        });
-
-        socket.on('ice candidates', async (data) => {
-            handleIceCandidate(data);
-        });
-
-        // gởi offer => trả lại answer => kết nối
-        socket.on('sdp', (data) => {
-            handleSDP(data);
         });
     }, []);
-
-    const handleIceCandidate = async (data) => {
-        if (data.candidate) {
-            await pc[data.sender].addIceCandidate(
-                new RTCIceCandidate(data.candidate)
-            );
-        }
-    };
-
-    const handleSDP = async (data) => {
-        console.log('handleSDP');
-        if (data.description.type === 'offer') {
-            // để bắt tay với nhau
-            if (data.description) {
-                await pc[data.sender].setRemoteDescription(
-                    new RTCSessionDescription(data.description)
-                );
-            }
-
-            let stream = null;
-
-            try {
-                stream = await h.getUserFullMedia();
-            } catch (err) {
-                console.log('err: ', err);
-            } finally {
-                setMyStream(stream);
-
-                if (stream)
-                    stream.getTracks().forEach((track) => {
-                        pc[data.sender].addTrack(track, stream);
-                    });
-
-                let answer = await pc[data.sender].createAnswer();
-
-                await pc[data.sender].setLocalDescription(answer);
-
-                socket.emit('sdp', {
-                    description: pc[data.sender].localDescription,
-                    to: data.sender,
-                    sender: _id,
-                });
-            }
-        } else if (data.description.type === 'answer') {
-            await pc[data.sender].setRemoteDescription(
-                new RTCSessionDescription(data.description)
-            );
-            setUserStreams([...userStreams]);
-        }
-    };
-
-    const handleToggleVideo = () => {
-        if (myStream.getVideoTracks()[0].enabled) {
-            myStream.getVideoTracks()[0].enabled = false;
-            setIsVideo(false);
-        } else {
-            myStream.getVideoTracks()[0].enabled = true;
-            setIsVideo(true);
-        }
-
-        broadcastNewTracks(myStream, 'video');
-        setIsVideo(isVideo);
-    };
-
-    const handleToggleAudio = () => {
-        if (myStream.getAudioTracks()[0].enabled) {
-            myStream.getAudioTracks()[0].enabled = false;
-        } else {
-            myStream.getAudioTracks()[0].enabled = true;
-        }
-
-        broadcastNewTracks(myStream, 'video');
-    };
 
     return (
         <div id='call-video'>
@@ -266,18 +75,18 @@ function CallVideo(props) {
                 onToggleVideo={handleToggleVideo}
                 onToggleAudio={handleToggleAudio}
             />
-
             <div className='local-video'>
-                {myStream && <MyVideo stream={myStream} />}
+                {myStreamRef.current && (
+                    <MyVideo stream={myStreamRef.current} />
+                )}
             </div>
-
             <Row className='user-videos'>
-                {userStreams.map((userStreamEle) => (
+                {callerVideos.map((callerVideoEle) => (
                     <Col span={6}>
-                        <MyVideo stream={userStreamEle.stream} />
+                        <MyVideo stream={callerVideoEle} />
                     </Col>
                 ))}
-            </Row>
+            </Row>{' '}
         </div>
     );
 }
