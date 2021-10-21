@@ -7,6 +7,9 @@ import NutshellPinMessageStyle from './NutshellPinMessageStyle';
 import pinMessageApi from 'api/pinMessageApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPinMessages } from '../../slice/chatSlice';
+import TypeMessagePin from '../TypeMessagePin';
+import ModalDetailMessagePin from '../ModalDetailMessagePin';
+import { useState } from 'react';
 NutshellPinMessage.propTypes = {
     isItem: PropTypes.bool,
     onOpenDrawer: PropTypes.func,
@@ -33,6 +36,7 @@ NutshellPinMessage.defaultProps = {
 function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, onViewNews, isHover }) {
     const dispatch = useDispatch();
     const { currentConversation } = useSelector(state => state.chat);
+    const [visible, setVisible] = useState(false);
 
 
 
@@ -84,49 +88,75 @@ function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, onViewNew
             onOpenDrawer()
         }
     }
+
+    const handleOnClick = () => {
+        setVisible(true)
+    }
+
+    const handleCloseModal = () => {
+        setVisible(false)
+    }
+
+
     return (
-        <div className={`nutshell-pin-container ${isItem ? 'select' : ''} ${isHover ? '' : 'no-hover'}`}>
-            <div className="nutshell-pin-container_left">
-                <div className="nutshell-pin-container_icon">
-                    <MessageTwoTone />
-                </div>
 
-                <div className="nutshell-pin-container_messsage">
-                    <div className="nutshell-pin-container_title">
-                        Tin nhắn
-                    </div>
-                    <div className="nutshell-pin-container_detail">
-                        {`${message.user.name}: ${message.content}`}
+        <>
+            <div className={`nutshell-pin-container ${isItem ? 'select' : ''} ${isHover ? '' : 'no-hover'}`}>
+                <div className="nutshell-pin-container_left" onClick={handleOnClick}>
+                    <div className="nutshell-pin-container_icon">
+                        <MessageTwoTone />
                     </div>
 
-                </div>
-            </div>
-            <div className={`nutshell-pin-container_right ${isItem ? 'no-display' : ''}`}>
+                    <div className="nutshell-pin-container_messsage">
+                        <div className="nutshell-pin-container_title">
+                            Tin nhắn
+                        </div>
+                        <div className="nutshell-pin-container_detail">
+                            <TypeMessagePin
+                                name={message.user.name}
+                                content={message.content}
+                                type={message.type}
+                            />
+                        </div>
 
-                {
-                    isItem ? (
-                        <Dropdown overlay={menu} placement="bottomLeft" trigger={['click']} >
-                            <button
-                                className='nutshell-pin-container_button-interact'
+                    </div>
+                </div>
+                <div className={`nutshell-pin-container_right ${isItem ? 'no-display' : ''}`}>
+
+                    {
+                        isItem ? (
+                            <Dropdown overlay={menu} placement="bottomLeft" trigger={['click']} >
+                                <button
+                                    className='nutshell-pin-container_button-interact'
+                                >
+                                    <DashOutlined />
+                                </button>
+                            </Dropdown>
+                        ) : (
+
+                            <Button
+                                style={NutshellPinMessageStyle.BUTTON_LIST}
+                                type="primary" ghost
+                                onClick={handleOnClickVisbleList}
                             >
-                                <DashOutlined />
-                            </button>
-                        </Dropdown>
-                    ) : (
+                                {`${quantity} ghim tin khác`}<CaretDownOutlined />
+                            </Button>
 
-                        <Button
-                            style={NutshellPinMessageStyle.BUTTON_LIST}
-                            type="primary" ghost
-                            onClick={handleOnClickVisbleList}
-                        >
-                            {`${quantity} ghim tin khác`}<CaretDownOutlined />
-                        </Button>
+                        )
 
-                    )
-
-                }
+                    }
+                </div>
             </div>
-        </div>
+
+
+            <ModalDetailMessagePin
+                visible={visible}
+                message={message}
+                onClose={handleCloseModal}
+            />
+
+        </>
+
     );
 }
 

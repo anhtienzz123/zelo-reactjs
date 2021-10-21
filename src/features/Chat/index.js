@@ -151,6 +151,12 @@ function Chat({ socket, idNewMessage }) {
                 dispatch(isDeletedFromGroup(conversationId))
                 socket.emit('leave-conversation', conversationId)
             })
+
+            socket.on('action-pin-message', (conversationId) => {
+                if (conversationId === refCurrentConversation.current) {
+                    dispatch(fetchPinMessages({ conversationId }))
+                }
+            })
         }
         dispatch(setJoinChatLayout(true))
     }, [])

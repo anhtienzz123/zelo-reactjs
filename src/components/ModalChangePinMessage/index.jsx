@@ -1,6 +1,7 @@
 import { MessageTwoTone } from '@ant-design/icons';
 import { Alert, Modal, Radio, message as messageNotify } from 'antd';
 import pinMessageApi from 'api/pinMessageApi';
+import TypeMessagePin from 'features/Chat/components/TypeMessagePin';
 import { fetchPinMessages } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -83,7 +84,11 @@ function ModalChangePinMessage({ visible, message, onCloseModal, idMessage }) {
                                             Tin nhắn
                                         </div>
                                         <div className="modal-change-pin_detail">
-                                            {`${ele.user.name}: ${ele.content}`}
+                                            <TypeMessagePin
+                                                name={ele.user.name}
+                                                content={ele.content}
+                                                type={ele.type}
+                                            />
                                         </div>
 
                                     </div>

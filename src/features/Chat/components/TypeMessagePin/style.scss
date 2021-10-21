@@ -1,0 +1,9 @@
+.type-pin-message {
+    &_HTML,
+    &_IMAGE,
+    &_VIDEO {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}

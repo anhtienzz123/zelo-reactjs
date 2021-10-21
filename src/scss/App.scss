@@ -1,5 +1,9 @@
-.App {
+@import "node_modules/react-modal-video/scss/modal-video.scss";
+.modal-video-close-btn {
+    cursor: pointer;
 }
+// .App {
+// }
 
 @media (max-width: 1200px) {
     html {

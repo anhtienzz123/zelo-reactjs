@@ -232,7 +232,7 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                                                             onClickReaction={handleClickReaction}
                                                         />
                                                     )}
-                                                    )
+
                                                 </HTMLMessage>
                                             ) : type === 'TEXT' ? (
                                                 <TextMessage
