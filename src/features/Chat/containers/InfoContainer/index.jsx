@@ -6,7 +6,7 @@ import InfoMediaSearch from 'features/Chat/components/InfoMediaSearch';
 import InfoMember from 'features/Chat/components/InfoMember';
 import InfoNameAndThumbnail from 'features/Chat/components/InfoNameAndThumbnail';
 import InfoTitle from 'features/Chat/components/InfoTitle';
-import { fetchAllMedia } from 'features/Chat/mediaSlice';
+import { fetchAllMedia } from 'features/Chat/slice/mediaSlice';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';

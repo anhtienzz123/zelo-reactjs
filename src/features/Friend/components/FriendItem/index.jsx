@@ -5,7 +5,7 @@ import { DashOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/ic
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { Menu, Dropdown, Button } from 'antd';
 import conversationApi from 'api/conversationApi';
-import { fetchListMessages, setConversations, setCurrentConversation } from 'features/Chat/chatSlice';
+import { fetchListMessages, setConversations, setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 

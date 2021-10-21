@@ -7,7 +7,7 @@ import {
     VideoCameraOutlined
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
-import { createGroup } from 'features/Chat/chatSlice';
+import { createGroup } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

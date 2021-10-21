@@ -1,7 +1,7 @@
 import { TagFilled } from '@ant-design/icons';
 import { Divider, Menu } from 'antd';
 import ClassifyApi from 'api/ClassifyApi';
-import { fetchListClassify } from 'features/Chat/chatSlice';
+import { fetchListClassify } from 'features/Chat/slice/chatSlice';
 import ModalClassify from 'features/Chat/components/ModalClassify';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';

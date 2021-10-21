@@ -1,4 +1,4 @@
-import { setCurrentConversation } from 'features/Chat/chatSlice';
+import { setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 

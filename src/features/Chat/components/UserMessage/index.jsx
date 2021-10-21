@@ -1,9 +1,12 @@
 import {
     DeleteOutlined, PushpinOutlined,
     UndoOutlined
-} from '@ant-design/icons'
-import { Button, Dropdown, Menu } from 'antd'
+} from '@ant-design/icons';
+import { Button, Dropdown, Menu } from 'antd';
+import { message as mesageNotify } from 'antd';
 import messageApi from 'api/messageApi'
+import pinMessageApi from 'api/pinMessageApi'
+import ModalChangePinMessage from 'components/ModalChangePinMessage';
 import MESSAGE_STYLE from 'constants/MessageStyle/messageStyle'
 import PersonalIcon from 'features/Chat/components/PersonalIcon'
 import PropTypes from 'prop-types'
@@ -13,7 +16,7 @@ import { FaReplyAll } from 'react-icons/fa'
 import { MdQuestionAnswer } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkLeader } from 'utils/groupUtils'
-import { deleteMessageClient } from '../../chatSlice'
+import { deleteMessageClient, fetchPinMessages } from '../../slice/chatSlice'
 import ListReaction from '../ListReaction'
 import ListReactionOfUser from '../ListReactionOfUser'
 import FileMessage from '../MessageType/FileMessage'
@@ -38,19 +41,22 @@ UserMessage.defaultProps = {
 }
 
 function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
-    const { _id, content, user, createdAt, type, isDeleted, reacts } = message
-    const { name, avatar } = user
-    const { messages, currentConversation, conversations } = useSelector((state) => state.chat)
-    const global = useSelector((state) => state.global)
+    const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
+    const { name, avatar } = user;
+    const { messages, currentConversation, conversations, pinMessages } = useSelector((state) => state.chat);
+    const global = useSelector((state) => state.global);
 
     const [listReactionCurrent, setListReactionCurrent] = useState([]);
     const [isLeader, setIsLeader] = useState(false);
+    const [isVisbleModal, setVisibleModal] = useState(false);
+    const isGroup = conversations.find(ele => ele._id === currentConversation).type;
 
     const myReact =
         reacts &&
         reacts.length > 0 &&
-        reacts.find((ele) => ele.user._id === global.user._id)
-    const dispatch = useDispatch()
+        reacts.find((ele) => ele.user._id === global.user._id);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setIsLeader(checkLeader(user._id, conversations, currentConversation));
@@ -79,11 +85,30 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
         sendReaction(1)
     }
 
+    const handleOnCloseModal = () => {
+        setVisibleModal(false)
+    }
+
     const handleOnClick = async ({ item, key }) => {
-        if (key === 1) {
-        } else if (key == 2) {
+        if (key == 1) {
+            if (pinMessages.length === 3) {
+                setVisibleModal(true);
+            } else {
+                try {
+                    await pinMessageApi.pinMessage(message._id);
+                    dispatch(fetchPinMessages({ conversationId: currentConversation }))
+                    mesageNotify.success('Ghim tin nhắn thành công')
+                } catch (error) {
+                    mesageNotify.error('Ghim tin nhắn thất bại')
+                }
+            }
+
+        }
+        if (key == 2) {
             await messageApi.redoMessage(_id)
-        } else if (key == 3) {
+        }
+
+        if (key == 3) {
             await messageApi.deleteMessageClientSide(_id)
             dispatch(deleteMessageClient(_id))
         }
@@ -100,14 +125,18 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
 
     const menu = (
         <Menu onClick={handleOnClick}>
-            <Menu.Item
-                key="1"
-                icon={<PushpinOutlined />}
-                style={MESSAGE_STYLE.dropDownStyle}
-                title="Ghim tin nhắn"
-            >
-                Ghim tin nhắn
-            </Menu.Item>
+            {
+                isGroup &&
+                <Menu.Item
+                    key="1"
+                    icon={<PushpinOutlined />}
+                    style={MESSAGE_STYLE.dropDownStyle}
+                    title="Ghim tin nhắn"
+                >
+                    Ghim tin nhắn
+                </Menu.Item>
+            }
+
             {isMyMessage && (
                 <Menu.Item
                     key="2"
@@ -117,7 +146,8 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                 >
                     Thu hồi tin nhắn
                 </Menu.Item>
-            )}
+            )
+            }
             <Menu.Item
                 key="3"
                 icon={<DeleteOutlined />}
@@ -202,7 +232,7 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                                                             onClickReaction={handleClickReaction}
                                                         />
                                                     )}
-                                                    )
+
                                                 </HTMLMessage>
                                             ) : type === 'TEXT' ? (
                                                 <TextMessage
@@ -353,6 +383,13 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                     </div>
                 </div>
             )}
+
+            <ModalChangePinMessage
+                message={pinMessages}
+                visible={isVisbleModal}
+                idMessage={_id}
+                onCloseModal={handleOnCloseModal}
+            />
         </>
     )
 }

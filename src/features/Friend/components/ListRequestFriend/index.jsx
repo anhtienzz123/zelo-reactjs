@@ -1,5 +1,5 @@
 import friendApi from 'api/friendApi';
-import { fetchListFriends } from 'features/Chat/chatSlice';
+import { fetchListFriends } from 'features/Chat/slice/chatSlice';
 import { fetchFriends, fetchListRequestFriend, setAmountNotify } from 'features/Friend/friendSlice';
 import PropTypes from 'prop-types';
 import React from 'react';

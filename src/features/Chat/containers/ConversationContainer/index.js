@@ -4,12 +4,12 @@ import conversationApi from 'api/conversationApi';
 import SubMenuClassify from 'components/SubMenuClassify';
 import {
     fetchListMessages
-} from 'features/Chat/chatSlice';
+} from 'features/Chat/slice/chatSlice';
 import ConversationSingle from 'features/Chat/components/ConversationSingle';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMembersConversation, setCurrentConversation, setTypeOfConversation } from '../../chatSlice';
+import { getMembersConversation, setCurrentConversation, setTypeOfConversation } from '../../slice/chatSlice';
 import './style.scss';
 ConversationContainer.propTypes = {};
 

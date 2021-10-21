@@ -6,22 +6,25 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router'
-import {
-    fetchConversationById,
-    fetchListFriends,
-    isDeletedFromGroup,
-    removeConversation,
-    setCurrentConversation,
-    setReactionMessage,
-    setRedoMessage,
-} from './chatSlice'
+import DrawerPinMessage from './components/DrawerPinMessage'
+import GroupNews from './components/GroupNews'
+import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage'
 import BodyChatContainer from './containers/BodyChatContainer'
 import ConversationContainer from './containers/ConversationContainer'
 import FooterChatContainer from './containers/FooterChatContainer'
 import HeaderChatContainer from './containers/HeaderChatContainer'
 import InfoContainer from './containers/InfoContainer'
 import SearchContainer from './containers/SearchContainer'
-import FriendUtils from 'utils/friendUtils'
+import {
+    fetchConversationById,
+    fetchListFriends,
+    fetchPinMessages,
+    isDeletedFromGroup,
+    removeConversation,
+    setCurrentConversation,
+    setReactionMessage,
+    setRedoMessage,
+} from './slice/chatSlice'
 import './style.scss'
 
 Chat.propTypes = {
@@ -36,21 +39,22 @@ Chat.defaultProps = {
 
 function Chat({ socket, idNewMessage }) {
     const dispatch = useDispatch()
-    const { conversations, currentConversation } = useSelector(
+    const { conversations, currentConversation, pinMessages } = useSelector(
         (state) => state.chat
     )
 
     const { path } = useRouteMatch()
-
     const [scrollId, setScrollId] = useState('')
     // const [idNewMessage, setIdNewMessage] = useState('')
     const [isShow, setIsShow] = useState(false)
     const [isScroll, setIsScroll] = useState(false)
     const [hasMessage, setHasMessage] = useState('')
     const [usersTyping, setUsersTyping] = useState([])
+    const [isOpenDrawer, setIsOpenDrawer] = useState(false)
     const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
         (state) => state.global
     )
+    const [visibleNews, setVisibleNews] = useState(false)
 
     useEffect(() => {
         console.log('User typing', usersTyping)
@@ -76,8 +80,10 @@ function Chat({ socket, idNewMessage }) {
     }, [conversations])
 
     useEffect(() => {
-        console.log('vao zo useEFFECT')
-        console.log('isJoinChatLayout', isJoinChatLayout)
+        dispatch(fetchPinMessages({ conversationId: currentConversation }))
+    }, [currentConversation])
+
+    useEffect(() => {
         if (!isJoinChatLayout) {
             socket.on('delete-conversation', (conversationId) => {
                 dispatch(removeConversation(conversationId))
@@ -145,6 +151,12 @@ function Chat({ socket, idNewMessage }) {
                 dispatch(isDeletedFromGroup(conversationId))
                 socket.emit('leave-conversation', conversationId)
             })
+
+            socket.on('action-pin-message', (conversationId) => {
+                if (conversationId === refCurrentConversation.current) {
+                    dispatch(fetchPinMessages({ conversationId }))
+                }
+            })
         }
         dispatch(setJoinChatLayout(true))
     }, [])
@@ -178,6 +190,13 @@ function Chat({ socket, idNewMessage }) {
 
     const hanldeResetScrollButton = (value) => {
         setIsScroll(value)
+    }
+
+    const handleOnBack = () => {
+        setVisibleNews(false)
+    }
+    const handleViewNews = () => {
+        setVisibleNews(true)
     }
 
     // Xử lý modal mode
@@ -220,6 +239,43 @@ function Chat({ socket, idNewMessage }) {
                                             }
                                             turnOnScrollButoon={isScroll}
                                         />
+
+                                        {pinMessages.length > 1 && (
+                                            <div className="pin-message">
+                                                <DrawerPinMessage
+                                                    isOpen={isOpenDrawer}
+                                                    onOpen={() =>
+                                                        setIsOpenDrawer(true)
+                                                    }
+                                                    onClose={() =>
+                                                        setIsOpenDrawer(false)
+                                                    }
+                                                    message={pinMessages}
+                                                    onViewNews={handleViewNews}
+                                                />
+                                            </div>
+                                        )}
+
+                                        {pinMessages.length > 0 && (
+                                            <div className="nutshell-pin-message">
+                                                <NutshellPinMessage
+                                                    isHover={false}
+                                                    isItem={
+                                                        pinMessages.length > 1
+                                                            ? false
+                                                            : true
+                                                    }
+                                                    message={pinMessages[0]}
+                                                    quantity={
+                                                        pinMessages.length
+                                                    }
+                                                    onOpenDrawer={() =>
+                                                        setIsOpenDrawer(true)
+                                                    }
+                                                    onViewNews={handleViewNews}
+                                                />
+                                            </div>
+                                        )}
 
                                         {/* {FriendUtils.checkIsFriend()} */}
 
@@ -294,7 +350,11 @@ function Chat({ socket, idNewMessage }) {
                         </Col>
                         <Col span={6}>
                             <div className="main-info">
-                                <InfoContainer socket={socket} />
+                                {visibleNews ? (
+                                    <GroupNews onBack={handleOnBack} />
+                                ) : (
+                                    <InfoContainer socket={socket} />
+                                )}
                             </div>
                         </Col>
                     </>
