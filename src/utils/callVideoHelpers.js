@@ -9,7 +9,7 @@ const callVideoHelpers = {
     },
 
     userMediaAvailable() {
-        return !!(
+        return (
             navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
@@ -18,17 +18,19 @@ const callVideoHelpers = {
     },
 
     getUserFullMedia() {
-        if (this.userMediaAvailable()) {
-            return navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                },
-            });
-        } else {
-            throw new Error('User media not available');
-        }
+        // console.log('this.userMediaAvailable()', this.userMediaAvailable());
+        // if (this.userMediaAvailable()) {
+        //     return this.userMediaAvailable({
+        //         video: true,
+        //         audio: true,
+        //     });
+        // } else {
+        //     throw new Error('User media not available');
+        // }
+        return navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+        });
     },
 
     getUserAudio() {

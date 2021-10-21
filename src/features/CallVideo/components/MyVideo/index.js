@@ -6,11 +6,14 @@ MyVideo.propTypes = {
 };
 
 function MyVideo({ userId, stream }) {
-    const ref = useRef({ srcObject: '' });
+    const ref = useRef(null);
 
     useEffect(() => {
         console.log('stream render: ', stream);
-        if (stream) ref.current.srcObject = stream;
+        if (stream) {
+            ref.current.srcObject = stream;
+            ref.current.play();
+        }
     }, []);
 
     return (
