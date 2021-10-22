@@ -9,7 +9,7 @@ const callVideoHelpers = {
     },
 
     userMediaAvailable() {
-        return !!(
+        return (
             navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
@@ -18,17 +18,19 @@ const callVideoHelpers = {
     },
 
     getUserFullMedia() {
-        if (this.userMediaAvailable()) {
-            return navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                },
-            });
-        } else {
-            throw new Error('User media not available');
-        }
+        // console.log('this.userMediaAvailable()', this.userMediaAvailable());
+        // if (this.userMediaAvailable()) {
+        //     return this.userMediaAvailable({
+        //         video: true,
+        //         audio: true,
+        //     });
+        // } else {
+        //     throw new Error('User media not available');
+        // }
+        return navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+        });
     },
 
     getUserAudio() {
@@ -42,6 +44,37 @@ const callVideoHelpers = {
         } else {
             throw new Error('User media not available');
         }
+    },
+
+    createEmptyAudioTrack() {
+        const ctx = new AudioContext();
+        const oscillator = ctx.createOscillator();
+        const dst = oscillator.connect(ctx.createMediaStreamDestination());
+        oscillator.start();
+        const track = dst.stream.getAudioTracks()[0];
+        return Object.assign(track, { enabled: false });
+    },
+
+    createEmptyVideoTrack({ width, height }) {
+        const canvas = Object.assign(document.createElement('canvas'), {
+            width,
+            height,
+        });
+        canvas.getContext('2d').fillRect(0, 0, width, height);
+
+        const stream = canvas.captureStream();
+        const track = stream.getVideoTracks()[0];
+
+        return Object.assign(track, { enabled: false });
+    },
+
+    getEmptyMedia() {
+        const audioTrack = this.createEmptyAudioTrack();
+        const videoTrack = this.createEmptyVideoTrack({
+            width: 640,
+            height: 480,
+        });
+        return new MediaStream([audioTrack, videoTrack]);
     },
 
     shareScreen() {
