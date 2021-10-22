@@ -15,7 +15,7 @@ import './style.scss';
 import { Avatar, Badge, Button, Popover, Modal } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { useDispatch, useSelector } from 'react-redux';
-import { setToTalUnread } from '../../chatSlice';
+import { setToTalUnread } from '../../slice/chatSlice';
 
 NavbarContainer.propTypes = {};
 

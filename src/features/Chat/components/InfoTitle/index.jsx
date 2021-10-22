@@ -1,12 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
 import { LeftOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
+import React from 'react';
+import './style.scss';
 InfoTitle.propTypes = {
     text: PropTypes.string,
     onBack: PropTypes.func,
     isBack: PropTypes.bool,
     isSelected: PropTypes.bool,
+    type: PropTypes.string,
 };
 
 InfoTitle.defaultProps = {
@@ -14,14 +15,19 @@ InfoTitle.defaultProps = {
     onBack: null,
     isBack: false,
     isSelected: false,
+    type: ''
 }
 
 function InfoTitle(props) {
-    const { text, onBack, isBack, isSelected } = props;
+    const { text, onBack, isBack, isSelected, type } = props;
 
     const handleOnClick = () => {
         if (onBack) {
-            onBack(0);
+            if (type === 'broadcast') {
+                onBack()
+            } else {
+                onBack(0);
+            }
         }
     }
 

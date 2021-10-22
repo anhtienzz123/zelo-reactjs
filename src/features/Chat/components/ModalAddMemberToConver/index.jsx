@@ -7,7 +7,7 @@ import './style.scss';
 import PersonalIcon from '../PersonalIcon';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { fetchListFriends, setFriends } from 'features/Chat/chatSlice';
+import { fetchListFriends, setFriends } from 'features/Chat/slice/chatSlice';
 import Text from 'antd/lib/typography/Text';
 ModalAddMemberToConver.propTypes = {
 

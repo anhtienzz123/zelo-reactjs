@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './style.scss';
 import { useSelector } from 'react-redux';
-import { Avatar, Tooltip } from 'antd';
+import { Avatar, Tooltip, Typography } from 'antd';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
+import { PushpinTwoTone } from '@ant-design/icons';
+
 NotifyMessage.propTypes = {
     message: PropTypes.object,
 
@@ -22,6 +24,7 @@ function NotifyMessage({ message }) {
         user,
     } = message;
     const { name, avatar } = user;
+    const { Text } = Typography;
 
     const isMyActive = user._id === global.user._id ? 'Bạn' : user.name;
 
@@ -47,6 +50,13 @@ function NotifyMessage({ message }) {
         if (text === 'Đã là bạn bè') {
             return 6;
         }
+        if (text === 'PIN_MESSAGE') {
+            return 7
+        }
+        if (text === 'NOT_PIN_MESSAGE') {
+            return 8
+        }
+
     };
 
 
@@ -244,6 +254,41 @@ function NotifyMessage({ message }) {
                                     <span className='user-name-strong'>
                                         Đã trờ thành bạn bè của nhau
                                     </span>
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+                {
+                    transferTextToValue(content) === 7 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content-title'>
+                                    <PushpinTwoTone />&nbsp;
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    {`đã ghim một tin nhắn`}.
+                                    <span className='view-click' >
+                                        &nbsp;Xem
+                                    </span>
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+                {
+                    transferTextToValue(content) === 8 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content-title'>
+                                    <PushpinTwoTone twoToneColor='#de433e' />&nbsp;
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    {`đã xóa ghim một tin nhắn`}.
                                 </div>
                             </div>
                         </>

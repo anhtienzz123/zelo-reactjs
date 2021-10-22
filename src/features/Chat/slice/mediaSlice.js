@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import mediaApi from 'api/mediaApi';
-import { useState } from 'react';
 const KEY = 'MEDIA';
 
 export const fetchAllMedia = createAsyncThunk(
@@ -16,7 +15,7 @@ export const fetchAllMedia = createAsyncThunk(
 
 export const fetchMediaByType = createAsyncThunk(
     `${KEY}/fetchMediaByType`,
-    async (params, thunkApi) => {}
+    async (params, thunkApi) => { }
 );
 
 const mediaSlice = createSlice({

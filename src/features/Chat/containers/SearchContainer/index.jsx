@@ -1,6 +1,6 @@
 import { AlignLeftOutlined, AppstoreAddOutlined, SearchOutlined, UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Input, Radio, message } from 'antd';
-import { createGroup } from 'features/Chat/chatSlice';
+import { createGroup } from 'features/Chat/slice/chatSlice';
 import ModalClassify from 'features/Chat/components/ModalClassify';
 import ModalCreateGroup from 'features/Chat/components/ModalCreateGroup';
 import React, { useState } from 'react';

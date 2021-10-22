@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import global from './globalSlice';
 import account from 'features/Account/accountSlice';
-import chat from 'features/Chat/chatSlice';
+import chat from 'features/Chat/slice/chatSlice';
 import friend from 'features/Friend/friendSlice';
 import admin from 'features/Admin/adminSlice';
-import media from 'features/Chat/mediaSlice';
+import media from 'features/Chat/slice/mediaSlice';
 import callVideo from 'features/CallVideo/callVideoSlice';
 
 const rootReducer = {

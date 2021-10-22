@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Input } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import ClassifyApi from 'api/ClassifyApi';
-import { fetchListClassify } from '../../chatSlice';
+import { fetchListClassify } from '../../slice/chatSlice';
 ModalClassify.propTypes = {
     isVisible: PropTypes.bool,
     onCancel: PropTypes.func,
