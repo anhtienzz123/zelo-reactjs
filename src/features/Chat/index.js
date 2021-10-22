@@ -54,6 +54,7 @@ function Chat({ socket, idNewMessage }) {
     const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
         (state) => state.global
     );
+    const [visibleNews, setVisibleNews] = useState(false);
 
     useEffect(() => {
         console.log('User typing', usersTyping);
