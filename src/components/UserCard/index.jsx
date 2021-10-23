@@ -7,6 +7,7 @@ import {
     fetchListFriends,
     fetchListMessages, setConversations, setCurrentConversation
 } from 'features/Chat/slice/chatSlice';
+<<<<<<< HEAD
 import {
     fetchFriends,
     fetchListMyRequestFriend,
@@ -14,6 +15,8 @@ import {
     fetchPhoneBook,
     setAmountNotify
 } from 'features/Friend/friendSlice';
+=======
+>>>>>>> main
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';

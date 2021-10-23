@@ -269,7 +269,6 @@ function NotifyMessage({ message }) {
                     transferTextToValue(content) === 7 && (
                         <>
                             <div className='notify-message-content_group-avatar'>
-
                                 <div className='notify-message-content-title'>
                                     <PushpinTwoTone />&nbsp;
                                     <span className='user-name-strong'>

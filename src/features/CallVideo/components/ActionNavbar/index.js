@@ -10,13 +10,17 @@ import {
 
 ActionNavbar.propTypes = {};
 
-function ActionNavbar({ onToggleVideo, onToggleAudio }) {
+function ActionNavbar({ onToggleVideo, onToggleAudio, onShareScreen }) {
     const handleToggleVideo = () => {
         if (onToggleVideo) onToggleVideo();
     };
 
     const handleToggleAudio = () => {
         if (onToggleVideo) onToggleAudio();
+    };
+
+    const handleShareScreen = () => {
+        if (onShareScreen) onShareScreen();
     };
 
     return (
@@ -44,6 +48,7 @@ function ActionNavbar({ onToggleVideo, onToggleAudio }) {
                 <Menu.Item
                     key="toggle-share-screen"
                     icon={<ShareAltOutlined />}
+                    onClick={handleShareScreen}
                 >
                     Share màn hình
                 </Menu.Item>

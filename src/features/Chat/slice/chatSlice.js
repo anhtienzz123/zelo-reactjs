@@ -142,6 +142,19 @@ export const fetchPinMessages = createAsyncThunk(
 
 // ============
 
+// ============ PIN MESSAGE ==============
+
+export const fetchPinMessages = createAsyncThunk(
+    `${KEY}/fetchPinMessages`,
+    async (params, _) => {
+        const { conversationId } = params;
+        const pinMessages = await pinMessageApi.getPinMessages(conversationId);
+        return pinMessages;
+    }
+);
+
+// ============
+
 const chatSlice = createSlice({
     name: KEY,
     initialState: {
@@ -501,6 +514,10 @@ const chatSlice = createSlice({
 
         [fetchListColor.fulfilled]: (state, action) => {
             state.colors = action.payload;
+        },
+
+        [fetchPinMessages.fulfilled]: (state, action) => {
+            state.pinMessages = action.payload.reverse();
         },
 
         [fetchPinMessages.fulfilled]: (state, action) => {

@@ -9,7 +9,7 @@ const callVideoHelpers = {
     },
 
     userMediaAvailable() {
-        return !!(
+        return (
             navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
@@ -18,17 +18,19 @@ const callVideoHelpers = {
     },
 
     getUserFullMedia() {
-        if (this.userMediaAvailable()) {
-            return navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                },
-            });
-        } else {
-            throw new Error('User media not available');
-        }
+        // console.log('this.userMediaAvailable()', this.userMediaAvailable());
+        // if (this.userMediaAvailable()) {
+        //     return this.userMediaAvailable({
+        //         video: true,
+        //         audio: true,
+        //     });
+        // } else {
+        //     throw new Error('User media not available');
+        // }
+        return navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+        });
     },
 
     getUserAudio() {
@@ -42,6 +44,37 @@ const callVideoHelpers = {
         } else {
             throw new Error('User media not available');
         }
+    },
+
+    createEmptyAudioTrack() {
+        const ctx = new AudioContext();
+        const oscillator = ctx.createOscillator();
+        const dst = oscillator.connect(ctx.createMediaStreamDestination());
+        oscillator.start();
+        const track = dst.stream.getAudioTracks()[0];
+        return Object.assign(track, { enabled: false });
+    },
+
+    createEmptyVideoTrack({ width, height }) {
+        const canvas = Object.assign(document.createElement('canvas'), {
+            width,
+            height,
+        });
+        canvas.getContext('2d').fillRect(0, 0, width, height);
+
+        const stream = canvas.captureStream();
+        const track = stream.getVideoTracks()[0];
+
+        return Object.assign(track, { enabled: false });
+    },
+
+    getEmptyMedia() {
+        const audioTrack = this.createEmptyAudioTrack();
+        const videoTrack = this.createEmptyVideoTrack({
+            width: 640,
+            height: 480,
+        });
+        return new MediaStream([audioTrack, videoTrack]);
     },
 
     shareScreen() {
@@ -64,16 +97,18 @@ const callVideoHelpers = {
     getIceServer() {
         return {
             iceServers: [
-                {
-                    urls: ['stun:eu-turn4.xirsys.com'],
-                },
+                { urls: ['stun:hk-turn1.xirsys.com'] },
                 {
                     username:
-                        'ml0jh0qMKZKd9P_9C0UIBY2G0nSQMCFBUXGlk6IXDJf8G2uiCymg9WwbEJTMwVeiAAAAAF2__hNSaW5vbGVl',
-                    credential: '4dd454a6-feee-11e9-b185-6adcafebbb45',
+                        'ik-37V-lc5O7p-LYaR8Hp39EvjiL24W8LMy_V3M9tfowcnIUKMNTaxv167eZKwxWAAAAAGFr5rFUaWVuSHV5bmg=',
+                    credential: 'fbcd7a58-2f28-11ec-8078-0242ac120004',
                     urls: [
-                        'turn:eu-turn4.xirsys.com:80?transport=udp',
-                        'turn:eu-turn4.xirsys.com:3478?transport=tcp',
+                        'turn:hk-turn1.xirsys.com:80?transport=udp',
+                        'turn:hk-turn1.xirsys.com:3478?transport=udp',
+                        'turn:hk-turn1.xirsys.com:80?transport=tcp',
+                        'turn:hk-turn1.xirsys.com:3478?transport=tcp',
+                        'turns:hk-turn1.xirsys.com:443?transport=tcp',
+                        'turns:hk-turn1.xirsys.com:5349?transport=tcp',
                     ],
                 },
             ],

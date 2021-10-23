@@ -147,7 +147,8 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                 >
                     Thu hồi tin nhắn
                 </Menu.Item>
-            )}
+            )
+            }
             <Menu.Item
                 key="3"
                 icon={<DeleteOutlined />}

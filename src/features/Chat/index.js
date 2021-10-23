@@ -45,7 +45,6 @@ function Chat({ socket, idNewMessage }) {
     const { conversations, currentConversation, pinMessages } = useSelector(
         (state) => state.chat
     );
-
     const { path } = useRouteMatch();
     const [scrollId, setScrollId] = useState('');
     // const [idNewMessage, setIdNewMessage] = useState('')
