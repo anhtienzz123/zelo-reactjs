@@ -142,17 +142,6 @@ export const fetchPinMessages = createAsyncThunk(
 
 // ============
 
-// ============ PIN MESSAGE ==============
-
-export const fetchPinMessages = createAsyncThunk(
-    `${KEY}/fetchPinMessages`,
-    async (params, _) => {
-        const { conversationId } = params;
-        const pinMessages = await pinMessageApi.getPinMessages(conversationId);
-        return pinMessages;
-    }
-);
-
 // ============
 
 const chatSlice = createSlice({
