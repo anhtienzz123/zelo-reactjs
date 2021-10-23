@@ -9,6 +9,6 @@ const NutshellPinMessageStyle = {
         fontSize: '1.3rem',
         fontWeight: '500',
     },
-}
+};
 
-export default NutshellPinMessageStyle
+export default NutshellPinMessageStyle;

@@ -102,8 +102,6 @@ function ListFriend({ data }) {
                 user={userIsFind}
                 isVisible={isVisible}
                 onCancel={handleCancelModalUserCard}
-                isMyFriend={true}
-                onDeleteFriend={handleOnDeleteFriend}
             />
 
 

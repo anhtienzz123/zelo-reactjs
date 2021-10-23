@@ -6,8 +6,8 @@ const friendApi = {
     fetchFriends: (name) => {
         return axiosClient.get(`${API_URL}`, {
             params: {
-                name
-            }
+                name,
+            },
         });
     },
     acceptRequestFriend: (userId) => {
@@ -35,15 +35,8 @@ const friendApi = {
     },
 
     fetchMyRequestFriend: () => {
-        return axiosClient.get(`${API_URL}/invites/me`)
-    }
-
-
-
-
-
-
-
-}
+        return axiosClient.get(`${API_URL}/invites/me`);
+    },
+};
 
 export default friendApi;

@@ -15,7 +15,7 @@ import './scss/App.scss';
 function App() {
     const dispatch = useDispatch();
     const [isFetch, setIsFetch] = useState(false);
-    const { user } = useSelector(state => state.global);
+    const { user } = useSelector((state) => state.global);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -29,25 +29,23 @@ function App() {
         fetchProfile();
     }, []);
 
-
     if (!isFetch) return '';
 
     return (
         <BrowserRouter>
-            <div className='App'>
+            <div className="App">
                 <Switch>
-                    <Route exact path='/' component={Home} />
+                    <Route exact path="/" component={Home} />
 
+                    <ProtectedRoute path="/chat" component={ChatLayout} />
 
-                    <ProtectedRoute path='/chat' component={ChatLayout} />
-
-                    <AdminProtectedRoute path='/admin' component={Admin} />
+                    <AdminProtectedRoute path="/admin" component={Admin} />
                     <ProtectedRoute
-                        path='/call-video/:conversationId'
+                        path="/call-video/:conversationId"
                         component={CallVideo}
                     />
 
-                    <Route path='/account' component={Account} />
+                    <Route path="/account" component={Account} />
 
                     <Route component={NotFoundPage} />
                 </Switch>

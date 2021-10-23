@@ -4,7 +4,9 @@ import './style.scss';
 import { useSelector } from 'react-redux';
 import { Avatar, Tooltip, Typography } from 'antd';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
-import { PushpinTwoTone } from '@ant-design/icons';
+import { PushpinTwoTone, EditTwoTone } from '@ant-design/icons';
+import parse from 'html-react-parser'
+
 
 NotifyMessage.propTypes = {
     message: PropTypes.object,
@@ -56,6 +58,9 @@ function NotifyMessage({ message }) {
         if (text === 'NOT_PIN_MESSAGE') {
             return 8
         }
+        if (text.startsWith('Đã đổi tên nhóm thành')) {
+            return 9;
+        }
 
     };
 
@@ -73,7 +78,7 @@ function NotifyMessage({ message }) {
                                 className='notify-message-content_per-avatar'>
                                 <Avatar
                                     size='small'
-                                    src={ele.avatar ? ele.Avatar : DEFAULT_AVATAR}
+                                    src={ele.avatar}
                                     fallback={DEFAULT_AVATAR}
                                 />
                             </div>
@@ -289,6 +294,26 @@ function NotifyMessage({ message }) {
                                         {`${isMyActive} `}
                                     </span>
                                     {`đã xóa ghim một tin nhắn`}.
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+                {
+                    transferTextToValue(content) === 9 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div
+                                    className='notify-message-content_per-avatar'>
+                                    <Avatar size='small' src={user.avatar} />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <EditTwoTone />&nbsp;
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    {parse(content)}
                                 </div>
                             </div>
                         </>

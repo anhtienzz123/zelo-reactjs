@@ -6,5 +6,4 @@ export const options = [
     { label: 'Bạn bè', value: 'Bạn bè' },
     { label: 'Bạn gái', value: 'Bạn gái' },
     { label: 'Em gái nuôi', value: 'Em gái nuôi' },
-
 ];

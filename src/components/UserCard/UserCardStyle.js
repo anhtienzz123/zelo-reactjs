@@ -3,8 +3,7 @@ const UserCardStyle = {
         paddingLeft: '0',
         paddingRight: '0',
         paddingTop: '0',
-        paddingBottom: '0'
-
+        paddingBottom: '0',
     },
 
     CoverImageStyle: {
@@ -20,21 +19,18 @@ const UserCardStyle = {
         height: '96px',
         backgroundPosition: 'center center',
         objectFit: 'cover',
-        borderRadius: '50%'
+        borderRadius: '50%',
     },
 
     buttonFullSize: {
-        width: '100%'
+        width: '100%',
     },
     buttonStyle_1: {
-        width: '124px'
+        width: '124px',
     },
     buttonStyle_2: {
-        maxWidth: '110px'
-    }
-
-
-}
+        maxWidth: '110px',
+    },
+};
 
 export default UserCardStyle;
-

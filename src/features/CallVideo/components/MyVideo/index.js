@@ -23,10 +23,11 @@ function MyVideo({ userId, stream }) {
                 //class='local-video mirror-mode'
                 // id='local'
                 ref={ref}
-                volume='0'
+                volume="0"
                 style={{ width: '100%' }}
                 autoPlay
-                muted></video>
+                muted
+            ></video>
         </div>
     );
 }

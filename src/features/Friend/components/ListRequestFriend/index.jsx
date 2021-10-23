@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import friendApi from 'api/friendApi';
 import { fetchListFriends } from 'features/Chat/slice/chatSlice';
 import { fetchFriends, fetchListRequestFriend, setAmountNotify } from 'features/Friend/friendSlice';
@@ -25,6 +26,7 @@ function ListRequestFriend({ data }) {
 
     const handeDenyRequest = async (value) => {
         await friendApi.deleteRequestFriend(value._id);
+        dispatch(setAmountNotify(amountNotify - 1))
         dispatch(fetchListRequestFriend());
 
     }
@@ -37,7 +39,7 @@ function ListRequestFriend({ data }) {
         dispatch(fetchFriends({ name: '' }));
         dispatch(fetchListFriends({ name: '' }));
         dispatch(setAmountNotify(amountNotify - 1))
-
+        message.success('Thêm bạn thành công');
     }
 
 

@@ -1,12 +1,13 @@
 import {
-    DeleteOutlined, PushpinOutlined,
-    UndoOutlined
-} from '@ant-design/icons';
-import { Button, Dropdown, Menu } from 'antd';
-import { message as mesageNotify } from 'antd';
+    DeleteOutlined,
+    PushpinOutlined,
+    UndoOutlined,
+} from '@ant-design/icons'
+import { Button, Dropdown, Menu } from 'antd'
+import { message as mesageNotify } from 'antd'
 import messageApi from 'api/messageApi'
 import pinMessageApi from 'api/pinMessageApi'
-import ModalChangePinMessage from 'components/ModalChangePinMessage';
+import ModalChangePinMessage from 'components/ModalChangePinMessage'
 import MESSAGE_STYLE from 'constants/MessageStyle/messageStyle'
 import PersonalIcon from 'features/Chat/components/PersonalIcon'
 import PropTypes from 'prop-types'
@@ -41,27 +42,29 @@ UserMessage.defaultProps = {
 }
 
 function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
-    const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
-    const { name, avatar } = user;
-    const { messages, currentConversation, conversations, pinMessages } = useSelector((state) => state.chat);
-    const global = useSelector((state) => state.global);
+    const { _id, content, user, createdAt, type, isDeleted, reacts } = message
+    const { name, avatar } = user
+    const { messages, currentConversation, conversations, pinMessages } =
+        useSelector((state) => state.chat)
+    const global = useSelector((state) => state.global)
 
-    const [listReactionCurrent, setListReactionCurrent] = useState([]);
-    const [isLeader, setIsLeader] = useState(false);
-    const [isVisbleModal, setVisibleModal] = useState(false);
-    const isGroup = conversations.find(ele => ele._id === currentConversation).type;
+    const [listReactionCurrent, setListReactionCurrent] = useState([])
+    const [isLeader, setIsLeader] = useState(false)
+    const [isVisbleModal, setVisibleModal] = useState(false)
+    const isGroup = conversations.find(
+        (ele) => ele._id === currentConversation
+    ).type
 
     const myReact =
         reacts &&
         reacts.length > 0 &&
-        reacts.find((ele) => ele.user._id === global.user._id);
+        reacts.find((ele) => ele.user._id === global.user._id)
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        setIsLeader(checkLeader(user._id, conversations, currentConversation));
+        setIsLeader(checkLeader(user._id, conversations, currentConversation))
     }, [messages])
-
 
     const listReaction = ['👍', '❤️', '😆', '😮', '😭', '😡']
 
@@ -92,17 +95,16 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
     const handleOnClick = async ({ item, key }) => {
         if (key == 1) {
             if (pinMessages.length === 3) {
-                setVisibleModal(true);
+                setVisibleModal(true)
             } else {
                 try {
-                    await pinMessageApi.pinMessage(message._id);
+                    await pinMessageApi.pinMessage(message._id)
                     dispatch(fetchPinMessages({ conversationId: currentConversation }))
                     mesageNotify.success('Ghim tin nhắn thành công')
                 } catch (error) {
                     mesageNotify.error('Ghim tin nhắn thất bại')
                 }
             }
-
         }
         if (key == 2) {
             await messageApi.redoMessage(_id)
@@ -125,8 +127,7 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
 
     const menu = (
         <Menu onClick={handleOnClick}>
-            {
-                isGroup &&
+            {isGroup && (
                 <Menu.Item
                     key="1"
                     icon={<PushpinOutlined />}
@@ -135,7 +136,7 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                 >
                     Ghim tin nhắn
                 </Menu.Item>
-            }
+            )}
 
             {isMyMessage && (
                 <Menu.Item
@@ -173,40 +174,36 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
 
     const dateAt = new Date(createdAt)
 
-
-
-
     return (
         <>
-            {type === 'NOTIFY' ? (
+            {!isDeleted && type === 'NOTIFY' ? (
                 <NotifyMessage message={message} />
             ) : (
-                <div
-                    id="user-message"
-                    className={`${setMarginTopAndBottom(_id)}`}
-                >
+                <div id="user-message" className={`${setMarginTopAndBottom(_id)}`}>
                     <div
                         className={`interact-conversation ${isMyMessage ? 'reverse' : ''
                             }  `}
                     >
-                        <div
-                            className={`avatar-user ${isSameUser ? 'hidden' : ''
-                                }`}
-                        >
-                            <PersonalIcon
-                                isHost={isLeader}
-                                demention={40}
-                                avatar={avatar}
-                            />
+                        <div className={`avatar-user ${isSameUser ? 'hidden' : ''}`}>
+                            <PersonalIcon isHost={isLeader} demention={40} avatar={avatar} />
                         </div>
                         <div className="list-conversation">
                             <div className="message" id={`${_id}`}>
                                 <div
-                                    className={`sub-message ${isMyMessage ? 'reverse' : ''} ${isSameUser ? 'same-user' : ''}`}
+                                    className={`sub-message ${isMyMessage ? 'reverse' : ''} ${isSameUser ? 'same-user' : ''
+                                        }`}
                                 >
                                     <div
-                                        className={`content-message ${type === 'IMAGE' || type === 'VIDEO' ? 'content-media' : ''} 
-                                        ${isMyMessage && type !== 'IMAGE' && type !== 'VIDEO' ? 'my-message-bg' : ''}`}
+                                        className={`content-message ${type === 'IMAGE' || type === 'VIDEO'
+                                            ? 'content-media'
+                                            : ''
+                                            } 
+                                        ${isMyMessage &&
+                                                type !== 'IMAGE' &&
+                                                type !== 'VIDEO'
+                                                ? 'my-message-bg'
+                                                : ''
+                                            }`}
                                     >
                                         <span className="author-message">
                                             {isSameUser && isMyMessage
@@ -215,128 +212,109 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                                                     ? ''
                                                     : !isSameUser && isMyMessage
                                                         ? ''
-                                                        : name
-                                            }
+                                                        : name}
                                         </span>
                                         <div className="content-message-description">
-                                            {type === 'HTML' ? (
-                                                <HTMLMessage
-                                                    content={content}
-                                                    dateAt={dateAt}
-                                                >
-                                                    {!myReact && (
-                                                        <ListReaction
-                                                            isMyMessage={isMyMessage}
-                                                            onClickLike={handleClickLike}
-                                                            listReaction={listReaction}
-                                                            onClickReaction={handleClickReaction}
-                                                        />
-                                                    )}
 
-                                                </HTMLMessage>
-                                            ) : type === 'TEXT' ? (
-                                                <TextMessage
-                                                    content={content}
-                                                    dateAt={dateAt}
-                                                    isVisibleTime={isVisibleTime}
-                                                >
-                                                    {!myReact && (
-                                                        <ListReaction
-                                                            isMyMessage={isMyMessage}
-                                                            onClickLike={handleClickLike}
-                                                            listReaction={listReaction}
-                                                            onClickReaction={handleClickReaction}
-                                                        />
-                                                    )}
-                                                </TextMessage>
-                                            ) : type === 'IMAGE' ? (
-                                                <ImageMessage
-                                                    content={content}
-                                                    dateAt={dateAt}
-                                                >
-                                                    {type === 'IMAGE' &&
-                                                        !myReact && (
-                                                            <ListReaction
-                                                                type='media'
-                                                                isMyMessage={isMyMessage}
-                                                                onClickLike={handleClickLike}
-                                                                listReaction={listReaction}
-                                                                onClickReaction={handleClickReaction}
-                                                            />
-                                                        )}
-                                                </ImageMessage>
-
-
-                                            ) : type === 'VIDEO' ? (
-                                                <VideoMessage
-                                                    content={content}
-                                                    dateAt={dateAt}
-                                                >
-                                                    {!myReact && (
-                                                        <ListReaction
-                                                            type='media'
-                                                            isMyMessage={isMyMessage}
-                                                            onClickLike={handleClickLike}
-                                                            listReaction={listReaction}
-                                                            onClickReaction={handleClickReaction}
-                                                        />
-                                                    )}
-                                                </VideoMessage>
-
-                                            ) : (
-                                                <FileMessage
-                                                    content={content}
-                                                    isVisibleTime={isVisibleTime}
-                                                    dateAt={dateAt}
-
-                                                >
-                                                    {!myReact && (
-                                                        <ListReaction
-                                                            type='media'
-                                                            isMyMessage={isMyMessage}
-                                                            onClickLike={handleClickLike}
-                                                            listReaction={listReaction}
-                                                            onClickReaction={handleClickReaction}
-                                                        />
-                                                    )}
-                                                </FileMessage>
-                                            )}
-
-                                            {isDeleted && (
+                                            {isDeleted ? (
                                                 <span className="undo-message">
                                                     Tin nhắn đã được thu hồi
                                                 </span>
+                                            ) : (
+                                                <>
+                                                    {type === 'HTML' ? (
+                                                        <HTMLMessage content={content} dateAt={dateAt}>
+                                                            {!myReact && (
+                                                                <ListReaction
+                                                                    isMyMessage={isMyMessage}
+                                                                    onClickLike={handleClickLike}
+                                                                    listReaction={listReaction}
+                                                                    onClickReaction={handleClickReaction}
+                                                                />
+                                                            )}
+                                                        </HTMLMessage>
+                                                    ) : type === 'TEXT' ? (
+                                                        <TextMessage
+                                                            content={content}
+                                                            dateAt={dateAt}
+                                                            isVisibleTime={isVisibleTime}
+                                                        >
+                                                            {!myReact && (
+                                                                <ListReaction
+                                                                    isMyMessage={isMyMessage}
+                                                                    onClickLike={handleClickLike}
+                                                                    listReaction={listReaction}
+                                                                    onClickReaction={handleClickReaction}
+                                                                />
+                                                            )}
+                                                        </TextMessage>
+                                                    ) : type === 'IMAGE' ? (
+                                                        <ImageMessage content={content} dateAt={dateAt}>
+                                                            {type === 'IMAGE' && !myReact && (
+                                                                <ListReaction
+                                                                    type="media"
+                                                                    isMyMessage={isMyMessage}
+                                                                    onClickLike={handleClickLike}
+                                                                    listReaction={listReaction}
+                                                                    onClickReaction={handleClickReaction}
+                                                                />
+                                                            )}
+                                                        </ImageMessage>
+                                                    ) : type === 'VIDEO' ? (
+                                                        <VideoMessage content={content} dateAt={dateAt}>
+                                                            {!myReact && (
+                                                                <ListReaction
+                                                                    type="media"
+                                                                    isMyMessage={isMyMessage}
+                                                                    onClickLike={handleClickLike}
+                                                                    listReaction={listReaction}
+                                                                    onClickReaction={handleClickReaction}
+                                                                />
+                                                            )}
+                                                        </VideoMessage>
+                                                    ) : (
+                                                        <FileMessage
+                                                            content={content}
+                                                            isVisibleTime={isVisibleTime}
+                                                            dateAt={dateAt}
+                                                        >
+                                                            {!myReact && (
+                                                                <ListReaction
+                                                                    type="media"
+                                                                    isMyMessage={isMyMessage}
+                                                                    onClickLike={handleClickLike}
+                                                                    listReaction={listReaction}
+                                                                    onClickReaction={handleClickReaction}
+                                                                />
+                                                            )}
+                                                        </FileMessage>
+                                                    )}
+
+                                                </>
                                             )}
                                         </div>
 
                                         <div
-                                            className={`reacted-block ${(type === 'IMAGE' || type === 'VIDEO') && 'media'} 
+                                            className={`reacted-block ${(type === 'IMAGE' || type === 'VIDEO') && 'media'
+                                                } 
                                             ${isMyMessage ? 'left' : 'right'} `}
                                         >
-                                            {
-                                                (listReactionCurrent.length > 0 && !isDeleted) && (
-                                                    <ListReactionOfUser
-                                                        listReactionCurrent={listReactionCurrent}
-                                                        reacts={reacts}
-                                                        isMyMessage={isMyMessage}
-                                                        onTransferIcon={transferIcon}
-                                                    />
-                                                )
-                                            }
+                                            {listReactionCurrent.length > 0 && !isDeleted && (
+                                                <ListReactionOfUser
+                                                    listReactionCurrent={listReactionCurrent}
+                                                    reacts={reacts}
+                                                    isMyMessage={isMyMessage}
+                                                    onTransferIcon={transferIcon}
+                                                />
+                                            )}
 
                                             {myReact && !isDeleted && (
                                                 <div
-                                                    className={`your-react ${isMyMessage
-                                                        ? 'bg-white'
-                                                        : ''
+                                                    className={`your-react ${isMyMessage ? 'bg-white' : ''
                                                         }`}
                                                 >
                                                     <span className="react-current">
-                                                        {myReact
-                                                            ? transferIcon(
-                                                                myReact.type
-                                                            )
-                                                            : ''}
+                                                        {myReact ? transferIcon(myReact.type) : ''}
                                                     </span>
 
                                                     <ListReaction
@@ -365,13 +343,8 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                                         </div>
 
                                         <div className="additional icon-interact">
-                                            <Dropdown
-                                                overlay={menu}
-                                                trigger={['click']}
-                                            >
-                                                <Button
-                                                    style={MESSAGE_STYLE.styleButton}
-                                                >
+                                            <Dropdown overlay={menu} trigger={['click']}>
+                                                <Button style={MESSAGE_STYLE.styleButton}>
                                                     <BiDotsHorizontalRounded />
                                                 </Button>
                                             </Dropdown>
@@ -383,6 +356,11 @@ function UserMessage({ message, isMyMessage, isSameUser, isVisibleTime }) {
                     </div>
                 </div>
             )}
+            {/* {type === 'NOTIFY' ? (
+                <NotifyMessage message={message} />
+            ) : (
+                
+            )} */}
 
             <ModalChangePinMessage
                 message={pinMessages}

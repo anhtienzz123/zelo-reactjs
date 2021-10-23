@@ -28,6 +28,6 @@ const MESSAGE_STYLE = {
         fontWeight: '500',
         fontSize: '1.3rem',
     },
-}
+};
 
-export default MESSAGE_STYLE
+export default MESSAGE_STYLE;

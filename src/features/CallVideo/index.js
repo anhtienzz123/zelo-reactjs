@@ -163,7 +163,7 @@ function CallVideo(props) {
     }, []);
 
     return (
-        <div id='call-video'>
+        <div id="call-video">
             <ActionNavbar
                 onToggleVideo={handleToggleVideo}
                 onToggleAudio={handleToggleAudio}
@@ -175,7 +175,7 @@ function CallVideo(props) {
                 {remoteStream && <video ref={remoteStreamRef} autoPlay />}
             </div>
 
-            <div className='local-video'>
+            <div className="local-video">
                 {/* {myStreamRef.current && (
                     <MyVideo stream={myStreamRef.current} userId='dsdsadsa' />
                 )} */}

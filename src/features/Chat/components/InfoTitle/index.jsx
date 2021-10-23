@@ -15,7 +15,8 @@ InfoTitle.defaultProps = {
     onBack: null,
     isBack: false,
     isSelected: false,
-    type: ''
+    type: '',
+
 }
 
 function InfoTitle(props) {

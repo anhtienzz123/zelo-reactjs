@@ -1,114 +1,123 @@
-import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons'
-import { Button, Col, Dropdown, Menu, Row } from 'antd'
-import ICON_FRIEND from 'assets/images/icon/icon_friend.png'
-import ICON_GROUP from 'assets/images/icon/icon_group.png'
-import { getValueFromKey } from 'constants/filterFriend'
-import SearchContainer from 'features/Chat/containers/SearchContainer'
-import PropTypes from 'prop-types'
-import React, { useEffect, useRef, useState } from 'react'
-import Scrollbars from 'react-custom-scrollbars'
-import { useDispatch, useSelector } from 'react-redux'
-import { sortGroup } from 'utils/groupUtils'
-import HeaderFriend from './components/HeaderFiend'
-import ListFriend from './components/ListFriend'
-import ListGroup from './components/ListGroup'
-import ListMyFriendRequest from './components/ListMyRequestFriend'
-import ListRequestFriend from './components/ListRequestFriend'
+import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
+import { Button, Col, Dropdown, Menu, Row } from 'antd';
+import ICON_FRIEND from 'assets/images/icon/icon_friend.png';
+import ICON_GROUP from 'assets/images/icon/icon_group.png';
+import ICON_CONTACT from 'assets/images/icon/contacts_icon.png';
+import { getValueFromKey } from 'constants/filterFriend';
+import SearchContainer from 'features/Chat/containers/SearchContainer';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import { useDispatch, useSelector } from 'react-redux';
+import { sortGroup } from 'utils/groupUtils';
+import HeaderFriend from './components/HeaderFiend';
+import ListFriend from './components/ListFriend';
+import ListGroup from './components/ListGroup';
+import ListMyFriendRequest from './components/ListMyRequestFriend';
+import ListRequestFriend from './components/ListRequestFriend';
 
 import {
     fetchFriends,
     fetchListGroup,
     fetchListMyRequestFriend,
     fetchListRequestFriend,
-} from './friendSlice'
-import FRIEND_STYLE from './friendStyle'
-import './style.scss'
+    fetchPhoneBook,
+} from './friendSlice';
+import FRIEND_STYLE from './friendStyle';
+import './style.scss';
+import ListContact from './components/ListContact';
 
 Friend.propTypes = {
     socket: PropTypes.object,
-}
+};
 
 Friend.defaultProps = {
     socket: {},
-}
+};
 
 function Friend({ socket }) {
-    const { requestFriends, myRequestFriend, groups, friends } = useSelector(
-        (state) => state.friend
-    )
-    const { user } = useSelector((state) => state.global)
+    const { requestFriends, myRequestFriend, groups, friends, phoneBook } =
+        useSelector((state) => state.friend);
+    const { user } = useSelector((state) => state.global);
 
-    const { isJoinFriendLayout } = useSelector((state) => state.global)
-    const [subTab, setSubTab] = useState(0)
-    const [currentFilterLeft, setCurrentFilterLeft] = useState('1')
-    const [currentFilterRight, setCurrentFilterRight] = useState('1')
-    const [groupCurrent, setGroupCurrent] = useState([])
-    const [keySort, setKeySort] = useState(1)
-    const dispatch = useDispatch()
-    const refFiller = useRef()
+    const { isJoinFriendLayout } = useSelector((state) => state.global);
+    const [subTab, setSubTab] = useState(0);
+    const [currentFilterLeft, setCurrentFilterLeft] = useState('1');
+    const [currentFilterRight, setCurrentFilterRight] = useState('1');
+    const [groupCurrent, setGroupCurrent] = useState([]);
+    const [keySort, setKeySort] = useState(1);
+    const dispatch = useDispatch();
+    const refFiller = useRef();
 
     useEffect(() => {
         if (groups.length > 0) {
-            const temp = sortGroup(groups, 1)
-            setGroupCurrent(temp)
-            refFiller.current = temp
+            const temp = sortGroup(groups, 1);
+            setGroupCurrent(temp);
+            refFiller.current = temp;
         }
-    }, [groups])
+    }, [groups]);
 
     useEffect(() => {
-        dispatch(fetchListRequestFriend())
-        dispatch(fetchListMyRequestFriend())
+        if (subTab === 2) {
+            dispatch(fetchPhoneBook());
+        }
+    }, [subTab]);
+
+    useEffect(() => {
+        dispatch(fetchListRequestFriend());
+        dispatch(fetchListMyRequestFriend());
         dispatch(
             fetchFriends({
                 name: '',
             })
-        )
-        dispatch(fetchListGroup({ name: '', type: 2 }))
-    }, [])
+        );
+        dispatch(fetchListGroup({ name: '', type: 2 }));
+        dispatch(fetchPhoneBook());
+    }, []);
 
     const handleMenuLeftSelect = ({ _, key }) => {
-        setCurrentFilterLeft(key)
+        setCurrentFilterLeft(key);
         if (key === '2') {
             const newGroup = groupCurrent.filter(
                 (ele) => ele.leaderId === user._id
-            )
+            );
 
-            setGroupCurrent(newGroup)
+            setGroupCurrent(newGroup);
         }
         if (key === '1') {
-            console.log(refFiller.current)
-            setGroupCurrent(sortGroup(refFiller.current, keySort))
+            console.log(refFiller.current);
+            setGroupCurrent(sortGroup(refFiller.current, keySort));
         }
-    }
+    };
 
     const handleMenuRightSelect = ({ _, key }) => {
-        setCurrentFilterRight(key)
-        let newGroup = []
+        setCurrentFilterRight(key);
+        let newGroup = [];
         if (key === '2') {
-            newGroup = sortGroup(groupCurrent, 0)
-            setKeySort(0)
+            newGroup = sortGroup(groupCurrent, 0);
+            setKeySort(0);
         }
         if (key === '1') {
-            newGroup = sortGroup(groupCurrent, 1)
-            setKeySort(1)
+            newGroup = sortGroup(groupCurrent, 1);
+            setKeySort(1);
         }
 
-        setGroupCurrent(newGroup)
-    }
+        setGroupCurrent(newGroup);
+    };
 
     const menuLeft = (
         <Menu onClick={handleMenuLeftSelect}>
             <Menu.Item key="1">Tất cả</Menu.Item>
             <Menu.Item key="2">Nhóm tôi quản lý</Menu.Item>
         </Menu>
-    )
+    );
 
     const menuRight = (
         <Menu onClick={handleMenuRightSelect}>
             <Menu.Item key="1">Theo tên nhóm từ (A-Z)</Menu.Item>
             <Menu.Item key="2">Theo tên nhóm từ (Z-A)</Menu.Item>
         </Menu>
-    )
+    );
 
     return (
         <div id="main-friend_wrapper">
@@ -150,6 +159,22 @@ function Friend({ socket }) {
                                 </div>
                             </div>
 
+                            <div
+                                className="main-friend_sidebar_option main-friend_sidebar_option--contact"
+                                onClick={() => setSubTab(2)}
+                            >
+                                <div className="main-friend_sidebar_option_img">
+                                    <img
+                                        src={ICON_CONTACT}
+                                        alt="ICON_CONTACT"
+                                    />
+                                </div>
+
+                                <div className="main-friend_sidebar_option_text">
+                                    Danh bạ
+                                </div>
+                            </div>
+
                             <div className="divider-layout">
                                 <div></div>
                             </div>
@@ -167,7 +192,7 @@ function Friend({ socket }) {
                 <Col span={19}>
                     <div className="main-friend_body">
                         <div className="main-friend_body__header">
-                            <HeaderFriend />
+                            <HeaderFriend subtab={subTab} />
                         </div>
                         <div className="main-friend_body__section">
                             <div className="main-friend_body_item">
@@ -177,7 +202,7 @@ function Friend({ socket }) {
                                     autoHideDuration={200}
                                     style={{ height: '100%' }}
                                 >
-                                    {subTab ? (
+                                    {subTab === 1 ? (
                                         <>
                                             <div className="main-friend_body__filter">
                                                 <div className="main-friend_body__filter--left">
@@ -233,7 +258,7 @@ function Friend({ socket }) {
                                                 />
                                             </div>
                                         </>
-                                    ) : (
+                                    ) : subTab === 0 ? (
                                         <div className="main-friend_body_list-request">
                                             <div className="main-friend_body_title-list">
                                                 Lời mới kết bạn (
@@ -251,6 +276,10 @@ function Friend({ socket }) {
                                                 data={myRequestFriend}
                                             />
                                         </div>
+                                    ) : (
+                                        <div>
+                                            <ListContact data={phoneBook} />
+                                        </div>
                                     )}
                                 </Scrollbars>
                             </div>
@@ -259,7 +288,7 @@ function Friend({ socket }) {
                 </Col>
             </Row>
         </div>
-    )
+    );
 }
 
-export default Friend
+export default Friend;

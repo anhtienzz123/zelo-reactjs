@@ -15,8 +15,8 @@ import FooterChatContainer from './containers/FooterChatContainer';
 import HeaderChatContainer from './containers/HeaderChatContainer';
 import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
-
 import {
+    addMessage,
     fetchConversationById,
     fetchListFriends,
     fetchPinMessages,
@@ -25,6 +25,8 @@ import {
     setCurrentConversation,
     setReactionMessage,
     setRedoMessage,
+    updateNameOfConver,
+    updateTimeForConver,
 } from './slice/chatSlice';
 import './style.scss';
 
@@ -80,7 +82,9 @@ function Chat({ socket, idNewMessage }) {
     }, [conversations]);
 
     useEffect(() => {
-        dispatch(fetchPinMessages({ conversationId: currentConversation }));
+        if (currentConversation) {
+            dispatch(fetchPinMessages({ conversationId: currentConversation }));
+        }
     }, [currentConversation]);
 
     useEffect(() => {
@@ -148,7 +152,6 @@ function Chat({ socket, idNewMessage }) {
                 if (conversationId === refCurrentConversation.current) {
                     dispatch(setCurrentConversation(''));
                 }
-
                 dispatch(isDeletedFromGroup(conversationId));
                 socket.emit('leave-conversation', conversationId);
             });
@@ -158,9 +161,58 @@ function Chat({ socket, idNewMessage }) {
                     dispatch(fetchPinMessages({ conversationId }));
                 }
             });
+
+            socket.on(
+                'rename-conversation',
+                (conversationId, conversationName, message) => {
+                    dispatch(
+                        updateNameOfConver({ conversationId, conversationName })
+                    );
+                    dispatch(addMessage(message));
+                }
+            );
         }
         dispatch(setJoinChatLayout(true));
     }, []);
+
+    const emitUserOnline = (currentConver) => {
+        if (currentConver) {
+            const conver = conversations.find(
+                (ele) => ele._id === currentConver
+            );
+            if (!conver.type) {
+                const userId = conver.userId;
+                socket.emit(
+                    'get-user-online',
+                    userId,
+                    ({ isOnline, lastLogin }) => {
+                        console.log(userId, isOnline, lastLogin);
+                        dispatch(
+                            updateTimeForConver({
+                                id: currentConver,
+                                isOnline,
+                                lastLogin,
+                            })
+                        );
+                    }
+                );
+            }
+        }
+    };
+
+    useEffect(() => {
+        emitUserOnline(currentConversation);
+    }, [currentConversation]);
+
+    useEffect(() => {
+        const intervalCall = setInterval(() => {
+            emitUserOnline(currentConversation);
+        }, 180000);
+
+        return () => {
+            clearInterval(intervalCall);
+        };
+    }, [currentConversation]);
 
     const handleDeleteMessage = (
         conversationId,
@@ -203,19 +255,19 @@ function Chat({ socket, idNewMessage }) {
     // Xử lý modal mode
 
     return (
-        <div id='main-chat-wrapper'>
+        <div id="main-chat-wrapper">
             <Row gutter={[0, 0]}>
                 <Col span={5}>
-                    <div className='main-conversation'>
-                        <div className='main-conversation_search-bar'>
+                    <div className="main-conversation">
+                        <div className="main-conversation_search-bar">
                             <SearchContainer />
                         </div>
 
-                        <div className='divider-layout'>
+                        <div className="divider-layout">
                             <div></div>
                         </div>
 
-                        <div className='main-conversation_list-conversation'>
+                        <div className="main-conversation_list-conversation">
                             <ConversationContainer />
                         </div>
                     </div>
@@ -224,13 +276,13 @@ function Chat({ socket, idNewMessage }) {
                 {path === '/chat' && currentConversation ? (
                     <>
                         <Col span={13}>
-                            <div className='main_chat'>
-                                <div className='main_chat-header'>
+                            <div className="main_chat">
+                                <div className="main_chat-header">
                                     <HeaderChatContainer />
                                 </div>
 
-                                <div className='main_chat-body'>
-                                    <div id='main_chat-body--view'>
+                                <div className="main_chat-body">
+                                    <div id="main_chat-body--view">
                                         <BodyChatContainer
                                             scrollId={scrollId}
                                             onSCrollDown={idNewMessage}
@@ -242,7 +294,7 @@ function Chat({ socket, idNewMessage }) {
                                         />
 
                                         {pinMessages.length > 1 && (
-                                            <div className='pin-message'>
+                                            <div className="pin-message">
                                                 <DrawerPinMessage
                                                     isOpen={isOpenDrawer}
                                                     onOpen={() =>
@@ -258,7 +310,7 @@ function Chat({ socket, idNewMessage }) {
                                         )}
 
                                         {pinMessages.length > 0 && (
-                                            <div className='nutshell-pin-message'>
+                                            <div className="nutshell-pin-message">
                                                 <NutshellPinMessage
                                                     isHover={false}
                                                     isItem={
@@ -281,16 +333,17 @@ function Chat({ socket, idNewMessage }) {
                                         {/* {FriendUtils.checkIsFriend()} */}
 
                                         <div
-                                            id='back-top-button'
+                                            id="back-top-button"
                                             className={`${
                                                 isShow ? 'show' : 'hide'
                                             } ${
                                                 hasMessage ? 'new-message' : ''
                                             }`}
-                                            onClick={hanldeOnClickScroll}>
+                                            onClick={hanldeOnClickScroll}
+                                        >
                                             {hasMessage ? (
-                                                <div className='db-arrow-new-message'>
-                                                    <span className='arrow'>
+                                                <div className="db-arrow-new-message">
+                                                    <span className="arrow">
                                                         <DoubleLeftOutlined />
                                                     </span>
                                                     <span>
@@ -303,7 +356,7 @@ function Chat({ socket, idNewMessage }) {
                                         </div>
 
                                         {usersTyping.length > 0 && (
-                                            <div className='typing-message'>
+                                            <div className="typing-message">
                                                 {usersTyping.map(
                                                     (ele, index) => (
                                                         <span>
@@ -328,16 +381,16 @@ function Chat({ socket, idNewMessage }) {
 
                                                 <span>&nbsp;đang nhập</span>
 
-                                                <div className='dynamic-dot'>
-                                                    <div className='dot'></div>
-                                                    <div className='dot'></div>
-                                                    <div className='dot'></div>
+                                                <div className="dynamic-dot">
+                                                    <div className="dot"></div>
+                                                    <div className="dot"></div>
+                                                    <div className="dot"></div>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className='main_chat-body--input'>
+                                    <div className="main_chat-body--input">
                                         <FooterChatContainer
                                             onScrollWhenSentText={
                                                 handleScrollWhenSent
@@ -349,7 +402,7 @@ function Chat({ socket, idNewMessage }) {
                             </div>
                         </Col>
                         <Col span={6}>
-                            <div className='main-info'>
+                            <div className="main-info">
                                 {visibleNews ? (
                                     <GroupNews onBack={handleOnBack} />
                                 ) : (
@@ -360,15 +413,15 @@ function Chat({ socket, idNewMessage }) {
                     </>
                 ) : (
                     <Col span={19}>
-                        <div className='landing-app'>
-                            <div className='title-welcome'>
-                                <div className='title-welcome-heading'>
+                        <div className="landing-app">
+                            <div className="title-welcome">
+                                <div className="title-welcome-heading">
                                     <span>
                                         Chào mừng đến với <b>Zelo</b>
                                     </span>
                                 </div>
 
-                                <div className='title-welcome-detail'>
+                                <div className="title-welcome-detail">
                                     <span>
                                         Khám phá những tiện ích hỗ trợ làm việc
                                         và trò chuyện cùng người thân, bạn bè
@@ -377,7 +430,7 @@ function Chat({ socket, idNewMessage }) {
                                 </div>
                             </div>
 
-                            <div className='carousel-slider'>
+                            <div className="carousel-slider">
                                 <Slider />
                             </div>
                         </div>
