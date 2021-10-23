@@ -34,12 +34,11 @@ function Admin(props) {
                                 path={`${url}/stickers`}
                                 component={StickerGroupPage}
                             />
-
                             <Route
+                            
                                 path={`${url}/stickers/:id`}
                                 component={StickerPage}
                             />
-
                             <Route component={NotFoundPage} />
                         </Switch>
                     </Content>

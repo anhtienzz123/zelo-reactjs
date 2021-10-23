@@ -115,7 +115,6 @@ function ForgotPage(props) {
             success();
             console.log('kích hoạt thành công');
             history.push('/account/login');
-
             dispatch(setLoading(true));
         } catch (error) {
             setError('OTP không hợp lệ hoặc hết hạn');
