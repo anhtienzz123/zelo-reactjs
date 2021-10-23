@@ -19,9 +19,9 @@ function Admin(props) {
         <div>
             <Layout style={{ minHeight: '100vh' }}>
                 <SiderBar />
-                <Layout className='site-layout'>
+                <Layout className="site-layout">
                     <Header
-                        className='site-layout-background'
+                        className="site-layout-background"
                         style={{ padding: 0 }}
                     />
 

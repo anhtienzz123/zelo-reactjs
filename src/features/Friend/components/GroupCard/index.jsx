@@ -71,6 +71,7 @@ function GroupCard({ data, onRemove }) {
         });
     }
 
+    console.log('data card', data);
 
 
     const mainCard = (
@@ -81,6 +82,8 @@ function GroupCard({ data, onRemove }) {
                     <ConversationAvatar
                         avatar={data.avatar}
                         demension={52}
+                        type={data.type}
+                        totalMembers={data.totalMembers}
                         isGroupCard={true}
                     />
 

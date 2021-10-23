@@ -20,13 +20,13 @@ const FILTER_FRIEND = {
             value: 'Theo tên nhóm (Z-A)',
         },
     ],
-}
+};
 
 export function getValueFromKey(type, key) {
     if (type === 'LEFT') {
-        return FILTER_FRIEND.FILTER_LEFT.find((ele) => ele.key === key).value
+        return FILTER_FRIEND.FILTER_LEFT.find((ele) => ele.key === key).value;
     }
     if (type === 'RIGHT') {
-        return FILTER_FRIEND.FILTER_RIGHT.find((ele) => ele.key === key).value
+        return FILTER_FRIEND.FILTER_RIGHT.find((ele) => ele.key === key).value;
     }
 }

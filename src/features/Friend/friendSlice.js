@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import friendApi from 'api/friendApi';
 import conversationApi from 'api/conversationApi';
+import phoneBookApi from 'api/phoneBookApi';
 const KEY = 'friend';
 
 export const fetchListRequestFriend = createAsyncThunk(
@@ -9,7 +10,7 @@ export const fetchListRequestFriend = createAsyncThunk(
         const data = await friendApi.fetchListRequestFriend();
         return data;
     }
-)
+);
 
 export const fetchListMyRequestFriend = createAsyncThunk(
     `${KEY}/fetchListMyRequestFriend`,
@@ -17,7 +18,7 @@ export const fetchListMyRequestFriend = createAsyncThunk(
         const data = await friendApi.fetchMyRequestFriend();
         return data;
     }
-)
+);
 
 export const fetchFriends = createAsyncThunk(
     `${KEY}/fetchFriends`,
@@ -26,18 +27,23 @@ export const fetchFriends = createAsyncThunk(
         const data = await friendApi.fetchFriends(name);
         return data;
     }
-)
+);
 export const fetchListGroup = createAsyncThunk(
     `${KEY}/fetchListGroup`,
     async (param, thunkApi) => {
         const { name, type } = param;
         const data = await conversationApi.fetchListConversations(name, type);
         return data;
-
     }
-)
+);
 
-
+export const fetchPhoneBook = createAsyncThunk(
+    `${KEY}/fetchPhoneBook`,
+    async (param, thunkApi) => {
+        const data = await phoneBookApi.fetchPhoneBook();
+        return data;
+    }
+);
 
 const friendSlice = createSlice({
     name: KEY,
@@ -47,7 +53,8 @@ const friendSlice = createSlice({
         myRequestFriend: [],
         friends: [],
         groups: [],
-        amountNotify: 0
+        amountNotify: 0,
+        phoneBook: [],
     },
     reducers: {
         setLoading: (state, action) => {
@@ -60,7 +67,6 @@ const friendSlice = createSlice({
         setNewRequestFriend: (state, action) => {
             const newRequestFriend = action.payload;
             state.requestFriends = [newRequestFriend, ...state.requestFriends];
-
         },
 
         setGroup: (state, action) => {
@@ -71,11 +77,13 @@ const friendSlice = createSlice({
             state.groups = newGroup;
         },
         setMyRequestFriend: (state, action) => {
-            state.myRequestFriend = state.myRequestFriend.filter(ele => ele._id !== action.payload);
+            state.myRequestFriend = state.myRequestFriend.filter(
+                (ele) => ele._id !== action.payload
+            );
         },
         setAmountNotify: (state, action) => {
             state.amountNotify = action.payload;
-        }
+        },
     },
     extraReducers: {
         [fetchListRequestFriend.fulfilled]: (state, action) => {
@@ -96,12 +104,16 @@ const friendSlice = createSlice({
         },
         [fetchListGroup.fulfilled]: (state, action) => {
             state.groups = action.payload;
-        }
+        },
+        [fetchPhoneBook.fulfilled]: (state, action) => {
+            state.phoneBook = action.payload;
+        },
     },
 });
 
 const { reducer, actions } = friendSlice;
-export const { setLoading,
+export const {
+    setLoading,
     setNewFriend,
     setNewRequestFriend,
     setGroup,

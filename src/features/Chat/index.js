@@ -1,21 +1,22 @@
-import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons'
-import { Col, message, Row } from 'antd'
-import { setJoinChatLayout } from 'app/globalSlice'
-import Slider from 'components/Slider'
-import PropTypes from 'prop-types'
-import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useRouteMatch } from 'react-router'
-import DrawerPinMessage from './components/DrawerPinMessage'
-import GroupNews from './components/GroupNews'
-import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage'
-import BodyChatContainer from './containers/BodyChatContainer'
-import ConversationContainer from './containers/ConversationContainer'
-import FooterChatContainer from './containers/FooterChatContainer'
-import HeaderChatContainer from './containers/HeaderChatContainer'
-import InfoContainer from './containers/InfoContainer'
-import SearchContainer from './containers/SearchContainer'
+import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
+import { Col, message, Row } from 'antd';
+import { setJoinChatLayout } from 'app/globalSlice';
+import Slider from 'components/Slider';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouteMatch } from 'react-router';
+import DrawerPinMessage from './components/DrawerPinMessage';
+import GroupNews from './components/GroupNews';
+import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage';
+import BodyChatContainer from './containers/BodyChatContainer';
+import ConversationContainer from './containers/ConversationContainer';
+import FooterChatContainer from './containers/FooterChatContainer';
+import HeaderChatContainer from './containers/HeaderChatContainer';
+import InfoContainer from './containers/InfoContainer';
+import SearchContainer from './containers/SearchContainer';
 import {
+    addMessage,
     fetchConversationById,
     fetchListFriends,
     fetchPinMessages,
@@ -24,142 +25,195 @@ import {
     setCurrentConversation,
     setReactionMessage,
     setRedoMessage,
-} from './slice/chatSlice'
-import './style.scss'
+    updateNameOfConver,
+    updateTimeForConver,
+} from './slice/chatSlice';
+import './style.scss';
 
 Chat.propTypes = {
     socket: PropTypes.object,
     idNewMessage: PropTypes.string,
-}
+};
 
 Chat.defaultProps = {
     socket: {},
     idNewMessage: '',
-}
+};
 
 function Chat({ socket, idNewMessage }) {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const { conversations, currentConversation, pinMessages } = useSelector(
         (state) => state.chat
-    )
+    );
 
-    const { path } = useRouteMatch()
-    const [scrollId, setScrollId] = useState('')
+    const { path } = useRouteMatch();
+    const [scrollId, setScrollId] = useState('');
     // const [idNewMessage, setIdNewMessage] = useState('')
-    const [isShow, setIsShow] = useState(false)
-    const [isScroll, setIsScroll] = useState(false)
-    const [hasMessage, setHasMessage] = useState('')
-    const [usersTyping, setUsersTyping] = useState([])
-    const [isOpenDrawer, setIsOpenDrawer] = useState(false)
+    const [isShow, setIsShow] = useState(false);
+    const [isScroll, setIsScroll] = useState(false);
+    const [hasMessage, setHasMessage] = useState('');
+    const [usersTyping, setUsersTyping] = useState([]);
+    const [isOpenDrawer, setIsOpenDrawer] = useState(false);
     const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
         (state) => state.global
-    )
-    const [visibleNews, setVisibleNews] = useState(false)
+    );
+    const [visibleNews, setVisibleNews] = useState(false);
 
     useEffect(() => {
-        console.log('User typing', usersTyping)
-    }, [usersTyping])
+        console.log('User typing', usersTyping);
+    }, [usersTyping]);
 
     useEffect(() => {
         dispatch(
             fetchListFriends({
                 name: '',
             })
-        )
-    }, [])
+        );
+    }, []);
 
-    const refCurrentConversation = useRef()
-    const refConversations = useRef()
-
-    useEffect(() => {
-        refCurrentConversation.current = currentConversation
-    }, [currentConversation])
+    const refCurrentConversation = useRef();
+    const refConversations = useRef();
 
     useEffect(() => {
-        refConversations.current = conversations
-    }, [conversations])
+        refCurrentConversation.current = currentConversation;
+    }, [currentConversation]);
 
     useEffect(() => {
-        dispatch(fetchPinMessages({ conversationId: currentConversation }))
-    }, [currentConversation])
+        refConversations.current = conversations;
+    }, [conversations]);
+
+    useEffect(() => {
+        if (currentConversation) {
+            dispatch(fetchPinMessages({ conversationId: currentConversation }));
+        }
+    }, [currentConversation]);
 
     useEffect(() => {
         if (!isJoinChatLayout) {
             socket.on('delete-conversation', (conversationId) => {
-                dispatch(removeConversation(conversationId))
-            })
+                dispatch(removeConversation(conversationId));
+            });
 
             socket.on('delete-message', (conversationId, id) => {
-                handleDeleteMessage(conversationId, id, refCurrentConversation)
-            })
+                handleDeleteMessage(conversationId, id, refCurrentConversation);
+            });
 
             socket.on('added-group', (conversationId) => {
-                dispatch(fetchConversationById({ conversationId }))
-            })
+                dispatch(fetchConversationById({ conversationId }));
+            });
 
             socket.on(
                 'add-reaction',
                 (conversationId, messageId, user, type) => {
                     if (conversationId === refCurrentConversation.current) {
-                        dispatch(setReactionMessage({ messageId, user, type }))
+                        dispatch(setReactionMessage({ messageId, user, type }));
                     }
                 }
-            )
+            );
 
             socket.on('typing', (conversationId, user) => {
                 console.log(
                     'efCurrentConversation.current',
                     refCurrentConversation.current
-                )
+                );
                 if (conversationId === refCurrentConversation.current) {
                     console.log(
                         'typing......',
                         conversationId,
                         refCurrentConversation
-                    )
+                    );
                     const index = usersTyping.findIndex(
                         (ele) => ele._id === user._id
-                    ) //khoo
+                    ); //khoo
 
                     if (usersTyping.length === 0 || index < 0) {
-                        setUsersTyping([...usersTyping, user])
+                        setUsersTyping([...usersTyping, user]);
                     }
                 }
-            })
+            });
 
             socket.on('not-typing', (conversationId, user) => {
                 if (conversationId === refCurrentConversation.current) {
                     const index = usersTyping.findIndex(
                         (ele) => ele._id === user._id
-                    )
+                    );
                     const newUserTyping = usersTyping.filter(
                         (ele) => ele._id !== user._id
-                    )
-                    console.log('newUserTyping', newUserTyping)
-                    setUsersTyping(newUserTyping)
+                    );
+                    console.log('newUserTyping', newUserTyping);
+                    setUsersTyping(newUserTyping);
                 }
-            })
+            });
 
             socket.on('deleted-group', (conversationId) => {
                 const conversation = refConversations.current.find(
                     (ele) => ele._id === conversationId
-                )
-                message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`)
+                );
+                message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`);
                 if (conversationId === refCurrentConversation.current) {
-                    dispatch(setCurrentConversation(''))
+                    dispatch(setCurrentConversation(''));
                 }
-                dispatch(isDeletedFromGroup(conversationId))
-                socket.emit('leave-conversation', conversationId)
-            })
+                dispatch(isDeletedFromGroup(conversationId));
+                socket.emit('leave-conversation', conversationId);
+            });
 
             socket.on('action-pin-message', (conversationId) => {
                 if (conversationId === refCurrentConversation.current) {
-                    dispatch(fetchPinMessages({ conversationId }))
+                    dispatch(fetchPinMessages({ conversationId }));
                 }
-            })
+            });
+
+            socket.on(
+                'rename-conversation',
+                (conversationId, conversationName, message) => {
+                    dispatch(
+                        updateNameOfConver({ conversationId, conversationName })
+                    );
+                    dispatch(addMessage(message));
+                }
+            );
         }
-        dispatch(setJoinChatLayout(true))
-    }, [])
+        dispatch(setJoinChatLayout(true));
+    }, []);
+
+    const emitUserOnline = (currentConver) => {
+        if (currentConver) {
+            const conver = conversations.find(
+                (ele) => ele._id === currentConver
+            );
+            if (!conver.type) {
+                const userId = conver.userId;
+                socket.emit(
+                    'get-user-online',
+                    userId,
+                    ({ isOnline, lastLogin }) => {
+                        console.log(userId, isOnline, lastLogin);
+                        dispatch(
+                            updateTimeForConver({
+                                id: currentConver,
+                                isOnline,
+                                lastLogin,
+                            })
+                        );
+                    }
+                );
+            }
+        }
+    };
+
+    useEffect(() => {
+        emitUserOnline(currentConversation);
+    }, [currentConversation]);
+
+    useEffect(() => {
+        const intervalCall = setInterval(() => {
+            emitUserOnline(currentConversation);
+        }, 180000);
+
+        return () => {
+            clearInterval(intervalCall);
+        };
+    }, [currentConversation]);
 
     const handleDeleteMessage = (
         conversationId,
@@ -167,37 +221,37 @@ function Chat({ socket, idNewMessage }) {
         refCurrentConversation
     ) => {
         if (refCurrentConversation.current === conversationId) {
-            dispatch(setRedoMessage(id))
+            dispatch(setRedoMessage(id));
         }
-    }
+    };
 
     const handleScrollWhenSent = (value) => {
-        setScrollId(value)
-    }
+        setScrollId(value);
+    };
 
     const hanldeOnClickScroll = () => {
-        setIsScroll(true)
-    }
+        setIsScroll(true);
+    };
 
     const handleBackToBottom = (value, message) => {
         if (message) {
-            setHasMessage(message)
+            setHasMessage(message);
         } else {
-            setHasMessage('')
+            setHasMessage('');
         }
-        setIsShow(value)
-    }
+        setIsShow(value);
+    };
 
     const hanldeResetScrollButton = (value) => {
-        setIsScroll(value)
-    }
+        setIsScroll(value);
+    };
 
     const handleOnBack = () => {
-        setVisibleNews(false)
-    }
+        setVisibleNews(false);
+    };
     const handleViewNews = () => {
-        setVisibleNews(true)
-    }
+        setVisibleNews(true);
+    };
 
     // Xử lý modal mode
 
@@ -385,7 +439,7 @@ function Chat({ socket, idNewMessage }) {
                 )}
             </Row>
         </div>
-    )
+    );
 }
 
-export default Chat
+export default Chat;

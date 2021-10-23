@@ -1,15 +1,24 @@
-import { UserDeleteOutlined } from '@ant-design/icons';
-import { Button, Image, Modal } from 'antd';
+import { ExclamationCircleOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { Button, Image, message, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
+import friendApi from 'api/friendApi';
+import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
 import {
+    fetchListFriends,
     fetchListMessages, setConversations, setCurrentConversation
 } from 'features/Chat/slice/chatSlice';
+import {
+    fetchFriends,
+    fetchListMyRequestFriend,
+    fetchListRequestFriend,
+    fetchPhoneBook,
+    setAmountNotify
+} from 'features/Friend/friendSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import dateUtils from 'utils/dateUtils';
-import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
 import './style.scss';
 import UserCardStyle from './UserCardStyle';
 UserCard.propTypes = {
@@ -27,7 +36,6 @@ UserCard.defaultProps = {
     onCancel: null,
     onAddFriend: null,
     onDeleteFriend: null,
-
 };
 
 
@@ -36,16 +44,20 @@ function UserCard(props) {
         title,
         isVisible,
         user, onCancel,
-        onAddFriend,
-        onDeleteFriend,
     } = props;
 
     const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
     const dispatch = useDispatch();
     const history = useHistory();
-    const { status } = user;
+    const { status, numberCommonGroup } = user;
+    const { amountNotify } = useSelector((state) => state.friend)
 
 
+    const handleOnCancle = () => {
+        if (onCancel) {
+            onCancel();
+        }
+    }
     const handleClickMessage = async () => {
         const response = await conversationApi.createConversationIndividual(user._id);
         const { _id, isExists } = response;
@@ -63,35 +75,70 @@ function UserCard(props) {
             pathname: '/chat',
         });
 
-        if (onCancel) {
-            onCancel();
-        }
+        handleOnCancle()
     }
 
-    const handleOnCancle = () => {
-        if (onCancel) {
-            onCancel();
-        }
-    }
+
 
     const handleDeleteFriend = () => {
-        if (onDeleteFriend) {
-            onDeleteFriend(user._id);
+        confirm();
+    }
+
+    const handleAddFriend = async () => {
+        console.log('add friend', user._id)
+
+        try {
+            await friendApi.sendRequestFriend(user._id);
+            dispatch(fetchListMyRequestFriend());
+            dispatch(fetchPhoneBook());
+            handleOnCancle();
+            message.success('Gửi lời mời kết bạn thành công');
+        } catch (error) {
+            message.error('Gửi lời mời kết bạn thất bại');
         }
     }
 
-    const handleAddFriend = () => {
-        if (onAddFriend) {
-            onAddFriend(user._id);
+    const handleOnAcceptFriend = async () => {
+        await friendApi.acceptRequestFriend(user._id);
+        dispatch(fetchListRequestFriend());
+        dispatch(fetchFriends({ name: '' }));
+        dispatch(fetchListFriends({ name: '' }));
+        dispatch(setAmountNotify(amountNotify - 1))
+        handleOnCancle()
+        message.success('Thêm bạn thành công');
+    }
+
+    const handleCancelRequest = async () => {
+        await friendApi.deleteSentRequestFriend(user._id);
+        dispatch(fetchListMyRequestFriend());
+        dispatch(fetchPhoneBook());
+        handleOnCancle();
+    }
+
+
+    function confirm() {
+        Modal.confirm({
+            title: 'Xác nhận',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Bạn có thực sự muốn xóa <strong>{user.name}</strong> khỏi danh sách bạn bè </span>,
+            okText: 'Xóa',
+            cancelText: 'Hủy',
+            onOk: handleOkModal,
+
+        });
+    }
+
+
+    const handleOkModal = async () => {
+        try {
+            await friendApi.deleteFriend(user._id);
+            dispatch(fetchFriends({ name: '' }))
+            message.success('Xóa thành công');
+            handleOnCancle();
+            dispatch(fetchPhoneBook());
+        } catch (error) {
+            message.error('Xóa thất bại');
         }
-    }
-
-    const handleConfirmFriend = () => {
-
-    }
-
-    const handleDenyRequest = () => {
-
     }
 
     return (
@@ -131,8 +178,9 @@ function UserCard(props) {
 
                             (status === 'NOT_FRIEND') &&
                             (
-                                <div className="user-card-button--addFriend" onClick={handleAddFriend}>
+                                <div className="user-card-button--addFriend" >
                                     <Button
+                                        onClick={handleAddFriend}
                                         type="primary"
                                         style={{ width: '124px' }}
                                     >
@@ -145,19 +193,21 @@ function UserCard(props) {
 
                         {(status === 'FOLLOWER') &&
                             <>
-                                <div className="user-card-button--message confirm--friend" onClick={handleConfirmFriend}>
+                                <div className="user-card-button--message confirm--friend" >
                                     <Button
                                         type="primary"
                                         style={{ maxWidth: '110px' }}
+                                        onClick={handleOnAcceptFriend}
                                     >
                                         Đồng ý
                                     </Button>
                                 </div>
 
-                                <div className="user-card-button--message  confirm-deny--friend" onClick={handleDenyRequest}>
+                                <div className="user-card-button--message  confirm-deny--friend" >
                                     <Button
                                         type="danger"
                                         style={{ maxWidth: '110px' }}
+                                        onClick={handleOnAcceptFriend}
                                     >
                                         Từ chối
                                     </Button>
@@ -173,6 +223,7 @@ function UserCard(props) {
                                     <Button
                                         type="danger"
                                         style={{ width: '124px' }}
+                                        onClick={handleCancelRequest}
                                     >
                                         Hủy yêu cầu
                                     </Button>
@@ -201,7 +252,7 @@ function UserCard(props) {
                             </div>
 
                             <div className="user-card-infomation__text">
-                                2 nhóm
+                                {`${numberCommonGroup} nhóm`}
                             </div>
                         </div>
 
@@ -215,6 +266,7 @@ function UserCard(props) {
                             </div>
                         </div>
 
+
                         <div className="user-card-infomation__birthday user-card-infomation--flex">
                             <div className="user-card-infomation__label">
                                 Ngày sinh
@@ -223,6 +275,16 @@ function UserCard(props) {
                             <div className="user-card-infomation__text">
 
                                 {dateUtils.transferDateString(user.dateOfBirth?.day, user.dateOfBirth?.month, user.dateOfBirth?.year)}
+                            </div>
+                        </div>
+
+                        <div className="user-card-infomation__birthday user-card-infomation--flex">
+                            <div className="user-card-infomation__label">
+                                Bạn chung
+                            </div>
+
+                            <div className="user-card-infomation__text">
+                                {user.numberCommonFriend}
                             </div>
                         </div>
                     </div>

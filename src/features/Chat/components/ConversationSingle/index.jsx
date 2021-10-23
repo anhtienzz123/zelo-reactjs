@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import classifyUtils from 'utils/classifyUtils';
 import ConversationAvatar from '../ConversationAvatar';
+import ShortMessage from '../ShortMessage';
 import './style.scss';
 ConversationSingle.propTypes = {
     conversation: PropTypes.object,
@@ -13,8 +14,8 @@ ConversationSingle.propTypes = {
 function ConversationSingle({ conversation, onClick }) {
     const { _id, name, avatar, numberUnread, lastMessage, totalMembers } =
         conversation;
-    const { content, type, createdAt, user } = lastMessage;
-    const global = useSelector((state) => state.global);
+    const { type, createdAt } = lastMessage;
+
     const { classifies, conversations } = useSelector(state => state.chat);
     const [classify, setClassify] = useState(null);
 
@@ -43,6 +44,7 @@ function ConversationSingle({ conversation, onClick }) {
                         totalMembers={totalMembers}
                         avatar={avatar}
                         type={conversation.type}
+
                     />
                 </div>
             </div>
@@ -62,15 +64,15 @@ function ConversationSingle({ conversation, onClick }) {
                                     </span>
                                 )
                             }
-                            <span>
-                                {
-                                    `${global.user.name === user.name
-                                        ? 'Bạn'
-                                        : user.name
-                                    }:${content ? content : 'Tin nhắn đã thu hồi'}`
-                                }
 
-                            </span>
+
+                            <ShortMessage
+                                message={lastMessage}
+                                type={conversation.type}
+                            />
+
+
+
                         </div>
                     </div>
 

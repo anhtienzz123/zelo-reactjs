@@ -66,7 +66,7 @@ export const otpValues = {
         passwordconfirm: '',
         otpValue: '',
     },
-   
+
     validationSchema: Yup.object().shape({
         username: Yup.string()
             .required('Tài khoản không được bỏ trống.')

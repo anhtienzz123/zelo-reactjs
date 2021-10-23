@@ -24,7 +24,7 @@ InfoContainer.defaultProps = {
 function InfoContainer({ socket }) {
 
     const [isFind, setFind] = useState({ tapane: 0, view: 0 });
-    const { memberInConversation, type, currentConversation } = useSelector(state => state.chat);
+    const { memberInConversation, type, currentConversation, conversations } = useSelector(state => state.chat);
     const { media } = useSelector(state => state.media);
     const dispatch = useDispatch()
 
@@ -58,6 +58,7 @@ function InfoContainer({ socket }) {
                                 <InfoTitle
                                     onBack={handleOnBack}
                                     text='Thông tin nhóm'
+
                                 />
                             </div>
                             <Scrollbars
@@ -70,7 +71,10 @@ function InfoContainer({ socket }) {
                                 }}>
                                 <div className='body-info'>
                                     <div className='info_name-and-thumbnail-wrapper'>
-                                        <InfoNameAndThumbnail />
+                                        <InfoNameAndThumbnail
+                                            conversation={conversations.find(ele => ele._id === currentConversation)}
+
+                                        />
                                     </div>
 
                                     {type && (

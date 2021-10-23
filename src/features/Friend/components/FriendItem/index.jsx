@@ -8,6 +8,7 @@ import conversationApi from 'api/conversationApi';
 import { fetchListMessages, setConversations, setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
+import dateUtils from 'utils/dateUtils';
 
 FriendItem.propTypes = {
     data: PropTypes.object.isRequired,
@@ -56,6 +57,7 @@ function FriendItem({ data, onClickMenu }) {
         </Menu>
     );
 
+
     return (
 
         <Dropdown overlay={menu} trigger={['contextMenu']}>
@@ -70,9 +72,15 @@ function FriendItem({ data, onClickMenu }) {
 
                     <div className="friend-item-name">
                         {data.name}
+
+                        {data.lastLogin && (
+                            <div className="recent-login">
+                                {`Truy cập ${dateUtils.toTime(data.lastLogin)} trước`}
+                            </div>
+                        )}
                     </div>
 
-                    {data.lastLogin && data.lastLogin}
+
                 </div>
                 <div className="friend-item_right">
                     <div className="friend-item-interact">
@@ -84,6 +92,8 @@ function FriendItem({ data, onClickMenu }) {
                             />
 
                         </Dropdown>
+
+
                     </div>
                 </div>
 

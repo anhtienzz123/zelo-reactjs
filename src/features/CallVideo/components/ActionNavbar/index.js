@@ -21,26 +21,30 @@ function ActionNavbar({ onToggleVideo, onToggleAudio }) {
 
     return (
         <div
-            className='action-navbar'
-            style={{ width: '40%', margin: '0 auto' }}>
-            <Menu mode='horizontal'>
+            className="action-navbar"
+            style={{ width: '40%', margin: '0 auto' }}
+        >
+            <Menu mode="horizontal">
                 <Menu.Item
-                    key='toggle-video'
+                    key="toggle-video"
                     icon={<VideoCameraOutlined />}
-                    onClick={handleToggleVideo}>
+                    onClick={handleToggleVideo}
+                >
                     Tắt video
                 </Menu.Item>
 
                 <Menu.Item
-                    key='toggle-audio'
+                    key="toggle-audio"
                     icon={<AudioOutlined />}
-                    onClick={handleToggleAudio}>
+                    onClick={handleToggleAudio}
+                >
                     Tắt audio
                 </Menu.Item>
 
                 <Menu.Item
-                    key='toggle-share-screen'
-                    icon={<ShareAltOutlined />}>
+                    key="toggle-share-screen"
+                    icon={<ShareAltOutlined />}
+                >
                     Share màn hình
                 </Menu.Item>
 

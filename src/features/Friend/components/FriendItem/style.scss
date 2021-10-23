@@ -18,9 +18,18 @@
         }
 
         &_right {
-            // transition: visibility 0.2s;
             visibility: hidden;
         }
+
+        &-name {
+            margin-left: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    .recent-login {
+        color: $silver;
     }
 }
 

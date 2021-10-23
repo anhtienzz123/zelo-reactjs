@@ -251,17 +251,17 @@ function CallVideo(props) {
 
     console.log('isVideo: ', isVideo);
     return (
-        <div id='call-video'>
+        <div id="call-video">
             <ActionNavbar
                 onToggleVideo={handleToggleVideo}
                 onToggleAudio={handleToggleAudio}
             />
 
-            <div className='local-video'>
+            <div className="local-video">
                 {myStream && <MyVideo stream={myStream} />}
             </div>
 
-            <Row className='user-videos'>
+            <Row className="user-videos">
                 {userStreams.map((userStreamEle) => (
                     <Col span={6}>
                         <MyVideo stream={userStreamEle.stream} />

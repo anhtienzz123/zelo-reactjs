@@ -1,20 +1,20 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Avatar, Tooltip } from 'antd'
-import COVERSATION_STYLE from './ConversationAvatarStyle'
-import './style.scss'
-import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Avatar, Tooltip } from 'antd';
+import COVERSATION_STYLE from './ConversationAvatarStyle';
+import './style.scss';
+import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
 ConversationAvatar.propTypes = {
     demension: PropTypes.number,
     isGroupCard: PropTypes.bool,
     totalMembers: PropTypes.number.isRequired,
     type: PropTypes.bool.isRequired,
-}
+};
 
 ConversationAvatar.defaultProps = {
     demension: 28,
     isGroupCard: false,
-}
+};
 
 function ConversationAvatar({
     avatar,
@@ -24,23 +24,23 @@ function ConversationAvatar({
     type,
 }) {
     const renderAvatar = () => {
-        let tempAvatar = []
+        let tempAvatar = [];
         for (let index = 0; index < totalMembers; index++) {
             tempAvatar.push(
                 <Avatar
                     key={index}
                     style={
-                        (totalMembers === 3 && index === 2)
+                        totalMembers === 3 && index === 2
                             ? COVERSATION_STYLE.styleGroup3
                             : {}
                     }
                     size={demension}
                     src={avatar[index] ? avatar[index] : DEFAULT_AVATAR}
                 />
-            )
+            );
         }
         return tempAvatar;
-    }
+    };
 
     return (
         <div id="avatar_conversation">
@@ -55,8 +55,8 @@ function ConversationAvatar({
                                     style={
                                         isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatar(
-                                                demension
-                                            )
+                                                  demension
+                                              )
                                             : {}
                                     }
                                     className="icon-users-group"
@@ -78,15 +78,14 @@ function ConversationAvatar({
                                     style={
                                         isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatarMixStyle2(
-                                                demension
-                                            )
+                                                  demension
+                                              )
                                             : COVERSATION_STYLE.styleGroup2
                                     }
                                 >
                                     <Avatar.Group
                                         maxCount={3}
                                         maxPopoverPlacement="none"
-                                        vi
                                     >
                                         {renderAvatar()}
                                     </Avatar.Group>
@@ -101,8 +100,8 @@ function ConversationAvatar({
                                     style={
                                         isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatar(
-                                                demension
-                                            )
+                                                  demension
+                                              )
                                             : {}
                                     }
                                 >
@@ -152,9 +151,10 @@ function ConversationAvatar({
                                                     }}
                                                     size={demension}
                                                 >
-                                                    {`+${avatar &&
+                                                    {`+${
+                                                        avatar &&
                                                         avatar.length - 3
-                                                        }`}
+                                                    }`}
                                                 </Avatar>
                                             </Tooltip>
                                         </div>
@@ -163,12 +163,17 @@ function ConversationAvatar({
                             </div>
                         </div>
                     ) : (
-                        <Avatar size={48} src={avatar[0] ? avatar[0] : DEFAULT_AVATAR} />
+                        <div>
+                            <Avatar
+                                size={48}
+                                src={avatar[0] ? avatar[0] : DEFAULT_AVATAR}
+                            />
+                        </div>
                     )}
                 </>
             )}
         </div>
-    )
+    );
 }
 
-export default ConversationAvatar
+export default ConversationAvatar;

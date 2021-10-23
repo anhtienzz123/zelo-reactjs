@@ -8,6 +8,7 @@ InfoTitle.propTypes = {
     isBack: PropTypes.bool,
     isSelected: PropTypes.bool,
     type: PropTypes.string,
+
 };
 
 InfoTitle.defaultProps = {
@@ -15,7 +16,8 @@ InfoTitle.defaultProps = {
     onBack: null,
     isBack: false,
     isSelected: false,
-    type: ''
+    type: '',
+
 }
 
 function InfoTitle(props) {

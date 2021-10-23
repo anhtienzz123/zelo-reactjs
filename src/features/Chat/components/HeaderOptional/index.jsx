@@ -11,25 +11,34 @@ import { createGroup } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import dateUtils from 'utils/dateUtils';
 import ConversationAvatar from '../ConversationAvatar';
 import ModalAddMemberToConver from '../ModalAddMemberToConver';
 import './style.scss';
 
 HeaderOptional.propTypes = {
-    avatar: PropTypes.array || PropTypes.string,
+    avatar: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.array,
+
+    ]),
     totalMembers: PropTypes.number,
     name: PropTypes.string,
     typeConver: PropTypes.bool.isRequired,
+    isLogin: PropTypes.bool,
+    lastLogin: PropTypes.object,
 };
 
 HeaderOptional.defaultProps = {
-    avatar: [] || '',
     totalMembers: 0,
     name: '',
+    isLogin: false,
+    lastLogin: null,
+
 };
 
 function HeaderOptional(props) {
-    const { avatar, totalMembers, name, typeConver } = props;
+    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin } = props;
     const type = typeof avatar;
     const { currentConversation } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
@@ -74,12 +83,28 @@ function HeaderOptional(props) {
         setIsvisible(value);
     };
 
+    const checkTime = () => {
+        if (lastLogin) {
+            const time = dateUtils.toTime(lastLogin);
+            if (lastLogin.indexOf('ngày') || lastLogin.indexOf('giờ') || lastLogin.indexOf('phút')) {
+                return true;
+            }
+            return false
+        }
+    }
+
+    console.log('avatar', avatar);
+
     return (
         <div id='header-optional'>
             <div className='header_wrapper'>
                 <div className='header_leftside'>
                     <div className='icon_user'>
-                        {<ConversationAvatar avatar={avatar} />}
+                        {<ConversationAvatar
+                            avatar={avatar}
+                            totalMembers={totalMembers}
+                            type={typeConver}
+                        />}
                     </div>
 
                     <div className='info_user'>
@@ -88,14 +113,22 @@ function HeaderOptional(props) {
                         </div>
 
                         <div className='lastime-access'>
-                            {totalMembers > 2 ? (
+                            {typeConver ? (
                                 <div className='member-hover'>
                                     <UserOutlined />
                                     &nbsp;{totalMembers}
                                     <span>&nbsp;Thành viên</span>
                                 </div>
                             ) : (
-                                <span>Vừa truy cập</span>
+                                <>
+                                    {
+                                        isLogin ? (
+                                            <span>Đang hoạt động</span>
+                                        ) : (
+                                            <span>{`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`} </span>
+                                        )
+                                    }
+                                </>
                             )}
                             <div className='small-bar'></div>
                             <div className='classify-object'>

@@ -15,7 +15,7 @@ export const fetchAllMedia = createAsyncThunk(
 
 export const fetchMediaByType = createAsyncThunk(
     `${KEY}/fetchMediaByType`,
-    async (params, thunkApi) => { }
+    async (params, thunkApi) => {}
 );
 
 const mediaSlice = createSlice({

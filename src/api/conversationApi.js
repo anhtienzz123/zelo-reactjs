@@ -30,7 +30,7 @@ const conversationApi = {
     },
 
     deleteConversation: (id) => {
-        return axiosClient.delete(`${API_URL}/${id}`)
+        return axiosClient.delete(`${API_URL}/${id}`);
     },
 
     getMemberInConversation: (id) => {
@@ -39,18 +39,24 @@ const conversationApi = {
 
     addMembersToConver: (userIds, coversationIds) => {
         return axiosClient.post(`${API_URL}/${coversationIds}/members`, {
-            userIds
+            userIds,
         });
     },
 
     leaveGroup: (conversationId) => {
-        return axiosClient.delete(`${API_URL}/${conversationId}/members/leave`)
+        return axiosClient.delete(`${API_URL}/${conversationId}/members/leave`);
     },
 
     deleteMember: (conversationId, userId) => {
-        return axiosClient.delete(`${API_URL}/${conversationId}/members/${userId}`)
+        return axiosClient.delete(
+            `${API_URL}/${conversationId}/members/${userId}`
+        );
     },
-
+    changeNameConversation: (conversationId, name) => {
+        return axiosClient.patch(`${API_URL}/${conversationId}/name`, {
+            name,
+        });
+    },
 };
 
 export default conversationApi;

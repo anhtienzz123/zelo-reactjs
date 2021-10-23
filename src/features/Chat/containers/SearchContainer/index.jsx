@@ -1,18 +1,17 @@
 import { AlignLeftOutlined, AppstoreAddOutlined, SearchOutlined, UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { Input, Radio, message } from 'antd';
-import { createGroup } from 'features/Chat/slice/chatSlice';
+import { Input, message, Radio } from 'antd';
+import friendApi from 'api/friendApi';
+import userApi from 'api/userApi';
+import ModalAddFriend from 'components/ModalAddFriend';
+import UserCard from 'components/UserCard';
 import ModalClassify from 'features/Chat/components/ModalClassify';
 import ModalCreateGroup from 'features/Chat/components/ModalCreateGroup';
+import { createGroup } from 'features/Chat/slice/chatSlice';
+import { fetchListMyRequestFriend } from 'features/Friend/friendSlice';
 import React, { useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import ModalAddFriend from 'components/ModalAddFriend';
-import UserCard from 'components/UserCard';
-import userApi from 'api/userApi';
-import friendApi from 'api/friendApi';
 import './style.scss';
-import { fetchListMyRequestFriend } from 'features/Friend/friendSlice';
-import friendUtils from 'utils/friendUtils';
 SearchContainer.propTypes = {
 
 };
@@ -23,7 +22,6 @@ function SearchContainer(props) {
     const [isModalCreateGroupVisible, setIsModalCreateGroupVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { classifies } = useSelector(state => state.chat);
-    const { friends, myRequestFriend, requestFriends } = useSelector(state => state.friend);
     const [isShowModalClasify, setIsShowModalClasify] = useState(false);
     const [isShowModalAddFriend, setShowModalAddFriend] = useState(false);
     const [userIsFind, setUserIsFind] = useState({});
@@ -46,8 +44,6 @@ function SearchContainer(props) {
     }
 
     // ------ 
-
-
 
 
 
@@ -111,24 +107,9 @@ function SearchContainer(props) {
 
 
 
-    // handleUserCard
-
     const handleCancelModalUserCard = () => {
         setVisbleUserCard(false);
     }
-
-    const handleOnAddFriend = async (id) => {
-        try {
-            await friendApi.sendRequestFriend(id);
-            setVisbleUserCard(false);
-            dispatch(fetchListMyRequestFriend());
-            message.success('Gửi lời mời kết bạn thành công');
-        } catch (error) {
-            message.error('Gửi lời mời kết bạn thất bại');
-        }
-    }
-
-    // ------------
 
 
 
@@ -214,10 +195,6 @@ function SearchContainer(props) {
                 user={userIsFind}
                 isVisible={visibleUserCard}
                 onCancel={handleCancelModalUserCard}
-                onAddFriend={handleOnAddFriend}
-                isMyFriend={friendUtils.checkIsFriend(userIsFind, friends)}
-                isMyRequest={friendUtils.checkIsMyRequestFriend(userIsFind, myRequestFriend)}
-                isRequestToMe={friendUtils.checkIsRequestSentToMe(userIsFind, requestFriends)}
             />
 
 

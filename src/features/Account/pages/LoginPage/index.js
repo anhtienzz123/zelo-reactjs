@@ -46,8 +46,8 @@ function LoginPage(props) {
     };
 
     return (
-        <div className='login-main-page'>
-            <div className='main'>
+        <div className="login-main-page">
+            <div className="main">
                 <Title level={2} style={{ textAlign: 'center' }}>
                     <Text style={{ color: '#08aeea' }}>Đăng</Text> Nhập
                 </Title>
@@ -56,42 +56,46 @@ function LoginPage(props) {
                     initialValues={{ ...loginValues.initial }}
                     onSubmit={(values) => handleSubmit(values)}
                     validationSchema={loginValues.validationSchema}
-                    enableReinitialize={true}>
+                    enableReinitialize={true}
+                >
                     {(formikProps) => {
                         return (
                             <Form>
                                 <Row gutter={[0, 16]}>
                                     <Col span={24}>
                                         <FastField
-                                            name='username'
+                                            name="username"
                                             component={InputField}
-                                            type='text'
-                                            title='Tài khoản'
-                                            placeholder='Nhập tài khoản'
+                                            type="text"
+                                            title="Tài khoản"
+                                            placeholder="Nhập tài khoản"
                                             maxLength={50}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
 
                                     <Col span={24}>
                                         <FastField
-                                            name='password'
+                                            name="password"
                                             component={InputField}
-                                            type='password'
-                                            title='Mật khẩu'
-                                            placeholder='Nhập mật khẩu'
+                                            type="password"
+                                            title="Mật khẩu"
+                                            placeholder="Nhập mật khẩu"
                                             maxLength={200}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
                                     {isError ? (
                                         <Col offset={8} span={16}>
                                             <Tag
-                                                color='error'
+                                                color="error"
                                                 style={{
                                                     fontWeight: 'bold',
                                                 }}
-                                                icon={<CloseCircleOutlined />}>
+                                                icon={<CloseCircleOutlined />}
+                                            >
                                                 Tài khoản không hợp lệ
                                             </Tag>
                                         </Col>
@@ -101,8 +105,9 @@ function LoginPage(props) {
 
                                     <Col offset={8}>
                                         <Button
-                                            type='primary'
-                                            htmlType='submit'>
+                                            type="primary"
+                                            htmlType="submit"
+                                        >
                                             Đăng nhập
                                         </Button>
                                     </Col>
@@ -112,8 +117,9 @@ function LoginPage(props) {
                                     style={{
                                         color: '#08aeea',
                                         textAlign: 'center',
-                                    }}>
-                                    <Link to='/account/forgot'>
+                                    }}
+                                >
+                                    <Link to="/account/forgot">
                                         {' '}
                                         Quên mật khẩu !
                                     </Link>
@@ -124,8 +130,9 @@ function LoginPage(props) {
                                     style={{
                                         color: '#08aeea',
                                         textAlign: 'center',
-                                    }}>
-                                    <Link to='/account/registry'>
+                                    }}
+                                >
+                                    <Link to="/account/registry">
                                         {' '}
                                         Bạn chưa có tài khoản ?
                                     </Link>

@@ -22,8 +22,7 @@ function HeaderChatContainer() {
                 setDetailConver(tempConver);
             }
         }
-
-    }, [currentConversation])
+    }, [currentConversation, conversations])
 
 
     return (
@@ -33,6 +32,8 @@ function HeaderChatContainer() {
                 totalMembers={detailConver.totalMembers}
                 name={detailConver.name}
                 typeConver={detailConver.type}
+                isLogin={detailConver?.isOnline}
+                lastLogin={detailConver?.lastLogin}
             />
         </div>
     );

@@ -16,6 +16,7 @@ import { Avatar, Badge, Button, Popover, Modal } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import { useDispatch, useSelector } from 'react-redux';
 import { setToTalUnread } from '../../slice/chatSlice';
+import { useHistory } from 'react-router-dom';
 
 NavbarContainer.propTypes = {};
 
@@ -27,6 +28,7 @@ function NavbarContainer(props) {
     const { conversations, toTalUnread } = useSelector((state) => state.chat);
     const { amountNotify } = useSelector((state) => state.friend);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     useEffect(() => {
         dispatch(setToTalUnread());
@@ -48,6 +50,12 @@ function NavbarContainer(props) {
         setVisible(false);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        history.push('/')
+    }
+
     const content = (
         <div className='pop_up-personal'>
             <div className='pop_up-personal--item' onClick={showModal}>
@@ -63,7 +71,7 @@ function NavbarContainer(props) {
                     <LogoutOutlined />
                 </div>
 
-                <div className='pop_up-personal--item-text'>Đăng xuất</div>
+                <div className='pop_up-personal--item-text' onClick={handleLogout}>Đăng xuất</div>
             </div>
         </div>
     );
