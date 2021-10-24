@@ -33,22 +33,27 @@ function ListReactionOfUser({ isMyMessage, listReactionCurrent, reacts, onTransf
                     </span>
                 </div>
 
-                <div className="list-user-detail">
-                    {(reacts && reacts.length > 0) &&
-                        reacts.map((ele, index) => {
-                            if (index < 5) {
-                                return (
-                                    <span key={index}>
-                                        {ele.user.name}
-                                    </span>
-                                )
-                            } else {
-                                return (
-                                    <span>{`và ${reacts.length - 5} người khác`}</span>
-                                )
-                            }
-                        })}
-                </div>
+                {(reacts && reacts.length > 0) && (
+                    <div className="list-user-detail">
+                        {
+                            reacts.map((ele, index) => {
+                                if (index < 5) {
+                                    return (
+                                        <span key={index}>
+                                            {ele.user.name}
+                                        </span>
+                                    )
+                                } else {
+                                    return (
+                                        <span>{`và ${reacts.length - 5} người khác`}</span>
+                                    )
+                                }
+                            })
+                        }
+                    </div>
+                )}
+
+
             </div>
         </div>
     );

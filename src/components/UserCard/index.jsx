@@ -1,5 +1,5 @@
 import { ExclamationCircleOutlined, UserDeleteOutlined } from '@ant-design/icons';
-import { Button, Image, message, Modal } from 'antd';
+import { Button, Image, message, Modal, Avatar } from 'antd';
 import conversationApi from 'api/conversationApi';
 import friendApi from 'api/friendApi';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
@@ -19,6 +19,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import dateUtils from 'utils/dateUtils';
+import getSummaryName from 'utils/nameHelper';
 import './style.scss';
 import UserCardStyle from './UserCardStyle';
 UserCard.propTypes = {
@@ -43,7 +44,8 @@ function UserCard(props) {
     const {
         title,
         isVisible,
-        user, onCancel,
+        user,
+        onCancel,
     } = props;
 
     const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
@@ -140,6 +142,7 @@ function UserCard(props) {
             message.error('Xóa thất bại');
         }
     }
+    console.log('user', user);
 
     return (
         <Modal
@@ -161,11 +164,23 @@ function UserCard(props) {
                         />
 
                         <div className="user-card_avatar">
-                            <Image
-                                fallback={DEFAULT_AVATAR}
-                                src={user.avatar}
-                                style={UserCardStyle.avatarStyle}
-                            />
+                            {user.avatar ? (
+                                <Image
+                                    fallback={DEFAULT_AVATAR}
+                                    src={user.avatar}
+                                    style={UserCardStyle.avatarStyle}
+                                />
+                            ) : (
+                                <Avatar
+                                    size={96}
+                                    style={{ backgroundColor: '#4c92ff' }}
+                                >
+                                    <span style={{ fontSize: '3rem' }}>
+                                        {getSummaryName(user.name)}
+                                    </span>
+                                </Avatar>
+
+                            )}
                         </div>
                     </div>
 

@@ -100,6 +100,7 @@ function NavbarContainer(props) {
                                         isActive={true}
                                         common={false}
                                         avatar={user.avatar}
+                                        name={user.name}
                                     />
                                 </div>
                             </Button>

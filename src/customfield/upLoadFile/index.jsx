@@ -44,9 +44,9 @@ function UploadFile(props) {
             await messageApi.sendFileThroughMessage(fmData, attachInfo, (percentCompleted) => {
                 console.log('value', percentCompleted);
             });
-            message.success(`${file.name} file uploaded successfully`);
+            message.success(`Đã tải lên ${file.name}`);
         } catch (e) {
-            message.error(`${file.name} file upload failed.`);
+            message.error(`Tải lên ${file.name} thất bại.`);
         }
 
     }

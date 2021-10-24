@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import NotFoundPage from 'components/NotFoundPage';
 import Chat from 'features/Chat';
 import {
@@ -100,8 +100,6 @@ function ChatLayout(props) {
 
             // nếu nottify đã là bạn bè, thì
 
-            console.log('new friend', conversationId, newMessage);
-
             if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
                 dispatch(
                     updateConversationWhenAddMember({
@@ -112,7 +110,7 @@ function ChatLayout(props) {
             }
 
             if (type === 'NOTIFY' && content === 'Đã là bạn bè') {
-                console.log('chạy');
+                // console.log('chạy');
                 // dispatch(setNumberUnreadForNewFriend(conversationId))
             }
 

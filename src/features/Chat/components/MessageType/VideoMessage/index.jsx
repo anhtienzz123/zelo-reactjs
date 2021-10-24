@@ -4,14 +4,16 @@ import MESSAGE_STYLE from 'constants/MessageStyle/messageStyle';
 VideoMessage.propTypes = {
     content: PropTypes.string,
     dateAt: PropTypes.object,
+    isSeen: PropTypes.bool,
 };
 
 VideoMessage.defaultProps = {
     content: '',
-    dateAt: null
+    dateAt: null,
+    isSeen: false
 };
 
-function VideoMessage({ content, children, dateAt }) {
+function VideoMessage({ content, children, dateAt, isSeen }) {
     return (
         <>
             <div className="message-video-wrapper">
@@ -31,16 +33,28 @@ function VideoMessage({ content, children, dateAt }) {
             </div>
 
 
-            <div className="time-send">
-                <span>
-                    {`0${dateAt.getHours()}`.slice(
-                        -2
-                    )}
-                    :
-                    {`0${dateAt.getMinutes()}`.slice(
-                        -2
-                    )}
-                </span>
+            <div className="time-and-last_view">
+
+                <div className="time-send">
+                    <span>
+                        {`0${dateAt.getHours()}`.slice(
+                            -2
+                        )}
+                        :
+                        {`0${dateAt.getMinutes()}`.slice(
+                            -2
+                        )}
+                    </span>
+
+                </div>
+
+                {
+                    isSeen && (
+                        <div className="is-seen-message">
+                            Đã xem
+                        </div>
+                    )
+                }
             </div>
 
         </>

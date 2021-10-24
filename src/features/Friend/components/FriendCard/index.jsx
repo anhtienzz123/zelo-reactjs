@@ -50,6 +50,7 @@ function FriendCard({ isMyRequest, data, onAccept, onDeny, onCancel }) {
                     <PersonalIcon
                         avatar={data.avatar}
                         demention={72}
+                        name={data.name}
                     />
                 </div>
                 <div className="friend-card_name">

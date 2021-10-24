@@ -21,8 +21,9 @@ function InfoNameAndThumbnail({ conversation }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [value, setValue] = useState('');
     const { currentConversation } = useSelector(state => state.chat);
-    // const [newConverName, setNewConverName] = useState('');
     const dispatch = useDispatch();
+
+
 
     useEffect(() => {
         if (conversation.type) {
@@ -56,7 +57,7 @@ function InfoNameAndThumbnail({ conversation }) {
         <div className='info_name-and-thumbnail'>
 
             <Modal
-                title={conversation.type ? 'Đổi tên cuộc trò chuyện' : 'Thay đổi biệt danh'}
+                title={'Đổi tên cuộc trò chuyện'}
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
@@ -76,6 +77,7 @@ function InfoNameAndThumbnail({ conversation }) {
                     totalMembers={conversation.totalMembers}
                     type={conversation.type}
                     avatar={conversation.avatar}
+                    name={conversation.name}
 
                 />
             </div>
@@ -85,9 +87,11 @@ function InfoNameAndThumbnail({ conversation }) {
                     <span>{conversation.name}</span>
                 </div>
 
-                <div className='info-button'>
-                    <EditOutlined onClick={handleOnClick} />
-                </div>
+                {conversation.type && (
+                    <div className='info-button'>
+                        <EditOutlined onClick={handleOnClick} />
+                    </div>
+                )}
 
             </div>
 

@@ -29,9 +29,13 @@ function BodyChatContainer({
     onResetScrollButton,
     turnOnScrollButoon,
 }) {
-    const { messages, currentConversation, currentPage, totalPages } = useSelector(
-        (state) => state.chat
-    );
+    const {
+        messages,
+        currentConversation,
+        currentPage,
+        totalPages,
+        lastViewOfMember,
+    } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
     const [isSpinning, setIsSpinning] = useState(false);
     const scrollbars = useRef();
@@ -46,8 +50,6 @@ function BodyChatContainer({
             onResetScrollButton(false);
         }
     }, [turnOnScrollButoon]);
-
-
 
     useEffect(() => {
         async function fetchNextListMessage() {
@@ -67,7 +69,6 @@ function BodyChatContainer({
                     scrollbars.current.getScrollHeight() -
                     previousHieight.current
                 );
-
             }
         }
 
@@ -90,17 +91,12 @@ function BodyChatContainer({
         }
     }, [onSCrollDown]);
 
-
-
     const renderMessages = (messages) => {
         const result = [];
 
         for (let i = 0; i < messages.length; i++) {
             const preMessage = messages[i - 1];
             const currentMessage = messages[i];
-
-
-
 
             const senderId = currentMessage.user._id;
             const isMyMessage = senderId === user._id ? true : false;
@@ -126,10 +122,10 @@ function BodyChatContainer({
                     ? true
                     : false;
 
-
-
-
-            const timeIsEqual = dateTempt2.setHours(dateTempt2.getHours() - 6) > dateTempt1 ? true : false;
+            const timeIsEqual =
+                dateTempt2.setHours(dateTempt2.getHours() - 6) > dateTempt1
+                    ? true
+                    : false;
 
             // let conditionTime = false
             // if (isSameUser) {
@@ -152,6 +148,27 @@ function BodyChatContainer({
 
             // }
 
+            // tin nhắn cuối
+            const viewUsers = [];
+            if (i == messages.length - 1) {
+                const lastViewNotMe = lastViewOfMember.filter((ele) => {
+                    if (
+                        ele.user._id == messages[i].user._id ||
+                        ele.user._id == user._id
+                    )
+                        return false;
+
+                    return true;
+                });
+
+                lastViewNotMe.forEach((ele) => {
+                    const { lastView, user } = ele;
+
+                    if (new Date(lastView) >= new Date(messages[i].createdAt))
+                        viewUsers.push(user);
+                });
+            }
+
             if (timeIsEqual) {
                 result.push(
                     <div key={i}>
@@ -160,8 +177,7 @@ function BodyChatContainer({
                             key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
-                            isVisibleTime={true}
-
+                            viewUsers={viewUsers}
                         />
                     </div>
                 );
@@ -172,7 +188,7 @@ function BodyChatContainer({
                         message={currentMessage}
                         isMyMessage={isMyMessage}
                         isSameUser={isSameUser}
-                        isVisibleTime={true}
+                        viewUsers={viewUsers}
                     />
                 );
         }
@@ -210,8 +226,6 @@ function BodyChatContainer({
         setPosition(tempPosition.current);
     };
 
-
-
     useEffect(() => {
         if (scrollId) {
             scrollbars.current.scrollToBottom();
@@ -222,16 +236,13 @@ function BodyChatContainer({
         return new Promise((resolve) => setTimeout(resolve, time));
     }
 
-
     useEffect(() => {
         if (messages.length > 0) {
             sleep(500).then(() => {
                 scrollbars.current.scrollToBottom();
-            })
+            });
         }
     }, [currentConversation]);
-
-
 
     return (
         <Scrollbars
@@ -240,10 +251,11 @@ function BodyChatContainer({
             autoHideDuration={200}
             ref={scrollbars}
             onScrollFrame={handleOnScrolling}
-            onScrollStop={handleOnStop}>
+            onScrollStop={handleOnStop}
+        >
             {/* <div className='main-body-conversation'> */}
 
-            <div className='spinning-custom'>
+            <div className="spinning-custom">
                 <Spin spinning={isSpinning} />
             </div>
 
