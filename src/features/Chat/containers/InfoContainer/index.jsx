@@ -57,7 +57,7 @@ function InfoContainer({ socket }) {
                             <div className='info_title-wrapper'>
                                 <InfoTitle
                                     onBack={handleOnBack}
-                                    text='Thông tin nhóm'
+                                    text={conversations.find(ele => ele._id === currentConversation).type ? 'Thông tin nhóm' : ' Thông tin hội thoại'}
 
                                 />
                             </div>

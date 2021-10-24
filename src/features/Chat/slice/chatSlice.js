@@ -147,9 +147,12 @@ export const getLastViewOfMembers = createAsyncThunk(
     `${KEY}/getLastViewOfMembers`,
     async (params, _) => {
         const { conversationId } = params;
+        console.log('lastViewasdfasdfsdaf');
         const lastViews = await conversationApi.getLastViewOfMembers(
             conversationId
         );
+
+        console.log('lastViews', lastViews);
 
         return lastViews;
     }
@@ -481,6 +484,9 @@ const chatSlice = createSlice({
         // FRIEND
         [fetchListFriends.pending]: (state, action) => {
             state.isLoading = true;
+        },
+        [fetchListFriends.rejected]: (state, action) => {
+            state.isLoading = false;
         },
         [fetchListFriends.fulfilled]: (state, action) => {
             state.friends = action.payload;

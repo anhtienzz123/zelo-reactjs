@@ -4,11 +4,13 @@ import { Avatar, Tooltip } from 'antd';
 import COVERSATION_STYLE from './ConversationAvatarStyle';
 import './style.scss';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
+import AvatarCustom from 'components/AvatarCustom';
 ConversationAvatar.propTypes = {
     demension: PropTypes.number,
     isGroupCard: PropTypes.bool,
     totalMembers: PropTypes.number.isRequired,
     type: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
 };
 
 ConversationAvatar.defaultProps = {
@@ -22,6 +24,7 @@ function ConversationAvatar({
     isGroupCard,
     totalMembers,
     type,
+    name,
 }) {
     const renderAvatar = () => {
         let tempAvatar = [];
@@ -45,7 +48,9 @@ function ConversationAvatar({
     return (
         <div id="avatar_conversation">
             {!type ? (
-                <Avatar size={48} src={avatar ? avatar : DEFAULT_AVATAR} />
+                // <Avatar size={48} src={avatar ? avatar : DEFAULT_AVATAR} />
+
+                <AvatarCustom size={48} src={avatar} name={name} />
             ) : (
                 <>
                     {totalMembers === 3 ? (

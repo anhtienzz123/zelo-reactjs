@@ -32,8 +32,6 @@ function ListRequestFriend({ data }) {
     }
 
     const handleOnAccept = async (value) => {
-
-
         await friendApi.acceptRequestFriend(value._id);
         dispatch(fetchListRequestFriend());
         dispatch(fetchFriends({ name: '' }));

@@ -67,7 +67,7 @@ function BodyChatContainer({
 
                 scrollbars.current.scrollTop(
                     scrollbars.current.getScrollHeight() -
-                        previousHieight.current
+                    previousHieight.current
                 );
             }
         }
@@ -79,7 +79,7 @@ function BodyChatContainer({
         if (
             onSCrollDown &&
             scrollbars.current.getScrollHeight() >
-                scrollbars.current.getClientHeight()
+            scrollbars.current.getClientHeight()
         ) {
             if (position >= 0.95) {
                 scrollbars.current.scrollToBottom();
@@ -118,7 +118,7 @@ function BodyChatContainer({
 
             const isSameUser =
                 currentMessage.user._id === preMessage.user._id &&
-                preMessage.type !== 'NOTIFY'
+                    preMessage.type !== 'NOTIFY'
                     ? true
                     : false;
 
@@ -177,7 +177,6 @@ function BodyChatContainer({
                             key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
-                            isVisibleTime={true}
                             viewUsers={viewUsers}
                         />
                     </div>
@@ -189,7 +188,6 @@ function BodyChatContainer({
                         message={currentMessage}
                         isMyMessage={isMyMessage}
                         isSameUser={isSameUser}
-                        isVisibleTime={true}
                         viewUsers={viewUsers}
                     />
                 );

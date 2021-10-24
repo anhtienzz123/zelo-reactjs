@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './style.scss';
-import { Avatar, Badge } from 'antd';
+import { Avatar, Badge, Tooltip } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
+import getSummaryName from 'utils/nameHelper'
 
 PersonalIcon.propTypes = {
     avatar: PropTypes.string,
@@ -11,6 +12,8 @@ PersonalIcon.propTypes = {
     demention: PropTypes.number,
     common: PropTypes.bool,
     isHost: PropTypes.bool,
+    name: PropTypes.string,
+
 };
 
 PersonalIcon.defaultProps = {
@@ -19,10 +22,11 @@ PersonalIcon.defaultProps = {
     demention: 48,
     common: true,
     isHost: false,
+    name: ''
 };
 
 function PersonalIcon(props) {
-    const { avatar, isActive, demention, common, isHost } = props;
+    const { avatar, isActive, demention, common, isHost, name } = props;
 
     return (
         <div
@@ -53,7 +57,12 @@ function PersonalIcon(props) {
                         ''
                     )
                 }>
-                <Avatar size={demention} src={avatar ? avatar : DEFAULT_AVATAR} />
+                {avatar ? (
+                    <Avatar size={demention} src={avatar} />
+                ) : (
+                    <Avatar size={demention} style={{ backgroundColor: '#4c92ff' }}>{getSummaryName(name)}</Avatar>
+                )}
+
             </Badge>
         </div>
     );

@@ -28,11 +28,33 @@
 #user-message.bottom {
     margin-bottom: 4rem;
 }
+
+.last-view-avatar.center {
+    justify-content: center;
+    display: flex;
+    padding: 1rem 0;
+}
+
 #user-message {
     transition: visibility 0.4s;
     visibility: visible;
     opacity: 1;
     transition: opacity 0.4s;
+
+    .time-and-last_view {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .last-view-avatar {
+        display: flex;
+    }
+
+    .last-view-avatar.reverse {
+        flex-direction: row-reverse;
+    }
+
     .interact-conversation {
         display: flex;
         flex-direction: row;
@@ -132,6 +154,12 @@
                                 align-items: center;
                             }
                             position: relative;
+                        }
+
+                        .list-user-react {
+                            padding: 0.4rem 0.8rem;
+                            border: 0.05rem solid $grey-300;
+                            border-radius: 14px;
 
                             .list-user-detail {
                                 position: absolute;
@@ -140,7 +168,7 @@
                                 top: 0;
 
                                 left: 0;
-                                transform: translateY(-115%);
+                                transform: translate(-40%, -150%);
                                 font-size: 13px;
                                 display: none;
 
@@ -164,12 +192,6 @@
 
                                 transform: rotate(45deg);
                             }
-                        }
-
-                        .list-user-react {
-                            padding: 0.4rem 0.8rem;
-                            border: 0.05rem solid $grey-300;
-                            border-radius: 14px;
                         }
 
                         .your-react {
@@ -199,7 +221,6 @@
                     .time-send {
                         font-size: 1.3rem;
                         color: $thumbnail-text;
-                        padding-top: 0.4rem;
                     }
                 }
             }
@@ -267,5 +288,10 @@
 
     .last-message {
         padding-bottom: 3rem;
+    }
+    .is-seen-message {
+        font-size: 1.3rem;
+        color: $thumbnail-text;
+        padding-left: 1rem;
     }
 }

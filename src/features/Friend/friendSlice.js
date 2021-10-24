@@ -89,6 +89,7 @@ const friendSlice = createSlice({
         [fetchListRequestFriend.fulfilled]: (state, action) => {
             state.isLoading = false;
             state.requestFriends = action.payload;
+            state.amountNotify = action.payload.length;
         },
         [fetchListRequestFriend.pending]: (state, action) => {
             state.isLoading = true;
@@ -96,17 +97,57 @@ const friendSlice = createSlice({
         [fetchListRequestFriend.rejected]: (state, action) => {
             state.isLoading = false;
         },
+
         [fetchListMyRequestFriend.fulfilled]: (state, action) => {
+            state.isLoading = false;
             state.myRequestFriend = action.payload;
         },
+
+        [fetchListMyRequestFriend.pending]: (state, action) => {
+            state.isLoading = true;
+        },
+
+        [fetchListMyRequestFriend.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+
         [fetchFriends.fulfilled]: (state, action) => {
             state.friends = action.payload;
+            state.isLoading = false;
         },
+
+        [fetchFriends.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+
+        [fetchFriends.pending]: (state, action) => {
+            state.isLoading = true;
+        },
+
         [fetchListGroup.fulfilled]: (state, action) => {
             state.groups = action.payload;
+            state.isLoading = false;
         },
+
+        [fetchListGroup.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+
+        [fetchListGroup.pending]: (state, action) => {
+            state.isLoading = true;
+        },
+
         [fetchPhoneBook.fulfilled]: (state, action) => {
             state.phoneBook = action.payload;
+            state.isLoading = false;
+        },
+
+        [fetchPhoneBook.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+
+        [fetchPhoneBook.pending]: (state, action) => {
+            state.isLoading = true;
         },
     },
 });

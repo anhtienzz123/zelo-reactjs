@@ -18,6 +18,7 @@ import { MdQuestionAnswer } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkLeader } from 'utils/groupUtils';
 import { deleteMessageClient, fetchPinMessages } from '../../slice/chatSlice';
+import LastView from '../LastView';
 import ListReaction from '../ListReaction';
 import ListReactionOfUser from '../ListReactionOfUser';
 import FileMessage from '../MessageType/FileMessage';
@@ -32,7 +33,6 @@ UserMessage.propTypes = {
     message: PropTypes.object,
     isMyMessage: PropTypes.bool,
     isSameUser: PropTypes.bool,
-    isVisibleTime: PropTypes.bool.isRequired,
     viewUsers: PropTypes.array,
 };
 
@@ -47,7 +47,6 @@ function UserMessage({
     message,
     isMyMessage,
     isSameUser,
-    isVisibleTime,
     viewUsers,
 }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
@@ -84,8 +83,8 @@ function UserMessage({
                     temp.push(ele.type);
                 }
             });
-            setListReactionCurrent(temp);
         }
+        setListReactionCurrent(temp);
     }, [message]);
 
     const transferIcon = (type) => {
@@ -188,21 +187,29 @@ function UserMessage({
     return (
         <>
             {!isDeleted && type === 'NOTIFY' ? (
-                <NotifyMessage message={message} />
+                <>
+                    <NotifyMessage message={message} />
+                    <div className='last-view-avatar center'>
+
+                        {(viewUsers && viewUsers.length > 0) && (
+                            <LastView
+                                lastView={viewUsers}
+                            />
+                        )}
+                    </div>
+                </>
             ) : (
                 <div
                     id="user-message"
                     className={`${setMarginTopAndBottom(_id)}`}
                 >
                     <div
-                        className={`interact-conversation ${
-                            isMyMessage ? 'reverse' : ''
-                        }  `}
+                        className={`interact-conversation ${isMyMessage ? 'reverse' : ''
+                            }  `}
                     >
                         <div
-                            className={`avatar-user ${
-                                isSameUser ? 'hidden' : ''
-                            }`}
+                            className={`avatar-user ${isSameUser ? 'hidden' : ''
+                                }`}
                         >
                             <PersonalIcon
                                 isHost={isLeader}
@@ -213,32 +220,29 @@ function UserMessage({
                         <div className="list-conversation">
                             <div className="message" id={`${_id}`}>
                                 <div
-                                    className={`sub-message ${
-                                        isMyMessage ? 'reverse' : ''
-                                    } ${isSameUser ? 'same-user' : ''}`}
+                                    className={`sub-message ${isMyMessage ? 'reverse' : ''
+                                        } ${isSameUser ? 'same-user' : ''}`}
                                 >
                                     <div
-                                        className={`content-message ${
-                                            type === 'IMAGE' || type === 'VIDEO'
-                                                ? 'content-media'
-                                                : ''
-                                        } 
-                                        ${
-                                            isMyMessage &&
-                                            type !== 'IMAGE' &&
-                                            type !== 'VIDEO'
+                                        className={`content-message ${type === 'IMAGE' || type === 'VIDEO'
+                                            ? 'content-media'
+                                            : ''
+                                            } 
+                                        ${isMyMessage &&
+                                                type !== 'IMAGE' &&
+                                                type !== 'VIDEO'
                                                 ? 'my-message-bg'
                                                 : ''
-                                        }`}
+                                            }`}
                                     >
                                         <span className="author-message">
                                             {isSameUser && isMyMessage
                                                 ? ''
                                                 : isSameUser && !isMyMessage
-                                                ? ''
-                                                : !isSameUser && isMyMessage
-                                                ? ''
-                                                : name}
+                                                    ? ''
+                                                    : !isSameUser && isMyMessage
+                                                        ? ''
+                                                        : name}
                                         </span>
                                         <div className="content-message-description">
                                             {isDeleted ? (
@@ -251,6 +255,7 @@ function UserMessage({
                                                         <HTMLMessage
                                                             content={content}
                                                             dateAt={dateAt}
+                                                            isSeen={(viewUsers && viewUsers.length > 0)}
                                                         >
                                                             {!myReact && (
                                                                 <ListReaction
@@ -273,9 +278,7 @@ function UserMessage({
                                                         <TextMessage
                                                             content={content}
                                                             dateAt={dateAt}
-                                                            isVisibleTime={
-                                                                isVisibleTime
-                                                            }
+                                                            isSeen={(viewUsers && viewUsers.length > 0)}
                                                         >
                                                             {!myReact && (
                                                                 <ListReaction
@@ -298,6 +301,7 @@ function UserMessage({
                                                         <ImageMessage
                                                             content={content}
                                                             dateAt={dateAt}
+                                                            isSeen={(viewUsers && viewUsers.length > 0)}
                                                         >
                                                             {type === 'IMAGE' &&
                                                                 !myReact && (
@@ -322,6 +326,7 @@ function UserMessage({
                                                         <VideoMessage
                                                             content={content}
                                                             dateAt={dateAt}
+                                                            isSeen={(viewUsers && viewUsers.length > 0)}
                                                         >
                                                             {!myReact && (
                                                                 <ListReaction
@@ -344,10 +349,8 @@ function UserMessage({
                                                     ) : (
                                                         <FileMessage
                                                             content={content}
-                                                            isVisibleTime={
-                                                                isVisibleTime
-                                                            }
                                                             dateAt={dateAt}
+                                                            isSeen={(viewUsers && viewUsers.length > 0)}
                                                         >
                                                             {!myReact && (
                                                                 <ListReaction
@@ -373,11 +376,11 @@ function UserMessage({
                                         </div>
 
                                         <div
-                                            className={`reacted-block ${
-                                                (type === 'IMAGE' ||
-                                                    type === 'VIDEO') &&
-                                                'media'
-                                            } 
+                                            className=
+                                            {`reacted-block ${(type === 'IMAGE' ||
+                                                type === 'VIDEO') ?
+                                                'media' : ''
+                                                } 
                                             ${isMyMessage ? 'left' : 'right'} `}
                                         >
                                             {listReactionCurrent.length > 0 &&
@@ -398,17 +401,16 @@ function UserMessage({
 
                                             {myReact && !isDeleted && (
                                                 <div
-                                                    className={`your-react ${
-                                                        isMyMessage
-                                                            ? 'bg-white'
-                                                            : ''
-                                                    }`}
+                                                    className={`your-react ${isMyMessage
+                                                        ? 'bg-white'
+                                                        : ''
+                                                        }`}
                                                 >
                                                     <span className="react-current">
                                                         {myReact
                                                             ? transferIcon(
-                                                                  myReact.type
-                                                              )
+                                                                myReact.type
+                                                            )
                                                             : ''}
                                                     </span>
 
@@ -433,9 +435,8 @@ function UserMessage({
                                     </div>
 
                                     <div
-                                        className={`interaction ${
-                                            isDeleted ? 'hidden' : ''
-                                        }`}
+                                        className={`interaction ${isDeleted ? 'hidden' : ''
+                                            }`}
                                     >
                                         <div className="reply icon-interact">
                                             <Button
@@ -475,21 +476,27 @@ function UserMessage({
                                 </div>
                             </div>
                         </div>
+
+                        {/* <LastView */}
+
+
+
                     </div>
 
-                    {viewUsers &&
-                        viewUsers.map((ele) => (
-                            <div>
-                                <p>{ele.name} đã xem</p>
-                            </div>
-                        ))}
+                    <div className={`last-view-avatar  ${isMyMessage ? 'reverse' : ''} `}>
+
+                        {(viewUsers && viewUsers.length > 0) && (
+                            <LastView
+                                lastView={viewUsers}
+                            />
+                        )}
+                    </div>
                 </div>
             )}
-            {/* {type === 'NOTIFY' ? (
-                <NotifyMessage message={message} />
-            ) : (
-                
-            )} */}
+
+
+
+
 
             <ModalChangePinMessage
                 message={pinMessages}

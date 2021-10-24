@@ -44,6 +44,7 @@ function ContactItem({ data }) {
                     <PersonalIcon
                         avatar={data.avatar}
                         demention={72}
+                        name={data.name}
                     />
                 </div>
                 <div className="contact-card_info">
