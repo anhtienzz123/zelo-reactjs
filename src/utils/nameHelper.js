@@ -11,6 +11,7 @@ const getSummaryName = (name) => {
         } else {
             sumary += tempName[0].substr(0, 1);
         }
+        console.log('sumary', sumary);
         return sumary;
     }
 };

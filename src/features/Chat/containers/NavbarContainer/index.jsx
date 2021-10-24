@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import {
     BellOutlined,
     CheckSquareOutlined,
@@ -9,14 +6,15 @@ import {
     MessageOutlined,
     SettingOutlined,
     StarOutlined,
-    UserOutlined,
+    UserOutlined
 } from '@ant-design/icons';
-import './style.scss';
-import { Avatar, Badge, Button, Popover, Modal } from 'antd';
+import { Badge, Button, Modal, Popover } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
 import { setToTalUnread } from '../../slice/chatSlice';
-import { useHistory } from 'react-router-dom';
+import './style.scss';
 
 NavbarContainer.propTypes = {};
 
@@ -55,6 +53,7 @@ function NavbarContainer(props) {
         localStorage.removeItem('refreshToken');
         history.push('/')
     }
+    console.log('user admin', user)
 
     const content = (
         <div className='pop_up-personal'>
@@ -101,6 +100,7 @@ function NavbarContainer(props) {
                                         common={false}
                                         avatar={user.avatar}
                                         name={user.name}
+                                        color='#eb822c'
                                     />
                                 </div>
                             </Button>

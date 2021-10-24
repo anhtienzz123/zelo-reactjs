@@ -13,6 +13,7 @@ PersonalIcon.propTypes = {
     common: PropTypes.bool,
     isHost: PropTypes.bool,
     name: PropTypes.string,
+    color: PropTypes.string,
 
 };
 
@@ -22,11 +23,13 @@ PersonalIcon.defaultProps = {
     demention: 48,
     common: true,
     isHost: false,
-    name: ''
+    name: '',
+    color: ''
 };
 
 function PersonalIcon(props) {
-    const { avatar, isActive, demention, common, isHost, name } = props;
+    const { avatar, isActive, demention, common, isHost, name, color } = props;
+
 
     return (
         <div
@@ -60,7 +63,7 @@ function PersonalIcon(props) {
                 {avatar ? (
                     <Avatar size={demention} src={avatar} />
                 ) : (
-                    <Avatar size={demention} style={{ backgroundColor: '#4c92ff' }}>{getSummaryName(name)}</Avatar>
+                    <Avatar size={demention} style={{ backgroundColor: color ? color : '#4c92ff' }}>{getSummaryName(name)}</Avatar>
                 )}
 
             </Badge>
