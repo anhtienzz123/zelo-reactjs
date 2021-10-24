@@ -10,12 +10,12 @@ const { Search } = Input;
 const { Column, ColumnGroup } = Table;
 StickerPage.propTypes = {};
 function StickerPage(props) {
-    const dataSticker = props.location.state
+    const stickers = props.location.state
     const [isError, setError] = useState(false);
     const history = useHistory();
     const [dataTemp, setDataTemp] = useState();
     const [dataSource, setDataSource] = useState([]);
-    const [sticker, setSticker] = useState();
+    const [sticker, setSticker] = useState([]);
 
     const match = useRouteMatch();
     const onSearch = (value) => {
@@ -35,7 +35,7 @@ function StickerPage(props) {
             <span>
                
                   <a key={stickers} >
-                    <img width="125px" height="50px" src={stickers} border= "1px solid black" /> 
+                    <img width="125px" height="75px" src={stickers} border= "1px solid black" /> 
                     <br/>
                   </a>
             </span>
@@ -47,15 +47,12 @@ function StickerPage(props) {
             render: (stickers, data,row) => (
               <Space size="middle">
                 <Popconfirm title="Bạn có muốn xoá ?" onConfirm={()=>handleDeleteSticker(stickers)} onCancel={cancel} okText="Yes" cancelText="No">
-                <a  alt="xoá group sticker" ><DeleteOutlined />  </a>
+                <a  alt="xoá group sticker" ><DeleteOutlined />Xoá Sticker  </a>
                 </Popconfirm>
               </Space>
             ),
           },
       ];
-      
-
-
 const handleGetAllGruopSricker = async () => {
     try {
       const list = await adminApi.getAllGroupSticker();
@@ -65,54 +62,46 @@ const handleGetAllGruopSricker = async () => {
     }
   };      
 
-  const handleGetAllSricker = async () => {
-    try {
-        dataSource.map((result1) => {
-            setSticker(result1.stickers);
-            console.log("Ai",result1.stickers)
-        });
-          return sticker;
-    } catch (error) {
-      setError(true);
-    }
-  };   
   
   useEffect(() => {
         handleGetAllGruopSricker()
           .then((result) => {
-              setDataSource(result);})
+              setDataSource(result);
+            })
           .catch((err) => {
             throw err;
           });
       }, []);
+   
+  const handleGetAllSricker = async () => {
+    try {   
+        console.log("Ai all",dataSource)
+        dataSource.map((result1) => {
+            setSticker(result1.stickers);
+            return result1.stickers;
+        }); 
+    } catch (error) {
+      setError(true);
+    }
+  };      
 
-  const handleDeleteSticker=  (stickers)=>{
+  const handleDeleteSticker=  (urlstickers)=>{
        try {
-        adminApi.deleteSticker(id,stickers);  
-    //     history.push({pathname:`/admin/stickers/${id}`
-    //    ,state:dataTemp});  
-        history.push(`/admin/stickers`); 
-        message.success('Đã xoá sticker', 5);
-       //window.location.reload();
+        adminApi.deleteSticker(id,urlstickers); 
+        history.push(`/admin/stickers`);   
+        window.location.reload();
+        message.success('Đã xoá sticker', 5); 
+       
          } catch (error) {
        message.error('chưa xoá được sticker', 5);
        console.log("fail ")
    }     
 };    
-  useEffect(() => {
-    handleGetAllSricker()
-    .then((result) => {
-        setDataTemp(result);})
-    .catch((err) => {
-      throw err;
-    });
-      }, []);
-
 
 
 const handleGetAll= async ()=>{
     try {
-    console.log('sticker',dataTemp);
+    console.log('sticker',sticker);
       } catch (error) {
 }     
 };
@@ -127,7 +116,7 @@ const handleGetAll= async ()=>{
              <Breadcrumb>
              <Breadcrumb.Item>&ensp; Admin</Breadcrumb.Item>
              <Breadcrumb.Item>
-                   <a href="">Group Sticker</a>
+                   <a href="/admin/stickers">Group Sticker</a>
              </Breadcrumb.Item>
              <Breadcrumb.Item>
                    <a href="">Stickers</a>
@@ -138,15 +127,12 @@ const handleGetAll= async ()=>{
         <Divider></Divider>
     
     <Table 
-          dataSource={dataSticker} 
+          dataSource={stickers} 
           columns={columns} 
           bordered
           rowKey={record => record.stickers}
            ></Table> 
 
-<Button type="primary" placement="right" onClick={handleGetAll}>
-        set Sticker
-      </Button>
     </>);
 }
 

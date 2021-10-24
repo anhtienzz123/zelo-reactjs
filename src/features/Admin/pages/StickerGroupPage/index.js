@@ -43,7 +43,6 @@ function StickerGroupPage(props) {
   const history = useHistory();
   const [isError, setError] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const [dataSticker, setDataSticker] = useState();
   const [file, setFile] = useState([]);
 
   const onFinishFailed = (errorInfo) => {
@@ -100,20 +99,20 @@ function StickerGroupPage(props) {
             cancelText="No"
           >
             <a alt="xoá group sticker">
-              <DeleteOutlined />{" "}
+              <DeleteOutlined />Xoá{" "}
             </a>
           </Popconfirm>
           <a onClick={() => showDrawer2(data._id)} alt="sửa group sticker">
-            <EditOutlined />{" "}
+            <EditOutlined  />Sửa{" "}
           </a>
           <a onClick={() => showDrawer3(data._id)} alt="thêm sticker">
-            <PlusCircleTwoTone />{" "}
+            <PlusCircleTwoTone />Thêm Sticker{" "}
           </a>
           <a
             alt="xem sticker"
             onClick={() => handleViewSticker(data._id, data.stickers)}
           >
-            <EyeTwoTone />{" "}
+            <EyeTwoTone />Xem Sticker{" "}
           </a>
         </Space>
       ),
@@ -128,17 +127,6 @@ function StickerGroupPage(props) {
       setError(true);
     }
   };
-  const handleGetAllSticker = async () => {
-    try {
-      dataSource.map((result) => {
-        console.log("all", result.stickers);
-        setDataSticker(result.stickers);
-      });
-    } catch (error) {
-      setError(true);
-    }
-  };
-
   useEffect(() => {
     handleGetAllGruopSricker()
       .then((result) => {
@@ -213,8 +201,6 @@ function StickerGroupPage(props) {
     setFile(fileList);
   };
 
-
-  console.log("filelist",file);
   return (
     <>
       <div className="ant-col-xs-8">
@@ -388,9 +374,6 @@ function StickerGroupPage(props) {
         bordered
         rowKey={(record) => record._id}
       ></Table>
-      <Button type="primary" placement="right" onClick={handleGetAllSticker}>
-        set Sticker
-      </Button>
     </>
   );
 }

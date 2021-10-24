@@ -1,5 +1,5 @@
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Row, Tag, Typography } from 'antd';
+import { Button, Col, Divider, Row, Tag,message, Typography } from 'antd';
 import loginApi from 'api/loginApi';
 import { fetchUserProfile, setLogin } from 'app/globalSlice';
 import InputField from 'customfield/InputField';
@@ -12,19 +12,25 @@ import { useHistory } from 'react-router';
 import './style.scss';
 import { loginValues } from 'features/Account/initValues';
 import { unwrapResult } from '@reduxjs/toolkit';
+import ReCAPTCHA from "react-google-recaptcha";
+
 
 const { Text, Title } = Typography;
+
 
 LoginPage.propTypes = {};
 
 function LoginPage(props) {
     const dispatch = useDispatch();
     const [isError, setError] = useState(false);
+    const [isVerify, setVerify] = useState(false);
     const history = useHistory();
 
     const handleSubmit = async (values) => {
         const { username, password } = values;
+        console.log(isVerify);
         try {
+          if(isVerify){
             dispatch(setLoading(true));
             const { token, refreshToken } = await loginApi.login(
                 username,
@@ -38,6 +44,9 @@ function LoginPage(props) {
             );
             if (isAdmin) history.push('/admin');
             else history.push('/chat');
+          }else{
+                message.error('hãy xác thực capcha', 5);
+          }
         } catch (error) {
             setError(true);
         }
@@ -45,6 +54,11 @@ function LoginPage(props) {
         dispatch(setLoading(false));
     };
 
+    
+    const onChange=(value)=> {
+        console.log("Captcha value:", value);
+        setVerify(true);
+      }
     return (
         <div className='login-main-page'>
             <div className='main'>
@@ -84,6 +98,15 @@ function LoginPage(props) {
                                             titleCol={8}
                                             inputCol={16}></FastField>
                                     </Col>
+                                    <Col offset={8} span={24}>
+                                            <br/>
+                                             <ReCAPTCHA
+                                                    sitekey="6LeHgewcAAAAAPhhOa1N3CqQCSfowh3eMezThFuN"
+                                                    
+                                                    onChange={onChange}
+                                                   
+                                             />,
+                                    </Col>  
                                     {isError ? (
                                         <Col offset={8} span={16}>
                                             <Tag
