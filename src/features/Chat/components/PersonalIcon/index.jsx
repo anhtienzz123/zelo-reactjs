@@ -29,8 +29,6 @@ PersonalIcon.defaultProps = {
 
 function PersonalIcon(props) {
     const { avatar, isActive, demention, common, isHost, name, color } = props;
-
-
     return (
         <div
             className={
