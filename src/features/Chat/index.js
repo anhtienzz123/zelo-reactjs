@@ -25,6 +25,7 @@ import {
     setCurrentConversation,
     setReactionMessage,
     setRedoMessage,
+    updateLastViewOfMembers,
     updateNameOfConver,
     updateTimeForConver,
 } from './slice/chatSlice';
@@ -53,7 +54,7 @@ function Chat({ socket, idNewMessage }) {
     const [hasMessage, setHasMessage] = useState('');
     const [usersTyping, setUsersTyping] = useState([]);
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-    const { isJoinChatLayout, isJoinFriendLayout } = useSelector(
+    const { isJoinChatLayout, isJoinFriendLayout, user } = useSelector(
         (state) => state.global
     );
     const [visibleNews, setVisibleNews] = useState(false);
@@ -169,6 +170,21 @@ function Chat({ socket, idNewMessage }) {
                         updateNameOfConver({ conversationId, conversationName })
                     );
                     dispatch(addMessage(message));
+                }
+            );
+
+            socket.on(
+                'user-last-view',
+                ({ conversationId, userId, lastView }) => {
+                    if (userId != user._id) {
+                        dispatch(
+                            updateLastViewOfMembers({
+                                conversationId,
+                                userId,
+                                lastView,
+                            })
+                        );
+                    }
                 }
             );
         }

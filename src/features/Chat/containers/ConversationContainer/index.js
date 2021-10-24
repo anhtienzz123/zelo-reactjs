@@ -7,7 +7,10 @@ import { Dropdown, Menu, message, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
 import SubMenuClassify from 'components/SubMenuClassify';
 
-import { fetchListMessages } from 'features/Chat/slice/chatSlice';
+import {
+    fetchListMessages,
+    getLastViewOfMembers,
+} from 'features/Chat/slice/chatSlice';
 
 import ConversationSingle from 'features/Chat/components/ConversationSingle';
 import React from 'react';
@@ -31,6 +34,7 @@ function ConversationContainer(props) {
 
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
+        dispatch(getLastViewOfMembers({ conversationId }));
     };
 
     const handleOnClickItem = (e, id) => {

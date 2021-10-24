@@ -143,6 +143,17 @@ export const fetchPinMessages = createAsyncThunk(
 // ============
 
 // ============
+export const getLastViewOfMembers = createAsyncThunk(
+    `${KEY}/getLastViewOfMembers`,
+    async (params, _) => {
+        const { conversationId } = params;
+        const lastViews = await conversationApi.getLastViewOfMembers(
+            conversationId
+        );
+
+        return lastViews;
+    }
+);
 
 const chatSlice = createSlice({
     name: KEY,
@@ -160,6 +171,7 @@ const chatSlice = createSlice({
         classifies: [],
         colors: [],
         pinMessages: [],
+        lastViewOfMember: [],
     },
     reducers: {
         addMessage: (state, action) => {
@@ -415,6 +427,17 @@ const chatSlice = createSlice({
                 name: conversationName,
             };
         },
+
+        updateLastViewOfMembers: (state, action) => {
+            const { conversationId, userId, lastView } = action.payload;
+
+            if (conversationId != state.currentConversation) return;
+
+            const index = state.lastViewOfMember.findIndex(
+                (ele) => ele.user._id == userId
+            );
+            state.lastViewOfMember[index].lastView = lastView;
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -512,6 +535,9 @@ const chatSlice = createSlice({
         [fetchPinMessages.fulfilled]: (state, action) => {
             state.pinMessages = action.payload.reverse();
         },
+        [getLastViewOfMembers.fulfilled]: (state, action) => {
+            state.lastViewOfMember = action.payload;
+        },
     },
 });
 
@@ -536,6 +562,7 @@ export const {
     setNumberUnreadForNewFriend,
     updateTimeForConver,
     updateNameOfConver,
+    updateLastViewOfMembers,
 } = actions;
 
 export default reducer;
