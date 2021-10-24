@@ -1,21 +1,26 @@
 import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router';
+import { useDispatch, useSelector } from "react-redux";
 import {Table, Breadcrumb, Divider,Form,Col, Row, Input, Select, DatePicker,Space, Tag, Button, Drawer, Tooltip, message, Upload, Popconfirm} from 'antd';
 import adminApi from 'api/adminApi'; 
 import { DeleteOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import './style.scss';
 
 const { Search } = Input;
 const { Column, ColumnGroup } = Table;
 StickerPage.propTypes = {};
 function StickerPage(props) {
+    const dispatch = useDispatch();
     const stickers = props.location.state
     const [isError, setError] = useState(false);
     const history = useHistory();
     const [dataTemp, setDataTemp] = useState();
     const [dataSource, setDataSource] = useState([]);
     const [sticker, setSticker] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(4);
 
     const match = useRouteMatch();
     const onSearch = (value) => {
@@ -25,7 +30,9 @@ function StickerPage(props) {
         console.log(e);
         message.error("Click on No");
       }
-
+      function onShowSizeChange(page, pageSize) {
+        console.log(page, pageSize);
+      }
     const columns = [
         {
           title: 'Sticker',
@@ -73,17 +80,6 @@ const handleGetAllGruopSricker = async () => {
           });
       }, []);
    
-  const handleGetAllSricker = async () => {
-    try {   
-        console.log("Ai all",dataSource)
-        dataSource.map((result1) => {
-            setSticker(result1.stickers);
-            return result1.stickers;
-        }); 
-    } catch (error) {
-      setError(true);
-    }
-  };      
 
   const handleDeleteSticker=  (urlstickers)=>{
        try {
@@ -109,7 +105,7 @@ const handleGetAll= async ()=>{
     const { id } = match.params;
     return( <>
         <div className="ant-col-xs-8">
-             <Search placeholder="Stickers" onSearch={onSearch} enterButton />
+             <h1>DANH SÁCH STICKER</h1>
         </div>
              <Divider></Divider>
         <div>
@@ -130,6 +126,16 @@ const handleGetAll= async ()=>{
           dataSource={stickers} 
           columns={columns} 
           bordered
+          pagination={{
+            current:page,
+            pageSize:pageSize,
+            showSizeChanger:false,
+            onShowSizeChange:{onShowSizeChange},
+            onChange:(page,pageSize)=>{
+            setPage(page);
+            setPageSize(pageSize)
+            }
+          }}
           rowKey={record => record.stickers}
            ></Table> 
 

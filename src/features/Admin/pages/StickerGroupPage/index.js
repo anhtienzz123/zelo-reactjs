@@ -43,14 +43,31 @@ function StickerGroupPage(props) {
   const history = useHistory();
   const [isError, setError] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [dataTemp, setDataTemp] = useState([]);
   const [file, setFile] = useState([]);
+  const [pagination,setPagination]=useState([])
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
 
   const onFinishFailed = (errorInfo) => {
+    
     console.log("Failed:", errorInfo);
   };
-
   const onSearch = (value) => {
-    console.log(value);
+    const filterTable = dataSource.filter(username =>
+      Object.keys(username).some(k =>
+        String(username[k])
+          .toLowerCase()
+          .includes(value.toLowerCase())      
+      ))
+      console.log('table temp',dataTemp)
+      console.log('table',filterTable)
+      if(value === '' ){
+        setDataSource(dataTemp);
+      }else{
+        setDataSource(filterTable);
+      }
+      
   };
   const showDrawer1 = () => {
     setVisible1(true);
@@ -69,8 +86,11 @@ function StickerGroupPage(props) {
     setVisible1(false);
     setVisible2(false);
     setVisible3(false);
-    window.location.reload();
   };
+    
+  function onShowSizeChange(page, pageSize) {
+    console.log(page, pageSize);
+  }
   function cancel(e) {
     console.log(e);
     message.error("Click on No");
@@ -121,7 +141,7 @@ function StickerGroupPage(props) {
   const handleGetAllGruopSricker = async () => {
     try {
       const list = await adminApi.getAllGroupSticker();
-      console.log("get all ", list);
+      console.log("get all ai ", list);
       return list;
     } catch (error) {
       setError(true);
@@ -131,6 +151,7 @@ function StickerGroupPage(props) {
     handleGetAllGruopSricker()
       .then((result) => {
         setDataSource(result);
+        setDataTemp(result);
       })
       .catch((err) => {
         throw err;
@@ -140,31 +161,39 @@ function StickerGroupPage(props) {
   const handleDeleteGruopSricker = async (id) => {
     try {
       await adminApi.deleteGroupSticker(id);
-      window.location.reload();
-      message.success("Đã xoá group sticker", 5);
+      message.success("Đã xoá group sticker", 5);   
+      const list = await adminApi.getAllGroupSticker();
+      setDataSource(list);
     } catch (error) {
       setError(true);
-      message.error("chưa xoá được group sticker", 5);
+      // message.error("chưa xoá được group sticker", 5);
     }
   };
+
+  useEffect(() => {
+    handleDeleteGruopSricker();
+  }, []);
+
   const handleCreatGroupSticker = async (values) => {
     const { name, description } = values;
     try {
       const groupSticker = await adminApi.creatGroupSticker(name, description);
       console.log("result ", groupSticker);
-      window.location.reload();
+      setDataSource([...dataSource,values])
       message.success("Đã tạo group sticker", 5);
     } catch (error) {
       message.error("chưa tạo được group sticker", 5);
       console.log("fail ");
     }
   };
+
   const handleUpdateGroupSticker = async (values) => {
     const { name, description } = values;
     try {
       await adminApi.updateGroupSticker(temp, name, description);
-      window.location.reload();
       message.success("Đã chỉnh sửa group sticker", 5);
+      const list = await adminApi.getAllGroupSticker();
+      setDataSource(list);
     } catch (error) {
       message.error("lỗi chỉnh sửa group sticker", 5);
     }
@@ -176,11 +205,13 @@ function StickerGroupPage(props) {
       for (let index = 0; index < file.length; index++) {
         const element = file[index].originFileObj;
         const frmdata = new FormData();
-        frmdata.append("file",element);
+        frmdata.append("file",element); 
         console.log('formdata',frmdata);
         await adminApi.addSticker(temp, frmdata);
+
+        const list = await adminApi.getAllGroupSticker();
+        setDataSource(list);
       };
-      window.location.reload();
       message.success("Đã thêm sticker group", 5);
     } catch (error) {
       message.error("chưa thêm được sticker vào group", 5);
@@ -372,6 +403,16 @@ function StickerGroupPage(props) {
         dataSource={dataSource}
         columns={columns}
         bordered
+        pagination={{
+          current:page,
+          pageSize:pageSize,
+          onShowSizeChange:{onShowSizeChange},
+          showSizeChanger:false,
+          onChange:(page,pageSize)=>{
+          setPage(page);
+          setPageSize(pageSize)
+          }
+        }}
         rowKey={(record) => record._id}
       ></Table>
     </>

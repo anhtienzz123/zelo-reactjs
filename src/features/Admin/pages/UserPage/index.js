@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, Menu,Breadcrumb,message, Divider, Table,Input, Space, Button, Card, Tag, Alert, Popconfirm } from 'antd';
+import { Dropdown, Menu,Breadcrumb,message, Divider, Table,Input, Space, Button, Card, Tag, Alert, Popconfirm, Pagination } from 'antd';
 import adminApi from 'api/adminApi';
 import { setLoading } from 'features/Account/accountSlice';
 import 'antd/dist/antd.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import loginApi from 'api/loginApi';
 
@@ -20,12 +20,34 @@ function UserPage(props) {
     const dispatch = useDispatch(); 
     const history = useHistory();
     const [isError, setError] = useState(false);
-   
+    const [dataTemp, setDataTemp] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(6);
     const [dataSource,setDataSource] = useState([]);
-    const onSearch = (value) => {
-        console.log(value);
-    }
 
+    function onShowSizeChange(page, pageSize) {
+      console.log(page, pageSize);
+    }
+    const onSearch = (value) => {
+        const filterTable = dataSource.filter(username =>
+          Object.keys(username).some(k =>
+            String(username[k])
+              .toLowerCase()
+              .includes(value.toLowerCase())      
+          ))
+          console.log('table temp',dataTemp)
+          console.log('table',filterTable)
+          if(value === '' ){
+            setDataSource(dataTemp);
+          }else{
+            setDataSource(filterTable);
+          }
+          
+      };
+    
+      function onShowSizeChange(page, pageSize) {
+        console.log(page, pageSize);
+      }
 
     function confirm(e) {
       console.log(e);
@@ -36,7 +58,7 @@ function UserPage(props) {
       console.log(e);
       message.error('Click on No');
     }
-    
+
     const columns = [
      
         {
@@ -48,6 +70,7 @@ function UserPage(props) {
           title: 'User Name',
           dataIndex: 'username',
           key: 'username',
+
         },
          {
           title: 'Giới Tính',
@@ -111,6 +134,7 @@ function UserPage(props) {
           title: 'Quyền hạn',
           dataIndex: 'isAdmin',
           key: 'isAdmin',
+         // onFilter: (value, record) => record.isAdmin.indexOf(value) === 0,
           render: (isAdmin => (
             <>
               {isAdmin ? (
@@ -121,15 +145,6 @@ function UserPage(props) {
             </>
          )),
         },
-        // {
-        //   title: 'Action',
-        //   key: 'action',
-        //   render: ( data,row) => (
-        //     <Space size="middle">
-        //       <a onClick={()=>handlegetusre(data)} >get user on row </a>
-        //     </Space>
-        //   ),
-        // },
       ];
     const handleGetAllUsser= async ()=>{
       try {
@@ -144,7 +159,9 @@ function UserPage(props) {
 
     useEffect(()=>{
        handleGetAllUsser()
-      .then(result=>{setDataSource(result);})
+      .then(result=>{
+        setDataSource(result);
+        setDataTemp(result)})
       .catch(err => {throw err})
     },[]
     );
@@ -195,6 +212,16 @@ function UserPage(props) {
     <Table 
           dataSource={dataSource} 
           columns={columns} 
+          pagination={{
+            current:page,
+            pageSize:pageSize,
+            showSizeChanger:false,
+            onShowSizeChange:{onShowSizeChange},
+            onChange:(page,pageSize)=>{
+            setPage(page);
+            setPageSize(pageSize)
+            }
+          }}
           bordered
           rowKey={record => record._id}
            ></Table>  
