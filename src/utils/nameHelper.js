@@ -9,7 +9,7 @@ const getSummaryName = (name) => {
                 }
             });
         } else {
-            sumary += ele.substr(0, 1);
+            sumary += tempName[0].substr(0, 1);
         }
         return sumary;
     }
