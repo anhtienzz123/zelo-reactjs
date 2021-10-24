@@ -1,4 +1,4 @@
-import { EditOutlined, FileImageOutlined, FileOutlined, PlaySquareOutlined, PushpinOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, FileImageOutlined, FileOutlined, PlaySquareOutlined, PushpinOutlined, UserAddOutlined, UserDeleteOutlined, UserOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -110,6 +110,14 @@ function ShortMessage({ message, type }) {
                     <span>{renderName()}<EditOutlined />&nbsp;đã đổi tên nhóm thành</span>
                 )
             }
+
+            {
+                (message.type === 'NOTIFY' && (message.content.startsWith('Đã là bạn bè'))) && (
+                    <span>{renderName()}<UserOutlined />&nbsp;đã trở thành bạn bè</span>
+                )
+            }
+
+
         </>
     );
 }

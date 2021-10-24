@@ -126,6 +126,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     };
 
     const handleOnFocus = (e) => {
+        socket.emit('conversation-last-view', currentConversation);
         setHightLight(true);
     };
 

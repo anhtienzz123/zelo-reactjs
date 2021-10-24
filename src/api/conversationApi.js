@@ -57,6 +57,9 @@ const conversationApi = {
             name,
         });
     },
+    getLastViewOfMembers: (conversationId) => {
+        return axiosClient.get(`${API_URL}/${conversationId}/last-view`);
+    },
 };
 
 export default conversationApi;

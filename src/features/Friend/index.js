@@ -1,5 +1,5 @@
 import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
-import { Button, Col, Dropdown, Menu, Row } from 'antd';
+import { Button, Col, Dropdown, Menu, Row, Spin } from 'antd';
 import ICON_FRIEND from 'assets/images/icon/icon_friend.png';
 import ICON_GROUP from 'assets/images/icon/icon_group.png';
 import ICON_CONTACT from 'assets/images/icon/contacts_icon.png';
@@ -36,8 +36,14 @@ Friend.defaultProps = {
 };
 
 function Friend({ socket }) {
-    const { requestFriends, myRequestFriend, groups, friends, phoneBook } =
-        useSelector((state) => state.friend);
+    const {
+        requestFriends,
+        myRequestFriend,
+        groups,
+        friends,
+        phoneBook,
+        isLoading,
+    } = useSelector((state) => state.friend);
     const { user } = useSelector((state) => state.global);
 
     const { isJoinFriendLayout } = useSelector((state) => state.global);
@@ -120,174 +126,182 @@ function Friend({ socket }) {
     );
 
     return (
-        <div id="main-friend_wrapper">
-            <Row gutter={[0, 0]}>
-                <Col span={5}>
-                    <div className="main-friend_sidebar">
-                        <div className="main-friend_sidebar_search-bar">
-                            <SearchContainer />
-                        </div>
-
-                        <div className="divider-layout">
-                            <div></div>
-                        </div>
-
-                        <div className="main-friend_sidebar_bottom">
-                            <div
-                                className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend"
-                                onClick={() => setSubTab(0)}
-                            >
-                                <div className="main-friend_sidebar_option_img">
-                                    <img src={ICON_FRIEND} alt="ICON_FRIEND" />
-                                </div>
-
-                                <div className="main-friend_sidebar_option_text">
-                                    Danh sách kết bạn
-                                </div>
-                            </div>
-
-                            <div
-                                className="main-friend_sidebar_option main-friend_sidebar_option--groups"
-                                onClick={() => setSubTab(1)}
-                            >
-                                <div className="main-friend_sidebar_option_img">
-                                    <img src={ICON_GROUP} alt="ICON_GROUP" />
-                                </div>
-
-                                <div className="main-friend_sidebar_option_text">
-                                    Danh sách nhóm
-                                </div>
-                            </div>
-
-                            <div
-                                className="main-friend_sidebar_option main-friend_sidebar_option--contact"
-                                onClick={() => setSubTab(2)}
-                            >
-                                <div className="main-friend_sidebar_option_img">
-                                    <img
-                                        src={ICON_CONTACT}
-                                        alt="ICON_CONTACT"
-                                    />
-                                </div>
-
-                                <div className="main-friend_sidebar_option_text">
-                                    Danh bạ
-                                </div>
+        <Spin spinning={isLoading}>
+            <div id="main-friend_wrapper">
+                <Row gutter={[0, 0]}>
+                    <Col span={5}>
+                        <div className="main-friend_sidebar">
+                            <div className="main-friend_sidebar_search-bar">
+                                <SearchContainer />
                             </div>
 
                             <div className="divider-layout">
                                 <div></div>
                             </div>
 
-                            <div className="main-friend_sidebar_list-friend">
-                                <div className="main-friend_sidebar_list-friend_title">
-                                    Bạn bè ({friends.length})
+                            <div className="main-friend_sidebar_bottom">
+                                <div
+                                    className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend"
+                                    onClick={() => setSubTab(0)}
+                                >
+                                    <div className="main-friend_sidebar_option_img">
+                                        <img
+                                            src={ICON_FRIEND}
+                                            alt="ICON_FRIEND"
+                                        />
+                                    </div>
+
+                                    <div className="main-friend_sidebar_option_text">
+                                        Danh sách kết bạn
+                                    </div>
                                 </div>
-                                <ListFriend data={friends} />
+
+                                <div
+                                    className="main-friend_sidebar_option main-friend_sidebar_option--groups"
+                                    onClick={() => setSubTab(1)}
+                                >
+                                    <div className="main-friend_sidebar_option_img">
+                                        <img
+                                            src={ICON_GROUP}
+                                            alt="ICON_GROUP"
+                                        />
+                                    </div>
+
+                                    <div className="main-friend_sidebar_option_text">
+                                        Danh sách nhóm
+                                    </div>
+                                </div>
+
+                                <div
+                                    className="main-friend_sidebar_option main-friend_sidebar_option--contact"
+                                    onClick={() => setSubTab(2)}
+                                >
+                                    <div className="main-friend_sidebar_option_img">
+                                        <img
+                                            src={ICON_CONTACT}
+                                            alt="ICON_CONTACT"
+                                        />
+                                    </div>
+
+                                    <div className="main-friend_sidebar_option_text">
+                                        Danh bạ
+                                    </div>
+                                </div>
+
+                                <div className="divider-layout">
+                                    <div></div>
+                                </div>
+
+                                <div className="main-friend_sidebar_list-friend">
+                                    <div className="main-friend_sidebar_list-friend_title">
+                                        Bạn bè ({friends.length})
+                                    </div>
+                                    <ListFriend data={friends} />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Col>
+                    </Col>
 
-                <Col span={19}>
-                    <div className="main-friend_body">
-                        <div className="main-friend_body__header">
-                            <HeaderFriend subtab={subTab} />
-                        </div>
-                        <div className="main-friend_body__section">
-                            <div className="main-friend_body_item">
-                                <Scrollbars
-                                    autoHide={true}
-                                    autoHideTimeout={1000}
-                                    autoHideDuration={200}
-                                    style={{ height: '100%' }}
-                                >
-                                    {subTab === 1 ? (
-                                        <>
-                                            <div className="main-friend_body__filter">
-                                                <div className="main-friend_body__filter--left">
-                                                    <Dropdown
-                                                        overlay={menuLeft}
-                                                        placement="bottomLeft"
-                                                    >
-                                                        <Button
-                                                            icon={
-                                                                <CaretDownOutlined />
-                                                            }
-                                                            type="text"
-                                                            style={
-                                                                FRIEND_STYLE.BUTTON_FILTER
-                                                            }
+                    <Col span={19}>
+                        <div className="main-friend_body">
+                            <div className="main-friend_body__header">
+                                <HeaderFriend subtab={subTab} />
+                            </div>
+                            <div className="main-friend_body__section">
+                                <div className="main-friend_body_item">
+                                    <Scrollbars
+                                        autoHide={true}
+                                        autoHideTimeout={1000}
+                                        autoHideDuration={200}
+                                        style={{ height: '100%' }}
+                                    >
+                                        {subTab === 1 ? (
+                                            <>
+                                                <div className="main-friend_body__filter">
+                                                    <div className="main-friend_body__filter--left">
+                                                        <Dropdown
+                                                            overlay={menuLeft}
+                                                            placement="bottomLeft"
                                                         >
-                                                            {` ${getValueFromKey(
-                                                                'LEFT',
-                                                                currentFilterLeft
-                                                            )} (${
-                                                                groupCurrent.length
-                                                            })`}
-                                                        </Button>
-                                                    </Dropdown>
+                                                            <Button
+                                                                icon={
+                                                                    <CaretDownOutlined />
+                                                                }
+                                                                type="text"
+                                                                style={
+                                                                    FRIEND_STYLE.BUTTON_FILTER
+                                                                }
+                                                            >
+                                                                {` ${getValueFromKey(
+                                                                    'LEFT',
+                                                                    currentFilterLeft
+                                                                )} (${
+                                                                    groupCurrent.length
+                                                                })`}
+                                                            </Button>
+                                                        </Dropdown>
+                                                    </div>
+
+                                                    <div className="main-friend_body__filter--right">
+                                                        <Dropdown
+                                                            overlay={menuRight}
+                                                            placement="bottomLeft"
+                                                        >
+                                                            <Button
+                                                                icon={
+                                                                    <FilterOutlined />
+                                                                }
+                                                                type="text"
+                                                                style={
+                                                                    FRIEND_STYLE.BUTTON_FILTER
+                                                                }
+                                                            >
+                                                                {` ${getValueFromKey(
+                                                                    'RIGHT',
+                                                                    currentFilterRight
+                                                                )}`}
+                                                            </Button>
+                                                        </Dropdown>
+                                                    </div>
                                                 </div>
 
-                                                <div className="main-friend_body__filter--right">
-                                                    <Dropdown
-                                                        overlay={menuRight}
-                                                        placement="bottomLeft"
-                                                    >
-                                                        <Button
-                                                            icon={
-                                                                <FilterOutlined />
-                                                            }
-                                                            type="text"
-                                                            style={
-                                                                FRIEND_STYLE.BUTTON_FILTER
-                                                            }
-                                                        >
-                                                            {` ${getValueFromKey(
-                                                                'RIGHT',
-                                                                currentFilterRight
-                                                            )}`}
-                                                        </Button>
-                                                    </Dropdown>
+                                                <div className="main-friend_body__list-group">
+                                                    <ListGroup
+                                                        data={groupCurrent}
+                                                    />
                                                 </div>
-                                            </div>
+                                            </>
+                                        ) : subTab === 0 ? (
+                                            <div className="main-friend_body_list-request">
+                                                <div className="main-friend_body_title-list">
+                                                    Lời mới kết bạn (
+                                                    {requestFriends.length})
+                                                </div>
+                                                <ListRequestFriend
+                                                    data={requestFriends}
+                                                />
 
-                                            <div className="main-friend_body__list-group">
-                                                <ListGroup
-                                                    data={groupCurrent}
+                                                <div className="main-friend_body_title-list">
+                                                    Đã gửi yêu cầu kết bạn (
+                                                    {myRequestFriend.length})
+                                                </div>
+                                                <ListMyFriendRequest
+                                                    data={myRequestFriend}
                                                 />
                                             </div>
-                                        </>
-                                    ) : subTab === 0 ? (
-                                        <div className="main-friend_body_list-request">
-                                            <div className="main-friend_body_title-list">
-                                                Lời mới kết bạn (
-                                                {requestFriends.length})
+                                        ) : (
+                                            <div>
+                                                <ListContact data={phoneBook} />
                                             </div>
-                                            <ListRequestFriend
-                                                data={requestFriends}
-                                            />
-
-                                            <div className="main-friend_body_title-list">
-                                                Đã gửi yêu cầu kết bạn (
-                                                {myRequestFriend.length})
-                                            </div>
-                                            <ListMyFriendRequest
-                                                data={myRequestFriend}
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <ListContact data={phoneBook} />
-                                        </div>
-                                    )}
-                                </Scrollbars>
+                                        )}
+                                    </Scrollbars>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Col>
-            </Row>
-        </div>
+                    </Col>
+                </Row>
+            </div>
+        </Spin>
     );
 }
 

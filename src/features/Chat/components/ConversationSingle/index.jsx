@@ -44,6 +44,7 @@ function ConversationSingle({ conversation, onClick }) {
                         totalMembers={totalMembers}
                         avatar={avatar}
                         type={conversation.type}
+                        name={name}
 
                     />
                 </div>

@@ -8,14 +8,15 @@ FileMessage.propTypes = {
     content: PropTypes.string.isRequired,
     isVisibleTime: PropTypes.bool.isRequired,
     dateAt: PropTypes.object.isRequired,
+    isSeen: PropTypes.bool,
 };
 
 FileMessage.defaultProps = {
-
+    isSeen: false
 
 };
 // {content}
-function FileMessage({ content, children, dateAt, isVisibleTime }) {
+function FileMessage({ content, children, dateAt, isSeen }) {
 
     const handleOnClickDownLoad = () => {
         window.open(content, '_blank');
@@ -29,10 +30,6 @@ function FileMessage({ content, children, dateAt, isVisibleTime }) {
     const fileExtension =
         fileHelpers.getFileExtension(fileName);
 
-
-    // console.log('content', content);
-    // console.log('fileName', fileName);
-    // console.log('fileExtension', fileExtension);
 
 
 
@@ -59,24 +56,36 @@ function FileMessage({ content, children, dateAt, isVisibleTime }) {
 
             </div>
 
-            {
-                isVisibleTime &&
-                (
-                    <div className="time-send">
-                        <span>
-                            {`0${dateAt.getHours()}`.slice(
-                                -2
-                            )}
-                            :
-                            {`0${dateAt.getMinutes()}`.slice(
-                                -2
-                            )}
-                        </span>
-                    </div>
-                )
-            }
+
+            <div className="time-and-last_view">
+
+                <div className="time-send">
+                    <span>
+                        {`0${dateAt.getHours()}`.slice(
+                            -2
+                        )}
+                        :
+                        {`0${dateAt.getMinutes()}`.slice(
+                            -2
+                        )}
+                    </span>
+
+                </div>
+
+                {
+                    isSeen && (
+                        <div className="is-seen-message">
+                            Đã xem
+                        </div>
+                    )
+
+                }
+            </div>
 
             {children}
+
+
+
         </>
     );
 }

@@ -67,6 +67,7 @@ function FriendItem({ data, onClickMenu }) {
                         <PersonalIcon
                             isActive={data.isOnline && data.isOnline}
                             avatar={data.avatar}
+                            name={data.name}
                         />
                     </div>
 

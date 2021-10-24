@@ -22,7 +22,7 @@ TypeMessagePin.defaultProps = {
 
 function TypeMessagePin({ type, content, name }) {
     return (
-        <div clasName='type-pin-message'>
+        <div className='type-pin-message'>
             {
                 type === 'TEXT' && (
                     <div>{`${name}: ${content}`}</div>

@@ -83,6 +83,7 @@ function HeaderOptional(props) {
         setIsvisible(value);
     };
 
+    console.log(isLogin, lastLogin);
     const checkTime = () => {
         if (lastLogin) {
             const time = dateUtils.toTime(lastLogin);
@@ -93,7 +94,6 @@ function HeaderOptional(props) {
         }
     }
 
-    console.log('avatar', avatar);
 
     return (
         <div id='header-optional'>
@@ -104,6 +104,7 @@ function HeaderOptional(props) {
                             avatar={avatar}
                             totalMembers={totalMembers}
                             type={typeConver}
+                            name={name}
                         />}
                     </div>
 
@@ -125,7 +126,13 @@ function HeaderOptional(props) {
                                         isLogin ? (
                                             <span>Đang hoạt động</span>
                                         ) : (
-                                            <span>{`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`} </span>
+                                            <>
+                                                {lastLogin && (
+                                                    <span>
+                                                        {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
+                                                    </span>
+                                                )}
+                                            </>
                                         )
                                     }
                                 </>
