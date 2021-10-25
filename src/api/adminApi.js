@@ -11,6 +11,16 @@ const adminApi = {
             }
         });
     },
+    getListUsersByUserName: (username,page, size) => {
+        const url = `/admin/users-manager`;
+        return axiosClient.get(url,{
+            params: {
+               username,
+               page,
+               size
+            }
+        });
+    },
     active: (id,isActived) => {
         const url = `/admin/users-manager/${id}/${isActived}`;
         return axiosClient.patch(url);

@@ -80,6 +80,17 @@ const handleGetAllGruopSricker = async () => {
           });
       }, []);
    
+  const handleGetAllSricker = async () => {
+    try {   
+        console.log("Ai all",dataSource)
+        dataSource.map((result1) => {
+            setSticker(result1.stickers);
+            return result1.stickers;
+        }); 
+    } catch (error) {
+      setError(true);
+    }
+  };      
 
   const handleDeleteSticker=  (urlstickers)=>{
        try {

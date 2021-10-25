@@ -7,10 +7,8 @@ import 'antd/dist/antd.css';
 import { useDispatch,useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import loginApi from 'api/loginApi';
+import commonFuc from "utils/commonFuc";
 
-
-const DEFAULT_PAGE = 0;
-const DEFAULT_SIZE = 20;
 UserPage.propTypes = {};
 const { Search } = Input;
 const { Column, ColumnGroup } = Table;
@@ -20,45 +18,52 @@ function UserPage(props) {
     const dispatch = useDispatch(); 
     const history = useHistory();
     const [isError, setError] = useState(false);
+    const [size, setSize] = useState(20);
+    const [totalPage, setTotalPage] = useState(0);
     const [dataTemp, setDataTemp] = useState([]);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(6);
     const [dataSource,setDataSource] = useState([]);
-
-    function onShowSizeChange(page, pageSize) {
-      console.log(page, pageSize);
-    }
-    const onSearch = (value) => {
-        const filterTable = dataSource.filter(username =>
-          Object.keys(username).some(k =>
-            String(username[k])
-              .toLowerCase()
-              .includes(value.toLowerCase())      
-          ))
-          console.log('table temp',dataTemp)
-          console.log('table',filterTable)
-          if(value === '' ){
-            setDataSource(dataTemp);
-          }else{
-            setDataSource(filterTable);
-          }
-          
-      };
     
-      function onShowSizeChange(page, pageSize) {
-        console.log(page, pageSize);
-      }
+    const [query, setQuery] = useState({
+      page:0,
+      size: 20,
+    });
 
-    function confirm(e) {
+    const onchange =(page)=>{  
+      handleGetAllUsser(page-1,query.size)
+      .then(result=>{ 
+          setDataSource(result); 
+          console.log('page',page,query.size);
+      });
+     
+    }
+    const onSearch = (value,page) => {
+        // const filterTable = dataSource.filter(username =>
+        //   Object.keys(username).some(k =>
+        //     String(username[k])
+        //       .toLowerCase()
+        //       .includes(value.toLowerCase())      
+        //   ))
+        //   console.log('table temp',dataTemp)
+        //   console.log('table',filterTable)
+        //   if(value === '' ){
+        //     setDataSource(dataTemp);
+        //   }else{
+        //     setDataSource(filterTable);
+        //   }
+        handleGetAllUsser(value,page-1,query.size)
+        .then(result=>{ 
+            setDataSource(result); 
+            console.log('page',page,query.size);
+        });
+    };
+    const confirm=(e)=> {
       console.log(e);
       message.success('Click on Yes');
     }
-    
-    function cancel(e) {
+    const cancel=(e)=> {
       console.log(e);
       message.error('Click on No');
     }
-
     const columns = [
      
         {
@@ -145,54 +150,49 @@ function UserPage(props) {
             </>
          )),
         },
-      ];
-    const handleGetAllUsser= async ()=>{
+    ];
+    const handleGetAllUsser= async (page,pageSize)=>{
       try {
-              const listUser = await adminApi.getListUsers(DEFAULT_PAGE,DEFAULT_SIZE);     
-              console.log("get all ",listUser.data)
+              const listUser = await adminApi.getListUsers(page,pageSize);    
+              setTotalPage(listUser.totalPages); 
               return listUser.data;
       } catch (error) {
               setError(true);
           }     
-    };
-
-
+    };   
+    const handleGetAllUserByUserName= async (username,page,pageSize)=>{
+      try {
+              const listUserByUserName = await adminApi.getListUsers(username,page,pageSize);    
+              setTotalPage(listUserByUserName.totalPages); 
+              return listUserByUserName.data;
+      } catch (error) {
+              setError(true);
+          }     
+    };  
+       
     useEffect(()=>{
-       handleGetAllUsser()
+       handleGetAllUsser(query.page,query.size)
       .then(result=>{
         setDataSource(result);
-        setDataTemp(result)})
+        setDataTemp(result); 
+      })
       .catch(err => {throw err})
     },[]
-    );
-    const handleUpdateActive= async (id,isActived)=>{
-        try {
-            dispatch(setLoading(true));
-            await adminApi.active(id,isActived);
-            console.log('success');
-            message.success('Đã đổi trạng thái', 5);
-            history.push('/chat');
-        } catch (error) {
-            setError(true);
-            console.log('fail');  
-            message.error('Tài khoản đang đăng nhập....! không thể đổi trạng thái', 5);
-        }
-        dispatch(setLoading(false));
-    };
-    const handleUpdateDelete= async (id,isDeleted)=>{
+    ); 
+    const handleUpdateDelete= async(id,isDeleted)=>{
       try {
           dispatch(setLoading(true));
           await adminApi.delete(id,isDeleted);
-          console.log('success');
-          message.success('Đã đổi trạng thái', 5);
-          window.location.reload();
+          const listUser = await adminApi.getListUsers(query);     
+          setDataSource(listUser.data);
+          message.success('Đã đổi trạng thái', 5);        
       } catch (error) {
           setError(true);
           console.log('fail');  
           message.error('Tài khoản đang đăng nhập....! không thể đổi trạng thái', 5);
       }
       dispatch(setLoading(false));
-  };
+    };
 
   return(   
     <>
@@ -210,21 +210,19 @@ function UserPage(props) {
     </div>
     <Divider></Divider>
     <Table 
-          dataSource={dataSource} 
+          dataSource={commonFuc.addSTTForList(dataSource, query.page * query.size)} 
           columns={columns} 
-          pagination={{
-            current:page,
-            pageSize:pageSize,
-            showSizeChanger:false,
-            onShowSizeChange:{onShowSizeChange},
-            onChange:(page,pageSize)=>{
-            setPage(page);
-            setPageSize(pageSize)
-            }
-          }}
+          pagination={false}
           bordered
-          rowKey={record => record._id}
-           ></Table>  
+    ></Table>  
+    <div style={{ textAlign: "right" }}>
+    <Pagination
+       showQuickJumper
+       defaultCurrent={query.page+1}
+       total={totalPage * 10}
+       onChange={onchange}  
+/>
+    </div>
     </>
   );
 }

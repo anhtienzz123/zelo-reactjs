@@ -18,6 +18,7 @@ import {
   message,
   Upload,
   Popconfirm,
+  Modal,
 } from "antd";
 import {
   DeleteOutlined,
@@ -36,7 +37,9 @@ const { Column, ColumnGroup } = Table;
 StickerGroupPage.propTypes = {};
 
 function StickerGroupPage(props) {
-  const [temp, setTemp] = useState();
+  const [temp, setTemp] = useState("");
+  const [tempName, setName] = useState("");
+  const [tempDescription, setDescription] = useState("");
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [visible3, setVisible3] = useState(false);
@@ -45,7 +48,6 @@ function StickerGroupPage(props) {
   const [dataSource, setDataSource] = useState([]);
   const [dataTemp, setDataTemp] = useState([]);
   const [file, setFile] = useState([]);
-  const [pagination,setPagination]=useState([])
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
 
@@ -72,10 +74,13 @@ function StickerGroupPage(props) {
   const showDrawer1 = () => {
     setVisible1(true);
   };
-  const showDrawer2 = (id) => {
+  const showDrawer2 = (id,name1,description1) => {
     setVisible2(true);
     setTemp(id);
-    console.log("id", temp);
+    setName(name1);
+    setDescription(description1);
+
+    console.log("id", temp,"values",tempName,tempDescription);
   };
   const showDrawer3 = (id) => {
     setVisible3(true);
@@ -85,7 +90,8 @@ function StickerGroupPage(props) {
   const onClose1 = () => {
     setVisible1(false);
     setVisible2(false);
-    setVisible3(false);
+    setVisible3(false); 
+    console.log("id close", temp,tempName,tempDescription);
   };
     
   function onShowSizeChange(page, pageSize) {
@@ -122,10 +128,10 @@ function StickerGroupPage(props) {
               <DeleteOutlined />Xoá{" "}
             </a>
           </Popconfirm>
-          <a onClick={() => showDrawer2(data._id)} alt="sửa group sticker">
+          <a onClick={() => showDrawer2(data._id,data.name,data.description)} >
             <EditOutlined  />Sửa{" "}
           </a>
-          <a onClick={() => showDrawer3(data._id)} alt="thêm sticker">
+          <a onClick={() => showDrawer3(data._id)} >
             <PlusCircleTwoTone />Thêm Sticker{" "}
           </a>
           <a
@@ -162,8 +168,7 @@ function StickerGroupPage(props) {
     try {
       await adminApi.deleteGroupSticker(id);
       message.success("Đã xoá group sticker", 5);   
-      const list = await adminApi.getAllGroupSticker();
-      setDataSource(list);
+      setDataSource(await handleGetAllGruopSricker());
     } catch (error) {
       setError(true);
       // message.error("chưa xoá được group sticker", 5);
@@ -192,9 +197,9 @@ function StickerGroupPage(props) {
     try {
       await adminApi.updateGroupSticker(temp, name, description);
       message.success("Đã chỉnh sửa group sticker", 5);
-      const list = await adminApi.getAllGroupSticker();
-      setDataSource(list);
+      setDataSource(await handleGetAllGruopSricker());
     } catch (error) {
+      console.log("update ", dataSource);
       message.error("lỗi chỉnh sửa group sticker", 5);
     }
   };
@@ -316,6 +321,8 @@ function StickerGroupPage(props) {
       <Drawer
         title="Update group sticker"
         width={720}
+       // onOk={handleOk} 
+        //onCancel={onClose1}
         onClose={onClose1}
         visible={visible2}
         bodyStyle={{ paddingBottom: 80 }}
@@ -333,6 +340,10 @@ function StickerGroupPage(props) {
           onFinish={handleUpdateGroupSticker}
           onFinishFailed={onFinishFailed}
           hideRequiredMark
+          // initialValues={{
+          //   ['name']:tempName, 
+          //   ['description']:tempDescription,
+          // }}
         >
           <Row gutter={16}>
             <Col span={12}>
@@ -357,7 +368,7 @@ function StickerGroupPage(props) {
                   },
                 ]}
               >
-                <Input.TextArea rows={4} placeholder="mô tả vài thứ !" />
+                <Input.TextArea rows={4} placeholder="mô tả vài thứ !"  />
               </Form.Item>
             </Col>
           </Row>
@@ -415,6 +426,7 @@ function StickerGroupPage(props) {
         }}
         rowKey={(record) => record._id}
       ></Table>
+   
     </>
   );
 }
