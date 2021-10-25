@@ -32,28 +32,14 @@ function UserPage(props) {
       handleGetAllUsser(page-1,query.size)
       .then(result=>{ 
           setDataSource(result); 
-          console.log('page',page,query.size);
       });
      
     }
     const onSearch = (value,page) => {
-        // const filterTable = dataSource.filter(username =>
-        //   Object.keys(username).some(k =>
-        //     String(username[k])
-        //       .toLowerCase()
-        //       .includes(value.toLowerCase())      
-        //   ))
-        //   console.log('table temp',dataTemp)
-        //   console.log('table',filterTable)
-        //   if(value === '' ){
-        //     setDataSource(dataTemp);
-        //   }else{
-        //     setDataSource(filterTable);
-        //   }
-        handleGetAllUsser(value,page-1,query.size)
+        handleGetAllUserByUserName(value,page-1,query.size)
         .then(result=>{ 
             setDataSource(result); 
-            console.log('page',page,query.size);
+            console.log('page',dataSource,'value',value);
         });
     };
     const confirm=(e)=> {
@@ -162,7 +148,7 @@ function UserPage(props) {
     };   
     const handleGetAllUserByUserName= async (username,page,pageSize)=>{
       try {
-              const listUserByUserName = await adminApi.getListUsers(username,page,pageSize);    
+              const listUserByUserName = await adminApi.getListUsersByUserName(username,page,pageSize);    
               setTotalPage(listUserByUserName.totalPages); 
               return listUserByUserName.data;
       } catch (error) {
