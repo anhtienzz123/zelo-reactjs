@@ -54,10 +54,12 @@ function InfoMember(props) {
         message.info('Đã sao chép link');
     }
 
-    const handleChangeSatus = () => {
+
+    const handleChangeSatus = async () => {
         try {
-            conversationApi.changeStatusForGroup(currentConversation,
+            await conversationApi.changeStatusForGroup(currentConversation,
                 status ? 0 : 1);
+
             setSatus(!status);
             message.success('Cập nhật thành công');
         } catch (error) {
@@ -68,7 +70,7 @@ function InfoMember(props) {
         confirm({
             title: 'Cảnh báo',
             icon: <ExclamationCircleOutlined />,
-            content: 'Người dùng không thể truy cập vào nhóm qua link.',
+            content: status ? 'Người dùng có thể không tham gia bằng link được nữa' : 'Người dùng có thể tham gia bằng link',
             onOk: handleChangeSatus,
             okText: 'Đồng ý',
             cancelText: 'Hủy'
