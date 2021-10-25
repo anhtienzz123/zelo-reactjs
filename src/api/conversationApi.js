@@ -60,6 +60,20 @@ const conversationApi = {
     getLastViewOfMembers: (conversationId) => {
         return axiosClient.get(`${API_URL}/${conversationId}/last-view`);
     },
+
+    getSummaryInfoGroup: (conversationId) => {
+        return axiosClient.get(`${API_URL}/${conversationId}/summary`);
+    },
+    joinGroupFromLink: (conversationId) => {
+        return axiosClient.post(
+            `${API_URL}/${conversationId}/members/join-from-link`
+        );
+    },
+    changeStatusForGroup: (conversationId, isStatus) => {
+        return axiosClient.patch(
+            `${API_URL}/${conversationId}/join-from-link/${isStatus}`
+        );
+    },
 };
 
 export default conversationApi;

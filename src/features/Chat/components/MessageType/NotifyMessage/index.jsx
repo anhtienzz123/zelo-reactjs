@@ -60,6 +60,9 @@ function NotifyMessage({ message }) {
         if (text.startsWith('Đã đổi tên nhóm thành')) {
             return 9;
         }
+        if (text === 'Tham gia từ link') {
+            return 10;
+        }
 
     };
 
@@ -199,6 +202,27 @@ function NotifyMessage({ message }) {
 
                             </div>
                         </>
+                    )
+                }
+
+                {
+                    (transferTextToValue(content) === 4 || transferTextToValue(content) === 10) && (
+                        <div className='notify-message-content_group-avatar'>
+                            <div className='notify-message-content_per-avatar'>
+                                <AvatarCustom
+                                    size='small'
+                                    src={avatar}
+                                    name={name}
+                                />
+                            </div>
+
+                            <div className='notify-message-content-title'>
+                                <span className='user-name-strong'>
+                                    {isMyActive}
+                                </span>&nbsp;
+                                đã tham gia nhóm
+                            </div>
+                        </div>
                     )
                 }
 

@@ -142,7 +142,6 @@ function UserCard(props) {
             message.error('Xóa thất bại');
         }
     }
-    console.log('user', user);
 
     return (
         <Modal
