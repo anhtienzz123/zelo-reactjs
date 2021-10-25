@@ -147,7 +147,9 @@ function HeaderOptional(props) {
 
 
 
+
                             {typeConver && <div className='small-bar'></div>}
+
 
                             <div className='classify-object'>
                                 <TagOutlined />
