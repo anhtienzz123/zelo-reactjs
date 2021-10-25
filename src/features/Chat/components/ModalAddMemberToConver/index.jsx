@@ -231,6 +231,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
                                                     <PersonalIcon
                                                         demention={36}
                                                         avatar={element.avatar}
+                                                        name={element.name}
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

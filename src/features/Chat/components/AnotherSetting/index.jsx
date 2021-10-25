@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { CaretDownOutlined, DeleteOutlined, ExclamationCircleOutlined, ExportOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { message, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { leaveGroup } from '../../slice/chatSlice';
 import './style.scss';
-import { message, Modal } from 'antd';
 
 AnotherSetting.propTypes = {
     socket: PropTypes.object,
@@ -27,7 +27,8 @@ const styleInteract = {
 
 function AnotherSetting({ socket }) {
     const [isDrop, setIsDrop] = useState(true);
-    const { currentConversation } = useSelector(state => state.chat);
+    const { currentConversation, conversations } = useSelector(state => state.chat);
+    const { user } = useSelector(state => state.global);
     const dispatch = useDispatch();
 
 
@@ -60,6 +61,33 @@ function AnotherSetting({ socket }) {
         });
     }
 
+    function confirmDeleteGroup() {
+        Modal.confirm({
+            title: 'Xác nhận',
+            icon: <ExclamationCircleOutlined />,
+            content: (
+                <span>
+                    Toàn bộ nội dung cuộc trò chuyện sẻ bị xóa, bạn có chắc chắn
+                    muốn xóa ?
+                </span>
+            ),
+            okText: 'Xóa',
+            cancelText: 'Không',
+            onOk: async () => {
+                try {
+                    await conversationApi.deleteConversation(currentConversation);
+                    message.success('Xóa thành công');
+                } catch (error) {
+                    message.error(
+                        'Đã có lỗi xảy ra'
+                    );
+                }
+            },
+        });
+    }
+
+
+
     return (
         <div className="info_setting">
             <div
@@ -87,15 +115,20 @@ function AnotherSetting({ socket }) {
                 </div>
 
 
-                <div className="info_setting-interact-amount danger">
-                    <div className="info_setting-interact-amount-icon">
-                        <DeleteOutlined />
-                    </div>
+                {
+                    conversations.find(ele => ele._id === currentConversation).leaderId === user._id &&
+                    (
+                        <div className="info_setting-interact-amount danger" onClick={confirmDeleteGroup}>
+                            <div className="info_setting-interact-amount-icon">
+                                <DeleteOutlined />
+                            </div>
 
-                    <div className="info_setting-interact-amount-text">
-                        <span>Xóa cuộc trò chuyện</span>
-                    </div>
-                </div>
+                            <div className="info_setting-interact-amount-text">
+                                <span>Giải tán nhóm</span>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         </div>
     );

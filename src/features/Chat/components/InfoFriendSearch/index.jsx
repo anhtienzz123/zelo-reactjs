@@ -130,6 +130,7 @@ function InfoFriendSearch(props) {
                                                     <PersonalIcon
                                                         avatar={ele.avatar}
                                                         demention={40}
+                                                        name={ele.name}
 
                                                     />
                                                 </div>

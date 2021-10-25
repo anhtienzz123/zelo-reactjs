@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Tooltip } from 'antd';
+import { Avatar, Badge, Tooltip } from 'antd';
 import COVERSATION_STYLE from './ConversationAvatarStyle';
 import './style.scss';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
@@ -11,11 +11,13 @@ ConversationAvatar.propTypes = {
     totalMembers: PropTypes.number.isRequired,
     type: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,
+    isActived: PropTypes.bool,
 };
 
 ConversationAvatar.defaultProps = {
     demension: 28,
     isGroupCard: false,
+    isActived: false,
 };
 
 function ConversationAvatar({
@@ -25,6 +27,7 @@ function ConversationAvatar({
     totalMembers,
     type,
     name,
+    isActived,
 }) {
     const renderAvatar = () => {
         let tempAvatar = [];
@@ -45,12 +48,46 @@ function ConversationAvatar({
         return tempAvatar;
     };
 
+    const renderGroupManyUser = () => {
+        let tempAvatar = [];
+        for (let index = 0; index < 4; index++) {
+            if (index < 3) {
+                tempAvatar.push(
+                    <div className="per-user">
+                        <Avatar
+                            size={demension}
+                            src={avatar[index] ? avatar[index] : DEFAULT_AVATAR}
+                        />
+                    </div>
+                );
+            } else {
+                tempAvatar.push(
+                    <div className="per-user">
+                        <Tooltip placement="top">
+                            <Avatar
+                                style={{
+                                    backgroundColor: '#7562d8',
+                                    color: '#fff',
+                                }}
+                                size={demension}
+                            >
+                                +{totalMembers - 3}
+                            </Avatar>
+                        </Tooltip>
+                    </div>
+                );
+            }
+        }
+        return tempAvatar;
+    };
+
     return (
         <div id="avatar_conversation">
             {!type ? (
                 // <Avatar size={48} src={avatar ? avatar : DEFAULT_AVATAR} />
-
-                <AvatarCustom size={48} src={avatar} name={name} />
+                <Badge dot={isActived} offset={[-5, 40]} color="green">
+                    <AvatarCustom size={48} src={avatar} name={name} />
+                </Badge>
             ) : (
                 <>
                     {totalMembers === 3 ? (
@@ -97,7 +134,7 @@ function ConversationAvatar({
                                 </div>
                             </div>
                         </div>
-                    ) : totalMembers === 4 ? (
+                    ) : totalMembers > 3 ? (
                         <div className="conversation-item_box">
                             <div className="left-side-box">
                                 <div
@@ -111,58 +148,7 @@ function ConversationAvatar({
                                     }
                                 >
                                     <div id="group-many-user">
-                                        <div className="per-user">
-                                            <Avatar
-                                                size={demension}
-                                                src={
-                                                    avatar
-                                                        ? avatar[0]
-                                                        : DEFAULT_AVATAR
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className="per-user">
-                                            <Avatar
-                                                size={demension}
-                                                src={
-                                                    avatar
-                                                        ? avatar[1]
-                                                        : DEFAULT_AVATAR
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className="per-user">
-                                            <Avatar
-                                                size={demension}
-                                                style={{
-                                                    backgroundColor: '#1890ff',
-                                                }}
-                                                src={
-                                                    avatar
-                                                        ? avatar[2]
-                                                        : DEFAULT_AVATAR
-                                                }
-                                            />
-                                        </div>
-                                        <div className="per-user">
-                                            <Tooltip placement="top">
-                                                <Avatar
-                                                    style={{
-                                                        backgroundColor:
-                                                            '#e8eaef',
-                                                        color: '#848f9b',
-                                                    }}
-                                                    size={demension}
-                                                >
-                                                    {`+${
-                                                        avatar &&
-                                                        avatar.length - 3
-                                                    }`}
-                                                </Avatar>
-                                            </Tooltip>
-                                        </div>
+                                        {renderGroupManyUser()}
                                     </div>
                                 </div>
                             </div>

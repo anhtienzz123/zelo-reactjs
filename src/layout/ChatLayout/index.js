@@ -1,17 +1,16 @@
-import { Col, Row, Spin } from 'antd';
+import { Col, Row } from 'antd';
 import NotFoundPage from 'components/NotFoundPage';
 import Chat from 'features/Chat';
+import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import {
     addMessage,
     fetchConversationById,
     fetchListClassify,
     fetchListColor,
     fetchListConversations,
-    setNumberUnreadForNewFriend,
     updateConversationWhenAddMember,
     updateMemberLeaveGroup,
 } from 'features/Chat/slice/chatSlice';
-import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import Friend from 'features/Friend';
 import {
     fetchFriends,
