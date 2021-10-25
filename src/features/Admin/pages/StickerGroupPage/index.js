@@ -340,10 +340,10 @@ function StickerGroupPage(props) {
           onFinish={handleUpdateGroupSticker}
           onFinishFailed={onFinishFailed}
           hideRequiredMark
-          // initialValues={{
-          //   ['name']:tempName, 
-          //   ['description']:tempDescription,
-          // }}
+          initialValues={{
+            ['name']:tempName, 
+            ['description']:tempDescription,
+          }}
         >
           <Row gutter={16}>
             <Col span={12}>
