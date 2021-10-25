@@ -54,12 +54,11 @@ function InfoMember(props) {
         message.info('Đã sao chép link');
     }
 
+
     const handleChangeSatus = async () => {
         try {
             await conversationApi.changeStatusForGroup(currentConversation,
                 status ? 0 : 1);
-            //ch p
-
 
             setSatus(!status);
             message.success('Cập nhật thành công');
