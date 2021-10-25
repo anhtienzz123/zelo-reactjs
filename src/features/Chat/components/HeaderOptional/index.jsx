@@ -83,7 +83,6 @@ function HeaderOptional(props) {
         setIsvisible(value);
     };
 
-    console.log(isLogin, lastLogin);
     const checkTime = () => {
         if (lastLogin) {
             const time = dateUtils.toTime(lastLogin);
@@ -105,6 +104,7 @@ function HeaderOptional(props) {
                             totalMembers={totalMembers}
                             type={typeConver}
                             name={name}
+                            isActived={isLogin}
                         />}
                     </div>
 
@@ -147,7 +147,7 @@ function HeaderOptional(props) {
 
 
 
-
+                            {typeConver && <div className='small-bar'></div>}
 
                             <div className='classify-object'>
                                 <TagOutlined />

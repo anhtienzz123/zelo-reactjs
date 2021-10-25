@@ -41,6 +41,7 @@ function PersonalIcon(props) {
                             : 'user-icon no-online'
             }>
             <Badge
+                dot={isActive}
                 offset={!isHost ? [-5, 40] : [-5, 32]}
                 color='green'
                 count={

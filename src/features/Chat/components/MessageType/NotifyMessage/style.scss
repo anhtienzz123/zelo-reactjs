@@ -24,6 +24,7 @@
         &_group-avatar {
             display: flex;
             flex-direction: row;
+            align-items: center;
         }
 
         &_per-avatar:nth-child(n + 2) {
