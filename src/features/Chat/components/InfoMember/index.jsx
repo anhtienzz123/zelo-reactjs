@@ -1,8 +1,11 @@
-import { CaretDownOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, CopyOutlined, ExclamationCircleOutlined, LinkOutlined, LockOutlined, UnlockOutlined, UnlockTwoTone } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import './style.scss';
 import { GrGroup } from "react-icons/gr";
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
+import { message, Modal } from 'antd';
+import conversationApi from 'api/conversationApi';
 InfoMember.propTypes = {
     viewMemberClick: PropTypes.func,
     quantity: PropTypes.number.isRequired,
@@ -15,6 +18,17 @@ InfoMember.defaultProps = {
 function InfoMember(props) {
     const { viewMemberClick, quantity } = props;
     const [isDrop, setIsDrop] = useState(true);
+    const { currentConversation, conversations } = useSelector(state => state.chat);
+    const [status, setSatus] = useState(false);
+    const { confirm } = Modal;
+
+
+    useEffect(() => {
+        const tempStatus = conversations.find(ele => ele._id === currentConversation).isJoinFromLink;
+        setSatus(tempStatus);
+    }, [currentConversation])
+
+
     const styleIconDrop = {
 
         transform: 'rotate(-90deg)'
@@ -34,6 +48,32 @@ function InfoMember(props) {
             viewMemberClick(1);
         }
     }
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(`${process.env.REACT_APP_URL}/jf-link/${currentConversation}`);
+        message.info('Đã sao chép link');
+    }
+
+    const handleChangeSatus = () => {
+        try {
+            conversationApi.changeStatusForGroup(currentConversation,
+                status ? 0 : 1);
+            setSatus(!status);
+            message.success('Cập nhật thành công');
+        } catch (error) {
+            message.error('Cập nhật thành công');
+        }
+    }
+    function showConfirm() {
+        confirm({
+            title: 'Cảnh báo',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Người dùng không thể truy cập vào nhóm qua link.',
+            onOk: handleChangeSatus,
+            okText: 'Đồng ý',
+            cancelText: 'Hủy'
+        });
+    };
 
     return (
         <div className="info_member">
@@ -58,6 +98,42 @@ function InfoMember(props) {
 
                     <div className="info_member-interact-amount-text">
                         <span>{quantity}</span>
+                    </div>
+                </div>
+
+
+                <div className="info_member-interact-amount" >
+                    <div className="info_member-interact-amount-icon">
+                        <LinkOutlined />
+                    </div>
+
+                    <div className="info_member-interact-amount-text">
+                        <div className="info_member-interact_link-title">
+                            Link tham gia nhóm
+                        </div>
+
+                        <div className="info_member-interact_link-des">
+                            {`${process.env.REACT_APP_URL}/jf-link/${currentConversation}`}
+                        </div>
+                    </div>
+
+                    <div className="info_member-interact_button">
+                        <div className="copy-link cirle-button" onClick={handleCopyLink}>
+                            <CopyOutlined />
+                        </div>
+
+
+
+
+                        {status ? (
+                            <div className="authorize-toggle cirle-button  green" onClick={showConfirm}>
+                                <UnlockOutlined />
+                            </div>
+                        ) : (
+                            <div className="authorize-toggle cirle-button  red" onClick={showConfirm}>
+                                <LockOutlined />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

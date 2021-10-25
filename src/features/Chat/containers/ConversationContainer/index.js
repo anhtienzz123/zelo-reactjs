@@ -23,13 +23,13 @@ function ConversationContainer(props) {
     const { conversations, classifies } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
 
-    const handleConversationClick = (conversationId) => {
+    const handleConversationClick = async (conversationId) => {
         // dispatch(setCurrentConversation(conversationId));
+        await dispatch(getLastViewOfMembers({ conversationId }));
         dispatch(fetchListMessages({ conversationId, size: 10 }));
 
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
-        dispatch(getLastViewOfMembers({ conversationId }));
     };
 
     const handleOnClickItem = (e, id) => {

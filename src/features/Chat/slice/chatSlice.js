@@ -147,12 +147,9 @@ export const getLastViewOfMembers = createAsyncThunk(
     `${KEY}/getLastViewOfMembers`,
     async (params, _) => {
         const { conversationId } = params;
-        console.log('lastViewasdfasdfsdaf');
         const lastViews = await conversationApi.getLastViewOfMembers(
             conversationId
         );
-
-        console.log('lastViews', lastViews);
 
         return lastViews;
     }
@@ -230,7 +227,9 @@ const chatSlice = createSlice({
             const conversation = state.conversations.find(
                 (ele) => ele._id === conversationId
             );
-            state.type = conversation.type;
+            if (conversation) {
+                state.type = conversation.type;
+            }
         },
 
         setRedoMessage: (state, action) => {
@@ -436,6 +435,12 @@ const chatSlice = createSlice({
 
             if (conversationId != state.currentConversation) return;
 
+            console.log('  state.lastViewOfMember');
+            state.lastViewOfMember.forEach((ele) => {
+                console.log(ele.user._id);
+            });
+
+            console.log('  userId', userId);
             const index = state.lastViewOfMember.findIndex(
                 (ele) => ele.user._id == userId
             );

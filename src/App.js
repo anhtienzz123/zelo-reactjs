@@ -1,5 +1,6 @@
 import { fetchUserProfile } from 'app/globalSlice';
 import AdminProtectedRoute from 'components/AdminProtectedRoute';
+import JoinFromLink from 'components/JoinFromLink';
 import NotFoundPage from 'components/NotFoundPage';
 import ProtectedRoute from 'components/ProtectedRoute';
 import Account from 'features/Account';
@@ -36,6 +37,11 @@ function App() {
             <div className="App">
                 <Switch>
                     <Route exact path="/" component={Home} />
+                    <Route
+                        exact
+                        path="/jf-link/:conversationId"
+                        component={JoinFromLink}
+                    />
 
                     <ProtectedRoute path="/chat" component={ChatLayout} />
 
