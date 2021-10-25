@@ -207,6 +207,8 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
                                                     <PersonalIcon
                                                         demention={36}
                                                         avatar={element.avatar}
+                                                        name={element.name}
+
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>
