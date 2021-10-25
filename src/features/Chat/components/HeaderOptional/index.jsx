@@ -124,20 +124,31 @@ function HeaderOptional(props) {
                                 <>
                                     {
                                         isLogin ? (
-                                            <span>Đang hoạt động</span>
+                                            <>
+                                                <span>Đang hoạt động</span>
+                                                <div className='small-bar'></div>
+                                            </>
                                         ) : (
                                             <>
                                                 {lastLogin && (
-                                                    <span>
-                                                        {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
-                                                    </span>
+                                                    <>
+                                                        <span>
+                                                            {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
+                                                        </span>
+
+                                                        <div className='small-bar'></div>
+                                                    </>
                                                 )}
                                             </>
                                         )
                                     }
                                 </>
                             )}
-                            <div className='small-bar'></div>
+
+
+
+
+
                             <div className='classify-object'>
                                 <TagOutlined />
                             </div>

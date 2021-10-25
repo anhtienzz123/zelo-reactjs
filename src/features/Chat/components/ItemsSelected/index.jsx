@@ -31,6 +31,7 @@ function ItemsSelected({ items, onRemove }) {
                             <PersonalIcon
                                 demention={20}
                                 avatar={item.avatar}
+                                name={item.name}
                             />
                         </div>
 

@@ -13,8 +13,8 @@ AvatarCustom.propTypes = {
 
 
 AvatarCustom.defaultProps = {
-    src: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    src: "",
+    name: "",
     style: {}
 };
 
@@ -25,7 +25,7 @@ function AvatarCustom(props) {
 
     const { src, name, style, ...rest } = props;
 
-
+    console.log("src", src);
 
 
     return (
