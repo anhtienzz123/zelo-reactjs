@@ -1,11 +1,14 @@
 import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
-import { Col, message, Row, Spin } from 'antd';
+import { Col, notification, Row, Spin, message as messageNotify } from 'antd';
+import conversationApi from 'api/conversationApi';
 import { setJoinChatLayout } from 'app/globalSlice';
+import ModalJoinGroupFromLink from 'components/ModalJoinGroupFromLink';
 import Slider from 'components/Slider';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import DrawerPinMessage from './components/DrawerPinMessage';
 import GroupNews from './components/GroupNews';
 import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage';
@@ -18,14 +21,18 @@ import SearchContainer from './containers/SearchContainer';
 import {
     addMessage,
     fetchConversationById,
+    fetchListConversations,
     fetchListFriends,
+    fetchListMessages,
     fetchPinMessages,
     getLastViewOfMembers,
+    getMembersConversation,
     isDeletedFromGroup,
     removeConversation,
     setCurrentConversation,
     setReactionMessage,
     setRedoMessage,
+    setTypeOfConversation,
     updateLastViewOfMembers,
     updateNameOfConver,
     updateTimeForConver,
@@ -58,6 +65,60 @@ function Chat({ socket, idNewMessage }) {
         (state) => state.global
     );
     const [visibleNews, setVisibleNews] = useState(false);
+    const location = useLocation();
+    const history = useHistory();
+    const [isVisibleModalJoinGroup, setIsVisibleJoinGroup] = useState(false);
+    const [summaryGroup, setSummary] = useState({});
+    const refCurrentConversation = useRef();
+    const refConversations = useRef();
+
+    useEffect(() => {
+        refCurrentConversation.current = currentConversation;
+    }, [currentConversation]);
+
+    useEffect(() => {
+        refConversations.current = conversations;
+    }, [conversations]);
+
+    useEffect(() => {
+        const openModalJoinFromLink = async () => {
+            if (location.state && location.state.conversationId) {
+                const data = await conversationApi.fetchListConversations();
+                const tempId = location.state.conversationId;
+
+                console.log(tempId, data);
+                if (data.findIndex((ele) => ele._id === tempId) < 0) {
+                    try {
+                        const data = await conversationApi.getSummaryInfoGroup(
+                            tempId
+                        );
+                        setSummary(data);
+                        setIsVisibleJoinGroup(true);
+                    } catch (error) {
+                        messageNotify.warning(
+                            'Trưởng nhóm đã tắt tính năng tham gia nhóm bằng liên kết'
+                        );
+                    }
+                } else {
+                    dispatch(
+                        fetchListMessages({ conversationId: tempId, size: 10 })
+                    );
+                    dispatch(
+                        getMembersConversation({ conversationId: tempId })
+                    );
+                    dispatch(setTypeOfConversation(tempId));
+                    dispatch(getLastViewOfMembers({ conversationId: tempId }));
+                }
+
+                history.replace({
+                    state: {
+                        conversationId: null,
+                    },
+                });
+            }
+        };
+        openModalJoinFromLink();
+    }, []);
 
     useEffect(() => {
         console.log('User typing', usersTyping);
@@ -71,17 +132,6 @@ function Chat({ socket, idNewMessage }) {
         );
     }, []);
 
-    const refCurrentConversation = useRef();
-    const refConversations = useRef();
-
-    useEffect(() => {
-        refCurrentConversation.current = currentConversation;
-    }, [currentConversation]);
-
-    useEffect(() => {
-        refConversations.current = conversations;
-    }, [conversations]);
-
     useEffect(() => {
         if (
             currentConversation &&
@@ -94,6 +144,23 @@ function Chat({ socket, idNewMessage }) {
     useEffect(() => {
         if (!isJoinChatLayout) {
             socket.on('delete-conversation', (conversationId) => {
+                const conver = refConversations.current.find(
+                    (ele) => ele._id === conversationId
+                );
+                if (conver.leaderId !== user._id) {
+                    notification.info({
+                        placement: 'topRight',
+                        bottom: 50,
+                        duration: 3,
+                        rtl: true,
+                        message: (
+                            <span>
+                                Nhóm <strong>{conver.name}</strong> đã giải tán
+                            </span>
+                        ),
+                    });
+                }
+
                 dispatch(removeConversation(conversationId));
             });
 
@@ -115,16 +182,16 @@ function Chat({ socket, idNewMessage }) {
             );
 
             socket.on('typing', (conversationId, user) => {
-                console.log(
-                    'efCurrentConversation.current',
-                    refCurrentConversation.current
-                );
+                // console.log(
+                //     'efCurrentConversation.current',
+                //     refCurrentConversation.current
+                // );
                 if (conversationId === refCurrentConversation.current) {
-                    console.log(
-                        'typing......',
-                        conversationId,
-                        refCurrentConversation
-                    );
+                    // console.log(
+                    //     'typing......',
+                    //     conversationId,
+                    //     refCurrentConversation
+                    // );
                     const index = usersTyping.findIndex(
                         (ele) => ele._id === user._id
                     ); //khoo
@@ -143,7 +210,7 @@ function Chat({ socket, idNewMessage }) {
                     const newUserTyping = usersTyping.filter(
                         (ele) => ele._id !== user._id
                     );
-                    console.log('newUserTyping', newUserTyping);
+                    // console.log('newUserTyping', newUserTyping);
                     setUsersTyping(newUserTyping);
                 }
             });
@@ -152,7 +219,19 @@ function Chat({ socket, idNewMessage }) {
                 const conversation = refConversations.current.find(
                     (ele) => ele._id === conversationId
                 );
-                message.warning(`Bạn đã bị xóa khỏi nhóm ${conversation.name}`);
+
+                notification.info({
+                    placement: 'topRight',
+                    bottom: 50,
+                    duration: 3,
+                    rtl: true,
+                    message: (
+                        <span>
+                            Bạn đã bị xóa khỏi nhóm{' '}
+                            <strong>{conversation.name}</strong>
+                        </span>
+                    ),
+                });
                 if (conversationId === refCurrentConversation.current) {
                     dispatch(setCurrentConversation(''));
                 }
@@ -192,9 +271,14 @@ function Chat({ socket, idNewMessage }) {
                 }
             );
 
-            socket.on('update-member', (conversationId) => {
+            socket.on('update-member', async (conversationId) => {
+                console.log(
+                    'conversationId',
+                    conversationId,
+                    refCurrentConversation.current
+                );
                 if (conversationId === refCurrentConversation.current) {
-                    dispatch(getLastViewOfMembers({ conversationId }));
+                    await dispatch(getLastViewOfMembers({ conversationId }));
                 }
             });
         }
@@ -278,10 +362,22 @@ function Chat({ socket, idNewMessage }) {
         setVisibleNews(true);
     };
 
+    const handleCancelModalJoinGroup = () => {
+        setIsVisibleJoinGroup(false);
+    };
+
     // Xử lý modal mode
 
     return (
         <Spin spinning={isLoading}>
+            {Object.keys(summaryGroup).length > 0 && (
+                <ModalJoinGroupFromLink
+                    isVisible={isVisibleModalJoinGroup}
+                    info={summaryGroup}
+                    onCancel={handleCancelModalJoinGroup}
+                />
+            )}
+
             <div id="main-chat-wrapper">
                 <Row gutter={[0, 0]}>
                     <Col span={5}>

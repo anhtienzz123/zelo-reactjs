@@ -1,40 +1,35 @@
-import {
-    DeleteFilled,
-    ExclamationCircleOutlined,
-    TagTwoTone,
-} from '@ant-design/icons';
+import { DeleteFilled, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Dropdown, Menu, message, Modal } from 'antd';
 import conversationApi from 'api/conversationApi';
 import SubMenuClassify from 'components/SubMenuClassify';
-
+import ConversationSingle from 'features/Chat/components/ConversationSingle';
 import {
     fetchListMessages,
     getLastViewOfMembers,
 } from 'features/Chat/slice/chatSlice';
-
-import ConversationSingle from 'features/Chat/components/ConversationSingle';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     getMembersConversation,
-    setCurrentConversation,
     setTypeOfConversation,
 } from '../../slice/chatSlice';
 import './style.scss';
+
 ConversationContainer.propTypes = {};
 
 function ConversationContainer(props) {
     const dispatch = useDispatch();
     const { conversations, classifies } = useSelector((state) => state.chat);
+    const { user } = useSelector((state) => state.global);
 
-    const handleConversationClick = (conversationId) => {
+    const handleConversationClick = async (conversationId) => {
         // dispatch(setCurrentConversation(conversationId));
+        await dispatch(getLastViewOfMembers({ conversationId }));
         dispatch(fetchListMessages({ conversationId, size: 10 }));
 
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
-        dispatch(getLastViewOfMembers({ conversationId }));
     };
 
     const handleOnClickItem = (e, id) => {
@@ -48,9 +43,7 @@ function ConversationContainer(props) {
             await conversationApi.deleteConversation(id);
             message.success('Xóa thành công');
         } catch (error) {
-            message.error(
-                'Bạn không thể xóa nhóm này! Hãy chọn tính năng rời nhóm'
-            );
+            message.error('Đã có lỗi xảy ra');
         }
     };
 
@@ -103,13 +96,16 @@ function ConversationContainer(props) {
                                                     }
                                                 />
 
-                                                <Menu.Item
-                                                    danger
-                                                    key="1"
-                                                    icon={<DeleteFilled />}
-                                                >
-                                                    Xoá hội thoại
-                                                </Menu.Item>
+                                                {user._id ===
+                                                    conversationEle.leaderId && (
+                                                    <Menu.Item
+                                                        danger
+                                                        key="1"
+                                                        icon={<DeleteFilled />}
+                                                    >
+                                                        Xoá hội thoại
+                                                    </Menu.Item>
+                                                )}
                                             </Menu>
                                         }
                                         trigger={['contextMenu']}

@@ -1,11 +1,11 @@
-import React from 'react';
+import { EditTwoTone, PushpinTwoTone } from '@ant-design/icons';
+import { Avatar, Tooltip } from 'antd';
+import AvatarCustom from 'components/AvatarCustom';
+import parse from 'html-react-parser';
 import PropTypes from 'prop-types';
-import './style.scss';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { Avatar, Tooltip, Typography } from 'antd';
-import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
-import { PushpinTwoTone, EditTwoTone } from '@ant-design/icons';
-import parse from 'html-react-parser'
+import './style.scss';
 
 
 NotifyMessage.propTypes = {
@@ -26,7 +26,6 @@ function NotifyMessage({ message }) {
         user,
     } = message;
     const { name, avatar } = user;
-    const { Text } = Typography;
 
     const isMyActive = user._id === global.user._id ? 'Bạn' : user.name;
 
@@ -61,6 +60,9 @@ function NotifyMessage({ message }) {
         if (text.startsWith('Đã đổi tên nhóm thành')) {
             return 9;
         }
+        if (text === 'Tham gia từ link') {
+            return 10;
+        }
 
     };
 
@@ -74,12 +76,12 @@ function NotifyMessage({ message }) {
                         return (
                             <div
                                 key={index}
-                                div
-                                className='notify-message-content_per-avatar'>
-                                <Avatar
+                                className='notify-message-content_per-avatar'
+                            >
+                                <AvatarCustom
                                     size='small'
                                     src={ele.avatar}
-                                    fallback={DEFAULT_AVATAR}
+                                    name={ele.name}
                                 />
                             </div>
                         )
@@ -89,7 +91,7 @@ function NotifyMessage({ message }) {
                             <Tooltip placement='top'>
                                 <Avatar
                                     style={{
-                                        backgroundColor: '#f56a00',
+                                        backgroundColor: '#7562d8',
                                         color: '#fff',
                                     }}
                                     size='small'>
@@ -160,9 +162,13 @@ function NotifyMessage({ message }) {
                 {
                     transferTextToValue(content) === 3 && (
                         <div className='notify-message-content_group-avatar'>
-                            <div
-                                className='notify-message-content_per-avatar'>
-                                <Avatar size='small' src={avatar} />
+                            <div className='notify-message-content_per-avatar'>
+
+                                <AvatarCustom
+                                    size='small'
+                                    src={avatar}
+                                    name={name}
+                                />
                             </div>
 
                             <div className='notify-message-content-title'>
@@ -199,14 +205,38 @@ function NotifyMessage({ message }) {
                     )
                 }
 
+                {
+                    (transferTextToValue(content) === 4 || transferTextToValue(content) === 10) && (
+                        <div className='notify-message-content_group-avatar'>
+                            <div className='notify-message-content_per-avatar'>
+                                <AvatarCustom
+                                    size='small'
+                                    src={avatar}
+                                    name={name}
+                                />
+                            </div>
+
+                            <div className='notify-message-content-title'>
+                                <span className='user-name-strong'>
+                                    {isMyActive}
+                                </span>&nbsp;
+                                đã tham gia nhóm
+                            </div>
+                        </div>
+                    )
+                }
+
 
                 {
                     transferTextToValue(content) === 2 && (
                         <>
                             <div className='notify-message-content_group-avatar'>
-                                <div
-                                    className='notify-message-content_per-avatar'>
-                                    <Avatar size='small' src={avatar} />
+                                <div className='notify-message-content_per-avatar'>
+                                    <AvatarCustom
+                                        size='small'
+                                        src={avatar}
+                                        name={name}
+                                    />
                                 </div>
 
                                 <div className='notify-message-content-title'>
@@ -231,9 +261,12 @@ function NotifyMessage({ message }) {
                     transferTextToValue(content) === 5 && (
                         <>
                             <div className='notify-message-content_group-avatar'>
-                                <div
-                                    className='notify-message-content_per-avatar'>
-                                    <Avatar size='small' src={avatar} />
+                                <div className='notify-message-content_per-avatar'>
+                                    <AvatarCustom
+                                        size='small'
+                                        src={avatar}
+                                        name={name}
+                                    />
                                 </div>
 
                                 <div className='notify-message-content-title'>
@@ -304,9 +337,13 @@ function NotifyMessage({ message }) {
                     transferTextToValue(content) === 9 && (
                         <>
                             <div className='notify-message-content_group-avatar'>
-                                <div
-                                    className='notify-message-content_per-avatar'>
-                                    <Avatar size='small' src={user.avatar} />
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                    />
                                 </div>
                                 <div className='notify-message-content-title'>
                                     <EditTwoTone />&nbsp;

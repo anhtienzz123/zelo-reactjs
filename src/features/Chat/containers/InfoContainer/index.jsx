@@ -58,7 +58,6 @@ function InfoContainer({ socket }) {
                                 <InfoTitle
                                     onBack={handleOnBack}
                                     text={conversations.find(ele => ele._id === currentConversation).type ? 'Thông tin nhóm' : ' Thông tin hội thoại'}
-
                                 />
                             </div>
                             <Scrollbars
@@ -119,11 +118,13 @@ function InfoContainer({ socket }) {
                                         />
                                     </div>
 
-                                    <div className='info_another-setting-wrapper'>
-                                        <AnotherSetting
-                                            socket={socket}
-                                        />
-                                    </div>
+                                    {conversations.find(ele => ele._id === currentConversation).type && (
+                                        <div className='info_another-setting-wrapper'>
+                                            <AnotherSetting
+                                                socket={socket}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </Scrollbars>
                         </>

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import adminApi from 'api/adminApi';
 
 const KEY = 'ADMIN';
 
