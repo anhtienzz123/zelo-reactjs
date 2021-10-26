@@ -124,8 +124,8 @@ function RegistryPage(props) {
     };
 
     return (
-        <div className='email-registry-page'>
-            <div className='main'>
+        <div className="email-registry-page">
+            <div className="main">
                 <Title level={2} style={{ textAlign: 'center' }}>
                     <Text style={{ color: '#08aeea' }}>Đăng</Text> Ký
                 </Title>
@@ -134,77 +134,84 @@ function RegistryPage(props) {
                     initialValues={{ ...registryValues.initial }}
                     onSubmit={(values) => handleRegistry(values)}
                     validationSchema={registryValues.validationSchema}
-                    enableReinitialize={true}>
+                    enableReinitialize={true}
+                >
                     {(formikProps) => {
                         return (
                             <Form>
                                 <Row gutter={[0, 16]}>
                                     <Col span={24}>
                                         <FastField
-                                            name='name'
+                                            name="name"
                                             component={InputField}
-                                            type='text'
-                                            title='Tên '
-                                            placeholder='Nhập tên đầy đủ'
+                                            type="text"
+                                            title="Tên "
+                                            placeholder="Nhập tên đầy đủ"
                                             maxLength={50}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
                                     <Col span={24}>
                                         <FastField
-                                            name='username'
+                                            name="username"
                                             component={InputField}
-                                            type='text'
-                                            title='Tài khoản'
-                                            placeholder='Nhập email/SĐT đăng ký'
+                                            type="text"
+                                            title="Tài khoản"
+                                            placeholder="Nhập email/SĐT đăng ký"
                                             maxLength={50}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
 
                                     <Col span={24}>
                                         <FastField
-                                            name='password'
+                                            name="password"
                                             component={InputField}
-                                            type='password'
-                                            title='Mật khẩu'
-                                            placeholder='Nhập mật khẩu'
+                                            type="password"
+                                            title="Mật khẩu"
+                                            placeholder="Nhập mật khẩu"
                                             maxLength={200}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
 
                                     <Col span={24}>
                                         <FastField
-                                            name='passwordconfirm'
+                                            name="passwordconfirm"
                                             component={InputField}
-                                            type='password'
-                                            title=' Xác Nhận Mật khẩu'
-                                            placeholder='Xác nhận mật khẩu'
+                                            type="password"
+                                            title=" Xác Nhận Mật khẩu"
+                                            placeholder="Xác nhận mật khẩu"
                                             maxLength={200}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
                                     <Col span={24}>
                                         <FastField
-                                            name='otpValue'
+                                            name="otpValue"
                                             component={InputField}
-                                            type='text'
-                                            title='Xác nhận'
-                                            placeholder='Nhập 6 ký tự OTP'
+                                            type="text"
+                                            title="Xác nhận"
+                                            placeholder="Nhập 6 ký tự OTP"
                                             maxLength={50}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
 
                                     {isError ? (
                                         <Col offset={8} span={16}>
                                             <Tag
-                                                color='error'
+                                                color="error"
                                                 style={{
                                                     fontWeight: 'bold',
                                                 }}
-                                                icon={<CloseCircleOutlined />}>
+                                                icon={<CloseCircleOutlined />}
+                                            >
                                                 {isError}
                                             </Tag>
                                         </Col>
@@ -213,22 +220,24 @@ function RegistryPage(props) {
                                     )}
                                     <Col offset={8} span={16}>
                                         <Button
-                                            type='primary'
+                                            type="primary"
                                             onClick={() =>
                                                 handleConfirmAccount(
                                                     formikProps.values
                                                 )
-                                            }>
+                                            }
+                                        >
                                             Xác nhận
                                         </Button>{' '}
                                         {counter > 0 ? (
-                                            <Button type='primary'>
+                                            <Button type="primary">
                                                 Gửi lại mã OTP 00:{counter}
                                             </Button>
                                         ) : (
                                             <Button
-                                                type='primary'
-                                                htmlType='submit'>
+                                                type="primary"
+                                                htmlType="submit"
+                                            >
                                                 Gửi lại OTP
                                             </Button>
                                         )}
@@ -239,8 +248,9 @@ function RegistryPage(props) {
                                     style={{
                                         color: '#08aeea',
                                         textAlign: 'left',
-                                    }}>
-                                    <Link to='/account/login'>
+                                    }}
+                                >
+                                    <Link to="/account/login">
                                         <DoubleLeftOutlined /> Quay lại
                                     </Link>
                                 </p>

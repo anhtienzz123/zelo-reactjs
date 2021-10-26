@@ -4,31 +4,41 @@ import {
     TagOutlined,
     UsergroupAddOutlined,
     UserOutlined,
+    VideoCameraOutlined
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
-import { createGroup } from 'features/Chat/chatSlice';
+import { createGroup } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import dateUtils from 'utils/dateUtils';
 import ConversationAvatar from '../ConversationAvatar';
 import ModalAddMemberToConver from '../ModalAddMemberToConver';
 import './style.scss';
 
 HeaderOptional.propTypes = {
-    avatar: PropTypes.array || PropTypes.string,
+    avatar: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.array,
+
+    ]),
     totalMembers: PropTypes.number,
     name: PropTypes.string,
     typeConver: PropTypes.bool.isRequired,
+    isLogin: PropTypes.bool,
+    lastLogin: PropTypes.object,
 };
 
 HeaderOptional.defaultProps = {
-    avatar: [] || '',
     totalMembers: 0,
     name: '',
+    isLogin: false,
+    lastLogin: null,
+
 };
 
 function HeaderOptional(props) {
-    const { avatar, totalMembers, name, typeConver } = props;
+    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin } = props;
     const type = typeof avatar;
     const { currentConversation } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
@@ -73,12 +83,29 @@ function HeaderOptional(props) {
         setIsvisible(value);
     };
 
+    console.log(isLogin, lastLogin);
+    const checkTime = () => {
+        if (lastLogin) {
+            const time = dateUtils.toTime(lastLogin);
+            if (lastLogin.indexOf('ngày') || lastLogin.indexOf('giờ') || lastLogin.indexOf('phút')) {
+                return true;
+            }
+            return false
+        }
+    }
+
+
     return (
         <div id='header-optional'>
             <div className='header_wrapper'>
                 <div className='header_leftside'>
                     <div className='icon_user'>
-                        {<ConversationAvatar avatar={avatar} />}
+                        {<ConversationAvatar
+                            avatar={avatar}
+                            totalMembers={totalMembers}
+                            type={typeConver}
+                            name={name}
+                        />}
                     </div>
 
                     <div className='info_user'>
@@ -87,16 +114,41 @@ function HeaderOptional(props) {
                         </div>
 
                         <div className='lastime-access'>
-                            {totalMembers > 2 ? (
+                            {typeConver ? (
                                 <div className='member-hover'>
                                     <UserOutlined />
                                     &nbsp;{totalMembers}
                                     <span>&nbsp;Thành viên</span>
                                 </div>
                             ) : (
-                                <span>Vừa truy cập</span>
+                                <>
+                                    {
+                                        isLogin ? (
+                                            <>
+                                                <span>Đang hoạt động</span>
+                                                <div className='small-bar'></div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {lastLogin && (
+                                                    <>
+                                                        <span>
+                                                            {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
+                                                        </span>
+
+                                                        <div className='small-bar'></div>
+                                                    </>
+                                                )}
+                                            </>
+                                        )
+                                    }
+                                </>
                             )}
-                            <div className='small-bar'></div>
+
+
+
+
+
                             <div className='classify-object'>
                                 <TagOutlined />
                             </div>
@@ -106,16 +158,24 @@ function HeaderOptional(props) {
 
                 <div className='header_rightside'>
                     <div
-                        className='create-group'
+                        className='icon-header create-group'
                         onClick={handleAddMemberToGroup}>
                         <UsergroupAddOutlined />
                     </div>
-                    <div className='search-message'>
+
+                    <div className='icon-header search-message'>
                         <SearchOutlined />
                     </div>
-                    <div className='pop-up-layout'>
+
+                    <div className='icon-header call-video'>
+                        <VideoCameraOutlined />
+                    </div>
+
+                    <div className='icon-header pop-up-layout'>
                         <SplitCellsOutlined />
                     </div>
+
+
                 </div>
             </div>
 

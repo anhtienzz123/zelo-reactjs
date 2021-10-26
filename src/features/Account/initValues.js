@@ -7,8 +7,11 @@ export const loginValues = {
     validationSchema: Yup.object().shape({
         username: Yup.string()
             .required('Tài khoản không được bỏ trống.')
-            .matches(/((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i, "Số điện thoại hoặc email không hợp lệ"),
-           // .email('Email không hợp lệ'),
+            .matches(
+                /((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                'Số điện thoại hoặc email không hợp lệ'
+            ),
+        // .email('Email không hợp lệ'),
         password: Yup.string().required('Mật khẩu không được bỏ trống'),
     }),
 };
@@ -25,7 +28,10 @@ export const registryValues = {
         name: Yup.string().required('Tên không được bỏ trống.'),
         username: Yup.string()
             .required('Tài khoản không được bỏ trống.')
-            .matches(/((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i, "Số điện thoại hoặc email không hợp lệ"),
+            .matches(
+                /((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                'Số điện thoại hoặc email không hợp lệ'
+            ),
         password: Yup.string()
             .required('Mật khẩu không được bỏ trống')
             .min(8, 'Mật khẩu phải từ 8-50 ký tự')
@@ -47,7 +53,10 @@ export const forgotValues = {
     validationSchema: Yup.object().shape({
         username: Yup.string()
             .required('Tài khoản không được bỏ trống.')
-            .matches(/((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i, "Số điện thoại hoặc email không hợp lệ"),
+            .matches(
+                /((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                'Số điện thoại hoặc email không hợp lệ'
+            ),
         password: Yup.string()
             .required('Mật khẩu không được bỏ trống')
             .min(8, 'Mật khẩu phải từ 8-50 ký tự')
@@ -65,11 +74,14 @@ export const otpValues = {
         passwordconfirm: '',
         otpValue: '',
     },
-   
+
     validationSchema: Yup.object().shape({
         username: Yup.string()
             .required('Tài khoản không được bỏ trống.')
-            .matches(/((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i, "Số điện thoại hoặc email không hợp lệ"),
+            .matches(
+                /((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                'Số điện thoại hoặc email không hợp lệ'
+            ),
         password: Yup.string()
             .required('Mật khẩu không được bỏ trống')
             .min(8, 'Mật khẩu phải từ 8-50 ký tự')

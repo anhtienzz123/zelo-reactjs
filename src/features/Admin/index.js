@@ -26,7 +26,7 @@ function Admin(props) {
         <div>
             <Layout style={{ minHeight: '100vh' }}>
                 <SiderBar />
-                <Layout className='site-layout'>
+                <Layout className="site-layout">
                     <div style={{ backgroundColor: 'white', padding: '20px' }}>
                         <Button onClick={handleLogout}>Đăng xuất</Button>
                     </div>
@@ -35,7 +35,8 @@ function Admin(props) {
                         style={{
                             margin: '10px 10px',
                             background: 'white',
-                        }}>
+                        }}
+                    >
                         <Switch>
                             <Route exact path={`${url}`} component={UserPage} />
 

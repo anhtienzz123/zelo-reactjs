@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import {
     BellOutlined,
     CheckSquareOutlined,
@@ -9,13 +6,15 @@ import {
     MessageOutlined,
     SettingOutlined,
     StarOutlined,
-    UserOutlined,
+    UserOutlined
 } from '@ant-design/icons';
-import './style.scss';
-import { Avatar, Badge, Button, Popover, Modal } from 'antd';
+import { Badge, Button, Modal, Popover } from 'antd';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setToTalUnread } from '../../chatSlice';
+import { Link, useHistory } from 'react-router-dom';
+import { setToTalUnread } from '../../slice/chatSlice';
+import './style.scss';
 
 NavbarContainer.propTypes = {};
 
@@ -25,7 +24,9 @@ function NavbarContainer(props) {
     const { user } = useSelector((state) => state.global);
 
     const { conversations, toTalUnread } = useSelector((state) => state.chat);
+    const { amountNotify } = useSelector((state) => state.friend);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     useEffect(() => {
         dispatch(setToTalUnread());
@@ -47,6 +48,13 @@ function NavbarContainer(props) {
         setVisible(false);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        history.push('/')
+    }
+    console.log('user admin', user)
+
     const content = (
         <div className='pop_up-personal'>
             <div className='pop_up-personal--item' onClick={showModal}>
@@ -62,7 +70,7 @@ function NavbarContainer(props) {
                     <LogoutOutlined />
                 </div>
 
-                <div className='pop_up-personal--item-text'>Đăng xuất</div>
+                <div className='pop_up-personal--item-text' onClick={handleLogout}>Đăng xuất</div>
             </div>
         </div>
     );
@@ -91,6 +99,8 @@ function NavbarContainer(props) {
                                         isActive={true}
                                         common={false}
                                         avatar={user.avatar}
+                                        name={user.name}
+                                        color='#eb822c'
                                     />
                                 </div>
                             </Button>
@@ -110,7 +120,8 @@ function NavbarContainer(props) {
                     <li className='sidebar_nav_item'>
                         <Link to='/chat/friends'>
                             <div className='sidebar_nav_item--icon'>
-                                <Badge count={5}>
+                                <Badge count={amountNotify}>
+
                                     <ContactsOutlined />
                                 </Badge>
                             </div>
@@ -120,7 +131,7 @@ function NavbarContainer(props) {
                     <li className='sidebar_nav_item'>
                         <Link to='/notify'>
                             <div className='sidebar_nav_item--icon'>
-                                <Badge count={5}>
+                                <Badge>
                                     <BellOutlined />
                                 </Badge>
                             </div>

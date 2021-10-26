@@ -3,13 +3,18 @@ import PropTypes from 'prop-types';
 import { CaretDownOutlined, DeleteOutlined, ExclamationCircleOutlined, ExportOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import conversationApi from 'api/conversationApi';
-import { leaveGroup } from '../../chatSlice';
+import { leaveGroup } from '../../slice/chatSlice';
 import './style.scss';
 import { message, Modal } from 'antd';
-import { socket } from 'utils/socketClient';
-AnotherSetting.propTypes = {
 
+AnotherSetting.propTypes = {
+    socket: PropTypes.object,
 };
+
+AnotherSetting.defaultProps = {
+    socket: {}
+};
+
 
 const styleIconDrop = {
     transform: 'rotate(-90deg)'
@@ -20,7 +25,7 @@ const styleInteract = {
 }
 
 
-function AnotherSetting(props) {
+function AnotherSetting({ socket }) {
     const [isDrop, setIsDrop] = useState(true);
     const { currentConversation } = useSelector(state => state.chat);
     const dispatch = useDispatch();
@@ -30,11 +35,6 @@ function AnotherSetting(props) {
         setIsDrop(!isDrop);
     }
 
-    const handleLeaveGroup = async () => {
-
-        // await conversationApi.leaveGroup(currentConversation);
-        // dispatch(leaveGroup(currentConversation));
-    }
 
 
     function confirm() {

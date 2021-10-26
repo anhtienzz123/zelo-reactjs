@@ -12,22 +12,20 @@ const meApi = {
             name,
             dateOfBirth,
             gender,
-        })
+        });
     },
 
     updateAvatar: (file) => {
         return axiosClient.patch(`${API_URL}/avatar`, {
-            file
-        })
+            file,
+        });
     },
 
     updateCoverImage: (file) => {
         return axiosClient.patch(`${API_URL}/cover-image`, {
-            file
-        })
-    }
+            file,
+        });
+    },
 };
-
-
 
 export default meApi;

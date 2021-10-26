@@ -8,13 +8,14 @@ import CallVideo from 'features/CallVideo';
 import Home from 'features/Home';
 import ChatLayout from 'layout/ChatLayout';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './scss/App.scss';
 
 function App() {
     const dispatch = useDispatch();
     const [isFetch, setIsFetch] = useState(false);
+    const { user } = useSelector((state) => state.global);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -32,20 +33,19 @@ function App() {
 
     return (
         <BrowserRouter>
-            <div className='App'>
+            <div className="App">
                 <Switch>
-                    <Route exact path='/' component={Home} />
+                    <Route exact path="/" component={Home} />
 
+                    <ProtectedRoute path="/chat" component={ChatLayout} />
 
-                    <ProtectedRoute path='/chat' component={ChatLayout} />
-
-                    <AdminProtectedRoute path='/admin' component={Admin} />
+                    <AdminProtectedRoute path="/admin" component={Admin} />
                     <ProtectedRoute
-                        path='/call-video/:conversationId'
+                        path="/call-video/:conversationId"
                         component={CallVideo}
                     />
 
-                    <Route path='/account' component={Account} />
+                    <Route path="/account" component={Account} />
 
                     <Route component={NotFoundPage} />
                 </Switch>

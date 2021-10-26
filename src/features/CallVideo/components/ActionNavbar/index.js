@@ -10,7 +10,7 @@ import {
 
 ActionNavbar.propTypes = {};
 
-function ActionNavbar({ onToggleVideo, onToggleAudio }) {
+function ActionNavbar({ onToggleVideo, onToggleAudio, onShareScreen }) {
     const handleToggleVideo = () => {
         if (onToggleVideo) onToggleVideo();
     };
@@ -19,28 +19,37 @@ function ActionNavbar({ onToggleVideo, onToggleAudio }) {
         if (onToggleVideo) onToggleAudio();
     };
 
+    const handleShareScreen = () => {
+        if (onShareScreen) onShareScreen();
+    };
+
     return (
         <div
-            className='action-navbar'
-            style={{ width: '40%', margin: '0 auto' }}>
-            <Menu mode='horizontal'>
+            className="action-navbar"
+            style={{ width: '40%', margin: '0 auto' }}
+        >
+            <Menu mode="horizontal">
                 <Menu.Item
-                    key='toggle-video'
+                    key="toggle-video"
                     icon={<VideoCameraOutlined />}
-                    onClick={handleToggleVideo}>
+                    onClick={handleToggleVideo}
+                >
                     Tắt video
                 </Menu.Item>
 
                 <Menu.Item
-                    key='toggle-audio'
+                    key="toggle-audio"
                     icon={<AudioOutlined />}
-                    onClick={handleToggleAudio}>
+                    onClick={handleToggleAudio}
+                >
                     Tắt audio
                 </Menu.Item>
 
                 <Menu.Item
-                    key='toggle-share-screen'
-                    icon={<ShareAltOutlined />}>
+                    key="toggle-share-screen"
+                    icon={<ShareAltOutlined />}
+                    onClick={handleShareScreen}
+                >
                     Share màn hình
                 </Menu.Item>
 

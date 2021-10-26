@@ -60,7 +60,7 @@ function NavigationChatBox(props) {
                 <li className='item-chat-box'>
 
                     <UploadFile
-                        type='Image'
+                        typeOfFile='media'
 
                     >
                         <Button
@@ -77,7 +77,7 @@ function NavigationChatBox(props) {
 
                 <li className='item-chat-box'>
                     <UploadFile
-                        type='File'
+                        typeOfFile='File'
 
                     >
                         <Button

@@ -1,50 +1,69 @@
-import React, { useState } from 'react';
+import { Col, Row, Select } from 'antd';
+import RangeCalendarCustom from 'components/RangeCalendarCustom';
 import PropTypes from 'prop-types';
-import { Col, Row, Select, DatePicker } from 'antd';
+import React, { useState } from 'react';
+import fileHelpers from 'utils/fileHelpers';
 import PersonalIcon from '../PersonalIcon';
 import './style.scss';
-import FsLightbox from 'fslightbox-react';
-import RangeCalendarCustom from 'components/RangeCalendarCustom';
 
-TabPaneMedia.propTypes = {};
+TabPaneMedia.propTypes = {
+    members: PropTypes.array,
+    onQueryChange: PropTypes.func,
+};
+
+TabPaneMedia.defaultProps = {
+    members: [],
+    onQueryChange: null,
+};
 
 function TabPaneMedia(props) {
+    const { members, onQueryChange } = props;
     const { Option } = Select;
-    const { RangePicker } = DatePicker;
-    const dateFormat = 'DD/MM/YYYY';
 
-    const [toggler, setToggler] = useState(false);
+    const [sender, setSender] = useState('');
+    const [query, setQuery] = useState({});
+    const handleChange = (memberId) => {
 
-    const [productIndex, setProductIndex] = useState(0);
-    const image = [
-        'https://i.imgur.com/fsyrScY.jpg',
-        'https://www.youtube.com/watch?v=xshEZzpS4CQ',
-        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    ];
 
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
+        const index = members.findIndex(
+            (memberEle) => memberEle._id == memberId
+        );
+        let queryTempt = {};
+
+        if (index > -1) {
+            setSender(members[index].name);
+            queryTempt = {
+                ...query,
+                senderId: memberId,
+            };
+            setQuery(queryTempt);
+        } else {
+            setSender('');
+            queryTempt = {
+                ...query,
+                senderId: '',
+            };
+            setQuery(queryTempt);
+        }
+
+        if (onQueryChange) onQueryChange(queryTempt);
     };
 
-    function onSearch(val) {
-        console.log('search:', val);
-    }
 
     const handleDatePickerChange = (date, dateString) => {
-        console.log('date', date);
-        console.log('date String', dateString);
+        const queryTempt = {
+            ...query,
+            ...fileHelpers.convertDateStringsToServerDateObject(dateString),
+        };
+        setQuery({ ...query, queryTempt });
+        if (onQueryChange) onQueryChange(queryTempt);
     };
 
-    const handleLenghtText = (text) => {
-        if (text.length > 14) {
-            return text.substring(0, 15) + '...';
-        }
-    };
 
     return (
         <div id='tabpane-media'>
             <Row gutter={[16, 8]}>
-                <Col span={12}>
+                <Col span={24}>
                     <Select
                         dropdownMatchSelectWidth={false}
                         optionLabelProp='label'
@@ -53,7 +72,8 @@ function TabPaneMedia(props) {
                         onChange={handleChange}
                         placeholder='Người gửi'
                         optionFilterProp='children'
-                        onSearch={onSearch}
+                        //onSearch={onSearch}
+                        value={sender}
                         filterOption={(input, option) =>
                             option.value
                                 .toLowerCase()
@@ -63,152 +83,35 @@ function TabPaneMedia(props) {
                             optionA.children
                                 .toLowerCase()
                                 .localeCompare(optionB.children.toLowerCase())
-                        }>
-                        <Option
-                            value='1'
-                            title='ádkljfklajskldjflkjaklsdf'
-                            label='Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
+                        }
+                        allowClear
+                    >
+                        {members.map((memberEle, index) => (
+                            <Option key={index} value={memberEle._id}>
+                                <div className='option-item'>
+                                    <div className='icon-user-item'>
+                                        <PersonalIcon
+                                            demention={24}
+                                            avatar={memberEle.avatar}
+                                        />
+                                    </div>
 
-                                <div className='name-user-item'>
-                                    Hoàng Hạ Xuyên
+                                    <div className='name-user-item'>
+                                        {memberEle.name}
+                                    </div>
                                 </div>
-                            </div>
-                        </Option>
-
-                        <Option value='2' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-                        <Option value='3' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-
-                        <Option value='3' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-
-                        <Option value='3' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-
-                        <Option value='3' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-
-                        <Option value='3' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-
-                        <Option value='3' label='Nguyễn Hoàng Hạ Xuyên'>
-                            <div className='option-item'>
-                                <div className='icon-user-item'>
-                                    <PersonalIcon demention={24} />
-                                </div>
-
-                                <div className='name-user-item'>
-                                    Nguyễn Hoàng Hạ Xuyên
-                                </div>
-                            </div>
-                        </Option>
-                    </Select>
-                </Col>
-                <Col span={12}>
-                    <Select
-                        style={{ width: '100%' }}
-                        onChange={handleChange}
-                        placeholder='Ngày gửi'>
-                        <Option value={1}>Trong vòng 1 tuần</Option>
-                        <Option value={2}>Trong vòng 1 tháng</Option>
-                        <Option value={3}>Trong vòng 3 tháng </Option>
+                            </Option>
+                        ))}
                     </Select>
                 </Col>
 
                 <Col span={24}>
-                    {/* <RangePicker
-                        style={{ width: '100%' }}
-                        placeholder={['Từ ngày', 'Đến ngày']}
-                        format={dateFormat}
-                        onChange={handleDatePickerChange}
-                    /> */}
-
                     <RangeCalendarCustom
                         style={{ width: '100%' }}
                         onChange={handleDatePickerChange}
+                        allowClear={true}
                     />
                 </Col>
-                {/* 
-               <Col span={24} >
-
-                    {/* <button onClick={() => setToggler(!toggler)}>
-                        Toggle Lightbox
-                    </button> */}
-                {/* https://fslightbox.com/react/documentation/control-slide-number */}
-
-                {/* <FsLightbox
-                        toggler={toggler}
-                        sources={image}
-                        slide={2}
-                        thumbs={[
-                            null,
-                            'images/second.png',
-                            'images/third.jpg'
-                        ]}
-                    /> *
-
-
-
-                </Col> */}
             </Row>
         </div>
     );

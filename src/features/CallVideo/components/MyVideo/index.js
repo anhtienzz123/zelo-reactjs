@@ -5,22 +5,30 @@ MyVideo.propTypes = {
     stream: PropTypes.object,
 };
 
-function MyVideo({ stream }) {
-    const ref = useRef({ srcObject: '' });
+function MyVideo({ userId, stream }) {
+    const ref = useRef(null);
 
     useEffect(() => {
-        if (stream) ref.current.srcObject = stream;
+        console.log('stream render: ', stream);
+        if (stream) {
+            ref.current.srcObject = stream;
+            ref.current.play();
+        }
     }, []);
 
     return (
-        <video
-            //class='local-video mirror-mode'
-            // id='local'
-            ref={ref}
-            volume='0'
-            style={{ width: '100%' }}
-            autoPlay
-            muted></video>
+        <div>
+            <h1>userId: {userId}</h1>
+            <video
+                //class='local-video mirror-mode'
+                // id='local'
+                ref={ref}
+                volume="0"
+                style={{ width: '100%' }}
+                autoPlay
+                muted
+            ></video>
+        </div>
     );
 }
 

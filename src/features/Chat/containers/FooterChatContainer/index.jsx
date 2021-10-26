@@ -4,16 +4,17 @@ import messageApi from 'api/messageApi';
 import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
 import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { socket } from 'utils/socketClient';
 import './style.scss';
 FooterChatContainer.propTypes = {
     onScrollWhenSentText: PropTypes.func,
+    socket: PropTypes.object,
 };
 
 FooterChatContainer.defaultProps = {
     onScrollWhenSentText: null,
+    socket: null
 };
 
 const style_EditorText = {
@@ -26,7 +27,7 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer({ onScrollWhenSentText }) {
+function FooterChatContainer({ onScrollWhenSentText, socket }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations } = useSelector(
         (state) => state.chat
@@ -36,24 +37,36 @@ function FooterChatContainer({ onScrollWhenSentText }) {
     const [valueText, setValueText] = useState('');
     const [isHightLight, setHightLight] = useState(false);
     const { user } = useSelector((state) => state.global);
+    const [detailConver, setDetailConver] = useState({});
 
-    const detailConver = conversations.find(
-        (conver) => conver._id === currentConversation
-    );
+    useEffect(() => {
+        if (currentConversation) {
+            const tempConver = conversations.find(
+                (conver) => conver._id === currentConversation
+            );
+            if (tempConver) {
+                setDetailConver(tempConver);
+            }
+        }
+
+    }, [currentConversation])
+
+
+
 
     const handleClickTextFormat = () => {
         setShowTextFormat(!showTextFormat);
         setValueText('');
     };
 
-    function sendMessage(value, type) {
+    async function sendMessage(value, type) {
         const newMessage = {
             content: value,
             type: type,
             conversationId: currentConversation,
         };
 
-        messageApi
+        await messageApi
             .sendTextMessage(newMessage)
             .then((res) => {
                 const { _id } = res;
@@ -71,8 +84,8 @@ function FooterChatContainer({ onScrollWhenSentText }) {
         } else {
             sendMessage(valueText, 'TEXT');
         }
-
         setValueText('');
+        socket.emit('not-typing', currentConversation, user);
     };
 
     const handleOnChageInput = (e) => {
@@ -80,7 +93,10 @@ function FooterChatContainer({ onScrollWhenSentText }) {
         value.length > 0 ? setShowLike(false) : setShowLike(true);
         setValueText(value);
 
+
         if (value.length > 0) {
+            console.log(socket);
+            console.log(currentConversation);
             socket.emit('typing', currentConversation, user);
         } else {
             socket.emit('not-typing', currentConversation, user);
@@ -99,14 +115,18 @@ function FooterChatContainer({ onScrollWhenSentText }) {
                 if (valueInput.trim().length > 0) {
                     sendMessage(valueInput, 'TEXT');
                     setValueText('');
+                    socket.emit('not-typing', currentConversation, user);
+
                 }
 
                 event.preventDefault();
             }
         }
+
     };
 
     const handleOnFocus = (e) => {
+        socket.emit('conversation-last-view', currentConversation);
         setHightLight(true);
     };
 

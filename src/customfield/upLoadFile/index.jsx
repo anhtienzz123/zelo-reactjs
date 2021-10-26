@@ -1,58 +1,39 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Upload, message } from 'antd';
-import commonFuc from 'utils/commonFuc';
+import { message, Upload } from 'antd';
 import messageApi from 'api/messageApi';
+import ACCEPT_FILE from 'constants/acceptFile';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 UploadFile.propTypes = {
-    type: PropTypes.string,
+    typeOfFile: PropTypes.string,
 };
 
 UploadFile.defaultProp = {
-    type: '',
+    typeOfFile: '',
 };
 
 
 function UploadFile(props) {
-    const { type } = props;
+    const { typeOfFile } = props;
 
-    const ACCEPT_IMG_AND_VIDEO = 'image/*,video/*';
-    const [fileList, setFileList] = useState([]);
+    // const ACCEPT_IMG_AND_VIDEO = 'image/*,video/*';
     const { user } = useSelector(state => state.global);
     const { currentConversation } = useSelector(state => state.chat);
 
 
 
-    const handleChange = async (info) => {
-
-
-
-    };
-
-
-
-
-    const handleAction = (file) => {
-
-
-    };
-
     const handleCustomRequest = async ({ onSuccess, onError, file, onProgress }) => {
-        console.log({ onSuccess, onError, file, onProgress });
-        const fmData = new FormData();
-        // const typeFile = file.type.startsWith('image') ? true : false;
-        let typeFile;
 
-        if (type === 'Image') {
+        const fmData = new FormData();
+        let typeFile
+
+        if (typeOfFile === 'media') {
             typeFile = file.type.startsWith('image') ? 'IMAGE' : "VIDEO";
         } else {
-            typeFile = 'FILE'
+            typeFile = 'FILE';
+
         }
-
-
-
-
         fmData.append("file", file);
 
         const attachInfo = {
@@ -60,27 +41,21 @@ function UploadFile(props) {
             conversationId: currentConversation
         }
         try {
-
-            const result = await messageApi.sendFileThroughMessage(fmData, attachInfo, (percentCompleted) => {
+            await messageApi.sendFileThroughMessage(fmData, attachInfo, (percentCompleted) => {
                 console.log('value', percentCompleted);
             });
-
-            message.success(`${file.name} file uploaded successfully`);
+            message.success(`Đã tải lên ${file.name}`);
         } catch (e) {
-            message.error(`${file.name} file upload failed.`);
+            message.error(`Tải lên ${file.name} thất bại.`);
         }
 
     }
 
     return (
         <Upload
-            accept={type === 'Image' ? ACCEPT_IMG_AND_VIDEO : ''}
-            action={handleAction}
-            fileList={fileList}
-            onChange={handleChange}
+            accept={typeOfFile === 'media' ? ACCEPT_FILE.IMAGE_VIDEO : ACCEPT_FILE.FILE}
             multiple={true}
             progress
-
             customRequest={handleCustomRequest}
             showUploadList={false}
         >

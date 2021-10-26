@@ -1,35 +1,97 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
-import ThumbnailMutiple from '../ThumbnailMutiple';
 import { EditOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
-import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
+import { Modal, Input, message } from 'antd';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import ConversationAvatar from '../ConversationAvatar';
+import { useDispatch, useSelector } from 'react-redux';
+import './style.scss';
+import conversationApi from 'api/conversationApi';
+import { updateNameOfConver } from 'features/Chat/slice/chatSlice';
 
 InfoNameAndThumbnail.propTypes = {
-
+    conversation: PropTypes.object,
 };
 
-function InfoNameAndThumbnail(props) {
+InfoNameAndThumbnail.defaultProps = {
+    conversation: {}
+};
 
-    function handleClick(e) {
-        console.log('click', e);
+
+function InfoNameAndThumbnail({ conversation }) {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [value, setValue] = useState('');
+    const { currentConversation } = useSelector(state => state.chat);
+    const dispatch = useDispatch();
+
+
+
+    useEffect(() => {
+        if (conversation.type) {
+            setValue(conversation.name);
+        }
+    }, [currentConversation])
+
+
+    function handleOnClick() {
+        setIsModalVisible(true)
     }
-    const { SubMenu } = Menu;
+    function handleCancel() {
+        setIsModalVisible(false)
+    }
+
+    async function handleOk() {
+        try {
+            await conversationApi.changeNameConversation(currentConversation, value);
+            message.success('Đổi tên nhóm thành công');
+        } catch (error) {
+        }
+        setIsModalVisible(false);
+
+
+    }
+    const handleInputChange = (e) => {
+        setValue(e.target.value);
+    }
+
     return (
         <div className='info_name-and-thumbnail'>
+
+            <Modal
+                title={'Đổi tên cuộc trò chuyện'}
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText='Thay đổi'
+                cancelText='Hủy'
+                closable={false}
+            >
+                <Input
+                    placeholder="Nhập tên mới"
+                    onChange={handleInputChange}
+                    value={value}
+                />
+            </Modal>
             <div className="info-thumbnail">
-                <ThumbnailMutiple participants={4} />
+                <ConversationAvatar
+                    isGroupCard={true}
+                    totalMembers={conversation.totalMembers}
+                    type={conversation.type}
+                    avatar={conversation.avatar}
+                    name={conversation.name}
+
+                />
             </div>
 
             <div className="info-name-and-button">
                 <div className='info-name'>
-                    <span>Lái máy bay đồ sơn</span>
+                    <span>{conversation.name}</span>
                 </div>
 
-                <div className='info-button'>
-                    <EditOutlined />
-                </div>
+                {conversation.type && (
+                    <div className='info-button'>
+                        <EditOutlined onClick={handleOnClick} />
+                    </div>
+                )}
 
             </div>
 

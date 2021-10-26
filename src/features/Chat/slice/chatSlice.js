@@ -1,10 +1,10 @@
-import { react } from '@babel/types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import ClassifyApi from 'api/ClassifyApi';
 import conversationApi from 'api/conversationApi';
+import friendApi from 'api/friendApi';
 import messageApi from 'api/messageApi';
 import dateUtils from 'utils/dateUtils';
-import friendApi from 'api/friendApi';
-import ClassifyApi from 'api/ClassifyApi';
+import pinMessageApi from 'api/pinMessageApi';
 
 const KEY = 'chat';
 
@@ -81,8 +81,6 @@ export const fetchListFriends = createAsyncThunk(
     async (params, thunkApi) => {
         const { name } = params;
         const friends = await friendApi.fetchFriends(name);
-        console.log('Friend');
-        console.log('Friend', friends);
         return friends;
     }
 );
@@ -106,6 +104,7 @@ export const fetchConversationById = createAsyncThunk(
         const conversation = await conversationApi.getConversationById(
             conversationId
         );
+
         return conversation;
     }
 );
@@ -130,6 +129,35 @@ export const getMembersConversation = createAsyncThunk(
     }
 );
 
+// ============ PIN MESSAGE ==============
+
+export const fetchPinMessages = createAsyncThunk(
+    `${KEY}/fetchPinMessages`,
+    async (params, _) => {
+        const { conversationId } = params;
+        const pinMessages = await pinMessageApi.getPinMessages(conversationId);
+        return pinMessages;
+    }
+);
+
+// ============
+
+// ============
+export const getLastViewOfMembers = createAsyncThunk(
+    `${KEY}/getLastViewOfMembers`,
+    async (params, _) => {
+        const { conversationId } = params;
+        console.log('lastViewasdfasdfsdaf');
+        const lastViews = await conversationApi.getLastViewOfMembers(
+            conversationId
+        );
+
+        console.log('lastViews', lastViews);
+
+        return lastViews;
+    }
+);
+
 const chatSlice = createSlice({
     name: KEY,
     initialState: {
@@ -145,6 +173,8 @@ const chatSlice = createSlice({
         toTalUnread: 0,
         classifies: [],
         colors: [],
+        pinMessages: [],
+        lastViewOfMember: [],
     },
     reducers: {
         addMessage: (state, action) => {
@@ -358,6 +388,59 @@ const chatSlice = createSlice({
         setCurrentConversation: (state, action) => {
             state.currentConversation = action.payload;
         },
+        updateClassifyToConver: (state, action) => {
+            state.conversations = action.payload;
+        },
+        setConversations: (state, action) => {
+            const conversation = action.payload;
+            state.conversations = [conversation, ...state.conversations];
+        },
+        setNumberUnreadForNewFriend: (state, action) => {
+            const id = action.payload;
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === id
+            );
+            const numberUnread = state.conversations[index].numberUnread + 1;
+            state.conversations[index] = {
+                ...state.conversations[index],
+                numberUnread,
+            };
+        },
+        updateTimeForConver: (state, action) => {
+            const { isOnline, id, lastLogin } = action.payload;
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === id
+            );
+            const newConver = {
+                ...state.conversations[index],
+                isOnline,
+                lastLogin,
+            };
+            state.conversations[index] = newConver;
+        },
+        updateNameOfConver: (state, action) => {
+            const { conversationId, conversationName } = action.payload;
+            console.log(conversationId, conversationName);
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === conversationId
+            );
+            console.log(index);
+            state.conversations[index] = {
+                ...state.conversations[index],
+                name: conversationName,
+            };
+        },
+
+        updateLastViewOfMembers: (state, action) => {
+            const { conversationId, userId, lastView } = action.payload;
+
+            if (conversationId != state.currentConversation) return;
+
+            const index = state.lastViewOfMember.findIndex(
+                (ele) => ele.user._id == userId
+            );
+            state.lastViewOfMember[index].lastView = lastView;
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -401,6 +484,9 @@ const chatSlice = createSlice({
         // FRIEND
         [fetchListFriends.pending]: (state, action) => {
             state.isLoading = true;
+        },
+        [fetchListFriends.rejected]: (state, action) => {
+            state.isLoading = false;
         },
         [fetchListFriends.fulfilled]: (state, action) => {
             state.friends = action.payload;
@@ -447,6 +533,17 @@ const chatSlice = createSlice({
         [fetchListColor.fulfilled]: (state, action) => {
             state.colors = action.payload;
         },
+
+        [fetchPinMessages.fulfilled]: (state, action) => {
+            state.pinMessages = action.payload.reverse();
+        },
+
+        [fetchPinMessages.fulfilled]: (state, action) => {
+            state.pinMessages = action.payload.reverse();
+        },
+        [getLastViewOfMembers.fulfilled]: (state, action) => {
+            state.lastViewOfMember = action.payload;
+        },
     },
 });
 
@@ -466,6 +563,12 @@ export const {
     updateMemberLeaveGroup,
     isDeletedFromGroup,
     setCurrentConversation,
+    updateClassifyToConver,
+    setConversations,
+    setNumberUnreadForNewFriend,
+    updateTimeForConver,
+    updateNameOfConver,
+    updateLastViewOfMembers,
 } = actions;
 
 export default reducer;
