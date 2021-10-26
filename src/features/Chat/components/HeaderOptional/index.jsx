@@ -1,4 +1,6 @@
 import {
+    NumberOutlined,
+    RollbackOutlined,
     SearchOutlined,
     SplitCellsOutlined,
     TagOutlined,
@@ -44,6 +46,7 @@ function HeaderOptional(props) {
     const [isVisible, setIsvisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [typeModal, setTypeModal] = useState(1);
+    const [isChannel, setIsChannel] = useState(true)
     const dispatch = useDispatch();
 
     // false đơn, true là nhóm
@@ -113,65 +116,89 @@ function HeaderOptional(props) {
                             <span>{name}</span>
                         </div>
 
-                        <div className='lastime-access'>
-                            {typeConver ? (
-                                <div className='member-hover'>
-                                    <UserOutlined />
-                                    &nbsp;{totalMembers}
-                                    <span>&nbsp;Thành viên</span>
+                        {isChannel ? (
+                            <div className='channel_info'>
+                                <div className="channel-icon">
+                                    <NumberOutlined />
                                 </div>
-                            ) : (
-                                <>
-                                    {
-                                        isLogin ? (
-                                            <>
-                                                <span>Đang hoạt động</span>
-                                                <div className='small-bar'></div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {lastLogin && (
-                                                    <>
-                                                        <span>
-                                                            {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
-                                                        </span>
 
-                                                        <div className='small-bar'></div>
-                                                    </>
-                                                )}
-                                            </>
-                                        )
-                                    }
-                                </>
-                            )}
+                                <div className="channel-name">
+                                    Marketing team
+                                </div>
 
-
-
-
-                            {typeConver && <div className='small-bar'></div>}
-
-
-                            <div className='classify-object'>
-                                <TagOutlined />
                             </div>
-                        </div>
+                        ) : (
+                            <div className='lastime-access'>
+                                {typeConver ? (
+                                    <div className='member-hover'>
+                                        <UserOutlined />
+                                        &nbsp;{totalMembers}
+                                        <span>&nbsp;Thành viên</span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {
+                                            isLogin ? (
+                                                <>
+                                                    <span>Đang hoạt động</span>
+                                                    <div className='small-bar'></div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {lastLogin && (
+                                                        <>
+                                                            <span>
+                                                                {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
+                                                            </span>
+
+                                                            <div className='small-bar'></div>
+                                                        </>
+                                                    )}
+                                                </>
+                                            )
+                                        }
+                                    </>
+                                )}
+
+
+
+                                {typeConver && <div className='small-bar'></div>}
+
+
+                                <div className='classify-object'>
+                                    <TagOutlined />
+                                </div>
+
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 <div className='header_rightside'>
-                    <div
-                        className='icon-header create-group'
-                        onClick={handleAddMemberToGroup}>
-                        <UsergroupAddOutlined />
-                    </div>
+                    {isChannel ? (
+                        <div
+                            title='Trở lại kênh chính'
+                            className='icon-header back-channel'
+                        >
+                            <RollbackOutlined />
+                        </div>
+                    ) : (
+                        <>
+                            <div
+                                className='icon-header create-group'
+                                onClick={handleAddMemberToGroup}>
+                                <UsergroupAddOutlined />
+                            </div>
 
-                    <div className='icon-header search-message'>
-                        <SearchOutlined />
-                    </div>
+                            <div className='icon-header search-message'>
+                                <SearchOutlined />
+                            </div>
 
-                    <div className='icon-header call-video'>
-                        <VideoCameraOutlined />
-                    </div>
+                            <div className='icon-header call-video'>
+                                <VideoCameraOutlined />
+                            </div>
+                        </>
+                    )}
 
                     <div className='icon-header pop-up-layout'>
                         <SplitCellsOutlined />

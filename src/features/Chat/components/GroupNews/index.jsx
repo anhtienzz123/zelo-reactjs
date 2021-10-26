@@ -5,17 +5,27 @@ import InfoTitle from '../InfoTitle'
 import Scrollbars from 'react-custom-scrollbars'
 import { Tabs } from 'antd'
 import { BarChartOutlined, NumberOutlined, PushpinOutlined } from '@ant-design/icons'
+import ListChannel from '../ListChannel'
 
 GroupNews.propTypes = {
     onBack: PropTypes.func,
+    tabActive: PropTypes.number,
 }
 GroupNews.defaultProps = {
     onBack: null,
+    tabActive: 0
 }
 
-function GroupNews({ onBack }) {
+function GroupNews({ onBack, tabActive, onChange }) {
     const { TabPane } = Tabs
 
+
+    const handleChangeActiveKey = (key) => {
+        if (onChange) {
+            onChange(key)
+        }
+
+    }
     return (
         <div className="group-news_wrapper">
             <div className="group-news_header">
@@ -37,7 +47,11 @@ function GroupNews({ onBack }) {
             >
                 <div className="group-news_body">
                     <div className="group-news_tabpane">
-                        <Tabs defaultActiveKey="1">
+                        <Tabs
+                            activeKey={tabActive.toString()}
+                            onChange={handleChangeActiveKey}
+
+                        >
                             <TabPane
                                 tab={
                                     <span>
@@ -45,8 +59,9 @@ function GroupNews({ onBack }) {
                                         Tin ghim
                                     </span>
                                 }
-                                key="1"
+                                key='0'
                             >
+
                                 Tab 1
                             </TabPane>
                             <TabPane
@@ -56,7 +71,7 @@ function GroupNews({ onBack }) {
                                         Bình chọn
                                     </span>
                                 }
-                                key="2"
+                                key='1'
                             >
                                 Tab 2
                             </TabPane>
@@ -68,9 +83,9 @@ function GroupNews({ onBack }) {
                                         Kênh
                                     </span>
                                 }
-                                key="3"
+                                key='2'
                             >
-                                Tab 3
+                                <ListChannel />
                             </TabPane>
                         </Tabs>
 

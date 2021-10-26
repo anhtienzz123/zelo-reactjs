@@ -104,30 +104,32 @@ function AnotherSetting({ socket }) {
             </div>
 
             <div className="info_setting-interact" style={isDrop ? {} : styleInteract}>
-                <div className="info_setting-interact-amount danger" onClick={confirm}>
-                    <div className="info_setting-interact-amount-icon">
-                        <ExportOutlined />
-                    </div>
 
-                    <div className="info_setting-interact-amount-text">
-                        <span>Rời nhóm</span>
-                    </div>
-                </div>
 
 
                 {
-                    conversations.find(ele => ele._id === currentConversation).leaderId === user._id &&
-                    (
-                        <div className="info_setting-interact-amount danger" onClick={confirmDeleteGroup}>
-                            <div className="info_setting-interact-amount-icon">
-                                <DeleteOutlined />
-                            </div>
+                    conversations.find(ele => ele._id === currentConversation).leaderId === user._id ?
+                        (
+                            <div className="info_setting-interact-amount danger" onClick={confirmDeleteGroup}>
+                                <div className="info_setting-interact-amount-icon">
+                                    <DeleteOutlined />
+                                </div>
 
-                            <div className="info_setting-interact-amount-text">
-                                <span>Giải tán nhóm</span>
+                                <div className="info_setting-interact-amount-text">
+                                    <span>Giải tán nhóm</span>
+                                </div>
                             </div>
-                        </div>
-                    )
+                        ) : (
+                            <div className="info_setting-interact-amount danger" onClick={confirm}>
+                                <div className="info_setting-interact-amount-icon">
+                                    <ExportOutlined />
+                                </div>
+
+                                <div className="info_setting-interact-amount-text">
+                                    <span>Rời nhóm</span>
+                                </div>
+                            </div>
+                        )
                 }
             </div>
         </div>

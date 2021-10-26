@@ -1,3 +1,4 @@
+import Channel from 'features/Chat/components/Channel';
 import AnotherSetting from 'features/Chat/components/AnotherSetting';
 import ArchiveFile from 'features/Chat/components/ArchiveFile';
 import ArchiveMedia from 'features/Chat/components/ArchiveMedia';
@@ -15,13 +16,15 @@ import { useSelector } from 'react-redux';
 import './style.scss';
 InfoContainer.propTypes = {
     socket: PropTypes.object,
+    onViewChannel: PropTypes.func,
 };
 
 InfoContainer.defaultProps = {
-    socket: {}
+    socket: {},
+    onViewChannel: null
 }
 
-function InfoContainer({ socket }) {
+function InfoContainer({ socket, onViewChannel }) {
 
     const [isFind, setFind] = useState({ tapane: 0, view: 0 });
     const { memberInConversation, type, currentConversation, conversations } = useSelector(state => state.chat);
@@ -77,23 +80,27 @@ function InfoContainer({ socket }) {
                                     </div>
 
                                     {type && (
-                                        <div className='info_member-wrapper'>
-                                            <InfoMember
-                                                viewMemberClick={
-                                                    handleViewMemberClick
-                                                }
-                                                quantity={
-                                                    memberInConversation.length
-                                                }
-                                            />
-                                        </div>
+                                        <>
+                                            <div className='info_member-wrapper'>
+                                                <InfoMember
+                                                    viewMemberClick={handleViewMemberClick}
+                                                    quantity={memberInConversation.length}
+                                                />
+                                            </div>
+
+                                            <div className='info_member-wrapper'>
+                                                <Channel
+                                                    onViewChannel={onViewChannel}
+                                                />
+                                            </div>
+                                        </>
+
+
                                     )}
 
                                     <div className='info_archive-media-wrapper'>
                                         <ArchiveMedia
-                                            viewMediaClick={
-                                                handleViewMediaClick
-                                            }
+                                            viewMediaClick={handleViewMediaClick}
                                             name='Ảnh'
                                             items={media.images}
                                         />
@@ -101,9 +108,7 @@ function InfoContainer({ socket }) {
 
                                     <div className='info_archive-media-wrapper'>
                                         <ArchiveMedia
-                                            viewMediaClick={
-                                                handleViewMediaClick
-                                            }
+                                            viewMediaClick={handleViewMediaClick}
                                             name='Video'
                                             items={media.videos}
                                         />
@@ -111,9 +116,7 @@ function InfoContainer({ socket }) {
 
                                     <div className='info_archive-file-wrapper'>
                                         <ArchiveFile
-                                            viewMediaClick={
-                                                handleViewMediaClick
-                                            }
+                                            viewMediaClick={handleViewMediaClick}
                                             items={media.files}
                                         />
                                     </div>
@@ -144,7 +147,6 @@ function InfoContainer({ socket }) {
                 }
             })()}
         </div>
-        // </Scrollbars >
     );
 }
 

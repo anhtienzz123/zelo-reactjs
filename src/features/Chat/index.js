@@ -1,5 +1,5 @@
 import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
-import { Col, notification, Row, Spin, message as messageNotify } from 'antd';
+import { Col, message as messageNotify, notification, Row, Spin } from 'antd';
 import conversationApi from 'api/conversationApi';
 import { setJoinChatLayout } from 'app/globalSlice';
 import ModalJoinGroupFromLink from 'components/ModalJoinGroupFromLink';
@@ -21,7 +21,6 @@ import SearchContainer from './containers/SearchContainer';
 import {
     addMessage,
     fetchConversationById,
-    fetchListConversations,
     fetchListFriends,
     fetchListMessages,
     fetchPinMessages,
@@ -65,6 +64,7 @@ function Chat({ socket, idNewMessage }) {
         (state) => state.global
     );
     const [visibleNews, setVisibleNews] = useState(false);
+    const [tabActiveInNews, setTabActiveNews] = useState(0);
     const location = useLocation();
     const history = useHistory();
     const [isVisibleModalJoinGroup, setIsVisibleJoinGroup] = useState(false);
@@ -360,10 +360,20 @@ function Chat({ socket, idNewMessage }) {
     };
     const handleViewNews = () => {
         setVisibleNews(true);
+        setTabActiveNews(0);
     };
 
     const handleCancelModalJoinGroup = () => {
         setIsVisibleJoinGroup(false);
+    };
+
+    const handleChangeViewChannel = () => {
+        setVisibleNews(true);
+        setTabActiveNews(2);
+    };
+
+    const handleChangeActiveKey = (key) => {
+        setTabActiveNews(key);
     };
 
     // Xử lý modal mode
@@ -559,9 +569,18 @@ function Chat({ socket, idNewMessage }) {
                             <Col span={6}>
                                 <div className="main-info">
                                     {visibleNews ? (
-                                        <GroupNews onBack={handleOnBack} />
+                                        <GroupNews
+                                            tabActive={tabActiveInNews}
+                                            onBack={handleOnBack}
+                                            onChange={handleChangeActiveKey}
+                                        />
                                     ) : (
-                                        <InfoContainer socket={socket} />
+                                        <InfoContainer
+                                            onViewChannel={
+                                                handleChangeViewChannel
+                                            }
+                                            socket={socket}
+                                        />
                                     )}
                                 </div>
                             </Col>

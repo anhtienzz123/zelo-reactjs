@@ -21,16 +21,20 @@ function InfoMember(props) {
     const { currentConversation, conversations } = useSelector(state => state.chat);
     const [status, setSatus] = useState(false);
     const { confirm } = Modal;
+    const { user } = useSelector(state => state.global);
+    const [checkLeader, setCheckLeader] = useState(false);
+
 
 
     useEffect(() => {
         const tempStatus = conversations.find(ele => ele._id === currentConversation).isJoinFromLink;
+        const tempCheck = conversations.find(ele => ele._id === currentConversation).leaderId === user._id;
+        setCheckLeader(tempCheck);
         setSatus(tempStatus);
     }, [currentConversation])
 
 
     const styleIconDrop = {
-
         transform: 'rotate(-90deg)'
     }
 
@@ -119,7 +123,7 @@ function InfoMember(props) {
                         </div>
                     </div>
 
-                    <div className="info_member-interact_button">
+                    <div className={`info_member-interact_button ${checkLeader ? '' : 'flex-end'}`} >
                         <div className="copy-link cirle-button" onClick={handleCopyLink}>
                             <CopyOutlined />
                         </div>
@@ -127,15 +131,21 @@ function InfoMember(props) {
 
 
 
-                        {status ? (
-                            <div className="authorize-toggle cirle-button  green" onClick={showConfirm}>
-                                <UnlockOutlined />
-                            </div>
-                        ) : (
-                            <div className="authorize-toggle cirle-button  red" onClick={showConfirm}>
-                                <LockOutlined />
-                            </div>
-                        )}
+                        {
+                            checkLeader &&
+                            <>
+                                {status ? (
+                                    <div className="authorize-toggle cirle-button  green" onClick={showConfirm}>
+                                        <UnlockOutlined />
+                                    </div>
+                                ) : (
+                                    <div className="authorize-toggle cirle-button  red" onClick={showConfirm}>
+                                        <LockOutlined />
+                                    </div>
+                                )}
+
+                            </>
+                        }
                     </div>
                 </div>
             </div>

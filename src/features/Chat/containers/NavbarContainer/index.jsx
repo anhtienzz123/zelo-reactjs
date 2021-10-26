@@ -49,9 +49,10 @@ function NavbarContainer(props) {
     };
 
     const handleLogout = () => {
+
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
-        history.push('/account/login')
+        window.location.reload();
     }
 
     const content = (
