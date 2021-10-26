@@ -1,7 +1,7 @@
-import { Layout } from 'antd';
+import { Button, Layout } from 'antd';
 import NotFoundPage from 'components/NotFoundPage';
 import React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router';
 import AdminFooter from './components/AdminFooter';
 import SiderBar from './components/SiderBar';
 import StickerPage from './pages/StickerPage';
@@ -15,17 +15,27 @@ Admin.propTypes = {};
 
 function Admin(props) {
     const { url } = useRouteMatch();
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+
+        window.location.reload();
+    };
     return (
         <div>
             <Layout style={{ minHeight: '100vh' }}>
                 <SiderBar />
                 <Layout className='site-layout'>
-                    <Header
-                        className='site-layout-background'
-                        style={{ padding: 0 }}
-                    />
+                    <div style={{ backgroundColor: 'white', padding: '20px' }}>
+                        <Button onClick={handleLogout}>Đăng xuất</Button>
+                    </div>
 
-                    <Content style={{ margin: '0 16px', background: 'white' }}>
+                    <Content
+                        style={{
+                            margin: '10px 10px',
+                            background: 'white',
+                        }}>
                         <Switch>
                             <Route exact path={`${url}`} component={UserPage} />
 
@@ -35,7 +45,6 @@ function Admin(props) {
                                 component={StickerGroupPage}
                             />
                             <Route
-                            
                                 path={`${url}/stickers/:id`}
                                 component={StickerPage}
                             />
