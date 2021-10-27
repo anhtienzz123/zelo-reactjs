@@ -27,12 +27,15 @@ import {
     getLastViewOfMembers,
     getMembersConversation,
     isDeletedFromGroup,
+    removeChannel,
     removeConversation,
     setCurrentConversation,
     setReactionMessage,
     setRedoMessage,
     setTypeOfConversation,
+    updateChannel,
     updateLastViewOfMembers,
+    updateNameChannel,
     updateNameOfConver,
     updateTimeForConver,
 } from './slice/chatSlice';
@@ -50,8 +53,13 @@ Chat.defaultProps = {
 
 function Chat({ socket, idNewMessage }) {
     const dispatch = useDispatch();
-    const { conversations, currentConversation, pinMessages, isLoading } =
-        useSelector((state) => state.chat);
+    const {
+        conversations,
+        currentConversation,
+        pinMessages,
+        isLoading,
+        currentChannel,
+    } = useSelector((state) => state.chat);
     const { path } = useRouteMatch();
     const [scrollId, setScrollId] = useState('');
     // const [idNewMessage, setIdNewMessage] = useState('')
@@ -258,7 +266,7 @@ function Chat({ socket, idNewMessage }) {
             socket.on(
                 'user-last-view',
                 ({ conversationId, userId, lastView }) => {
-                    console.log({ conversationId, userId, lastView });
+                    console.log(conversationId, userId, lastView);
                     if (userId != user._id) {
                         dispatch(
                             updateLastViewOfMembers({
@@ -279,6 +287,27 @@ function Chat({ socket, idNewMessage }) {
                 );
                 if (conversationId === refCurrentConversation.current) {
                     await dispatch(getLastViewOfMembers({ conversationId }));
+                }
+            });
+
+            socket.on(
+                'new-channel',
+                ({ _id, name, conversationId, createdAt }) => {
+                    if (conversationId === refCurrentConversation.current) {
+                        dispatch(updateChannel({ _id, name, createdAt }));
+                    }
+                }
+            );
+
+            socket.on('delete-channel', ({ conversationId, channelId }) => {
+                if (refCurrentConversation.current === conversationId) {
+                    dispatch(removeChannel({ channelId }));
+                }
+            });
+
+            socket.on('update-channel', ({ _id, name, conversationId }) => {
+                if (refCurrentConversation.current === conversationId) {
+                    dispatch(updateNameChannel({ channelId: _id, name }));
                 }
             });
         }
@@ -433,7 +462,8 @@ function Chat({ socket, idNewMessage }) {
                                                     (ele) =>
                                                         ele._id ===
                                                         currentConversation
-                                                ).type && (
+                                                ).type &&
+                                                !currentChannel && (
                                                     <div className="pin-message">
                                                         <DrawerPinMessage
                                                             isOpen={
@@ -464,7 +494,8 @@ function Chat({ socket, idNewMessage }) {
                                                     (ele) =>
                                                         ele._id ===
                                                         currentConversation
-                                                ).type && (
+                                                ).type &&
+                                                !currentChannel && (
                                                     <div className="nutshell-pin-message">
                                                         <NutshellPinMessage
                                                             isHover={false}

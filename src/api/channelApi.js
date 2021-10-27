@@ -24,6 +24,15 @@ const channelApi = {
     deleteChannel: (channelId) => {
         return axiosClient.delete(`${API_URL}/${channelId}`);
     },
+
+    getMessageInChannel: (channelId, page, size) => {
+        return axiosClient.get(`/messages/channel/${channelId}`, {
+            params: {
+                page,
+                size,
+            },
+        });
+    },
 };
 
 export default channelApi;

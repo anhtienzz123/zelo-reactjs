@@ -15,12 +15,16 @@ function ListContact({ data }) {
         <div id='list-friend-card'>
 
             {(data && data.length > 0) &&
-                data.map((ele, index) => (
-                    <ContactItem
-                        key={index}
-                        data={ele}
-                    />
-                ))
+                data.map((ele, index) => {
+                    if (ele.isExists) {
+                        return (
+                            <ContactItem
+                                key={index}
+                                data={ele}
+                            />
+                        )
+                    }
+                })
             }
         </div>
     );

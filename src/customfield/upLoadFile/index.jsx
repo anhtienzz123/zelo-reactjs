@@ -16,14 +16,11 @@ UploadFile.defaultProp = {
 
 function UploadFile(props) {
     const { typeOfFile } = props;
-
-    // const ACCEPT_IMG_AND_VIDEO = 'image/*,video/*';
-    const { user } = useSelector(state => state.global);
-    const { currentConversation } = useSelector(state => state.chat);
+    const { currentConversation, currentChannel } = useSelector(state => state.chat);
 
 
 
-    const handleCustomRequest = async ({ onSuccess, onError, file, onProgress }) => {
+    const handleCustomRequest = async ({ file }) => {
 
         const fmData = new FormData();
         let typeFile
@@ -40,6 +37,11 @@ function UploadFile(props) {
             type: typeFile,
             conversationId: currentConversation
         }
+
+        if (currentChannel) {
+            attachInfo.channelId = currentChannel;
+        }
+
         try {
             await messageApi.sendFileThroughMessage(fmData, attachInfo, (percentCompleted) => {
                 console.log('value', percentCompleted);

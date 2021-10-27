@@ -4,6 +4,7 @@ import Chat from 'features/Chat';
 import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import {
     addMessage,
+    addMessageInChannel,
     fetchConversationById,
     fetchListClassify,
     fetchListColor,
@@ -97,8 +98,7 @@ function ChatLayout(props) {
         socket.on('new-message', (conversationId, newMessage) => {
             const { type, content, manipulatedUsers } = newMessage;
 
-            // nếu nottify đã là bạn bè, thì
-
+            // nếu nottify đã là bạn bè, t
             if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
                 dispatch(
                     updateConversationWhenAddMember({
@@ -125,6 +125,21 @@ function ChatLayout(props) {
             dispatch(addMessage(newMessage));
             setIdNewMessage(newMessage._id);
         });
+
+        socket.on(
+            'new-message-of-channel',
+            (conversationId, channelId, message) => {
+                console.log('message in channel', {
+                    conversationId,
+                    channelId,
+                    message,
+                });
+                dispatch(
+                    addMessageInChannel({ conversationId, channelId, message })
+                );
+                setIdNewMessage(message._id);
+            }
+        );
 
         socket.on('create-conversation', (conversationId) => {
             console.log('tạo nhóm', conversationId);

@@ -42,11 +42,10 @@ HeaderOptional.defaultProps = {
 function HeaderOptional(props) {
     const { avatar, totalMembers, name, typeConver, isLogin, lastLogin } = props;
     const type = typeof avatar;
-    const { currentConversation } = useSelector((state) => state.chat);
+    const { currentConversation, currentChannel, channels } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [typeModal, setTypeModal] = useState(1);
-    const [isChannel, setIsChannel] = useState(true)
     const dispatch = useDispatch();
 
     // false đơn, true là nhóm
@@ -116,14 +115,14 @@ function HeaderOptional(props) {
                             <span>{name}</span>
                         </div>
 
-                        {isChannel ? (
+                        {currentChannel ? (
                             <div className='channel_info'>
                                 <div className="channel-icon">
                                     <NumberOutlined />
                                 </div>
 
                                 <div className="channel-name">
-                                    Marketing team
+                                    {channels.find(ele => ele._id === currentChannel).name}
                                 </div>
 
                             </div>
@@ -175,7 +174,7 @@ function HeaderOptional(props) {
                 </div>
 
                 <div className='header_rightside'>
-                    {isChannel ? (
+                    {currentChannel ? (
                         <div
                             title='Trở lại kênh chính'
                             className='icon-header back-channel'

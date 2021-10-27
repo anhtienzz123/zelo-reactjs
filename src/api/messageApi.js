@@ -17,12 +17,13 @@ const messageApi = {
     },
 
     sendFileThroughMessage: (file, attachInfo, cb) => {
-        const { type, conversationId } = attachInfo;
+        const { type, conversationId, channelId } = attachInfo;
 
         const config = {
             params: {
                 type,
                 conversationId,
+                channelId,
             },
             onUploadProgress: function (progressEvent) {
                 let percentCompleted = Math.round(

@@ -27,7 +27,7 @@ InfoContainer.defaultProps = {
 function InfoContainer({ socket, onViewChannel }) {
 
     const [isFind, setFind] = useState({ tapane: 0, view: 0 });
-    const { memberInConversation, type, currentConversation, conversations } = useSelector(state => state.chat);
+    const { memberInConversation, type, currentConversation, conversations, channels } = useSelector(state => state.chat);
     const { media } = useSelector(state => state.media);
     const dispatch = useDispatch()
 
@@ -91,6 +91,7 @@ function InfoContainer({ socket, onViewChannel }) {
                                             <div className='info_member-wrapper'>
                                                 <Channel
                                                     onViewChannel={onViewChannel}
+                                                    data={channels}
                                                 />
                                             </div>
                                         </>

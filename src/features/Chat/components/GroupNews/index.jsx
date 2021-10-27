@@ -6,6 +6,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { Tabs } from 'antd'
 import { BarChartOutlined, NumberOutlined, PushpinOutlined } from '@ant-design/icons'
 import ListChannel from '../ListChannel'
+import { useSelector } from 'react-redux'
 
 GroupNews.propTypes = {
     onBack: PropTypes.func,
@@ -18,6 +19,7 @@ GroupNews.defaultProps = {
 
 function GroupNews({ onBack, tabActive, onChange }) {
     const { TabPane } = Tabs
+    const { channels } = useSelector(state => state.chat)
 
 
     const handleChangeActiveKey = (key) => {
@@ -85,7 +87,9 @@ function GroupNews({ onBack, tabActive, onChange }) {
                                 }
                                 key='2'
                             >
-                                <ListChannel />
+                                <ListChannel
+                                    data={channels}
+                                />
                             </TabPane>
                         </Tabs>
 

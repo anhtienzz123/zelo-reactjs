@@ -4,8 +4,9 @@ import conversationApi from 'api/conversationApi';
 import friendApi from 'api/friendApi';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
 import {
+    fetchChannels,
     fetchListFriends,
-    fetchListMessages, setConversations, setCurrentConversation
+    fetchListMessages, getLastViewOfMembers, setConversations, setCurrentConversation
 } from 'features/Chat/slice/chatSlice';
 import {
     fetchFriends,
@@ -53,6 +54,7 @@ function UserCard(props) {
     const history = useHistory();
     const { status, numberCommonGroup } = user;
     const { amountNotify } = useSelector((state) => state.friend)
+    const { conversations } = useSelector((state) => state.chat)
 
 
     const handleOnCancle = () => {
@@ -70,8 +72,14 @@ function UserCard(props) {
             dispatch(setConversations(conver));
         }
 
+        if (conversations.find(ele => ele._id === _id).type) {
+            dispatch(fetchChannels({ conversationId: _id }))
+        }
+
+        dispatch(getLastViewOfMembers({ conversationId: _id }));
         dispatch(fetchListMessages({ conversationId: _id, size: 10 }));
         dispatch(setCurrentConversation(_id));
+
 
         history.push({
             pathname: '/chat',

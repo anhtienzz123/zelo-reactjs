@@ -35,6 +35,7 @@ function BodyChatContainer({
         currentPage,
         totalPages,
         lastViewOfMember,
+        currentChannel
     } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
     const [isSpinning, setIsSpinning] = useState(false);
@@ -232,6 +233,7 @@ function BodyChatContainer({
         }
     }, [scrollId]);
 
+
     function sleep(time) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
@@ -242,7 +244,7 @@ function BodyChatContainer({
                 scrollbars.current.scrollToBottom();
             });
         }
-    }, [currentConversation]);
+    }, [currentConversation, currentChannel]);
 
     return (
         <Scrollbars
