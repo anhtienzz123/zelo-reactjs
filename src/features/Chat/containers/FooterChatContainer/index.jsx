@@ -29,7 +29,7 @@ const style_addtion_interaction = {
 
 function FooterChatContainer({ onScrollWhenSentText, socket }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
-    const { currentConversation, conversations } = useSelector(
+    const { currentConversation, conversations, currentChannel } = useSelector(
         (state) => state.chat
     );
     const [isShowLike, setShowLike] = useState(true);
@@ -60,11 +60,18 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     };
 
     async function sendMessage(value, type) {
+
+
         const newMessage = {
             content: value,
             type: type,
             conversationId: currentConversation,
         };
+
+        if (currentChannel) {
+            newMessage.channelId = currentChannel
+        };
+
 
         await messageApi
             .sendTextMessage(newMessage)
@@ -94,9 +101,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
         setValueText(value);
 
 
-        if (value.length > 0) {
-            console.log(socket);
-            console.log(currentConversation);
+        if (value.length > 0 && !currentChannel) {
             socket.emit('typing', currentConversation, user);
         } else {
             socket.emit('not-typing', currentConversation, user);
@@ -126,7 +131,13 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     };
 
     const handleOnFocus = (e) => {
-        socket.emit('conversation-last-view', currentConversation);
+        if (currentChannel) {
+            socket.emit('conversation-last-view', currentConversation, currentChannel);
+        } else {
+            socket.emit('conversation-last-view', (currentConversation));
+        }
+
+
         setHightLight(true);
     };
 

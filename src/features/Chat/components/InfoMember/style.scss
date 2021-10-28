@@ -30,6 +30,10 @@
         overflow: hidden;
         position: relative;
 
+        &_button.flex-end {
+            justify-content: flex-end;
+        }
+
         &_button {
             position: absolute;
             right: 1.2rem;

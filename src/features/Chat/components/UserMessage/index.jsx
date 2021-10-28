@@ -51,7 +51,7 @@ function UserMessage({
 }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
     const { name, avatar } = user;
-    const { messages, currentConversation, conversations, pinMessages } =
+    const { messages, currentConversation, conversations, pinMessages, currentChannel } =
         useSelector((state) => state.chat);
     const global = useSelector((state) => state.global);
 
@@ -138,7 +138,7 @@ function UserMessage({
 
     const menu = (
         <Menu onClick={handleOnClick}>
-            {isGroup && (
+            {(isGroup && !currentChannel) && (
                 <Menu.Item
                     key="1"
                     icon={<PushpinOutlined />}

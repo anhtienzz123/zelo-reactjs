@@ -4,8 +4,10 @@ import conversationApi from 'api/conversationApi';
 import SubMenuClassify from 'components/SubMenuClassify';
 import ConversationSingle from 'features/Chat/components/ConversationSingle';
 import {
+    fetchChannels,
     fetchListMessages,
     getLastViewOfMembers,
+    setCurrentChannel,
 } from 'features/Chat/slice/chatSlice';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
@@ -25,11 +27,14 @@ function ConversationContainer(props) {
 
     const handleConversationClick = async (conversationId) => {
         // dispatch(setCurrentConversation(conversationId));
-        await dispatch(getLastViewOfMembers({ conversationId }));
+
+        dispatch(setCurrentChannel(''));
+        dispatch(getLastViewOfMembers({ conversationId }));
         dispatch(fetchListMessages({ conversationId, size: 10 }));
 
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
+        dispatch(fetchChannels({ conversationId }));
     };
 
     const handleOnClickItem = (e, id) => {

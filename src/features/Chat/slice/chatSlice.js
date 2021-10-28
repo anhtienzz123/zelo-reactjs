@@ -5,6 +5,8 @@ import friendApi from 'api/friendApi';
 import messageApi from 'api/messageApi';
 import dateUtils from 'utils/dateUtils';
 import pinMessageApi from 'api/pinMessageApi';
+import channelApi from 'api/channelApi';
+import { SaveTwoTone } from '@ant-design/icons';
 
 const KEY = 'chat';
 
@@ -71,6 +73,20 @@ export const fetchNextPageMessage = createAsyncThunk(
         return {
             messages,
         };
+    }
+);
+
+export const fetchNextPageMessageOfChannel = createAsyncThunk(
+    `${KEY}/fetchNextPageMessageOfChannel`,
+    async (params, thunkApi) => {
+        const { page, size, channelId } = params;
+
+        const messages = await channelApi.getMessageInChannel(
+            channelId,
+            page,
+            size
+        );
+        return messages;
     }
 );
 
@@ -155,6 +171,44 @@ export const getLastViewOfMembers = createAsyncThunk(
     }
 );
 
+// =============== Channel ===============
+
+export const fetchChannels = createAsyncThunk(
+    `${KEY}/fetchChannels`,
+    async (params, _) => {
+        const { conversationId } = params;
+        const data = await channelApi.fetchChannel(conversationId);
+        return data;
+    }
+);
+
+export const fetchMessageInChannel = createAsyncThunk(
+    `${KEY}/fetchMessageInChannel`,
+    async (params, _) => {
+        const { channelId, page, size } = params;
+        const data = await channelApi.getMessageInChannel(
+            channelId,
+            page,
+            size
+        );
+
+        return {
+            messages: data,
+            channelId,
+        };
+    }
+);
+
+export const getLastViewChannel = createAsyncThunk(
+    `${KEY}/getLastViewChannel`,
+    async (params, _) => {
+        const { channelId } = params;
+        const lastViews = await channelApi.getLastViewChannel(channelId);
+
+        return lastViews;
+    }
+);
+
 const chatSlice = createSlice({
     name: KEY,
     initialState: {
@@ -172,6 +226,9 @@ const chatSlice = createSlice({
         colors: [],
         pinMessages: [],
         lastViewOfMember: [],
+        currentChannel: '',
+        channels: [],
+        totalChannelNotify: 0,
     },
     reducers: {
         addMessage: (state, action) => {
@@ -183,7 +240,6 @@ const chatSlice = createSlice({
                 (conversationEle) => conversationEle._id === conversationId
             );
 
-            const test = state.conversations;
             const seachConversation = state.conversations[index];
 
             seachConversation.numberUnread = seachConversation.numberUnread + 1;
@@ -196,12 +252,60 @@ const chatSlice = createSlice({
                 (conversationEle) => conversationEle._id !== conversationId
             );
 
-            if (conversationId === state.currentConversation) {
+            if (
+                conversationId === state.currentConversation &&
+                !state.currentChannel
+            ) {
                 state.messages.push(action.payload);
                 seachConversation.numberUnread = 0;
             }
 
             state.conversations = [seachConversation, ...conversationTempt];
+        },
+
+        addMessageInChannel: (state, action) => {
+            const { conversationId, channelId, message } = action.payload;
+
+            const index = state.channels.findIndex(
+                (channel) => channel._id === channelId
+            );
+
+            const searchChannel = state.channels[index];
+
+            const channelTemps = state.channels.filter(
+                (channel) => channel._id !== channelId
+            );
+            if ('numberUnread' in searchChannel) {
+                searchChannel.numberUnread = searchChannel.numberUnread + 1;
+            } else {
+                searchChannel.numberUnread = 1;
+            }
+
+            if (
+                state.currentConversation === conversationId &&
+                state.currentChannel === channelId
+            ) {
+                state.messages.push(message);
+                searchChannel.numberUnread = 0;
+            }
+
+            state.channels = [searchChannel, ...channelTemps];
+        },
+
+        setTotalChannelNotify: (state, action) => {
+            let notify = state.conversations.find(
+                (ele) => ele._id === state.currentConversation
+            ).numberUnread;
+
+            if (state.channels.length > 0) {
+                state.channels.forEach((ele) => {
+                    if (ele.numberUnread && ele.numberUnread > 0) {
+                        notify = notify + 1;
+                    }
+                });
+            }
+
+            state.totalChannelNotify = notify;
         },
         setRaisePage: (state, action) => {
             if (state.currentPage < state.totalPages - 1) {
@@ -236,7 +340,7 @@ const chatSlice = createSlice({
             const id = action.payload;
             // lấy mesage đã thu hồi
             const oldMessage = state.messages.find(
-                (message) => message._id == id
+                (message) => message._id === id
             );
             const { _id, user, createdAt } = oldMessage;
 
@@ -299,17 +403,12 @@ const chatSlice = createSlice({
         updateConversationWhenAddMember: (state, action) => {
             const { newMembers, conversationId } = action.payload;
 
-            console.log('newMembers', newMembers);
-            console.log('conversationId', conversationId);
-
             const index = state.conversations.findIndex(
                 (ele) => ele._id === conversationId
             );
             const conversation = state.conversations.find(
                 (ele) => ele._id === conversationId
             );
-
-            console.log('Conversation avatar', conversation);
 
             // lấy ra vị trí, lấy ra giá trị
             // sau đó clone ra 1 mảng avatar ms và gán vào
@@ -419,11 +518,11 @@ const chatSlice = createSlice({
         },
         updateNameOfConver: (state, action) => {
             const { conversationId, conversationName } = action.payload;
-            console.log(conversationId, conversationName);
+
             const index = state.conversations.findIndex(
                 (ele) => ele._id === conversationId
             );
-            console.log(index);
+
             state.conversations[index] = {
                 ...state.conversations[index],
                 name: conversationName,
@@ -431,20 +530,50 @@ const chatSlice = createSlice({
         },
 
         updateLastViewOfMembers: (state, action) => {
-            const { conversationId, userId, lastView } = action.payload;
+            const { conversationId, userId, lastView, channelId } =
+                action.payload;
 
-            if (conversationId != state.currentConversation) return;
+            if (channelId) {
+                if (state.currentChannel === channelId) {
+                    const index = state.lastViewOfMember.findIndex(
+                        (ele) => ele.user._id == userId
+                    );
+                    state.lastViewOfMember[index].lastView = lastView;
+                }
+            } else {
+                if (
+                    conversationId === state.currentConversation &&
+                    !state.currentChannel
+                ) {
+                    const index = state.lastViewOfMember.findIndex(
+                        (ele) => ele.user._id == userId
+                    );
+                    state.lastViewOfMember[index].lastView = lastView;
+                }
+            }
+        },
+        updateChannel: (state, action) => {
+            const { _id, name, createdAt } = action.payload;
+            state.channels = [{ _id, name, createdAt }, ...state.channels];
+        },
 
-            console.log('  state.lastViewOfMember');
-            state.lastViewOfMember.forEach((ele) => {
-                console.log(ele.user._id);
-            });
-
-            console.log('  userId', userId);
-            const index = state.lastViewOfMember.findIndex(
-                (ele) => ele.user._id == userId
+        setCurrentChannel: (state, action) => {
+            state.currentChannel = action.payload;
+        },
+        removeChannel: (state, action) => {
+            const { channelId } = action.payload;
+            const newChannels = state.channels.filter(
+                (ele) => ele._id !== channelId
             );
-            state.lastViewOfMember[index].lastView = lastView;
+            state.channels = newChannels;
+        },
+        updateNameChannel: (state, action) => {
+            const { name, channelId } = action.payload;
+
+            const index = state.channels.findIndex(
+                (ele) => ele._id === channelId
+            );
+            state.channels[index] = { ...state.channels[index], name };
         },
     },
     extraReducers: {
@@ -479,12 +608,46 @@ const chatSlice = createSlice({
             state.currentPage = action.payload.messages.page;
             state.totalPages = action.payload.messages.totalPages;
         },
+        // fetchMessageInChannel
+        [fetchMessageInChannel.fulfilled]: (state, action) => {
+            state.isLoading = false;
+
+            // xét currentConversation
+            const { messages, channelId } = action.payload;
+            const channelIndex = state.channels.findIndex(
+                (channel) => channel._id === channelId
+            );
+
+            state.channels[channelIndex] = {
+                ...state.channels[channelIndex],
+                numberUnread: 0,
+            };
+
+            state.currentChannel = channelId;
+
+            // state.messagesPage = action.payload.messages;
+            state.messages = messages.data;
+            state.currentPage = messages.page;
+            state.totalPages = messages.totalPages;
+        },
+        [fetchMessageInChannel.pending]: (state, action) => {
+            state.isLoading = true;
+        },
+        [fetchMessageInChannel.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+
         [fetchNextPageMessage.fulfilled]: (state, action) => {
             state.messages = [
                 ...action.payload.messages.data,
                 ...state.messages,
             ];
             state.currentPage = action.payload.messages.page;
+        },
+
+        [fetchNextPageMessageOfChannel.fulfilled]: (state, action) => {
+            state.messages = [...action.payload.data, ...state.messages];
+            state.currentPage = action.payload.page;
         },
         // FRIEND
         [fetchListFriends.pending]: (state, action) => {
@@ -549,6 +712,23 @@ const chatSlice = createSlice({
         [getLastViewOfMembers.fulfilled]: (state, action) => {
             state.lastViewOfMember = action.payload;
         },
+
+        [getLastViewChannel.fulfilled]: (state, action) => {
+            state.lastViewOfMember = action.payload;
+        },
+
+        // Channel
+
+        [fetchChannels.fulfilled]: (state, action) => {
+            state.channels = action.payload;
+            state.isLoading = false;
+        },
+        [fetchChannels.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+        [fetchChannels.pending]: (state, action) => {
+            state.isLoading = true;
+        },
     },
 });
 
@@ -574,6 +754,12 @@ export const {
     updateTimeForConver,
     updateNameOfConver,
     updateLastViewOfMembers,
+    updateChannel,
+    setCurrentChannel,
+    addMessageInChannel,
+    updateNameChannel,
+    removeChannel,
+    setTotalChannelNotify,
 } = actions;
 
 export default reducer;

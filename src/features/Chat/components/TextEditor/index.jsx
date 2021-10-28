@@ -41,8 +41,6 @@ function TextEditor(props) {
             { indent: '-1' },
             { indent: '+1' },
         ],
-        ['image', 'video'],
-        ['clean'],
     ];
 
     const handleFocus = (range, source, editor) => {
@@ -75,7 +73,7 @@ function TextEditor(props) {
         }
     };
 
-    const handleOnKeyDown = (event) => {};
+    const handleOnKeyDown = (event) => { };
 
     return (
         <div id='text-editor' style={showFormat ? style_MainEditor : undefined}>

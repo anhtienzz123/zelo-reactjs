@@ -21,6 +21,20 @@
         .info_user {
             margin-left: 1.4rem;
 
+            .channel_info {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                text-overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                word-wrap: break-word;
+                color: $base-color;
+                font-size: 1.6rem;
+                font-weight: 500;
+            }
+
             .lastime-access {
                 display: flex;
                 > span {
@@ -66,7 +80,8 @@
         .search-message,
         .pop-up-layout,
         .create-group,
-        .call-video {
+        .call-video,
+        .back-channel {
             cursor: pointer;
             padding: 0 0.56rem;
             transition: 0.2s;
@@ -76,7 +91,8 @@
         .search-message:hover,
         .pop-up-layout:hover,
         .create-group:hover,
-        .call-video:hover {
+        .call-video:hover,
+        .back-channel:hover {
             background-color: $light-grey;
         }
     }
