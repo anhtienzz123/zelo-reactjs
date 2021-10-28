@@ -101,7 +101,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
         setValueText(value);
 
 
-        if (value.length > 0) {
+        if (value.length > 0 && !currentChannel) {
             socket.emit('typing', currentConversation, user);
         } else {
             socket.emit('not-typing', currentConversation, user);
@@ -131,8 +131,13 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     };
 
     const handleOnFocus = (e) => {
-        console.log('currentChannel', currentChannel);
-        socket.emit('conversation-last-view', currentChannel ? currentChannel : currentConversation);
+        if (currentChannel) {
+            socket.emit('conversation-last-view', currentConversation, currentChannel);
+        } else {
+            socket.emit('conversation-last-view', (currentConversation));
+        }
+
+
         setHightLight(true);
     };
 

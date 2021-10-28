@@ -33,6 +33,10 @@ const channelApi = {
             },
         });
     },
+
+    getLastViewChannel: (channelId) => {
+        return axiosClient.get(`${API_URL}/${channelId}/last-view`);
+    },
 };
 
 export default channelApi;

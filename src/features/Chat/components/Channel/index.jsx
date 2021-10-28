@@ -6,7 +6,7 @@ import ChannelItem from '../ChannelItem';
 import { Input, message, Modal } from 'antd';
 import channelApi from 'api/channelApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchListMessages, setCurrentChannel } from 'features/Chat/slice/chatSlice';
+import { fetchListMessages, getLastViewOfMembers, setCurrentChannel } from 'features/Chat/slice/chatSlice';
 
 Channel.propTypes = {
     onViewChannel: PropTypes.func,
@@ -36,7 +36,7 @@ function Channel({ onViewChannel, data }) {
     const [isDrop, setIsDrop] = useState(true);
     const [isVisible, setIsVisible] = useState(false);
     const [valueInput, setValueInput] = useState('');
-    const { currentConversation, currentChannel } = useSelector(state => state.chat);
+    const { currentConversation, currentChannel, conversations, totalChannelNotify } = useSelector(state => state.chat);
     const dispatch = useDispatch();
 
 
@@ -81,6 +81,7 @@ function Channel({ onViewChannel, data }) {
     const handleViewGeneralChannel = () => {
         dispatch(setCurrentChannel(''));
         dispatch(fetchListMessages({ conversationId: currentConversation, size: 10 }));
+        dispatch(getLastViewOfMembers({ conversationId: currentConversation }));
 
     }
 
@@ -92,7 +93,11 @@ function Channel({ onViewChannel, data }) {
             >
                 <div className="channel-header-title">
                     Kênh
-                    <span className="total-channel-notify">(Có 20 thông báo)</span>
+
+                    {totalChannelNotify > 0 &&
+                        <span className="total-channel-notify">({totalChannelNotify} kênh có tin nhắn)</span>
+                    }
+
                 </div>
 
                 <div
@@ -117,6 +122,14 @@ function Channel({ onViewChannel, data }) {
                         <span>Kênh chung</span>
 
                     </div>
+
+                    {conversations.find(ele => ele._id === currentConversation).numberUnread > 0 && (
+                        <div className='notify-amount'>
+                            {conversations.find(ele => ele._id === currentConversation).numberUnread}
+                        </div>
+                    )}
+
+
                 </div>
 
 

@@ -29,9 +29,11 @@ import {
     isDeletedFromGroup,
     removeChannel,
     removeConversation,
+    setCurrentChannel,
     setCurrentConversation,
     setReactionMessage,
     setRedoMessage,
+    setTotalChannelNotify,
     setTypeOfConversation,
     updateChannel,
     updateLastViewOfMembers,
@@ -59,6 +61,7 @@ function Chat({ socket, idNewMessage }) {
         pinMessages,
         isLoading,
         currentChannel,
+        channels,
     } = useSelector((state) => state.chat);
     const { path } = useRouteMatch();
     const [scrollId, setScrollId] = useState('');
@@ -79,6 +82,7 @@ function Chat({ socket, idNewMessage }) {
     const [summaryGroup, setSummary] = useState({});
     const refCurrentConversation = useRef();
     const refConversations = useRef();
+    const refCurrentChannel = useRef();
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;
@@ -89,12 +93,21 @@ function Chat({ socket, idNewMessage }) {
     }, [conversations]);
 
     useEffect(() => {
+        refCurrentChannel.current = currentChannel;
+    }, [currentChannel]);
+
+    useEffect(() => {
+        if (currentConversation) {
+            dispatch(setTotalChannelNotify());
+        }
+    }, [currentConversation, channels, conversations]);
+
+    useEffect(() => {
         const openModalJoinFromLink = async () => {
             if (location.state && location.state.conversationId) {
                 const data = await conversationApi.fetchListConversations();
                 const tempId = location.state.conversationId;
 
-                console.log(tempId, data);
                 if (data.findIndex((ele) => ele._id === tempId) < 0) {
                     try {
                         const data = await conversationApi.getSummaryInfoGroup(
@@ -128,9 +141,9 @@ function Chat({ socket, idNewMessage }) {
         openModalJoinFromLink();
     }, []);
 
-    useEffect(() => {
-        console.log('User typing', usersTyping);
-    }, [usersTyping]);
+    // useEffect(() => {
+    //     console.log('User typing', usersTyping);
+    // }, [usersTyping]);
 
     useEffect(() => {
         dispatch(
@@ -172,8 +185,8 @@ function Chat({ socket, idNewMessage }) {
                 dispatch(removeConversation(conversationId));
             });
 
-            socket.on('delete-message', (conversationId, id) => {
-                handleDeleteMessage(conversationId, id, refCurrentConversation);
+            socket.on('delete-message', ({ conversationId, channelId, id }) => {
+                handleDeleteMessage(conversationId, channelId, id);
             });
 
             socket.on('added-group', (conversationId) => {
@@ -182,27 +195,27 @@ function Chat({ socket, idNewMessage }) {
 
             socket.on(
                 'add-reaction',
-                (conversationId, messageId, user, type) => {
-                    if (conversationId === refCurrentConversation.current) {
+                ({ conversationId, channelId, messageId, user, type }) => {
+                    if (
+                        refCurrentConversation.current === conversationId &&
+                        refCurrentChannel.current === channelId
+                    ) {
+                        dispatch(setReactionMessage({ messageId, user, type }));
+                    }
+                    if (
+                        !channelId &&
+                        refCurrentConversation.current === conversationId
+                    ) {
                         dispatch(setReactionMessage({ messageId, user, type }));
                     }
                 }
             );
 
             socket.on('typing', (conversationId, user) => {
-                // console.log(
-                //     'efCurrentConversation.current',
-                //     refCurrentConversation.current
-                // );
                 if (conversationId === refCurrentConversation.current) {
-                    // console.log(
-                    //     'typing......',
-                    //     conversationId,
-                    //     refCurrentConversation
-                    // );
                     const index = usersTyping.findIndex(
                         (ele) => ele._id === user._id
-                    ); //khoo
+                    );
 
                     if (usersTyping.length === 0 || index < 0) {
                         setUsersTyping([...usersTyping, user]);
@@ -218,7 +231,7 @@ function Chat({ socket, idNewMessage }) {
                     const newUserTyping = usersTyping.filter(
                         (ele) => ele._id !== user._id
                     );
-                    // console.log('newUserTyping', newUserTyping);
+
                     setUsersTyping(newUserTyping);
                 }
             });
@@ -265,14 +278,14 @@ function Chat({ socket, idNewMessage }) {
 
             socket.on(
                 'user-last-view',
-                ({ conversationId, userId, lastView }) => {
-                    console.log(conversationId, userId, lastView);
+                ({ conversationId, userId, lastView, channelId }) => {
                     if (userId != user._id) {
                         dispatch(
                             updateLastViewOfMembers({
                                 conversationId,
                                 userId,
                                 lastView,
+                                channelId,
                             })
                         );
                     }
@@ -280,11 +293,6 @@ function Chat({ socket, idNewMessage }) {
             );
 
             socket.on('update-member', async (conversationId) => {
-                console.log(
-                    'conversationId',
-                    conversationId,
-                    refCurrentConversation.current
-                );
                 if (conversationId === refCurrentConversation.current) {
                     await dispatch(getLastViewOfMembers({ conversationId }));
                 }
@@ -299,11 +307,30 @@ function Chat({ socket, idNewMessage }) {
                 }
             );
 
-            socket.on('delete-channel', ({ conversationId, channelId }) => {
-                if (refCurrentConversation.current === conversationId) {
-                    dispatch(removeChannel({ channelId }));
+            socket.on(
+                'delete-channel',
+                async ({ conversationId, channelId }) => {
+                    const actionAfterDelete = async () => {
+                        await dispatch(setCurrentChannel(''));
+                        dispatch(
+                            fetchListMessages({
+                                conversationId: refCurrentConversation.current,
+                                size: 10,
+                            })
+                        );
+                        dispatch(
+                            getLastViewOfMembers({
+                                conversationId: refCurrentConversation.current,
+                            })
+                        );
+                    };
+                    await actionAfterDelete();
+
+                    if (refCurrentConversation.current === conversationId) {
+                        dispatch(removeChannel({ channelId }));
+                    }
                 }
-            });
+            );
 
             socket.on('update-channel', ({ _id, name, conversationId }) => {
                 if (refCurrentConversation.current === conversationId) {
@@ -325,7 +352,6 @@ function Chat({ socket, idNewMessage }) {
                     'get-user-online',
                     userId,
                     ({ isOnline, lastLogin }) => {
-                        console.log(userId, isOnline, lastLogin);
                         dispatch(
                             updateTimeForConver({
                                 id: currentConver,
@@ -353,12 +379,14 @@ function Chat({ socket, idNewMessage }) {
         };
     }, [currentConversation]);
 
-    const handleDeleteMessage = (
-        conversationId,
-        id,
-        refCurrentConversation
-    ) => {
-        if (refCurrentConversation.current === conversationId) {
+    const handleDeleteMessage = (conversationId, channelId, id) => {
+        if (
+            refCurrentConversation.current === conversationId &&
+            refCurrentChannel.current === channelId
+        ) {
+            dispatch(setRedoMessage(id));
+        }
+        if (!channelId && refCurrentConversation.current === conversationId) {
             dispatch(setRedoMessage(id));
         }
     };
@@ -550,40 +578,44 @@ function Chat({ socket, idNewMessage }) {
                                                 )}
                                             </div>
 
-                                            {usersTyping.length > 0 && (
-                                                <div className="typing-message">
-                                                    {usersTyping.map(
-                                                        (ele, index) => (
-                                                            <span>
-                                                                {index < 3 && (
-                                                                    <>
-                                                                        {index ===
-                                                                        usersTyping.length -
-                                                                            1
-                                                                            ? `${ele.name} `
-                                                                            : `${ele.name}, `}
-                                                                    </>
-                                                                )}
-                                                            </span>
-                                                        )
-                                                    )}
+                                            {usersTyping.length > 0 &&
+                                                !refCurrentChannel.current && (
+                                                    <div className="typing-message">
+                                                        {usersTyping.map(
+                                                            (ele, index) => (
+                                                                <span>
+                                                                    {index <
+                                                                        3 && (
+                                                                        <>
+                                                                            {index ===
+                                                                            usersTyping.length -
+                                                                                1
+                                                                                ? `${ele.name} `
+                                                                                : `${ele.name}, `}
+                                                                        </>
+                                                                    )}
+                                                                </span>
+                                                            )
+                                                        )}
 
-                                                    {usersTyping.length > 3
-                                                        ? `và ${
-                                                              usersTyping.length -
-                                                              3
-                                                          } người khác`
-                                                        : ''}
+                                                        {usersTyping.length > 3
+                                                            ? `và ${
+                                                                  usersTyping.length -
+                                                                  3
+                                                              } người khác`
+                                                            : ''}
 
-                                                    <span>&nbsp;đang nhập</span>
+                                                        <span>
+                                                            &nbsp;đang nhập
+                                                        </span>
 
-                                                    <div className="dynamic-dot">
-                                                        <div className="dot"></div>
-                                                        <div className="dot"></div>
-                                                        <div className="dot"></div>
+                                                        <div className="dynamic-dot">
+                                                            <div className="dot"></div>
+                                                            <div className="dot"></div>
+                                                            <div className="dot"></div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
                                         </div>
 
                                         <div className="main_chat-body--input">

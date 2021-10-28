@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { DeleteOutlined, ExclamationCircleOutlined, NumberOutlined } from '@ant-design/icons';
 import './style.scss';
-import { useDispatch } from 'react-redux';
-import { fetchMessageInChannel, setCurrentChannel } from 'features/Chat/slice/chatSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMessageInChannel, getLastViewChannel, setCurrentChannel } from 'features/Chat/slice/chatSlice';
 import { Dropdown, Menu, message, Modal } from 'antd';
 import channelApi from 'api/channelApi';
 import ModalChangeNameChannel from '../ModalChangeNameChannel';
@@ -29,10 +29,14 @@ function ChannelItem({ isActive, data }) {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
 
+    const { conversations } = useSelector(state => state.chat);
+    const { user } = useSelector(state => state.global)
+
 
     const handleViewChannel = () => {
         dispatch(setCurrentChannel(data._id));
         dispatch(fetchMessageInChannel({ channelId: data._id, size: 10 }));
+        dispatch(getLastViewChannel({ channelId: data._id }))
     }
 
     const handleOnClick = ({ _, key }) => {
@@ -71,6 +75,7 @@ function ChannelItem({ isActive, data }) {
                 try {
                     await channelApi.deleteChannel(data._id);
                     message.success('Xóa Channel thành công');
+
                 } catch (error) {
                     message.error('Đã có lỗi xảy ra');
 
@@ -90,9 +95,14 @@ function ChannelItem({ isActive, data }) {
             <Menu.Item key="1">
                 <span className='menu-item'>Đổi tên Channel</span>
             </Menu.Item>
-            <Menu.Item key="2" danger icon={<DeleteOutlined />}>
-                <span className='menu-item'>Xóa Channel</span>
-            </Menu.Item>
+            {
+                conversations.find(ele => ele.leaderId === user._id) && (
+                    <Menu.Item key="2" danger icon={<DeleteOutlined />}>
+                        <span className='menu-item'>Xóa Channel</span>
+                    </Menu.Item>
+                )
+
+            }
         </Menu>
     );
 

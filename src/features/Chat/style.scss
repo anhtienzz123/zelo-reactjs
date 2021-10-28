@@ -71,6 +71,19 @@
                 flex-grow: 1;
                 position: relative;
 
+                .spinning-custom {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 1rem 0;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    z-index: 10000000;
+                }
+
                 .nutshell-pin-message {
                     position: absolute;
                     top: 0;

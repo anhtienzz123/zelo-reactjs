@@ -9,7 +9,7 @@ import {
     VideoCameraOutlined
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
-import { createGroup } from 'features/Chat/slice/chatSlice';
+import { createGroup, fetchListMessages, getLastViewOfMembers, setCurrentChannel } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -96,6 +96,14 @@ function HeaderOptional(props) {
     }
 
 
+    const handleViewGeneralChannel = () => {
+        dispatch(setCurrentChannel(''));
+        dispatch(fetchListMessages({ conversationId: currentConversation, size: 10 }));
+        dispatch(getLastViewOfMembers({ conversationId: currentConversation }));
+
+    }
+
+
     return (
         <div id='header-optional'>
             <div className='header_wrapper'>
@@ -178,6 +186,7 @@ function HeaderOptional(props) {
                         <div
                             title='Trở lại kênh chính'
                             className='icon-header back-channel'
+                            onClick={handleViewGeneralChannel}
                         >
                             <RollbackOutlined />
                         </div>

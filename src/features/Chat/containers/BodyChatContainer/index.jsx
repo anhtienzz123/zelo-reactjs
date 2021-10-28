@@ -5,19 +5,22 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchNextPageMessage, setRaisePage } from '../../slice/chatSlice';
+import { fetchNextPageMessage, fetchNextPageMessageOfChannel, setRaisePage } from '../../slice/chatSlice';
 import './style.scss';
 
 BodyChatContainer.propTypes = {
     scrollId: PropTypes.string,
     onSCrollDown: PropTypes.string,
     onBackToBottom: PropTypes.func,
+    onLoading: PropTypes.func,
 };
 
 BodyChatContainer.defaultProps = {
     scrollId: '',
     onSCrollDown: '',
     onBackToBottom: null,
+    onLoading: null
+
 };
 
 const HOURS_MINUS = 6;
@@ -33,18 +36,18 @@ function BodyChatContainer({
         messages,
         currentConversation,
         currentPage,
-        totalPages,
         lastViewOfMember,
-        currentChannel
+        currentChannel,
+
     } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
-    const [isSpinning, setIsSpinning] = useState(false);
     const scrollbars = useRef();
     const [position, setPosition] = useState(1);
     const dispatch = useDispatch();
     const previousHieight = useRef();
+    const [loading, setLoading] = useState(false)
     const tempPosition = useRef();
-    const indexMesssageBreak = useRef();
+
     useEffect(() => {
         if (turnOnScrollButoon) {
             scrollbars.current.scrollToBottom();
@@ -53,28 +56,51 @@ function BodyChatContainer({
     }, [turnOnScrollButoon]);
 
     useEffect(() => {
-        async function fetchNextListMessage() {
-            if (currentPage > 0) {
-                setIsSpinning(true);
 
-                dispatch(
+        const fetchMesageWhenPageRaise = async () => {
+            if (currentChannel) {
+                await dispatch(
+                    fetchNextPageMessageOfChannel({
+                        channelId: currentChannel,
+                        page: currentPage,
+                        size: 10,
+                    })
+                );
+            } else {
+                await dispatch(
                     fetchNextPageMessage({
                         conversationId: currentConversation,
                         page: currentPage,
                         size: 10,
                     })
                 );
-                setIsSpinning(false);
+            }
+        }
+
+
+        async function fetchNextListMessage() {
+            if (currentPage > 0) {
+                setLoading(true)
+
+                await fetchMesageWhenPageRaise();
+                setLoading(false)
+                // setLoading(false)
+
+
+
 
                 scrollbars.current.scrollTop(
                     scrollbars.current.getScrollHeight() -
                     previousHieight.current
                 );
+
             }
         }
-
         fetchNextListMessage();
     }, [currentPage]);
+
+
+
 
     useEffect(() => {
         if (
@@ -198,6 +224,8 @@ function BodyChatContainer({
     };
 
     const handleOnScrolling = ({ scrollTop, scrollHeight, top }) => {
+
+
         tempPosition.current = top;
         if (
             scrollbars.current.getScrollHeight() ===
@@ -258,7 +286,7 @@ function BodyChatContainer({
             {/* <div className='main-body-conversation'> */}
 
             <div className="spinning-custom">
-                <Spin spinning={isSpinning} />
+                <Spin spinning={loading} />
             </div>
 
             {renderMessages(messages)}

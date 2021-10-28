@@ -48,7 +48,7 @@ function InfoContainer({ socket, onViewChannel }) {
     useEffect(() => {
         if (currentConversation)
             dispatch(fetchAllMedia({ conversationId: currentConversation }));
-    }, []);
+    }, [currentConversation]);
 
 
     return (

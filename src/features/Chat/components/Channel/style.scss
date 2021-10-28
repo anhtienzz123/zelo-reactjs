@@ -16,7 +16,6 @@
             font-size: 1.6rem;
             .total-channel-notify {
                 color: $red-color;
-                font-size: 1.4rem;
             }
 
             .total-channel-notify::before {
@@ -39,6 +38,23 @@
         transition: max-height 0.2s ease;
         overflow: hidden;
         position: relative;
+
+        .notify-amount {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: $red-color;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            right: 1.4rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
 
         &-button {
             margin: 0rem 1.4rem;
