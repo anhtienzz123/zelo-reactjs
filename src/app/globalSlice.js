@@ -20,6 +20,7 @@ const globalSlice = createSlice({
         user: null,
         isJoinChatLayout: false,
         isJoinFriendLayout: false,
+        tabActive: 0,
     },
 
     reducers: {
@@ -34,6 +35,9 @@ const globalSlice = createSlice({
         },
         setJoinFriendLayout: (state, action) => {
             state.isJoinFriendLayout = action.payload;
+        },
+        setTabActive: (state, action) => {
+            state.tabActive = action.payload;
         },
     },
 
@@ -57,6 +61,11 @@ const globalSlice = createSlice({
 });
 
 const { reducer, actions } = globalSlice;
-export const { setLoading, setLogin, setJoinChatLayout, setJoinFriendLayout } =
-    actions;
+export const {
+    setLoading,
+    setLogin,
+    setJoinChatLayout,
+    setJoinFriendLayout,
+    setTabActive,
+} = actions;
 export default reducer;

@@ -7,3 +7,14 @@
         align-items: center;
     }
 }
+
+.type-pin-message_des_FILE {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .file_info-icon {
+        max-height: 25px;
+        max-width: 20px;
+    }
+}

@@ -1,36 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CheckLink from 'utils/linkHelper';
-import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import './style.scss';
-TextMessage.propTypes = {
-    content: PropTypes.string,
-    dateAt: PropTypes.object,
-    isVisibleTime: PropTypes.bool.isRequired,
+import { Image } from 'antd';
+import { fallback } from 'assets/images/fallbackImage'
+
+StickerMessage.propTypes = {
+    content: PropTypes.string.isRequired,
+    dateAt: PropTypes.object.isRequired,
     isSeen: PropTypes.bool,
 };
 
-TextMessage.defaultProps = {
-    dateAt: null,
+StickerMessage.defaultProps = {
     isSeen: false
+};
 
-}
-
-function TextMessage({ content, children, dateAt, isSeen }) {
+function StickerMessage({ content, dateAt, isSeen }) {
     return (
-        <div>
+        <>
 
-            {CheckLink(content) ? (
-                <LinkPreview
+            <div className="messsage-image-wrapper">
+                <div className="message-image--main">
+                    <Image
+                        src={content}
+                        fallback={fallback}
+                        preview={false}
 
-                    url={content}
-                    imageHeight="20vh"
-                    className='link-preview-custom'
-
-                />
-            ) : content}
-
-
+                    />
+                </div>
+            </div>
 
             <div className="time-and-last_view">
 
@@ -56,16 +53,8 @@ function TextMessage({ content, children, dateAt, isSeen }) {
 
                 }
             </div>
-
-            {children}
-
-
-
-
-        </div>
-
-
+        </>
     );
 }
 
-export default TextMessage;
+export default StickerMessage;

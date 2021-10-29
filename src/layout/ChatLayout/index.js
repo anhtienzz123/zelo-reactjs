@@ -5,6 +5,7 @@ import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import {
     addMessage,
     addMessageInChannel,
+    fetchAllSticker,
     fetchConversationById,
     fetchListClassify,
     fetchListColor,
@@ -61,6 +62,7 @@ function ChatLayout(props) {
         dispatch(fetchListClassify());
         dispatch(fetchListColor());
         dispatch(fetchListConversations({}));
+        dispatch(fetchAllSticker());
     }, []);
 
     useEffect(() => {

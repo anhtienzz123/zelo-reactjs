@@ -28,6 +28,7 @@ function PinItem({ children, message }) {
                 <div className="pin-item_avatar">
                     <PersonalIcon
                         avatar={message.user.avatar}
+                        name={message.user.name}
                     />
                 </div>
 

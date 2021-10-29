@@ -47,6 +47,10 @@ ul {
             flex-direction: column;
             align-items: center;
 
+            .link-icon {
+                width: 100%;
+            }
+
             &_item {
                 width: 100%;
                 display: flex;
@@ -64,10 +68,13 @@ ul {
                         font-size: 2.5rem;
                     }
                 }
+            }
+            &_item.active {
+                background: $base-color;
+            }
 
-                &--icon.active {
-                    background: $base-color;
-                }
+            &_item.active:hover {
+                background: $base-color;
             }
 
             &_item.icon-avatar {
