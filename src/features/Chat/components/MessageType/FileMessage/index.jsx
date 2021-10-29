@@ -6,7 +6,6 @@ import { FileIcon, defaultStyles } from 'react-file-icon';
 import './style.scss';
 FileMessage.propTypes = {
     content: PropTypes.string.isRequired,
-    isVisibleTime: PropTypes.bool.isRequired,
     dateAt: PropTypes.object.isRequired,
     isSeen: PropTypes.bool,
 };

@@ -77,12 +77,16 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
             .sendTextMessage(newMessage)
             .then((res) => {
                 const { _id } = res;
+                handleOnScroll(_id);
                 console.log('Send Message Success');
-                if (onScrollWhenSentText) {
-                    onScrollWhenSentText(_id);
-                }
             })
             .catch((err) => console.log('Send Message Fail'));
+    }
+
+    const handleOnScroll = (id) => {
+        if (onScrollWhenSentText) {
+            onScrollWhenSentText(id);
+        }
     }
 
     const handleSentMessage = () => {
@@ -156,6 +160,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
                 <NavigationChatBox
                     isFocus={isHightLight}
                     onClickTextFormat={handleClickTextFormat}
+                    onScroll={handleOnScroll}
                 />
             </div>
 

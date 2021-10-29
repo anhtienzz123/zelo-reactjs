@@ -388,10 +388,10 @@ function Chat({ socket, idNewMessage }) {
             refCurrentConversation.current === conversationId &&
             refCurrentChannel.current === channelId
         ) {
-            dispatch(setRedoMessage(id));
+            dispatch(setRedoMessage({ id }));
         }
         if (!channelId && refCurrentConversation.current === conversationId) {
-            dispatch(setRedoMessage(id));
+            dispatch(setRedoMessage({ id, conversationId }));
         }
     };
 

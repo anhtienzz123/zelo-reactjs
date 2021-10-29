@@ -25,6 +25,7 @@ import FileMessage from '../MessageType/FileMessage';
 import HTMLMessage from '../MessageType/HTMLMessage';
 import ImageMessage from '../MessageType/ImageMessage';
 import NotifyMessage from '../MessageType/NotifyMessage';
+import StickerMessage from '../MessageType/StickerMessage';
 import TextMessage from '../MessageType/TextMessage';
 import VideoMessage from '../MessageType/VideoMessage';
 import './style.scss';
@@ -138,7 +139,7 @@ function UserMessage({
 
     const menu = (
         <Menu onClick={handleOnClick}>
-            {(isGroup && !currentChannel) && (
+            {(isGroup && !currentChannel && type !== 'STICKER') && (
                 <Menu.Item
                     key="1"
                     icon={<PushpinOutlined />}
@@ -225,13 +226,14 @@ function UserMessage({
                                         } ${isSameUser ? 'same-user' : ''}`}
                                 >
                                     <div
-                                        className={`content-message ${type === 'IMAGE' || type === 'VIDEO'
+                                        className={`content-message ${type === 'IMAGE' || type === 'VIDEO' || type === 'STICKER'
                                             ? 'content-media'
                                             : ''
                                             } 
                                         ${isMyMessage &&
                                                 type !== 'IMAGE' &&
-                                                type !== 'VIDEO'
+                                                type !== 'VIDEO' &&
+                                                type !== 'STICKER'
                                                 ? 'my-message-bg'
                                                 : ''
                                             }`}
@@ -347,7 +349,7 @@ function UserMessage({
                                                                 />
                                                             )}
                                                         </VideoMessage>
-                                                    ) : (
+                                                    ) : type === 'FILE' ? (
                                                         <FileMessage
                                                             content={content}
                                                             dateAt={dateAt}
@@ -371,6 +373,12 @@ function UserMessage({
                                                                 />
                                                             )}
                                                         </FileMessage>
+                                                    ) : (
+                                                        <StickerMessage
+                                                            content={content}
+                                                            dateAt={dateAt}
+                                                            isSeen={(viewUsers && viewUsers.length > 0)}
+                                                        />
                                                     )}
                                                 </>
                                             )}

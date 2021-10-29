@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './style.scss';
 import {
@@ -7,17 +7,21 @@ import {
     LinkOutlined,
 } from '@ant-design/icons';
 import { IoText } from "react-icons/io5";
-import { Button } from 'antd';
+import { Button, Popover } from 'antd';
 import UploadFile from 'customfield/upLoadFile';
+import Sticker from '../Sticker';
+import { useSelector } from 'react-redux';
 
 NavigationChatBox.propTypes = {
     onClickTextFormat: PropTypes.func,
     isFocus: PropTypes.bool,
+    onScroll: PropTypes.func,
 };
 
 NavigationChatBox.defaultProps = {
     onClickTextFormat: null,
     isFocus: false,
+    onScroll: null
 };
 
 const styleBorder = {
@@ -37,7 +41,9 @@ const styleButton = {
 
 
 function NavigationChatBox(props) {
-    const { onClickTextFormat, isFocus } = props;
+    const { onClickTextFormat, isFocus, onScroll } = props;
+    const [visiblePop, setVisiblePop] = useState(false);
+    const { stickers } = useSelector(state => state.chat)
 
     const handleOnClickTextFormat = () => {
 
@@ -45,17 +51,41 @@ function NavigationChatBox(props) {
             onClickTextFormat();
         }
     }
+
+
+    const handleVisibleChange = (visible) => {
+        setVisiblePop(visible)
+    }
+
+    const handleOnClose = () => {
+        setVisiblePop(false)
+    }
+
     return (
         <div
-            style={isFocus ? styleBorder : undefined}
+            style={isFocus ? styleBorder : {}}
             id='navigation-chat-box'
         >
             <ul>
-                <li className='item-chat-box'>
-                    <div title='Gửi sticker'>
-                        <SmileOutlined />
-                    </div>
-                </li>
+                <Popover
+                    content={
+                        <Sticker
+                            onClose={handleOnClose}
+                            data={stickers}
+                            onScroll={onScroll}
+                        />}
+                    trigger="click"
+                    visible={visiblePop}
+                    onVisibleChange={handleVisibleChange}
+                    placement='topLeft'
+                >
+                    <li className='item-chat-box'>
+                        <div title='Gửi sticker'>
+                            <SmileOutlined />
+                        </div>
+                    </li>
+                </Popover>
+
 
                 <li className='item-chat-box'>
 

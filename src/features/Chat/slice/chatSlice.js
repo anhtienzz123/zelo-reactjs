@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import channelApi from 'api/channelApi';
 import ClassifyApi from 'api/ClassifyApi';
 import conversationApi from 'api/conversationApi';
 import friendApi from 'api/friendApi';
 import messageApi from 'api/messageApi';
-import dateUtils from 'utils/dateUtils';
 import pinMessageApi from 'api/pinMessageApi';
-import channelApi from 'api/channelApi';
-import { SaveTwoTone } from '@ant-design/icons';
+import stickerApi from 'api/stickerApi';
+import dateUtils from 'utils/dateUtils';
 
 const KEY = 'chat';
 
@@ -209,6 +209,14 @@ export const getLastViewChannel = createAsyncThunk(
     }
 );
 
+export const fetchAllSticker = createAsyncThunk(
+    `${KEY}/fetchAllSticker`,
+    async () => {
+        const data = await stickerApi.fetchAllSticker();
+        return data;
+    }
+);
+
 const chatSlice = createSlice({
     name: KEY,
     initialState: {
@@ -229,6 +237,7 @@ const chatSlice = createSlice({
         currentChannel: '',
         channels: [],
         totalChannelNotify: 0,
+        stickers: [],
     },
     reducers: {
         addMessage: (state, action) => {
@@ -337,7 +346,7 @@ const chatSlice = createSlice({
         },
 
         setRedoMessage: (state, action) => {
-            const id = action.payload;
+            const { id, conversationId } = action.payload;
             // lấy mesage đã thu hồi
             const oldMessage = state.messages.find(
                 (message) => message._id === id
@@ -358,6 +367,14 @@ const chatSlice = createSlice({
             };
             // chèn vào vị trí index 'message đã thu hồi'
             state.messages[index] = newMessage;
+
+            // lastMessage ở conver
+            if (conversationId) {
+                const indexConver = state.conversations.findIndex(
+                    (ele) => ele._id === conversationId
+                );
+                state.conversations[indexConver].lastMessage.isDeleted = true;
+            }
         },
         deleteMessageClient: (state, action) => {
             const id = action.payload;
@@ -728,6 +745,19 @@ const chatSlice = createSlice({
         },
         [fetchChannels.pending]: (state, action) => {
             state.isLoading = true;
+        },
+
+        // Sticker
+
+        [fetchAllSticker.fulfilled]: (state, action) => {
+            state.stickers = action.payload;
+            state.isLoading = false;
+        },
+        [fetchAllSticker.rejected]: (state, action) => {
+            state.isLoading = true;
+        },
+        [fetchAllSticker.pending]: (state, action) => {
+            state.isLoading = false;
         },
     },
 });
