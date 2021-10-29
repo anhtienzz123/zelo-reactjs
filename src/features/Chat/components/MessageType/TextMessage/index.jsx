@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import CheckLink from 'utils/linkHelper';
+import { LinkPreview } from "@dhaiwat10/react-link-preview";
+import './style.scss';
 TextMessage.propTypes = {
     content: PropTypes.string,
     dateAt: PropTypes.object,
@@ -17,7 +19,17 @@ TextMessage.defaultProps = {
 function TextMessage({ content, children, dateAt, isSeen }) {
     return (
         <div>
-            {content}
+
+            {CheckLink(content) ? (
+                <LinkPreview
+
+                    url={content}
+                    imageHeight="20vh"
+                    className='link-preview-custom'
+
+                />
+            ) : content}
+
 
 
             <div className="time-and-last_view">
