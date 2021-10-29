@@ -9,6 +9,7 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import { Badge, Button, Modal, Popover } from 'antd';
+import { setTabActive } from 'app/globalSlice';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,12 +22,13 @@ NavbarContainer.propTypes = {};
 function NavbarContainer(props) {
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const { user } = useSelector((state) => state.global);
+    const { user, tabActive } = useSelector((state) => state.global);
 
     const { conversations, toTalUnread } = useSelector((state) => state.chat);
     const { amountNotify } = useSelector((state) => state.friend);
     const dispatch = useDispatch();
-    const history = useHistory();
+
+
 
     useEffect(() => {
         dispatch(setToTalUnread());
@@ -53,6 +55,10 @@ function NavbarContainer(props) {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         window.location.reload();
+    }
+
+    const handleSetTabActive = (value) => {
+        dispatch(setTabActive(value))
     }
 
     const content = (
@@ -106,29 +112,33 @@ function NavbarContainer(props) {
                             </Button>
                         </Popover>
                     </li>
-                    <li className='sidebar_nav_item'>
-                        <Link to='/chat'>
-                            <div className='sidebar_nav_item--icon'>
+
+                    <Link className='link-icon' to='/chat'>
+                        <li className={`sidebar_nav_item  ${tabActive === 1 ? 'active' : ''}`} onClick={() => handleSetTabActive(1)}>
+                            <div className='sidebar_nav_item--icon' >
                                 <Badge
                                     count={toTalUnread > 0 ? toTalUnread : 0}>
                                     <MessageOutlined />
                                 </Badge>
                             </div>
-                        </Link>
-                    </li>
+                        </li>
+                    </Link>
 
-                    <li className='sidebar_nav_item'>
-                        <Link to='/chat/friends'>
+
+
+
+                    <Link className='link-icon' to='/chat/friends'>
+                        <li className={`sidebar_nav_item  ${tabActive === 2 ? 'active' : ''}`} onClick={() => handleSetTabActive(2)}>
                             <div className='sidebar_nav_item--icon'>
                                 <Badge count={amountNotify}>
-
                                     <ContactsOutlined />
                                 </Badge>
                             </div>
-                        </Link>
-                    </li>
+                        </li>
+                    </Link>
 
-                    <li className='sidebar_nav_item'>
+
+                    {/* <li className='sidebar_nav_item'>
                         <Link to='/notify'>
                             <div className='sidebar_nav_item--icon'>
                                 <Badge>
@@ -144,7 +154,7 @@ function NavbarContainer(props) {
                                 <CheckSquareOutlined />
                             </div>
                         </Link>
-                    </li>
+                    </li> */}
                 </ul>
 
                 <ul className='sidebar_nav'>
@@ -156,13 +166,13 @@ function NavbarContainer(props) {
                         </div>
                     </li>
 
-                    <li className='sidebar_nav_item'>
+                    {/* <li className='sidebar_nav_item'>
                         <div className='sidebar_nav_item--icon'>
                             <Badge count={0}>
                                 <StarOutlined />
                             </Badge>
                         </div>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
 
