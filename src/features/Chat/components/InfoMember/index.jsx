@@ -103,7 +103,7 @@ function InfoMember(props) {
                     </div>
 
                     <div className="info_member-interact-amount-text">
-                        <span>{quantity}</span>
+                        <span>{quantity} thành viên</span>
                     </div>
                 </div>
 

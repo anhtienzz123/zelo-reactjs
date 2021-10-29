@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Modal } from 'antd';
 
@@ -6,6 +6,7 @@ ModalChangeNameChannel.propTypes = {
     visible: PropTypes.bool,
     onOk: PropTypes.func,
     onCancel: PropTypes.func,
+    initialValue: PropTypes.string,
 };
 
 
@@ -13,12 +14,17 @@ ModalChangeNameChannel.defaultProps = {
     visible: false,
     onOk: null,
     onCancel: null,
+    initialValue: ''
 };
 
 
-function ModalChangeNameChannel({ visible, onOk, onCancel }) {
+function ModalChangeNameChannel({ visible, onOk, onCancel, initialValue }) {
 
     const [value, setValue] = useState('');
+
+    useEffect(() => {
+        setValue(initialValue)
+    }, [initialValue, visible])
     const handleOnchange = (e) => {
         setValue(e.target.value);
     }

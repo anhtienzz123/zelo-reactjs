@@ -70,7 +70,8 @@ function Channel({ onViewChannel, data }) {
     }
 
     const handleCancel = () => {
-        setIsVisible(false)
+        setIsVisible(false);
+        setValueInput('')
     }
 
     const handleInputChange = (e) => {
