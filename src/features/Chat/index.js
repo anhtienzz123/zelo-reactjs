@@ -97,6 +97,10 @@ function Chat({ socket, idNewMessage }) {
     }, [currentChannel]);
 
     useEffect(() => {
+        setUsersTyping([]);
+    }, [currentConversation]);
+
+    useEffect(() => {
         if (currentConversation) {
             dispatch(setTotalChannelNotify());
         }

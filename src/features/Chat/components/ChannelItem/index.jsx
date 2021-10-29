@@ -58,7 +58,7 @@ function ChannelItem({ isActive, data }) {
         try {
             await channelApi.renameChannel(name, data._id);
             setVisible(false);
-            message.success('This is a success message');
+            message.success('Đổi tên channel thành công');
         } catch (error) {
             message.error('Đã có lỗi xảy ra');
         }
@@ -138,6 +138,7 @@ function ChannelItem({ isActive, data }) {
                 visible={visible}
                 onCancel={handleOnCancel}
                 onOk={handleOnOk}
+                initialValue={data.name}
             />
         </>
 
