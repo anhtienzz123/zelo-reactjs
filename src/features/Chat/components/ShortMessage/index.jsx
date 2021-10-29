@@ -1,4 +1,15 @@
-import { EditOutlined, FileImageOutlined, FileOutlined, PlaySquareOutlined, PushpinOutlined, SmileOutlined, UserAddOutlined, UserDeleteOutlined, UserOutlined } from '@ant-design/icons';
+import {
+    EditOutlined,
+    FileImageOutlined,
+    FileOutlined,
+    NumberOutlined,
+    PlaySquareOutlined,
+    PushpinOutlined,
+    SmileOutlined,
+    UserAddOutlined,
+    UserDeleteOutlined,
+    UserOutlined
+} from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -128,6 +139,26 @@ function ShortMessage({ message, type }) {
                                 <span>{renderName()}<UserOutlined />&nbsp;đã trở thành bạn bè</span>
                             )
                         }
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'UPDATE_CHANNEL')) && (
+                                <span>{renderName()}<NumberOutlined />&nbsp;đã đổi tên Channel</span>
+                            )
+                        }
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'DELETE_CHANNEL')) && (
+                                <span>{renderName()}<NumberOutlined />&nbsp;đã xóa Channel</span>
+                            )
+                        }
+
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'CREATE_CHANNEL')) && (
+                                <span>{renderName()}<NumberOutlined />&nbsp;đã tạo Channel</span>
+                            )
+                        }
+
 
                         {
                             (message.type === 'STICKER') && (

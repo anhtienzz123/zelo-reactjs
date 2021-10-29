@@ -1,4 +1,4 @@
-import { EditTwoTone, PushpinTwoTone } from '@ant-design/icons';
+import { EditTwoTone, PushpinTwoTone, NumberOutlined } from '@ant-design/icons';
 import { Avatar, Tooltip } from 'antd';
 import AvatarCustom from 'components/AvatarCustom';
 import parse from 'html-react-parser';
@@ -62,6 +62,18 @@ function NotifyMessage({ message }) {
         }
         if (text === 'Tham gia từ link') {
             return 10;
+        }
+
+        if (text === 'UPDATE_CHANNEL') {
+            return 11;
+        }
+
+        if (text === 'DELETE_CHANNEL') {
+            return 12;
+        }
+
+        if (text === 'CREATE_CHANNEL') {
+            return 13;
         }
 
     };
@@ -351,6 +363,79 @@ function NotifyMessage({ message }) {
                                         {`${isMyActive} `}
                                     </span>
                                     {parse(content)}
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+                {
+                    transferTextToValue(content) === 11 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                    />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    đã đổi tên channel
+                                    &nbsp;<NumberOutlined />
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+
+                {
+                    transferTextToValue(content) === 12 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                    />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    đã xóa Channel
+                                    &nbsp;<NumberOutlined />
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+                {
+                    transferTextToValue(content) === 13 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                    />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    đã tạo Channel
+                                    &nbsp;<NumberOutlined />
                                 </div>
                             </div>
                         </>
