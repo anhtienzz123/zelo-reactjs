@@ -1,4 +1,5 @@
 import { Col, Row } from 'antd';
+import { setTabActive } from 'app/globalSlice';
 import NotFoundPage from 'components/NotFoundPage';
 import Chat from 'features/Chat';
 import NavbarContainer from 'features/Chat/containers/NavbarContainer';
@@ -63,6 +64,7 @@ function ChatLayout(props) {
         dispatch(fetchListColor());
         dispatch(fetchListConversations({}));
         dispatch(fetchAllSticker());
+        dispatch(setTabActive(1));
     }, []);
 
     useEffect(() => {

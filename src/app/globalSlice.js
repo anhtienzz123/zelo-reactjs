@@ -39,6 +39,9 @@ const globalSlice = createSlice({
         setTabActive: (state, action) => {
             state.tabActive = action.payload;
         },
+        setAvatarProfile: (state, action) => {
+            state.user.avatar = action.payload;
+        },
     },
 
     extraReducers: {
@@ -67,5 +70,6 @@ export const {
     setJoinChatLayout,
     setJoinFriendLayout,
     setTabActive,
+    setAvatarProfile,
 } = actions;
 export default reducer;
