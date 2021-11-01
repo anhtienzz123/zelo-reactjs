@@ -46,6 +46,9 @@ const dateUtils = {
     compareDate: (time, currentTime) => {
         return time.setHours(0, 0, 0, 0) === currentTime.setHours(0, 0, 0, 0);
     },
+    checkLeapYear: (year) => {
+        return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+    },
 };
 
 module.exports = dateUtils;
