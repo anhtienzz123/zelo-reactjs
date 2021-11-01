@@ -76,6 +76,10 @@ function NotifyMessage({ message }) {
             return 13;
         }
 
+        if (text === 'Ảnh đại diện nhóm đã thay đổi') {
+            return 14;
+        }
+
     };
 
 
@@ -100,7 +104,7 @@ function NotifyMessage({ message }) {
                     }
                     if (index > 3) {
                         return (
-                            <Tooltip placement='top'>
+                            <Tooltip placement='top' key={index}>
                                 <Avatar
                                     style={{
                                         backgroundColor: '#7562d8',
@@ -436,6 +440,33 @@ function NotifyMessage({ message }) {
                                     </span>
                                     đã tạo Channel
                                     &nbsp;<NumberOutlined />
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+
+                {
+                    transferTextToValue(content) === 14 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                    />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <EditTwoTone />&nbsp;
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    đã thay đổi ảnh đại diện nhóm
+
+
                                 </div>
                             </div>
                         </>

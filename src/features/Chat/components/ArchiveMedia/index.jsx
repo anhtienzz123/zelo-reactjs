@@ -4,6 +4,7 @@ import './style.scss';
 import { CaretDownOutlined } from '@ant-design/icons';
 import ImageItem from '../ImageItem';
 import { Image } from 'antd';
+import ModalVideoCustom from 'components/ModalVideoCustom';
 ArchiveMedia.propTypes = {
     viewMediaClick: PropTypes.func,
     name: PropTypes.string,
@@ -14,11 +15,17 @@ ArchiveMedia.defaultProps = {
     viewMediaClick: null,
     name: '',
     items: [],
+
 };
 
 function ArchiveMedia(props) {
     const { viewMediaClick, name, items } = props;
     const [isDrop, setIsDrop] = useState(true);
+
+    const [visible, setVisible] = useState(false);
+    const [currentVideo, setCurrentVideo] = useState('');
+
+
     const styleIconDrop = {
         transform: 'rotate(-90deg)',
     };
@@ -39,6 +46,17 @@ function ArchiveMedia(props) {
             }
         }
     };
+
+    const handleVisibleModal = (url) => {
+        setVisible(true);
+        setCurrentVideo(url);
+
+    }
+
+    const handleOnClose = () => {
+        setVisible(false);
+        setCurrentVideo('');
+    }
 
     return (
         <div className='info_media'>
@@ -66,6 +84,8 @@ function ArchiveMedia(props) {
                                 width={80}
                                 height={80}
                                 url={itemEle.content}
+                                type={name === 'Video' ? name.toLowerCase() : 'image'}
+                                onVisibleVideoModal={handleVisibleModal}
                             />
                         ))}
 
@@ -77,6 +97,12 @@ function ArchiveMedia(props) {
                     <button onClick={handleViewAllOnClick}>Xem Tất cả</button>
                 </div>
             </div>
+
+            <ModalVideoCustom
+                isVisible={visible}
+                url={currentVideo}
+                onClose={handleOnClose}
+            />
         </div>
     );
 }

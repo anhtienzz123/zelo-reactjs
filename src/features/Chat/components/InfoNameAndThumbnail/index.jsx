@@ -22,8 +22,13 @@ function InfoNameAndThumbnail({ conversation }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [value, setValue] = useState('');
     const { currentConversation } = useSelector(state => state.chat);
+
     const dispatch = useDispatch();
     const refInitValue = useRef();
+    const [file, setFile] = useState(null);
+    const [isClear, setIsClear] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+
 
 
 
@@ -31,7 +36,13 @@ function InfoNameAndThumbnail({ conversation }) {
         if (conversation.type) {
             setValue(conversation.name);
             refInitValue.current = conversation.name;
+
         }
+
+        if (isModalVisible) {
+            setIsClear(false)
+        }
+
     }, [currentConversation, isModalVisible])
 
 
@@ -39,22 +50,46 @@ function InfoNameAndThumbnail({ conversation }) {
         setIsModalVisible(true)
     }
     function handleCancel() {
-        setIsModalVisible(false)
+        setIsModalVisible(false);
+        setFile(null);
+        setIsClear(true)
+
     }
 
     async function handleOk() {
+        setConfirmLoading(true);
         try {
-            await conversationApi.changeNameConversation(currentConversation, value);
-            message.success('Đổi tên nhóm thành công');
+            if (refInitValue.current !== value) {
+                await conversationApi.changeNameConversation(currentConversation, value);
+            }
+
+            if (file) {
+                const frmData = new FormData();
+                frmData.append('file', file);
+                await conversationApi.changAvatarGroup(currentConversation, frmData);
+            }
+
+            message.success('Cập nhật thông tin thành công');
         } catch (error) {
         }
+        setConfirmLoading(false);
         setIsModalVisible(false);
 
 
     }
+
+
     const handleInputChange = (e) => {
         setValue(e.target.value);
     }
+
+    const handleGetfile = (file) => {
+        setFile(file)
+    }
+
+
+
+
 
     return (
         <div className='info_name-and-thumbnail'>
@@ -67,14 +102,27 @@ function InfoNameAndThumbnail({ conversation }) {
                 okText='Thay đổi'
                 cancelText='Hủy'
                 closable={false}
-                okButtonProps={{ disabled: (refInitValue.current === value || value.trim().length === 0) }}
+                confirmLoading={confirmLoading}
+                okButtonProps={{
+                    disabled:
+                        (
+                            (refInitValue.current === value && !file)
+                            || value.trim().length === 0
+                        )
+                }}
             >
 
                 <div className="update-profile_wrapper">
 
+
                     <div className="update-profile_upload">
-                        <UploadAvatar />
+                        <UploadAvatar
+                            avatar={typeof conversation.avatar === 'string' ? conversation.avatar : ''}
+                            getFile={handleGetfile}
+                            isClear={isClear}
+                        />
                     </div>
+
 
                     <div className="update-profile_input">
                         <Input

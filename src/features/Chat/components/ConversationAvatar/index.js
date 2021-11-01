@@ -12,12 +12,14 @@ ConversationAvatar.propTypes = {
     type: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,
     isActived: PropTypes.bool,
+    avatar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
 };
 
 ConversationAvatar.defaultProps = {
     demension: 28,
     isGroupCard: false,
     isActived: false,
+    avatar: '',
 };
 
 function ConversationAvatar({
@@ -83,7 +85,7 @@ function ConversationAvatar({
 
     return (
         <div id="avatar_conversation">
-            {!type ? (
+            {typeof avatar === 'string' ? (
                 // <Avatar size={48} src={avatar ? avatar : DEFAULT_AVATAR} />
                 <Badge dot={isActived} offset={[-5, 40]} color="green">
                     <AvatarCustom size={48} src={avatar} name={name} />

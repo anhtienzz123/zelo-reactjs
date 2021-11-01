@@ -74,6 +74,10 @@ const conversationApi = {
             `${API_URL}/${conversationId}/join-from-link/${isStatus}`
         );
     },
+
+    changAvatarGroup: (conversationId, file) => {
+        return axiosClient.patch(`${API_URL}/${conversationId}/avatar`, file);
+    },
 };
 
 export default conversationApi;

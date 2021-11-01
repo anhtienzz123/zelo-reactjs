@@ -592,6 +592,16 @@ const chatSlice = createSlice({
             );
             state.channels[index] = { ...state.channels[index], name };
         },
+        updateAvavarConver: (state, action) => {
+            const { conversationId, conversationAvatar } = action.payload;
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === conversationId
+            );
+            state.conversations[index] = {
+                ...state.conversations[index],
+                avatar: conversationAvatar,
+            };
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -788,6 +798,7 @@ export const {
     setCurrentChannel,
     addMessageInChannel,
     updateNameChannel,
+    updateAvavarConver,
     removeChannel,
     setTotalChannelNotify,
 } = actions;
