@@ -76,6 +76,7 @@ function NotifyMessage({ message }) {
             return 13;
         }
 
+
         if (text === 'Ảnh đại diện nhóm đã thay đổi') {
             return 14;
         }
@@ -447,6 +448,7 @@ function NotifyMessage({ message }) {
                 }
 
 
+
                 {
                     transferTextToValue(content) === 14 && (
                         <>
@@ -472,7 +474,6 @@ function NotifyMessage({ message }) {
                         </>
                     )
                 }
-
 
 
             </div>
