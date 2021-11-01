@@ -115,7 +115,6 @@ function ForgotPage(props) {
             success();
             console.log('kích hoạt thành công');
             history.push('/account/login');
-
             dispatch(setLoading(true));
         } catch (error) {
             setError('OTP không hợp lệ hoặc hết hạn');
@@ -125,8 +124,8 @@ function ForgotPage(props) {
     };
 
     return (
-        <div className='forgot-page'>
-            <div className='main'>
+        <div className="forgot-page">
+            <div className="main">
                 <Title level={2} style={{ textAlign: 'center' }}>
                     <Text style={{ color: '#08aeea' }}>Quên Mật Khẩu</Text>
                 </Title>
@@ -136,7 +135,8 @@ function ForgotPage(props) {
                     initialValues={{ ...forgotValues.initial }}
                     onSubmit={(values) => handleForgot(values)}
                     validationSchema={forgotValues.validationSchema}
-                    enableReinitialize={true}>
+                    enableReinitialize={true}
+                >
                     {(formikProps) => {
                         return (
                             <Form>
@@ -146,7 +146,8 @@ function ForgotPage(props) {
                                             style={{
                                                 color: '#08aeea',
                                                 textAlign: 'center',
-                                            }}>
+                                            }}
+                                        >
                                             {' '}
                                             Nhập email/SĐT để nhận mã xác thực
                                         </Text>
@@ -154,58 +155,63 @@ function ForgotPage(props) {
                                     <br />
                                     <Col span={24}>
                                         <FastField
-                                            name='username'
+                                            name="username"
                                             component={InputField}
-                                            type='text'
-                                            title='Tài khoản'
-                                            placeholder='Nhập tài khoản'
+                                            type="text"
+                                            title="Tài khoản"
+                                            placeholder="Nhập tài khoản"
                                             maxLength={50}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
                                     <Col span={24}>
                                         <FastField
-                                            name='password'
+                                            name="password"
                                             component={InputField}
-                                            type='password'
-                                            title='Mật khẩu mới'
-                                            placeholder='Nhập mật khẩu'
+                                            type="password"
+                                            title="Mật khẩu mới"
+                                            placeholder="Nhập mật khẩu"
                                             maxLength={200}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
 
                                     <Col span={24}>
                                         <FastField
-                                            name='passwordconfirm'
+                                            name="passwordconfirm"
                                             component={InputField}
-                                            type='password'
-                                            title=' Xác Nhận Mật khẩu'
-                                            placeholder='Xác nhận mật khẩu'
+                                            type="password"
+                                            title=" Xác Nhận Mật khẩu"
+                                            placeholder="Xác nhận mật khẩu"
                                             maxLength={200}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
                                     <Col span={24}>
                                         <FastField
-                                            name='otpValue'
+                                            name="otpValue"
                                             component={InputField}
-                                            type='text'
-                                            title='Xác nhận'
-                                            placeholder='Nhập 6 ký tự OTP'
+                                            type="text"
+                                            title="Xác nhận"
+                                            placeholder="Nhập 6 ký tự OTP"
                                             maxLength={50}
                                             titleCol={8}
-                                            inputCol={16}></FastField>
+                                            inputCol={16}
+                                        ></FastField>
                                     </Col>
 
                                     {isError ? (
                                         <Col offset={8} span={16}>
                                             <Tag
-                                                color='error'
+                                                color="error"
                                                 style={{
                                                     fontWeight: 'bold',
                                                 }}
-                                                icon={<CloseCircleOutlined />}>
+                                                icon={<CloseCircleOutlined />}
+                                            >
                                                 {isError}
                                             </Tag>
                                         </Col>
@@ -215,22 +221,24 @@ function ForgotPage(props) {
 
                                     <Col offset={8} span={16}>
                                         <Button
-                                            type='primary'
+                                            type="primary"
                                             onClick={() =>
                                                 handleConfirmOTP(
                                                     formikProps.values
                                                 )
-                                            }>
+                                            }
+                                        >
                                             Xác nhận
                                         </Button>{' '}
                                         {counter > 0 ? (
-                                            <Button type='primary'>
+                                            <Button type="primary">
                                                 Gửi lại mã OTP 00:{counter}
                                             </Button>
                                         ) : (
                                             <Button
-                                                type='primary'
-                                                htmlType='submit'>
+                                                type="primary"
+                                                htmlType="submit"
+                                            >
                                                 Gửi lại mã OTP
                                             </Button>
                                         )}
@@ -241,8 +249,9 @@ function ForgotPage(props) {
                                     style={{
                                         color: '#08aeea',
                                         textAlign: 'left',
-                                    }}>
-                                    <Link to='/account/login'>
+                                    }}
+                                >
+                                    <Link to="/account/login">
                                         <DoubleLeftOutlined /> Quay lại
                                     </Link>
                                 </p>

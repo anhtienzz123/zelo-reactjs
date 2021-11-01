@@ -1,23 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Scrollbars } from 'react-custom-scrollbars';
-import UserMessage from 'features/Chat/components/UserMessage';
-import { useDispatch, useSelector } from 'react-redux';
-import DividerCustom from 'features/Chat/components/DividerCustom';
-import { setRaisePage, fetchNextPageMessage } from '../../chatSlice';
-import './style.scss';
 import { Spin } from 'antd';
+import DividerCustom from 'features/Chat/components/DividerCustom';
+import UserMessage from 'features/Chat/components/UserMessage';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchNextPageMessage, fetchNextPageMessageOfChannel, setRaisePage } from '../../slice/chatSlice';
+import './style.scss';
 
 BodyChatContainer.propTypes = {
     scrollId: PropTypes.string,
     onSCrollDown: PropTypes.string,
     onBackToBottom: PropTypes.func,
+    onLoading: PropTypes.func,
 };
 
 BodyChatContainer.defaultProps = {
     scrollId: '',
     onSCrollDown: '',
     onBackToBottom: null,
+    onLoading: null
+
 };
 
 const HOURS_MINUS = 6;
@@ -29,15 +32,20 @@ function BodyChatContainer({
     onResetScrollButton,
     turnOnScrollButoon,
 }) {
-    const { messages, currentConversation, currentPage } = useSelector(
-        (state) => state.chat
-    );
+    const {
+        messages,
+        currentConversation,
+        currentPage,
+        lastViewOfMember,
+        currentChannel,
+
+    } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
-    const [isSpinning, setIsSpinning] = useState(false);
     const scrollbars = useRef();
     const [position, setPosition] = useState(1);
     const dispatch = useDispatch();
     const previousHieight = useRef();
+    const [loading, setLoading] = useState(false)
     const tempPosition = useRef();
 
     useEffect(() => {
@@ -48,16 +56,17 @@ function BodyChatContainer({
     }, [turnOnScrollButoon]);
 
     useEffect(() => {
-        if (scrollId) {
-            scrollbars.current.scrollToBottom();
-        }
-    }, [scrollId]);
 
-    useEffect(() => {
-        async function fetchNextListMessage() {
-            if (currentPage > 0) {
-                setIsSpinning(true);
-
+        const fetchMesageWhenPageRaise = async () => {
+            if (currentChannel) {
+                await dispatch(
+                    fetchNextPageMessageOfChannel({
+                        channelId: currentChannel,
+                        page: currentPage,
+                        size: 10,
+                    })
+                );
+            } else {
                 await dispatch(
                     fetchNextPageMessage({
                         conversationId: currentConversation,
@@ -65,25 +74,41 @@ function BodyChatContainer({
                         size: 10,
                     })
                 );
-                setIsSpinning(false);
-
-                scrollbars.current.scrollTop(
-                    scrollbars.current.getScrollHeight() -
-                        previousHieight.current
-                );
             }
         }
 
+
+        async function fetchNextListMessage() {
+            if (currentPage > 0) {
+                setLoading(true)
+
+                await fetchMesageWhenPageRaise();
+                setLoading(false)
+                // setLoading(false)
+
+
+
+
+                scrollbars.current.scrollTop(
+                    scrollbars.current.getScrollHeight() -
+                    previousHieight.current
+                );
+
+            }
+        }
         fetchNextListMessage();
     }, [currentPage]);
+
+
+
 
     useEffect(() => {
         if (
             onSCrollDown &&
             scrollbars.current.getScrollHeight() >
-                scrollbars.current.getClientHeight()
+            scrollbars.current.getClientHeight()
         ) {
-            if (position >= 0.99) {
+            if (position >= 0.95) {
                 scrollbars.current.scrollToBottom();
             } else {
                 if (onBackToBottom) {
@@ -110,26 +135,68 @@ function BodyChatContainer({
                         key={i}
                         message={currentMessage}
                         isMyMessage={isMyMessage}
+                        conditionTime={true}
                     />
                 );
                 continue;
             }
+            const dateTempt2 = new Date(currentMessage.createdAt);
+            const dateTempt1 = new Date(preMessage.createdAt);
 
             const isSameUser =
                 currentMessage.user._id === preMessage.user._id &&
-                preMessage.type !== 'NOTIFY'
+                    preMessage.type !== 'NOTIFY'
                     ? true
                     : false;
 
-            // Check tin nhắn sau có cùng người gửi vs tin nhắn trước
-
-            const dateTempt1 = new Date(preMessage.createdAt);
-            const dateTempt2 = new Date(currentMessage.createdAt);
-
-            if (
-                // chổ này đang so sánh 5 phút nên để lại 6hours
+            const timeIsEqual =
                 dateTempt2.setHours(dateTempt2.getHours() - 6) > dateTempt1
-            ) {
+                    ? true
+                    : false;
+
+            // let conditionTime = false
+            // if (isSameUser) {
+            //     if (indexMesssageBreak.current === i) {
+            //         conditionTime = true;
+            //     }
+
+            //     if (i === messages.length - 1) {
+            //         conditionTime = true;
+            //     }
+            //     indexMesssageBreak.current = i
+            // } else {
+            //     if (indexMesssageBreak.current === i) {
+            //         conditionTime = true;
+            //     }
+
+            //     if (i === messages.length - 1) {
+            //         conditionTime = true;
+            //     }
+
+            // }
+
+            // tin nhắn cuối
+            const viewUsers = [];
+            if (i == messages.length - 1) {
+                const lastViewNotMe = lastViewOfMember.filter((ele) => {
+                    if (
+                        ele.user._id == messages[i].user._id ||
+                        ele.user._id == user._id
+                    )
+                        return false;
+
+                    return true;
+                });
+
+                lastViewNotMe.forEach((ele) => {
+                    const { lastView, user } = ele;
+
+                    if (new Date(lastView) >= new Date(messages[i].createdAt))
+                        viewUsers.push(user);
+                });
+            }
+
+            if (timeIsEqual) {
                 result.push(
                     <div key={i}>
                         <DividerCustom dateString={dateTempt2} />
@@ -137,6 +204,7 @@ function BodyChatContainer({
                             key={i}
                             message={currentMessage}
                             isMyMessage={isMyMessage}
+                            viewUsers={viewUsers}
                         />
                     </div>
                 );
@@ -147,6 +215,7 @@ function BodyChatContainer({
                         message={currentMessage}
                         isMyMessage={isMyMessage}
                         isSameUser={isSameUser}
+                        viewUsers={viewUsers}
                     />
                 );
         }
@@ -155,9 +224,9 @@ function BodyChatContainer({
     };
 
     const handleOnScrolling = ({ scrollTop, scrollHeight, top }) => {
-        tempPosition.current = top;
 
-        console.log('CHay scroll');
+
+        tempPosition.current = top;
         if (
             scrollbars.current.getScrollHeight() ===
             scrollbars.current.getClientHeight()
@@ -187,15 +256,23 @@ function BodyChatContainer({
     };
 
     useEffect(() => {
-        scrollbars.current.scrollToBottom();
-        console.log(
-            scrollbars.current.getScrollHeight(),
-            ':',
-            scrollbars.current.getClientHeight()
-        );
-    }, [currentConversation]);
+        if (scrollId) {
+            scrollbars.current.scrollToBottom();
+        }
+    }, [scrollId]);
 
-    const handleOnScroll = (e) => {};
+
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            sleep(500).then(() => {
+                scrollbars.current.scrollToBottom();
+            });
+        }
+    }, [currentConversation, currentChannel]);
 
     return (
         <Scrollbars
@@ -204,11 +281,12 @@ function BodyChatContainer({
             autoHideDuration={200}
             ref={scrollbars}
             onScrollFrame={handleOnScrolling}
-            onScrollStop={handleOnStop}>
+            onScrollStop={handleOnStop}
+        >
             {/* <div className='main-body-conversation'> */}
 
-            <div className='spinning-custom'>
-                <Spin spinning={isSpinning} />
+            <div className="spinning-custom">
+                <Spin spinning={loading} />
             </div>
 
             {renderMessages(messages)}

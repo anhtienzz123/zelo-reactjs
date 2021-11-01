@@ -7,7 +7,7 @@ import './style.scss';
 import PersonalIcon from '../PersonalIcon';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { fetchListFriends, setFriends } from 'features/Chat/chatSlice';
+import { fetchListFriends, setFriends } from 'features/Chat/slice/chatSlice';
 import Text from 'antd/lib/typography/Text';
 ModalAddMemberToConver.propTypes = {
 
@@ -231,6 +231,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
                                                     <PersonalIcon
                                                         demention={36}
                                                         avatar={element.avatar}
+                                                        name={element.name}
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

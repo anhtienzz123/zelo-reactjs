@@ -17,21 +17,21 @@ const messageApi = {
     },
 
     sendFileThroughMessage: (file, attachInfo, cb) => {
-
-
-        const { type, conversationId } = attachInfo;
+        const { type, conversationId, channelId } = attachInfo;
 
         const config = {
             params: {
                 type,
                 conversationId,
+                channelId,
             },
             onUploadProgress: function (progressEvent) {
-                let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                let percentCompleted = Math.round(
+                    (progressEvent.loaded * 100) / progressEvent.total
+                );
                 cb(percentCompleted);
-
-            }
-        }
+            },
+        };
 
         return axiosClient.post(`${API_URL}/files`, file, config);
     },
@@ -46,14 +46,6 @@ const messageApi = {
     dropReaction: (idMessage, type) => {
         return axiosClient.post(`${API_URL}/${idMessage}/reacts/${type}`);
     },
-
-
-
-
-
-
 };
-
-
 
 export default messageApi;

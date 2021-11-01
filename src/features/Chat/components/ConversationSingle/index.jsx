@@ -1,9 +1,10 @@
-import React from 'react';
+import { TagFilled } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { Avatar } from 'antd';
-import ConversationAvatar from '../ConversationAvatar';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { TagTwoTone } from '@ant-design/icons';
+import classifyUtils from 'utils/classifyUtils';
+import ConversationAvatar from '../ConversationAvatar';
+import ShortMessage from '../ShortMessage';
 import './style.scss';
 ConversationSingle.propTypes = {
     conversation: PropTypes.object,
@@ -13,15 +14,23 @@ ConversationSingle.propTypes = {
 function ConversationSingle({ conversation, onClick }) {
     const { _id, name, avatar, numberUnread, lastMessage, totalMembers } =
         conversation;
-    const { content, type, createdAt, user } = lastMessage;
-    const global = useSelector((state) => state.global);
+    const { type, createdAt } = lastMessage;
 
-    const handleLengthText = (text) => {
-        if (text.length >= 23) {
-            return text.slice(0, 20) + '...';
+    const { classifies, conversations } = useSelector(state => state.chat);
+    const [classify, setClassify] = useState(null);
+
+
+    useEffect(() => {
+        if (classifies.length > 0) {
+            const temp = classifyUtils.getClassifyOfObject(_id, classifies);
+            if (temp) {
+                setClassify(temp);
+            }
         }
-        return text;
-    };
+    }, [conversation, conversations, classifies]);
+
+
+
 
     const handleClick = () => {
         if (onClick) onClick(_id);
@@ -31,7 +40,13 @@ function ConversationSingle({ conversation, onClick }) {
         <div className='conversation-item_box' onClick={handleClick}>
             <div className='left-side-box'>
                 <div className='icon-users'>
-                    <ConversationAvatar avatar={avatar} />
+                    <ConversationAvatar
+                        totalMembers={totalMembers}
+                        avatar={avatar}
+                        type={conversation.type}
+                        name={name}
+
+                    />
                 </div>
             </div>
 
@@ -41,16 +56,24 @@ function ConversationSingle({ conversation, onClick }) {
                         <span className='name-box'>{name}</span>
 
                         <div className='lastest-message'>
-                            <span className='tag-classify'>
-                                <TagTwoTone twoToneColor='#db342e' />
-                            </span>
-                            <span>
-                                {`${
-                                    global.user.name === user.name
-                                        ? 'Bạn'
-                                        : user.name
-                                }:${content ? content : 'Tin nhắn đã thu hồi'}`}
-                            </span>
+                            {
+                                classify && (
+                                    <span className='tag-classify'>
+                                        <TagFilled
+                                            style={{ color: `${classify.color?.code}` }}
+                                        />
+                                    </span>
+                                )
+                            }
+
+
+                            <ShortMessage
+                                message={lastMessage}
+                                type={conversation.type}
+                            />
+
+
+
                         </div>
                     </div>
 

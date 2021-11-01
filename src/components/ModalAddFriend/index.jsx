@@ -13,8 +13,14 @@ ModalAddFriend.defaultProps = {
     onSearch: null
 };
 
-function ModalAddFriend({ isVisible, onCancel, onSearch }) {
+function ModalAddFriend({ isVisible, onCancel, onSearch, onEnter }) {
     const [value, setValue] = useState('');
+
+    const handleOnPressEnter = () => {
+        if (onEnter) {
+            onEnter(value);
+        }
+    }
 
     const handleOk = () => {
         if (onSearch) {
@@ -48,10 +54,10 @@ function ModalAddFriend({ isVisible, onCancel, onSearch }) {
             <div className="input-add-friend_wrapper">
                 <Input
                     placeholder="Nhập số điện thoại hoặc email"
-                    // type='number'
                     allowClear
                     value={value}
                     onChange={handleInputChange}
+                    onPressEnter={handleOnPressEnter}
 
                 />
             </div>

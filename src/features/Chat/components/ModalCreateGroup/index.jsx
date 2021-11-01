@@ -1,7 +1,7 @@
 import { EditOutlined, InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { Checkbox, Col, Divider, Input, Modal, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
-import { fetchListFriends, setFriends } from 'features/Chat/chatSlice';
+import { fetchListFriends, setFriends } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -207,6 +207,8 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
                                                     <PersonalIcon
                                                         demention={36}
                                                         avatar={element.avatar}
+                                                        name={element.name}
+
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

@@ -1,6 +1,5 @@
 $blue-color: blue;
 $white-color: #ffffff;
-$gradident-blue: linear-gradient(to-bottom, #408dfd, #0068ff);
 $strong-blue: #396edd;
 $blue-light: #58aeff;
 $light-grey: #e8eaef;
@@ -17,8 +16,9 @@ $grey-400: #e8eaef;
 $neutral-500: #72808e;
 $base-color: #0068ff;
 $blue-zelo: #4c92ff;
-$grey-300: #e1e4ea;
 $silver: #b3bbc8;
 $blue-700: #e5efff;
 $grey-500: #eeeff2;
-
+$gradident-blue: linear-gradient(90deg, $base-color, $blue-zelo);
+$dark-gray: #abb3bb;
+$light-cyan: #d2efff;

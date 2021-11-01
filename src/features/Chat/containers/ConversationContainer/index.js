@@ -1,44 +1,45 @@
-import { DeleteFilled, ExclamationCircleOutlined, TagTwoTone } from '@ant-design/icons';
-import { Dropdown, Menu, Modal, message } from 'antd';
-import {
-    fetchListConversations,
-    fetchListMessages
-} from 'features/Chat/chatSlice';
+import { DeleteFilled, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Dropdown, Menu, message, Modal } from 'antd';
+import conversationApi from 'api/conversationApi';
+import SubMenuClassify from 'components/SubMenuClassify';
 import ConversationSingle from 'features/Chat/components/ConversationSingle';
-import React, { useEffect, useState } from 'react';
+import {
+    fetchChannels,
+    fetchListMessages,
+    getLastViewOfMembers,
+    setCurrentChannel,
+} from 'features/Chat/slice/chatSlice';
+import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteConversation, getMembersConversation, setTypeOfConversation } from '../../chatSlice';
-import conversationApi from 'api/conversationApi';
+import {
+    getMembersConversation,
+    setTypeOfConversation,
+} from '../../slice/chatSlice';
 import './style.scss';
-ConversationContainer.propTypes = {};
 
+ConversationContainer.propTypes = {};
 
 function ConversationContainer(props) {
     const dispatch = useDispatch();
     const { conversations, classifies } = useSelector((state) => state.chat);
-    const { SubMenu } = Menu;
+    const { user } = useSelector((state) => state.global);
 
+    const handleConversationClick = async (conversationId) => {
+        // dispatch(setCurrentConversation(conversationId));
 
-    const handleConversationClick = (conversationId) => {
+        dispatch(setCurrentChannel(''));
+        dispatch(getLastViewOfMembers({ conversationId }));
         dispatch(fetchListMessages({ conversationId, size: 10 }));
+
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
+        dispatch(fetchChannels({ conversationId }));
     };
 
-    useEffect(() => {
-        dispatch(fetchListConversations({}));
-    }, []);
-
-
-
     const handleOnClickItem = (e, id) => {
-
-        console.log("click", e.key, id);
-
         if (e.key == 1) {
             confirm(id);
-
         }
     };
 
@@ -47,86 +48,95 @@ function ConversationContainer(props) {
             await conversationApi.deleteConversation(id);
             message.success('Xóa thành công');
         } catch (error) {
-            message.error('Bạn không thể xóa nhóm này! Hãy chọn tính năng rời nhóm');
+            message.error('Đã có lỗi xảy ra');
         }
-
-    }
-
+    };
 
     function confirm(id) {
         Modal.confirm({
-            title: "Xác nhận",
+            title: 'Xác nhận',
             icon: <ExclamationCircleOutlined />,
-            content: <span>Toàn bộ nội dung cuộc trò chuyện sẻ bị xóa, bạn có chắc chắn muốn xóa ?</span>,
+            content: (
+                <span>
+                    Toàn bộ nội dung cuộc trò chuyện sẻ bị xóa, bạn có chắc chắn
+                    muốn xóa ?
+                </span>
+            ),
             okText: 'Xóa',
             cancelText: 'Không',
             onOk: () => {
-                deleteConver(id)
-            }
+                deleteConver(id);
+            },
         });
     }
-
-
-
 
     return (
         <>
             <Scrollbars
                 autoHide={true}
                 autoHideTimeout={1000}
-                autoHideDuration={200}>
-                <div id='conversation-main'>
-
-                    <ul className='list_conversation' >
-
+                autoHideDuration={200}
+            >
+                <div id="conversation-main">
+                    <ul className="list_conversation">
                         {conversations.map((conversationEle, index) => {
                             const { numberUnread } = conversationEle;
-
-                            return (
-                                <Dropdown
-                                    key={index}
-                                    overlay={
-                                        <Menu onClick={(e) => handleOnClickItem(e, conversationEle._id)}>
-
-
-                                            <SubMenu title="Phân loại">
-
-                                                {
-                                                    classifies.length > 0 &&
-                                                    classifies.map(ele => (
-                                                        <Menu.Item key={ele._id} icon={<TagTwoTone twoToneColor={ele.color.code} />}>{ele.name}</Menu.Item>
-                                                    ))
-                                                }
-
-                                            </SubMenu>
-                                            <Menu.Item danger key="1" icon={<DeleteFilled />}>Xoá hội thoại</Menu.Item>
-                                        </Menu>
-                                    }
-                                    trigger={['contextMenu']}
-
-
-                                >
-
-                                    <li
+                            if (conversationEle.lastMessage) {
+                                return (
+                                    <Dropdown
                                         key={index}
-                                        className={`conversation-item ${numberUnread === 0
-                                            ? ''
-                                            : 'arrived-message'
-                                            } `}>
-                                        <ConversationSingle
-                                            conversation={conversationEle}
-                                            onClick={handleConversationClick}
-                                        />
-                                    </li>
-                                </Dropdown>
+                                        overlay={
+                                            <Menu
+                                                onClick={(e) =>
+                                                    handleOnClickItem(
+                                                        e,
+                                                        conversationEle._id
+                                                    )
+                                                }
+                                            >
+                                                <SubMenuClassify
+                                                    data={classifies}
+                                                    idConver={
+                                                        conversationEle._id
+                                                    }
+                                                />
 
-                            );
+                                                {user._id ===
+                                                    conversationEle.leaderId && (
+                                                    <Menu.Item
+                                                        danger
+                                                        key="1"
+                                                        icon={<DeleteFilled />}
+                                                    >
+                                                        Xoá hội thoại
+                                                    </Menu.Item>
+                                                )}
+                                            </Menu>
+                                        }
+                                        trigger={['contextMenu']}
+                                    >
+                                        <li
+                                            key={index}
+                                            className={`conversation-item ${
+                                                numberUnread === 0
+                                                    ? ''
+                                                    : 'arrived-message'
+                                            } `}
+                                        >
+                                            <ConversationSingle
+                                                conversation={conversationEle}
+                                                onClick={
+                                                    handleConversationClick
+                                                }
+                                            />
+                                        </li>
+                                    </Dropdown>
+                                );
+                            }
                         })}
                     </ul>
-
                 </div>
             </Scrollbars>
-
         </>
     );
 }

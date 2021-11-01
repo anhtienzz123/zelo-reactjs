@@ -1,45 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import { ExclamationCircleOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { Button, Image, message, Modal, Avatar } from 'antd';
+import conversationApi from 'api/conversationApi';
+import friendApi from 'api/friendApi';
+import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
+import {
+    fetchChannels,
+    fetchListFriends,
+    fetchListMessages, getLastViewOfMembers, setConversations, setCurrentConversation
+} from 'features/Chat/slice/chatSlice';
+import {
+    fetchFriends,
+    fetchListMyRequestFriend,
+    fetchListRequestFriend,
+    fetchPhoneBook,
+    setAmountNotify
+} from 'features/Friend/friendSlice';
 import PropTypes from 'prop-types';
-import './style.scss';
-import { Button, Image, Input, Modal } from 'antd';
-import UserCardStyle from './UserCardStyle';
-import FriendUtils from 'utils/friendUtils';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import dateUtils from 'utils/dateUtils';
-import { DeleteFilled } from '@ant-design/icons';
+import getSummaryName from 'utils/nameHelper';
+import './style.scss';
+import UserCardStyle from './UserCardStyle';
 UserCard.propTypes = {
     title: PropTypes.string,
     user: PropTypes.object.isRequired,
     isVisible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
     onAddFriend: PropTypes.func,
+    onDeleteFriend: PropTypes.func,
+
 };
 
 UserCard.defaultProps = {
     title: 'Thông tin',
     onCancel: null,
     onAddFriend: null,
-
-    // coverImage: 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg',
-    // avatar: 'https://splynt.co/wp-content/uploads/2021/02/blank-profile.jpg'
+    onDeleteFriend: null,
 };
 
 
 function UserCard(props) {
-    const { title, isVisible, user, onCancel, onAddFriend } = props;
-    const { friends } = useSelector(state => state.chat);
-    const { requestFriends } = useSelector(state => state.friend);
-    const [isShowButton, setIsShowButton] = useState(true);
-    const [isShowButtonComfirm, setIsShowButtonConfirm] = useState(false);
-    // const [isShowButtonCancel, setIsShowButtonCancel] = useState(false);
+    const {
+        title,
+        isVisible,
+        user,
+        onCancel,
+    } = props;
 
-    useEffect(() => {
-        setIsShowButton(!FriendUtils.checkIsFriend(user, friends));
-        setIsShowButtonConfirm(FriendUtils.checkIsSentRequest(user, requestFriends));
-        // setIsShowButtonCancel(FriendUtils.checkIsMyRequestFriend(user, friends));
-
-        console.log(user, FriendUtils.checkIsSentRequest(user, requestFriends));
-    }, [user]);
+    const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const { status, numberCommonGroup } = user;
+    const { amountNotify } = useSelector((state) => state.friend)
+    const { conversations } = useSelector((state) => state.chat)
 
 
     const handleOnCancle = () => {
@@ -47,26 +62,95 @@ function UserCard(props) {
             onCancel();
         }
     }
+    const handleClickMessage = async () => {
+        const response = await conversationApi.createConversationIndividual(user._id);
+        const { _id, isExists } = response;
 
-    const handleAddFriend = () => {
-        if (onAddFriend) {
-            onAddFriend(user._id);
+
+        if (!isExists) {
+            const conver = await conversationApi.getConversationById(_id);
+            dispatch(setConversations(conver));
+        }
+
+        if (conversations.find(ele => ele._id === _id).type) {
+            dispatch(fetchChannels({ conversationId: _id }))
+        }
+
+        dispatch(getLastViewOfMembers({ conversationId: _id }));
+        dispatch(fetchListMessages({ conversationId: _id, size: 10 }));
+        dispatch(setCurrentConversation(_id));
+
+
+        history.push({
+            pathname: '/chat',
+        });
+
+        handleOnCancle()
+    }
+
+
+
+    const handleDeleteFriend = () => {
+        confirm();
+    }
+
+    const handleAddFriend = async () => {
+        console.log('add friend', user._id)
+
+        try {
+            await friendApi.sendRequestFriend(user._id);
+            dispatch(fetchListMyRequestFriend());
+            dispatch(fetchPhoneBook());
+            handleOnCancle();
+            message.success('Gửi lời mời kết bạn thành công');
+        } catch (error) {
+            message.error('Gửi lời mời kết bạn thất bại');
         }
     }
 
-    const handleConfirmFriend = () => {
-
+    const handleOnAcceptFriend = async () => {
+        await friendApi.acceptRequestFriend(user._id);
+        dispatch(fetchListRequestFriend());
+        dispatch(fetchFriends({ name: '' }));
+        dispatch(fetchListFriends({ name: '' }));
+        dispatch(setAmountNotify(amountNotify - 1))
+        handleOnCancle()
+        message.success('Thêm bạn thành công');
     }
 
-    const handleDenyRequest = () => {
-
+    const handleCancelRequest = async () => {
+        await friendApi.deleteSentRequestFriend(user._id);
+        dispatch(fetchListMyRequestFriend());
+        dispatch(fetchPhoneBook());
+        handleOnCancle();
     }
 
 
+    function confirm() {
+        Modal.confirm({
+            title: 'Xác nhận',
+            icon: <ExclamationCircleOutlined />,
+            content: <span>Bạn có thực sự muốn xóa <strong>{user.name}</strong> khỏi danh sách bạn bè </span>,
+            okText: 'Xóa',
+            cancelText: 'Hủy',
+            onOk: handleOkModal,
+
+        });
+    }
 
 
+    const handleOkModal = async () => {
+        try {
+            await friendApi.deleteFriend(user._id);
+            dispatch(fetchFriends({ name: '' }))
+            message.success('Xóa thành công');
+            handleOnCancle();
+            dispatch(fetchPhoneBook());
+        } catch (error) {
+            message.error('Xóa thất bại');
+        }
+    }
 
-    const coverImage = 'https://miro.medium.com/max/1124/1*92adf06PCF91kCYu1nPLQg.jpeg';
     return (
         <Modal
             title={title}
@@ -82,18 +166,30 @@ function UserCard(props) {
                     <div className="user-card_cover-image">
                         <Image
                             src={coverImage}
+                            preview={false}
                             style={UserCardStyle.CoverImageStyle}
                         />
 
                         <div className="user-card_avatar">
-                            <Image
-                                src={user.avatar}
-                                style={UserCardStyle.avatarStyle}
-                            />
+                            {user.avatar ? (
+                                <Image
+                                    fallback={DEFAULT_AVATAR}
+                                    src={user.avatar}
+                                    style={UserCardStyle.avatarStyle}
+                                />
+                            ) : (
+                                <Avatar
+                                    size={96}
+                                    style={{ backgroundColor: '#4c92ff' }}
+                                >
+                                    <span style={{ fontSize: '3rem' }}>
+                                        {getSummaryName(user.name)}
+                                    </span>
+                                </Avatar>
+
+                            )}
                         </div>
                     </div>
-
-
 
                     <div className="user-card-name">
                         {user.name}
@@ -101,10 +197,12 @@ function UserCard(props) {
 
                     <div className="user-card-button">
                         {
-                            (isShowButton && !isShowButtonComfirm) &&
+
+                            (status === 'NOT_FRIEND') &&
                             (
-                                <div className="user-card-button--addFriend" onClick={handleAddFriend}>
+                                <div className="user-card-button--addFriend" >
                                     <Button
+                                        onClick={handleAddFriend}
                                         type="primary"
                                         style={{ width: '124px' }}
                                     >
@@ -112,24 +210,26 @@ function UserCard(props) {
                                     </Button>
                                 </div>
                             )
-                            // user-card-button--no-margin
                         }
 
-                        {isShowButtonComfirm &&
+
+                        {(status === 'FOLLOWER') &&
                             <>
-                                <div className="user-card-button--message confirm--friend" onClick={handleConfirmFriend}>
+                                <div className="user-card-button--message confirm--friend" >
                                     <Button
                                         type="primary"
                                         style={{ maxWidth: '110px' }}
+                                        onClick={handleOnAcceptFriend}
                                     >
                                         Đồng ý
                                     </Button>
                                 </div>
 
-                                <div className="user-card-button--message  confirm-deny--friend" onClick={handleDenyRequest}>
+                                <div className="user-card-button--message  confirm-deny--friend" >
                                     <Button
                                         type="danger"
                                         style={{ maxWidth: '110px' }}
+                                        onClick={handleOnAcceptFriend}
                                     >
                                         Từ chối
                                     </Button>
@@ -139,14 +239,32 @@ function UserCard(props) {
 
 
 
+                        {(status === 'YOU_FOLLOW') &&
+                            <>
+                                <div className="user-card-button--message ">
+                                    <Button
+                                        type="danger"
+                                        style={{ width: '124px' }}
+                                        onClick={handleCancelRequest}
+                                    >
+                                        Hủy yêu cầu
+                                    </Button>
+                                </div>
+                            </>
+                        }
 
-                        <div className={`user-card-button--message ${!isShowButton ? 'user-card-button--no-margin' : ''}`}>
+
+
+
+                        <div className={`user-card-button--message ${(status === 'FRIEND') ? 'user-card-button--no-margin' : ''}`}>
                             <Button
+                                onClick={handleClickMessage}
                                 type="default"
-                                style={isShowButtonComfirm ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
+                                style={(status === 'FOLLOWER') ? UserCardStyle.buttonStyle_2 : UserCardStyle.buttonStyle_1}
                             >Nhắn tin
                             </Button>
                         </div>
+
                     </div>
 
                     <div className="user-card-infomation">
@@ -156,7 +274,7 @@ function UserCard(props) {
                             </div>
 
                             <div className="user-card-infomation__text">
-                                2 nhóm
+                                {`${numberCommonGroup} nhóm`}
                             </div>
                         </div>
 
@@ -170,6 +288,7 @@ function UserCard(props) {
                             </div>
                         </div>
 
+
                         <div className="user-card-infomation__birthday user-card-infomation--flex">
                             <div className="user-card-infomation__label">
                                 Ngày sinh
@@ -180,17 +299,28 @@ function UserCard(props) {
                                 {dateUtils.transferDateString(user.dateOfBirth?.day, user.dateOfBirth?.month, user.dateOfBirth?.year)}
                             </div>
                         </div>
+
+                        <div className="user-card-infomation__birthday user-card-infomation--flex">
+                            <div className="user-card-infomation__label">
+                                Bạn chung
+                            </div>
+
+                            <div className="user-card-infomation__text">
+                                {user.numberCommonFriend}
+                            </div>
+                        </div>
                     </div>
 
 
-                    <div className={`user-card-button-optional ${isShowButton ? 'user-card-button-optional--hidden' : ''}`}>
+                    <div className={`user-card-button-optional ${!(status === 'FRIEND') ? 'user-card-button-optional--hidden' : ''}`}>
                         <Button
                             danger
-                            icon={<DeleteFilled />}
+                            icon={<UserDeleteOutlined />}
                             style={UserCardStyle.buttonFullSize}
                             size='large'
+                            onClick={handleDeleteFriend}
                         >
-                            Xóa
+                            Hủy kết bạn
                         </Button>
                     </div>
 

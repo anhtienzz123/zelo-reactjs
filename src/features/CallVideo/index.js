@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import h from 'utils/callVideoHelpers';
@@ -8,266 +8,192 @@ import ActionNavbar from './components/ActionNavbar';
 import MyVideo from './components/MyVideo';
 import { Col, Row } from 'antd';
 import './style.scss';
+import peerjs from 'peerjs';
+import Peer from 'peerjs';
 
 CallVideo.propTypes = {};
 
-let socket = io(process.env.REACT_APP_API_URL, { transports: ['websocket'] });
+let socket = io(process.env.REACT_APP_SOCKET_URL, {
+    transports: ['websocket'],
+});
 
 function CallVideo(props) {
     const match = useRouteMatch();
     const { conversationId } = match.params;
     const { user } = useSelector((state) => state.global);
     const { _id } = user;
-
-    const pcRef = useRef([]);
-    const pc = pcRef.current;
+    const myStreamRef = useRef({ srcObject: '' });
     const [myStream, setMyStream] = useState(null);
-    const [userStreams, setUserStreams] = useState([]);
-    const [isVideo, setIsVideo] = useState(true);
-    const [isAudio, setIsAudio] = useState(true);
-
-    // khởi tạo kết nối
-    const init = async (createOffer, partnerName) => {
-        // tạo kết nối giữa 2 thằng
-        pc[partnerName] = new RTCPeerConnection(h.getIceServer());
-
-        if (myStream) {
-            myStream.getTracks().forEach((track) => {
-                pc[partnerName].addTrack(track, myStream); //should trigger negotiationneeded event
-            });
-        } else {
-            h.getUserFullMedia()
-                .then((stream) => {
-                    //save my stream
-                    setMyStream(stream);
-
-                    stream.getTracks().forEach((track) => {
-                        pc[partnerName].addTrack(track, stream); //should trigger negotiationneeded event
-                    });
-
-                    h.setLocalStream(stream);
-                })
-                .catch((e) => {
-                    console.error(`stream error: ${e}`);
-                });
-        }
-
-        //create offer
-        if (createOffer) {
-            pc[partnerName].onnegotiationneeded = async () => {
-                let offer = await pc[partnerName].createOffer();
-
-                await pc[partnerName].setLocalDescription(offer);
-
-                socket.emit('sdp', {
-                    description: pc[partnerName].localDescription,
-                    to: partnerName,
-                    sender: _id,
-                });
-            };
-        }
-
-        //send ice candidate to partnerNames
-        pc[partnerName].onicecandidate = ({ candidate }) => {
-            socket.emit('ice candidates', {
-                candidate: candidate,
-                to: partnerName,
-                sender: _id,
-            });
-        };
-        //add
-        // lấy stream thằng này để hiển thị
-        pc[partnerName].ontrack = (e) => {
-            let str = e.streams[0];
-
-            const index = userStreams.findIndex(
-                (userEle) => userEle.userId == partnerName
-            );
-            // nếu có rồi thì thay đổi, không có thì tạo ra
-            if (index !== -1) userStreams[index].stream = str;
-            else userStreams.push({ userId: partnerName, stream: str });
-        };
-
-        // lắng nghe sự kiện thằng khác làm gì
-        pc[partnerName].onconnectionstatechange = (d) => {
-            console.log(
-                `status ${partnerName}: `,
-                pc[partnerName].iceConnectionState
-            );
-            switch (pc[partnerName].iceConnectionState) {
-                case 'disconnected':
-                case 'failed':
-                case 'closed':
-                    closeVideo(partnerName);
-                    break;
-            }
-        };
-
-        pc[partnerName].onsignalingstatechange = (d) => {
-            switch (pc[partnerName].signalingState) {
-                case 'closed':
-                    console.log("Signalling state is 'closed'");
-                    closeVideo(partnerName);
-                    break;
-            }
-        };
-    };
-
-    const broadcastNewTracks = (stream, type, mirrorMode = true) => {
-        let track =
-            type == 'audio'
-                ? stream.getAudioTracks()[0]
-                : stream.getVideoTracks()[0];
-
-        for (let p in pc) {
-            let pName = pc[p];
-
-            if (typeof pc[pName] == 'object') {
-                h.replaceTrack(track, pc[pName]);
-            }
-        }
-    };
-
-    const closeVideo = (userId) => {
-        const userStreamsTempt = userStreams.filter(
-            (userStreamEle) => userStreamEle.userId != userId
-        );
-        setUserStreams(userStreamsTempt);
-    };
-
-    useEffect(() => {
-        socket.emit('join', _id);
-        socket.emit('join-conversation', conversationId);
-        h.getUserFullMedia()
-            .then((stream) => {
-                setMyStream(stream);
-            })
-            .catch((e) => {
-                console.error(`stream error: ${e}`);
-            });
-    }, []);
-
-    useEffect(() => {
-        socket.emit('subscribe-call-video', conversationId, _id);
-
-        // thằng cũ khởi tạo video thằng mới vào
-        socket.on('new user', (newUserId) => {
-            // bắn lại id của mình cho thằng mới vào
-            console.log('new-user', newUserId);
-            socket.emit('newUserStart', {
-                to: newUserId,
-                sender: _id,
-            });
-            pc.push(newUserId);
-            // khởi tạo video của thằng mới vào
-            init(true, newUserId);
-        });
-
-        // thằng mới vào khởi tạo video thằng cũ
-        socket.on('newUserStart', (senderId) => {
-            console.log('newUserStart: ', senderId);
-            pc.push(senderId);
-            init(false, senderId);
-        });
-
-        socket.on('ice candidates', async (data) => {
-            handleIceCandidate(data);
-        });
-
-        // gởi offer => trả lại answer => kết nối
-        socket.on('sdp', (data) => {
-            handleSDP(data);
-        });
-    }, []);
-
-    const handleIceCandidate = async (data) => {
-        if (data.candidate) {
-            await pc[data.sender].addIceCandidate(
-                new RTCIceCandidate(data.candidate)
-            );
-        }
-    };
-
-    const handleSDP = async (data) => {
-        if (data.description.type === 'offer') {
-            // để bắt tay với nhau
-            if (data.description) {
-                await pc[data.sender].setRemoteDescription(
-                    new RTCSessionDescription(data.description)
-                );
-            }
-
-            h.getUserFullMedia()
-                .then(async (stream) => {
-                    setMyStream(stream);
-
-                    stream.getTracks().forEach((track) => {
-                        pc[data.sender].addTrack(track, stream);
-                    });
-
-                    let answer = await pc[data.sender].createAnswer();
-
-                    await pc[data.sender].setLocalDescription(answer);
-
-                    socket.emit('sdp', {
-                        description: pc[data.sender].localDescription,
-                        to: data.sender,
-                        sender: _id,
-                    });
-                })
-                .catch((e) => {
-                    console.error(e);
-                });
-        } else if (data.description.type === 'answer') {
-            await pc[data.sender].setRemoteDescription(
-                new RTCSessionDescription(data.description)
-            );
-            setUserStreams([...userStreams]);
-        }
-    };
+    const remoteStreamRef = useRef({ srcObject: '' });
+    const [remoteStream, setRemoteStream] = useState(null);
+    const remotePeerRef = useRef(null);
+    const peerRef = useRef(
+        new Peer(_id, {
+            config: {
+                iceServers: [
+                    { urls: ['stun:hk-turn1.xirsys.com'] },
+                    {
+                        username:
+                            'ik-37V-lc5O7p-LYaR8Hp39EvjiL24W8LMy_V3M9tfowcnIUKMNTaxv167eZKwxWAAAAAGFr5rFUaWVuSHV5bmg=',
+                        credential: 'fbcd7a58-2f28-11ec-8078-0242ac120004',
+                        urls: [
+                            'turn:hk-turn1.xirsys.com:80?transport=udp',
+                            'turn:hk-turn1.xirsys.com:3478?transport=udp',
+                            'turn:hk-turn1.xirsys.com:80?transport=tcp',
+                            'turn:hk-turn1.xirsys.com:3478?transport=tcp',
+                            'turns:hk-turn1.xirsys.com:443?transport=tcp',
+                            'turns:hk-turn1.xirsys.com:5349?transport=tcp',
+                        ],
+                    },
+                ],
+            },
+        })
+        // new Peer()
+    );
+    const peerIdRef = useRef('');
+    const [callerVideos, setCallerVideos] = useState([]);
 
     const handleToggleVideo = () => {
-        if (myStream.getVideoTracks()[0].enabled) {
-            myStream.getVideoTracks()[0].enabled = false;
-            setIsVideo(false);
-        } else {
-            myStream.getVideoTracks()[0].enabled = true;
-            setIsVideo(true);
-        }
+        const isEnabled =
+            myStreamRef.current.srcObject.getVideoTracks()[0].enabled;
 
-        broadcastNewTracks(myStream, 'video');
-        setIsVideo(isVideo);
+        if (isEnabled)
+            myStreamRef.current.srcObject.getVideoTracks()[0].enabled = false;
+        else myStreamRef.current.srcObject.getVideoTracks()[0].enabled = true;
     };
 
     const handleToggleAudio = () => {
-        if (myStream.getAudioTracks()[0].enabled) {
-            myStream.getAudioTracks()[0].enabled = false;
-        } else {
-            myStream.getAudioTracks()[0].enabled = true;
-        }
+        const isEnabled =
+            myStreamRef.current.srcObject.getAudioTracks()[0].enabled;
 
-        broadcastNewTracks(myStream, 'video');
+        if (isEnabled)
+            myStreamRef.current.srcObject.getAudioTracks()[0].enabled = false;
+        else myStreamRef.current.srcObject.getAudioTracks()[0].enabled = true;
     };
 
-    console.log('isVideo: ', isVideo);
+    const handleShareScreen = () => {
+        navigator.mediaDevices
+            .getDisplayMedia({ video: true })
+            .then((stream) => {
+                myStreamRef.current.srcObject = stream;
+                let videoTrack =
+                    myStreamRef.current.srcObject.getVideoTracks()[0];
+                videoTrack.onended = () => {
+                    //stopScreenSharing();
+                };
+
+                let sender = remotePeerRef.current.peerConnection
+                    .getSenders()
+                    .find(function (s) {
+                        return s.track.kind == videoTrack.kind;
+                    });
+                sender.replaceTrack(videoTrack);
+                //screenSharing = true;
+
+                //console.log(screenStream);
+            });
+    };
+
+    useEffect(() => {
+        if (_id) {
+            peerRef.current.on('open', function (id) {
+                console.log('My peer ID is: ' + id);
+                peerIdRef.current = id;
+
+                socket.emit('subscribe-call-video', {
+                    conversationId,
+                    newUserId: _id,
+                    peerId: id,
+                });
+            });
+
+            peerRef.current.on('call', function (call) {
+                remotePeerRef.current = call;
+                console.log('nhan duoc call');
+
+                let streamTempt = myStreamRef.current.srcObject;
+                if (!streamTempt) streamTempt = h.getEmptyMedia();
+
+                console.log('streamTempt: ', streamTempt);
+                call.answer(streamTempt);
+                const senderId = call.metadata.userId;
+                call.on('stream', function (remoteStream) {
+                    remoteStreamRef.current.srcObject = remoteStream;
+                    setRemoteStream(remoteStreamRef);
+                });
+            });
+        }
+
+        h.getUserFullMedia().then((stream) => {
+            myStreamRef.current.srcObject = stream;
+
+            setMyStream(stream);
+        });
+    }, []);
+
+    useEffect(() => {
+        socket.on('new-user-call', ({ conversationId, newUserId, peerId }) => {
+            console.log('new-user-call: ', newUserId, peerId);
+            console.log('myStream: ', myStreamRef.current);
+
+            let streamTempt = myStreamRef.current.srcObject;
+
+            if (!streamTempt) streamTempt = h.getEmptyMedia();
+
+            const call = peerRef.current.call(peerId, streamTempt, {
+                metadata: {
+                    userId: _id,
+                },
+            });
+
+            call.on('stream', function (remoteStream) {
+                remotePeerRef.current = call;
+                remoteStreamRef.current.srcObject = remoteStream;
+                setRemoteStream(remoteStreamRef);
+            });
+
+            call.on('close', function () {
+                console.log('ben kia da close');
+            });
+
+            call.on('disconnected', function () {
+                console.log('ben kia da close');
+            });
+        });
+    }, []);
+
     return (
-        <div id='call-video'>
+        <div id="call-video">
             <ActionNavbar
                 onToggleVideo={handleToggleVideo}
                 onToggleAudio={handleToggleAudio}
+                onShareScreen={handleShareScreen}
             />
 
-            <div className='local-video'>
-                {myStream && <MyVideo stream={myStream} />}
+            <div style={{ border: '1px solid black', width: '50%' }}>
+                <h1>Remote video</h1>
+                {remoteStream && <video ref={remoteStreamRef} autoPlay />}
             </div>
 
-            <Row className='user-videos'>
-                {userStreams.map((userStreamEle) => (
+            <div className="local-video">
+                {/* {myStreamRef.current && (
+                    <MyVideo stream={myStreamRef.current} userId='dsdsadsa' />
+                )} */}
+                <video
+                    ref={myStreamRef}
+                    autoPlay
+                    style={{ width: '100%' }}
+                    muted
+                />
+            </div>
+
+            {/* <Row className='user-videos'>
+                {callerVideos.map((callerVideoEle) => (
                     <Col span={6}>
-                        <MyVideo stream={userStreamEle.stream} />
+                        <h1>UserId: {callerVideoEle.userId}</h1>
                     </Col>
                 ))}
-            </Row>
+            </Row>{' '} */}
         </div>
     );
 }

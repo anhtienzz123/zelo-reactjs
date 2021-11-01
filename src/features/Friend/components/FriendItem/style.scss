@@ -14,12 +14,22 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            flex: 1;
         }
 
         &_right {
-            // transition: visibility 0.2s;
             visibility: hidden;
         }
+
+        &-name {
+            margin-left: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    .recent-login {
+        color: $silver;
     }
 }
 
@@ -30,4 +40,8 @@
 #friend-item:hover .friend-item_right {
     transition: visibility 0.4s;
     visibility: visible;
+}
+
+.menu-item--highlight {
+    font-weight: 500;
 }

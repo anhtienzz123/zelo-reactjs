@@ -14,20 +14,23 @@ const classifiesApi = {
         return axiosClient.post(`${API_URL}`, {
             name,
             colorId,
-        })
+        });
     },
 
     deleteClassify: (id) => {
-        return axiosClient.delete(`${API_URL}/${id}`)
+        return axiosClient.delete(`${API_URL}/${id}`);
     },
 
     addClassifyForConversation: (idClassify, idConversation) => {
-        return axiosClient.post(`${API_URL}/${idClassify}/conversations/${idConversation}`);
+        return axiosClient.post(
+            `${API_URL}/${idClassify}/conversations/${idConversation}`
+        );
     },
 
     removeClassifyFromConversation: (idClassify, idConversation) => {
-        return axiosClient.delete(`${API_URL}/${idClassify}/conversations/${idConversation}`);
-
+        return axiosClient.delete(
+            `${API_URL}/${idClassify}/conversations/${idConversation}`
+        );
     },
 
     updateClassify: (classifyId, name, colorId) => {
@@ -35,9 +38,7 @@ const classifiesApi = {
             name,
             colorId,
         });
-    }
-
-
-}
+    },
+};
 
 export default classifiesApi;
