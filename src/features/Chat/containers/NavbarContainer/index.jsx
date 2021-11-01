@@ -6,10 +6,11 @@ import {
     MessageOutlined,
     SettingOutlined,
     StarOutlined,
-    UserOutlined
+    UserOutlined,
 } from '@ant-design/icons';
 import { Badge, Button, Modal, Popover } from 'antd';
 import { setTabActive } from 'app/globalSlice';
+import ModalUpdateProfile from "features/Chat/components/ModalUpdateProfile";
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,9 +27,11 @@ function NavbarContainer(props) {
 
     const { conversations, toTalUnread } = useSelector((state) => state.chat);
     const { amountNotify } = useSelector((state) => state.friend);
+    //model
+    const [isModalUpdateProfileVisible, setIsModalUpdateProfileVisible] =
+        useState(false);
+
     const dispatch = useDispatch();
-
-
 
     useEffect(() => {
         dispatch(setToTalUnread());
@@ -51,45 +54,65 @@ function NavbarContainer(props) {
     };
 
     const handleLogout = () => {
-
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         window.location.reload();
-    }
+    };
 
     const handleSetTabActive = (value) => {
-        dispatch(setTabActive(value))
-    }
+        dispatch(setTabActive(value));
+    };
+
+    // --- HANDLE UPDATE PROFILE
+    const handleUpdateProfile = () => {
+        setIsModalUpdateProfileVisible(true);
+    };
+
+    const handleCancelModalUpdateProfile = (value) => {
+        setIsModalUpdateProfileVisible(value);
+    };
+
+    const handleOklModalUpdateProfile = (value) => {
+        setConfirmLoading(true);
+        setConfirmLoading(false);
+        setIsModalUpdateProfileVisible(false);
+    };
 
     const content = (
-        <div className='pop_up-personal'>
-            <div className='pop_up-personal--item' onClick={showModal}>
-                <div className='pop_up-personal--item-icon'>
+        <div className="pop_up-personal">
+            <div className="pop_up-personal--item" onClick={handleUpdateProfile}>
+                <div className="pop_up-personal--item-icon">
                     <UserOutlined />
                 </div>
 
-                <div className='pop_up-personal--item-text'>Tài khoản</div>
+                <div className="pop_up-personal--item-text">Tài khoản</div>
             </div>
 
-            <div className='pop_up-personal--item'>
-                <div className='pop_up-personal--item-icon'>
+            <div className="pop_up-personal--item">
+                <div className="pop_up-personal--item-icon">
                     <LogoutOutlined />
                 </div>
 
-                <div className='pop_up-personal--item-text' onClick={handleLogout}>Đăng xuất</div>
+                <div
+                    className="pop_up-personal--item-text"
+                    onClick={handleLogout}
+                >
+                    Đăng xuất
+                </div>
             </div>
         </div>
     );
 
     return (
-        <div id='sidebar_wrapper'>
-            <div className='sidebar-main'>
-                <ul className='sidebar_nav'>
-                    <li className='sidebar_nav_item icon-avatar'>
+        <div id="sidebar_wrapper">
+            <div className="sidebar-main">
+                <ul className="sidebar_nav">
+                    <li className="sidebar_nav_item icon-avatar">
                         <Popover
-                            placement='bottomLeft'
+                            placement="bottomLeft"
                             content={content}
-                            trigger='focus'>
+                            trigger="focus"
+                        >
                             <Button
                                 style={{
                                     height: '48px',
@@ -99,44 +122,52 @@ function NavbarContainer(props) {
                                     border: 'red',
                                     padding: '0px',
                                     borderRadius: '50%',
-                                }}>
-                                <div className='user-icon-navbar'>
+                                }}
+                            >
+                                <div className="user-icon-navbar">
                                     <PersonalIcon
                                         isActive={true}
                                         common={false}
                                         avatar={user.avatar}
                                         name={user.name}
-                                        color='#eb822c'
+                                        color="#eb822c"
                                     />
                                 </div>
                             </Button>
                         </Popover>
                     </li>
 
-                    <Link className='link-icon' to='/chat'>
-                        <li className={`sidebar_nav_item  ${tabActive === 1 ? 'active' : ''}`} onClick={() => handleSetTabActive(1)}>
-                            <div className='sidebar_nav_item--icon' >
+                    <Link className="link-icon" to="/chat">
+                        <li
+                            className={`sidebar_nav_item  ${
+                                tabActive === 1 ? 'active' : ''
+                            }`}
+                            onClick={() => handleSetTabActive(1)}
+                        >
+                            <div className="sidebar_nav_item--icon">
                                 <Badge
-                                    count={toTalUnread > 0 ? toTalUnread : 0}>
+                                    count={toTalUnread > 0 ? toTalUnread : 0}
+                                >
                                     <MessageOutlined />
                                 </Badge>
                             </div>
                         </li>
                     </Link>
 
-
-
-
-                    <Link className='link-icon' to='/chat/friends'>
-                        <li className={`sidebar_nav_item  ${tabActive === 2 ? 'active' : ''}`} onClick={() => handleSetTabActive(2)}>
-                            <div className='sidebar_nav_item--icon'>
+                    <Link className="link-icon" to="/chat/friends">
+                        <li
+                            className={`sidebar_nav_item  ${
+                                tabActive === 2 ? 'active' : ''
+                            }`}
+                            onClick={() => handleSetTabActive(2)}
+                        >
+                            <div className="sidebar_nav_item--icon">
                                 <Badge count={amountNotify}>
                                     <ContactsOutlined />
                                 </Badge>
                             </div>
                         </li>
                     </Link>
-
 
                     {/* <li className='sidebar_nav_item'>
                         <Link to='/notify'>
@@ -157,9 +188,9 @@ function NavbarContainer(props) {
                     </li> */}
                 </ul>
 
-                <ul className='sidebar_nav'>
-                    <li className='sidebar_nav_item'>
-                        <div className='sidebar_nav_item--icon'>
+                <ul className="sidebar_nav">
+                    <li className="sidebar_nav_item">
+                        <div className="sidebar_nav_item--icon">
                             <Badge count={0}>
                                 <SettingOutlined />
                             </Badge>
@@ -175,15 +206,12 @@ function NavbarContainer(props) {
                     </li> */}
                 </ul>
             </div>
-
-            <Modal
-                title='Cập nhật thông tin'
-                visible={visible}
-                onOk={handleOk}
-                confirmLoading={confirmLoading}
-                onCancel={handleCancel}>
-                <p>Cập nhật thông tin</p>
-            </Modal>
+            <ModalUpdateProfile
+                isVisible={isModalUpdateProfileVisible}
+                onCancel={handleCancelModalUpdateProfile}
+                onOk={handleOklModalUpdateProfile}
+                loading={confirmLoading}
+            />
         </div>
     );
 }

@@ -16,15 +16,11 @@ const meApi = {
     },
 
     updateAvatar: (file) => {
-        return axiosClient.patch(`${API_URL}/avatar`, {
-            file,
-        });
+        return axiosClient.patch(`${API_URL}/avatar`, file);
     },
 
     updateCoverImage: (file) => {
-        return axiosClient.patch(`${API_URL}/cover-image`, {
-            file,
-        });
+        return axiosClient.patch(`${API_URL}/cover-image`, file);
     },
 };
 
