@@ -11,16 +11,20 @@ ImageItem.propTypes = {
     url: PropTypes.string,
     height: PropTypes.number,
     width: PropTypes.number,
+    type: PropTypes.string,
+    onVisibleVideoModal: PropTypes.func,
 };
 
 ImageItem.defaultProps = {
     url: 'https://kenh14cdn.com/thumb_w/660/2020/7/23/h2-1595477334052655614583.jpg',
     height: 110,
     width: 110,
+    type: 'image',
+    onVisibleVideoModal: null
 };
 
 function ImageItem(props) {
-    const { url, height, width } = props;
+    const { url, height, width, type, onVisibleVideoModal } = props;
     const [select, setSelect] = useState(false);
 
     const dementionStyle = {
@@ -41,8 +45,16 @@ function ImageItem(props) {
     }
 
 
+    const handleOnClick = () => {
+        console.log('clock', type)
+        if (type === 'video' && onVisibleVideoModal) {
+            onVisibleVideoModal(url)
+        }
+    }
+
+
     return (
-        <div className="item-img-wrapper">
+        <div className="item-img-wrapper" onClick={handleOnClick}>
             <div className="item-img-interact">
 
                 <div

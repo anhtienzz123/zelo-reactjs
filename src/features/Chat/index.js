@@ -40,6 +40,7 @@ import {
     updateNameChannel,
     updateNameOfConver,
     updateTimeForConver,
+    updateAvavarConver,
 } from './slice/chatSlice';
 import './style.scss';
 
@@ -341,6 +342,20 @@ function Chat({ socket, idNewMessage }) {
                     dispatch(updateNameChannel({ channelId: _id, name }));
                 }
             });
+
+            socket.on(
+                'update-avatar-conversation',
+                (conversationId, conversationAvatar, message) => {
+                    if (refCurrentConversation.current === conversationId) {
+                        dispatch(
+                            updateAvavarConver({
+                                conversationId,
+                                conversationAvatar,
+                            })
+                        );
+                    }
+                }
+            );
         }
         dispatch(setJoinChatLayout(true));
     }, []);

@@ -166,6 +166,13 @@ function ShortMessage({ message, type }) {
                             )
                         }
 
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'Ảnh đại diện nhóm đã thay đổi')) && (
+                                <span>{renderName()}<EditOutlined />&nbsp;đã đổi ảnh nhóm</span>
+                            )
+                        }
+
+
                     </>
                 )
             }
