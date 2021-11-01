@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Select } from 'antd';
+import React, { useState } from 'react';
 import dateUtils from 'utils/dateUtils';
+import './style.scss';
 const { Option } = Select;
 
 DateOfBirthField.propTypes = {};
@@ -105,7 +105,7 @@ function DateOfBirthField({ field }) {
     };
 
     return (
-        <div>
+        <div className="day-of-birth_wrapper">
             <Select
                 defaultValue={day}
                 style={{ width: 120 }}

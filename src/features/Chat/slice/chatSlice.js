@@ -431,16 +431,19 @@ const chatSlice = createSlice({
             // sau đó clone ra 1 mảng avatar ms và gán vào
             // lấy totalMember + newMember.lenght
 
-            const avatar = [
-                ...conversation.avatar,
-                ...newMembers.map((ele) => ele.avatar),
-            ];
-            const totalMembers = conversation.totalMembers + newMembers.length;
-            state.conversations[index] = {
-                ...state.conversations[index],
-                avatar,
-                totalMembers,
-            };
+            if (typeof conversation.avatar === 'object') {
+                const avatar = [
+                    ...conversation.avatar,
+                    ...newMembers.map((ele) => ele.avatar),
+                ];
+                const totalMembers =
+                    conversation.totalMembers + newMembers.length;
+                state.conversations[index] = {
+                    ...state.conversations[index],
+                    avatar,
+                    totalMembers,
+                };
+            }
 
             const temp = [];
             newMembers.forEach((member) => {

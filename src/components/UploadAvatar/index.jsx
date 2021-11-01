@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 UploadAvatar.propTypes = {
     avatar: PropTypes.string,
     getFile: PropTypes.func,
-    clearData: PropTypes.func,
     isClear: PropTypes.bool,
 
 
@@ -17,7 +16,6 @@ UploadAvatar.propTypes = {
 UploadAvatar.defaultProps = {
     getFile: null,
     avatar: '',
-    clearData: null,
     isClear: false
 
 };

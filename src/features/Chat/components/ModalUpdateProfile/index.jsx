@@ -1,16 +1,17 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Image, Modal, Row, Select, Upload } from 'antd';
-import ImgCrop from 'antd-img-crop';
+import { Col, Modal, Row, Select } from 'antd';
 import meApi from 'api/meApi';
+import { setAvatarProfile } from 'app/globalSlice';
+import UploadAvatar from 'components/UploadAvatar';
+import UploadCoverImage from 'components/UploadConverImage';
 import DateOfBirthField from 'customfield/DateOfBirthField';
 import GenderRadioField from 'customfield/GenderRadioField';
 import InputFieldNotTitle from 'customfield/InputFieldNotTitle';
 import { FastField, Form, Formik } from 'formik';
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import './style.scss';
 import * as Yup from 'yup';
+import './style.scss';
 
 ModalUpdateProfile.propTypes = {
     isVisible: PropTypes.bool,
@@ -26,67 +27,110 @@ ModalUpdateProfile.defaultProps = {
     loading: false,
 };
 
-const { Option } = Select;
 function ModalUpdateProfile({ isVisible, onCancel, onOk, loading }) {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.global);
     const formRef = useRef();
-    const [imgCover, setImgCover] = useState('');
-    //upload
-    const [fileList, setFileList] = useState([
-        {
-            url: user.avatar,
-        },
-    ]);
-    const [coverList, setCoverList] = useState([]);
+
+
+
+    // 
+    const [avatar, setAvatar] = useState(null);
+    const [coverImg, setCoverImg] = useState(null);
+    const [isClear, setIsClear] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const refInitValue = useRef();
+
+
+
+
+    const handleGetCoverImg = (coverImg) => {
+        setCoverImg(coverImg);
+    }
+
+    const handleGetAvatar = (avatar) => {
+        setAvatar(avatar);
+    }
+
+
+
+    useEffect(() => {
+        if (isVisible) {
+            setIsClear(false)
+            refInitValue.current = {
+                name: user.name,
+                dateOfBirth: user.dateOfBirth,
+                gender: user.gender
+            }
+        }
+    }, [isVisible]);
+
+
+
+    const checkChangeValue = (value1, value2) => {
+        if (value1.name !== value2.name) {
+            return false
+        }
+        if (value1.dateOfBirth !== value2.dateOfBirth) {
+            return false
+        }
+        if (value1.gender !== value2.gender) {
+            return false
+        }
+        return true;
+    }
+
+
+
+
 
     const handleCancel = () => {
         onCancel(false);
-    };
-    //onchange img cover
-    const onChangeCoverImage = ({ file, fileList }) => {
-        setCoverList(fileList);
-        handleUpdateImageCover();
-    };
-    //onchange avatar
-    const onChangeAvatar = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-        handleUpdateAvatar();
+        setIsClear(true);
+        setCoverImg(null);
+        setAvatar(null)
     };
 
-    //update avatar
-    const handleUpdateAvatar = async () => {
-        try {
-            for (let index = 0; index < fileList.length; index++) {
-                const element = fileList[index].originFileObj;
-                const frmdata = new FormData();
-                frmdata.append('file', element);
-                const linkAvartar = await meApi.updateAvatar(frmdata);
-                //message.success("success", 5);
-                //onCancel(false);
-            }
-        } catch (error) {
-            console.log('link2', user.avatar);
-        }
-    };
-    //update img-cover
-    const handleUpdateImageCover = async () => {
-        try {
-            for (let i = 0; i < coverList.length; i++) {
-                const element = coverList[i].originFileObj;
-                const formdata = new FormData();
-                formdata.append('file', element);
-                const coverImage = await meApi.updateCoverImage(formdata);
-                setImgCover(coverImage.coverImage);
-            }
-            //message.success("success", 5);
-        } catch (error) {
-            console.log('link2', user.coverImage);
-        }
-    };
+    const handleSubmit = async (values) => {
+        setConfirmLoading(true);
 
-    const handleSubmit = (values) => {
-        console.log('values Submit: ', values);
+        try {
+
+            if (!checkChangeValue(values, refInitValue.current)) {
+                const { name, dateOfBirth, gender } = values;
+                await meApi.updateProfile(name, dateOfBirth, gender);
+            }
+
+
+            if (coverImg) {
+                const frmData = new FormData();
+                frmData.append('file', coverImg)
+                const response = await meApi.updateCoverImage(frmData);
+
+            }
+
+
+            if (avatar) {
+                const frmData = new FormData();
+                frmData.append('file', avatar)
+                const response = await meApi.updateAvatar(frmData);
+                dispatch(setAvatarProfile(response.avatar));
+
+
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+
+        setConfirmLoading(false);
+
+        if (onCancel) {
+            onCancel()
+        }
+
+
     };
 
     const handleOke = () => {
@@ -101,90 +145,89 @@ function ModalUpdateProfile({ isVisible, onCancel, onOk, loading }) {
             visible={isVisible}
             onOk={handleOke}
             onCancel={handleCancel}
-            width={430}
-        >
-            <div className="img-cover" style={{ textAlign: 'center' }}>
-                <Image width={385} height={145} src={imgCover} />
+            width={400}
+            bodyStyle={{ padding: 0 }}
+            okText='Cập nhật'
+            cancelText='Hủy'
+            centered
+            confirmLoading={confirmLoading}
 
-                <div
-                    className="img-cover-update"
-                    style={{ alignItems: 'right' }}
-                >
-                    <Upload
-                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                        onChange={onChangeCoverImage}
-                        defaultFileList={coverList}
-                        showUploadList={false}
-                    >
-                        <Button icon={<UploadOutlined />}></Button>
-                    </Upload>
+        >
+
+            <div className="profile-update_wrapper">
+                <div className="profile-update_img">
+                    <div className="profile-update_cover-image">
+                        <div className="profile-update_upload">
+                            <UploadCoverImage
+                                coverImg={user.coverImage}
+                                getFile={handleGetCoverImg}
+                                isClear={isClear}
+                            />
+                        </div>
+
+                        <div className="profile-update_avatar">
+                            <UploadAvatar
+                                avatar={user.avatar}
+                                getFile={handleGetAvatar}
+                                isClear={isClear}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className="img-crop">
-                    {/*----------- avatar */}
-                    <ImgCrop rotate>
-                        <Upload
-                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                            listType="picture-card"
-                            fileList={fileList}
-                            onChange={onChangeAvatar}
-                        >
-                            {fileList.length < 1 && '+ Upload'}
-                        </Upload>
-                    </ImgCrop>
+
+                <div className="profile-update_info">
+                    <Formik
+                        innerRef={formRef}
+                        initialValues={{
+                            name: user.name,
+                            dateOfBirth: user.dateOfBirth,
+                            gender: user.gender ? 1 : 0,
+                        }}
+                        onSubmit={handleSubmit}
+                        validationSchema={Yup.object().shape({
+                            name: Yup.string()
+                                .required('Tên không được bỏ trống')
+                                .max(100, 'Tên tối đa 100 kí tự'),
+                        })}
+                        enableReinitialize={true}
+                    >
+                        {(formikProps) => {
+                            return (
+                                <Form>
+                                    <Row gutter={[0, 16]}>
+                                        <Col span={24}>
+                                            <p>Tên </p>
+                                            <FastField
+                                                name="name"
+                                                component={InputFieldNotTitle}
+                                                type="text"
+                                                maxLength={100}
+                                            ></FastField>
+                                        </Col>
+
+                                        <Col span={24}>
+                                            <p>Ngày sinh</p>
+                                            <FastField
+                                                name="dateOfBirth"
+                                                component={DateOfBirthField}
+                                            ></FastField>
+                                        </Col>
+
+                                        <Col span={24}>
+                                            <p>Giới tính</p>
+                                            <FastField
+                                                name="gender"
+                                                component={GenderRadioField}
+                                            ></FastField>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            );
+                        }}
+                    </Formik>
                 </div>
             </div>
 
-            <Divider />
-
-            <Formik
-                innerRef={formRef}
-                initialValues={{
-                    name: user.name,
-                    dateOfBirth: user.dateOfBirth,
-                    gender: user.gender ? 1 : 0,
-                }}
-                onSubmit={handleSubmit}
-                validationSchema={Yup.object().shape({
-                    name: Yup.string()
-                        .required('Tên không được bỏ trống')
-                        .max(100, 'Tên tối đa 100 kí tự'),
-                })}
-                enableReinitialize={true}
-            >
-                {(formikProps) => {
-                    return (
-                        <Form>
-                            <Row gutter={[0, 16]}>
-                                <Col span={24}>
-                                    <p>Tên </p>
-                                    <FastField
-                                        name="name"
-                                        component={InputFieldNotTitle}
-                                        type="text"
-                                        maxLength={100}
-                                    ></FastField>
-                                </Col>
-
-                                <Col span={24}>
-                                    <p>Ngày sinh</p>
-                                    <FastField
-                                        name="dateOfBirth"
-                                        component={DateOfBirthField}
-                                    ></FastField>
-                                </Col>
-
-                                <Col span={24}>
-                                    <p>Giới tính</p>
-                                    <FastField
-                                        name="gender"
-                                        component={GenderRadioField}
-                                    ></FastField>
-                                </Col>
-                            </Row>
-                        </Form>
-                    );
-                }}
-            </Formik>
         </Modal>
     );
 }

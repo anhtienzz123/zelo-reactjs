@@ -75,11 +75,6 @@ function InfoFriendSearch(props) {
             <Menu.Item icon={<UserDeleteOutlined />} key="1" danger>
                 <span className="menu-icon-danger">Xóa khỏi nhóm</span>
             </Menu.Item>
-            <Menu.Item key="2" >
-                <span className="menu-icon-danger">Test</span>
-            </Menu.Item>
-
-
         </Menu>
     );
     return (
