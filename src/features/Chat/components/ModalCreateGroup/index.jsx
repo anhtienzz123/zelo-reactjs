@@ -1,10 +1,9 @@
 import { EditOutlined, InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { Checkbox, Col, Divider, Input, Modal, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
-import { fetchListFriends, setFriends } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import ItemsSelected from '../ItemsSelected';
 import PersonalIcon from '../PersonalIcon';
 import './style.scss';
@@ -30,26 +29,22 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
     const [isShowError, setIsShowError] = useState(false);
     const [nameGroup, setNameGroup] = useState('');
     const [frInput, setFrInput] = useState('');
+    const [initalFriend, setInitalFriend] = useState([]);
 
 
-    function clearData() {
-        setIsShowError(false);
-        setNameGroup('');
-        setItemSelected([]);
-        setCheckList([]);
-        setFrInput('');
-    }
-
-
-    const dispatch = useDispatch();
     useEffect(() => {
         if (isVisible) {
-            dispatch(setFriends([]));
-            dispatch(fetchListFriends({
-                name: frInput
-            }));
+            setInitalFriend(friends);
+        } else {
+            setFrInput('');
+            setCheckList([]);
+            setItemSelected([]);
+            setNameGroup('');
+            setIsShowError(false);
         }
-    }, [frInput]);
+    }, [isVisible])
+
+
 
 
 
@@ -65,10 +60,6 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
 
     const handleCancel = () => {
         if (onCancel) {
-            clearData();
-            dispatch(fetchListFriends({
-                name: ''
-            }));
             onCancel(false)
         }
     };
@@ -88,7 +79,7 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
         setItemSelected(itemSelectedTemp);
 
         setFrInput('');
-
+        setInitalFriend(friends);
     }
 
     const handleChange = (e) => {
@@ -103,6 +94,20 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
     const handleChangeFriend = (e) => {
         const value = e.target.value;
         setFrInput(value);
+
+        if (!value && isVisible) {
+            setInitalFriend(friends);
+        } else {
+            const tempFriends = [...initalFriend];
+            const realFriends = [];
+            tempFriends.forEach((ele) => {
+                const index = ele.name.search(value);
+                if (index > -1) {
+                    realFriends.push(ele);
+                }
+            })
+            setInitalFriend(realFriends);
+        }
     }
 
     const handleChangeCheckBox = (e) => {
@@ -119,16 +124,16 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
             itemSelectedTemp = itemSelectedTemp.filter(element => element._id !== value);
 
             checkListTemp = checkListTemp.filter(element => element !== value);
+
             // chưa có
         } else {
             checkListTemp.push(value);
-            const index = friends.findIndex(element => element._id === value);
+            const index = initalFriend.findIndex(element => element._id === value);
 
             if (index !== -1) {
-                itemSelectedTemp.push(friends[index]);
+                itemSelectedTemp.push(initalFriend[index]);
             }
         }
-
         setCheckList(checkListTemp);
         setItemSelected(itemSelectedTemp);
 
@@ -200,7 +205,7 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
                             >
                                 <Row gutter={[0, 12]}>
 
-                                    {friends.map((element, index) => (
+                                    {initalFriend.map((element, index) => (
                                         <Col span={24} key={index}>
                                             <Checkbox value={element._id} onChange={handleChangeCheckBox}>
                                                 <div className="item-checkbox">

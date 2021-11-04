@@ -1,4 +1,5 @@
-import { CloseCircleFilled } from '@ant-design/icons';
+import { CloseCircleFilled, UsergroupAddOutlined } from '@ant-design/icons';
+import { Avatar, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import React from 'react';
 import PersonalIcon from '../PersonalIcon';
@@ -28,11 +29,41 @@ function ItemsSelected({ items, onRemove }) {
                 items.map((item, index) => (
                     <div className='item-selected--text' key={index}>
                         <div className='item-selected-avatar'>
-                            <PersonalIcon
-                                demention={20}
-                                avatar={item.avatar}
-                                name={item.name}
-                            />
+
+
+                            {
+                                (!item.type) && (
+                                    <PersonalIcon
+                                        demention={20}
+                                        avatar={item.avatar}
+                                        name={item.name}
+                                    />
+                                )
+                            }
+
+
+                            {
+                                (item.type && typeof item.avatar === 'string') && (
+                                    <PersonalIcon
+                                        demention={20}
+                                        avatar={item.avatar}
+                                        name={item.name}
+                                    />
+                                )
+                            }
+
+                            {
+                                (item.type && typeof item.avatar === 'object') && (
+                                    <Tooltip>
+                                        <Avatar
+                                            style={{ backgroundColor: '#f56a00' }}
+                                            icon={<UsergroupAddOutlined />}
+                                            size={20}
+                                        />
+                                    </Tooltip>
+                                )
+                            }
+
                         </div>
 
                         <div className='item-selected-name'>

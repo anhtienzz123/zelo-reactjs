@@ -85,6 +85,9 @@ function GroupCard({ data, onRemove }) {
                         type={data.type}
                         totalMembers={data.totalMembers}
                         isGroupCard={true}
+                        sizeAvatar={48}
+                        frameSize={96}
+
                     />
 
                 </div>

@@ -1,5 +1,6 @@
-import { Spin } from 'antd';
+import { Modal, Spin } from 'antd';
 import DividerCustom from 'features/Chat/components/DividerCustom';
+import ModalShareMessage from 'features/Chat/components/ModalShareMessage';
 import UserMessage from 'features/Chat/components/UserMessage';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
@@ -47,6 +48,18 @@ function BodyChatContainer({
     const previousHieight = useRef();
     const [loading, setLoading] = useState(false)
     const tempPosition = useRef();
+    const [visibleModalShare, setVisibleModalShare] = useState(false);
+    const [idMessageShare, setIdMessageShare] = useState('');
+
+
+    const handleOpenModalShare = (_id) => {
+        setVisibleModalShare(true);
+        setIdMessageShare(_id);
+    }
+
+    useEffect(() => {
+        setIdMessageShare('')
+    }, [currentConversation])
 
     useEffect(() => {
         if (turnOnScrollButoon) {
@@ -136,6 +149,8 @@ function BodyChatContainer({
                         message={currentMessage}
                         isMyMessage={isMyMessage}
                         conditionTime={true}
+                        onOpenModalShare={handleOpenModalShare}
+
                     />
                 );
                 continue;
@@ -205,6 +220,7 @@ function BodyChatContainer({
                             message={currentMessage}
                             isMyMessage={isMyMessage}
                             viewUsers={viewUsers}
+                            onOpenModalShare={handleOpenModalShare}
                         />
                     </div>
                 );
@@ -216,6 +232,7 @@ function BodyChatContainer({
                         isMyMessage={isMyMessage}
                         isSameUser={isSameUser}
                         viewUsers={viewUsers}
+                        onOpenModalShare={handleOpenModalShare}
                     />
                 );
         }
@@ -274,6 +291,9 @@ function BodyChatContainer({
         }
     }, [currentConversation, currentChannel]);
 
+
+
+
     return (
         <Scrollbars
             autoHide={true}
@@ -298,6 +318,14 @@ function BodyChatContainer({
             </button> */}
 
             {/* </div>  */}
+
+            <ModalShareMessage
+                visible={visibleModalShare}
+                onCancel={() => setVisibleModalShare(false)}
+                idMessage={idMessageShare}
+
+            />
+
         </Scrollbars>
     );
 }

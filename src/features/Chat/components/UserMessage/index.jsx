@@ -1,10 +1,9 @@
 import {
     DeleteOutlined,
     PushpinOutlined,
-    UndoOutlined,
+    UndoOutlined
 } from '@ant-design/icons';
-import { Button, Dropdown, Menu } from 'antd';
-import { message as mesageNotify } from 'antd';
+import { Button, Dropdown, Menu, message as mesageNotify } from 'antd';
 import messageApi from 'api/messageApi';
 import pinMessageApi from 'api/pinMessageApi';
 import ModalChangePinMessage from 'components/ModalChangePinMessage';
@@ -35,6 +34,7 @@ UserMessage.propTypes = {
     isMyMessage: PropTypes.bool,
     isSameUser: PropTypes.bool,
     viewUsers: PropTypes.array,
+    onOpenModalShare: PropTypes.func,
 };
 
 UserMessage.defaultProps = {
@@ -42,6 +42,7 @@ UserMessage.defaultProps = {
     isMyMessage: false,
     isSameUser: false,
     viewUsers: [],
+    onOpenModalShare: null
 };
 
 function UserMessage({
@@ -49,6 +50,7 @@ function UserMessage({
     isMyMessage,
     isSameUser,
     viewUsers,
+    onOpenModalShare
 }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
     const { name, avatar } = user;
@@ -182,6 +184,13 @@ function UserMessage({
         }
         return '';
     };
+
+
+    const handleOpenModalShare = () => {
+        if (onOpenModalShare) {
+            onOpenModalShare(_id);
+        }
+    }
 
     const dateAt = new Date(createdAt);
 
@@ -462,6 +471,7 @@ function UserMessage({
                                                 style={
                                                     MESSAGE_STYLE.styleButton
                                                 }
+                                                onClick={handleOpenModalShare}
                                             >
                                                 <FaReplyAll />
                                             </Button>

@@ -46,6 +46,12 @@ const messageApi = {
     dropReaction: (idMessage, type) => {
         return axiosClient.post(`${API_URL}/${idMessage}/reacts/${type}`);
     },
+
+    forwardMessage: (messageId, conversationId) => {
+        return axiosClient.post(
+            `${API_URL}/${messageId}/share/${conversationId}`
+        );
+    },
 };
 
 export default messageApi;
