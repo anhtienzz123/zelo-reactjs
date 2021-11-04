@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Checkbox, Col, Divider, Input, Modal, Row } from 'antd';
 import { EditOutlined, InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
-import ItemsSelected from '../ItemsSelected';
-import './style.scss';
-import PersonalIcon from '../PersonalIcon';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { fetchListFriends, setFriends } from 'features/Chat/slice/chatSlice';
+import { Checkbox, Col, Divider, Input, Modal, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import ItemsSelected from '../ItemsSelected';
+import PersonalIcon from '../PersonalIcon';
+import './style.scss';
 ModalAddMemberToConver.propTypes = {
 
 };
@@ -23,32 +20,22 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
     const [checkList, setCheckList] = useState([]);
     const [nameGroup, setNameGroup] = useState('');
     const [isShowError, setIsShowError] = useState(false);
+    const [initalFriend, setInitalFriend] = useState([]);
 
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        setCheckList(memberInConversation.map(ele => ele._id));
-        setItemSelected([]);
-    }, [memberInConversation]);
-
-
-    function clearData() {
-        setIsShowError(false);
-        setNameGroup('');
-        setItemSelected([]);
-        setCheckList(memberInConversation.map(ele => ele._id));
-        setFrInput('');
-    }
 
 
     useEffect(() => {
         if (isVisible) {
-            dispatch(setFriends([]));
-            dispatch(fetchListFriends({
-                name: frInput
-            }));
+            setInitalFriend(friends);
+        } else {
+            setFrInput('');
+            setCheckList([]);
+            setItemSelected([]);
+            setNameGroup('');
+            setIsShowError(false);
         }
-    }, [frInput]);
+    }, [isVisible])
+
 
 
 
@@ -69,12 +56,25 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
         if (onCancel) {
             onCancel(false);
         }
-        clearData();
     }
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setFrInput(value);
+
+        if (!value && isVisible) {
+            setInitalFriend(friends);
+        } else {
+            const tempFriends = [...initalFriend];
+            const realFriends = [];
+            tempFriends.forEach((ele) => {
+                const index = ele.name.search(value);
+                if (index > -1) {
+                    realFriends.push(ele);
+                }
+            })
+            setInitalFriend(realFriends);
+        }
     }
 
     const handleChangeCheckBox = (e) => {
@@ -95,10 +95,10 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
             // chưa có
         } else {
             checkListTemp.push(value);
-            const index = friends.findIndex(element => element._id === value);
+            const index = initalFriend.findIndex(element => element._id === value);
 
             if (index !== -1) {
-                itemSelectedTemp.push(friends[index]);
+                itemSelectedTemp.push(initalFriend[index]);
             }
         }
         setCheckList(checkListTemp);
@@ -119,6 +119,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
         setItemSelected(itemSelectedTemp);
 
         setFrInput('');
+        setInitalFriend(friends);
 
     }
 
@@ -126,6 +127,8 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
     const handleChange = (e) => {
         const value = e.target.value;
         setNameGroup(value);
+
+
     }
 
     const handleOnBlur = (e) => {
@@ -220,7 +223,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
                             >
                                 <Row gutter={[0, 12]}>
 
-                                    {friends.map((element, index) => (
+                                    {initalFriend.map((element, index) => (
                                         <Col span={24} key={index}>
                                             <Checkbox
                                                 disabled={checkInitialValue(element._id)}
@@ -252,7 +255,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
 
                     <div className={`list-friend-interact--right ${itemSelected.length > 0 ? '' : 'close'} `}>
                         <div className="title-list-friend-checked">
-                            {/* <strong>Đã chọn: {itemSelected.length > 0 && itemSelected.length}</strong> */}
+                            <strong>Đã chọn: {itemSelected.length > 0 && itemSelected.length}</strong>
                         </div>
 
                         <div className="checkbox-list-friend">

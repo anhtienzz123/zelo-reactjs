@@ -13,6 +13,8 @@ ConversationAvatar.propTypes = {
     name: PropTypes.string.isRequired,
     isActived: PropTypes.bool,
     avatar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+    sizeAvatar: PropTypes.number,
+    frameSize: PropTypes.number,
 };
 
 ConversationAvatar.defaultProps = {
@@ -20,6 +22,8 @@ ConversationAvatar.defaultProps = {
     isGroupCard: false,
     isActived: false,
     avatar: '',
+    sizeAvatar: 48,
+    frameSize: 48,
 };
 
 function ConversationAvatar({
@@ -30,6 +34,8 @@ function ConversationAvatar({
     type,
     name,
     isActived,
+    sizeAvatar,
+    frameSize,
 }) {
     const renderAvatar = () => {
         let tempAvatar = [];
@@ -39,7 +45,7 @@ function ConversationAvatar({
                     key={index}
                     style={
                         totalMembers === 3 && index === 2
-                            ? COVERSATION_STYLE.styleGroup3
+                            ? COVERSATION_STYLE.styleGroup3(demension)
                             : {}
                     }
                     size={demension}
@@ -59,6 +65,11 @@ function ConversationAvatar({
                         <Avatar
                             size={demension}
                             src={avatar[index] ? avatar[index] : DEFAULT_AVATAR}
+                            style={
+                                index == 2
+                                    ? { marginTop: (demension / 6) * -1 }
+                                    : {}
+                            }
                         />
                     </div>
                 );
@@ -70,6 +81,7 @@ function ConversationAvatar({
                                 style={{
                                     backgroundColor: '#7562d8',
                                     color: '#fff',
+                                    marginTop: (demension / 6) * -1,
                                 }}
                                 size={demension}
                             >
@@ -88,7 +100,7 @@ function ConversationAvatar({
             {typeof avatar === 'string' ? (
                 // <Avatar size={48} src={avatar ? avatar : DEFAULT_AVATAR} />
                 <Badge dot={isActived} offset={[-5, 40]} color="green">
-                    <AvatarCustom size={48} src={avatar} name={name} />
+                    <AvatarCustom size={sizeAvatar} src={avatar} name={name} />
                 </Badge>
             ) : (
                 <>
@@ -97,11 +109,15 @@ function ConversationAvatar({
                             <div className="left-side-box">
                                 <div
                                     style={
-                                        isGroupCard
+                                        (isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatar(
                                                   demension
                                               )
-                                            : {}
+                                            : {},
+                                        {
+                                            width: `${frameSize}px`,
+                                            height: `${frameSize}px`,
+                                        })
                                     }
                                     className="icon-users-group"
                                 >
@@ -120,11 +136,15 @@ function ConversationAvatar({
                                 <div
                                     lassName="icon-users-group"
                                     style={
-                                        isGroupCard
+                                        (isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatarMixStyle2(
                                                   demension
                                               )
-                                            : COVERSATION_STYLE.styleGroup2
+                                            : COVERSATION_STYLE.styleGroup2,
+                                        {
+                                            width: `${frameSize}px`,
+                                            height: `${frameSize}px`,
+                                        })
                                     }
                                 >
                                     <Avatar.Group
@@ -142,11 +162,15 @@ function ConversationAvatar({
                                 <div
                                     className="icon-users-group"
                                     style={
-                                        isGroupCard
+                                        (isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatar(
                                                   demension
                                               )
-                                            : {}
+                                            : {},
+                                        {
+                                            width: `${frameSize}px`,
+                                            height: `${frameSize}px`,
+                                        })
                                     }
                                 >
                                     <div id="group-many-user">
@@ -158,8 +182,9 @@ function ConversationAvatar({
                     ) : (
                         <div>
                             <Avatar
-                                size={48}
+                                size={sizeAvatar}
                                 src={avatar[0] ? avatar[0] : DEFAULT_AVATAR}
+                                //     { width: `${frameSize}px`, height: `${frameSize}px` }
                             />
                         </div>
                     )}

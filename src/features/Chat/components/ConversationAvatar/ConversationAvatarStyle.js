@@ -1,8 +1,11 @@
 const COVERSATION_STYLE = {
-    styleGroup3: {
-        position: 'relative',
-        left: '50%',
-        transform: 'translateX(-50%)',
+    styleGroup3: (demension) => {
+        return {
+            position: 'relative',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            marginTop: (demension / 6) * -1,
+        };
     },
 
     styleGroup2: {
