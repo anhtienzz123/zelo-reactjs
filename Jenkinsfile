@@ -14,7 +14,7 @@ pipeline {
         
         withDockerRegistry(credentialsId: 'zeloappchat-dockerhub', url: 'https://index.docker.io/v1/') {
             
-            sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} . "
+            sh "docker build --build-arg REACT_APP_API_URL=https://zelochat.xyz/api --build-arg REACT_APP_SOCKET_URL=https://zelochat.xyz --build-arg REACT_APP_URL=https://zelochat.xyz -t  ${DOCKER_IMAGE}:${DOCKER_TAG} . "
             sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
             sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
             sh "docker push ${DOCKER_IMAGE}:latest"
