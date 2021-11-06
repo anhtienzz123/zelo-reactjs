@@ -1,4 +1,4 @@
-FROM node:16 as build-step
+FROM node:14.18.1 as build-step
 
 RUN mkdir /app
 WORKDIR /app
