@@ -4,6 +4,8 @@ pipeline {
   environment {
     DOCKER_IMAGE = "zeloappchat/zelo-reactjs"
     DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
+    REACT_APP_URL="https://zelochat.xyz"
+    REACT_APP_API_URL="https://zelochat.xyz/api"
   }
 
   stages {
@@ -14,7 +16,7 @@ pipeline {
         
         withDockerRegistry(credentialsId: 'zeloappchat-dockerhub', url: 'https://index.docker.io/v1/') {
             
-            sh "docker build --build-arg REACT_APP_API_URL=https://zelochat.xyz/api --build-arg REACT_APP_SOCKET_URL=https://zelochat.xyz --build-arg REACT_APP_URL=https://zelochat.xyz -t  ${DOCKER_IMAGE}:${DOCKER_TAG} . "
+            sh "docker build --build-arg REACT_APP_URL=${REACT_APP_URL} --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t  ${DOCKER_IMAGE}:${DOCKER_TAG} . "
             sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
             sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
             sh "docker push ${DOCKER_IMAGE}:latest"
