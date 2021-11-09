@@ -6,7 +6,10 @@ import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Mentions } from 'antd';
 import './style.scss';
+import MentionOption from 'features/Chat/components/MentionOption';
+import PersonalIcon from 'features/Chat/components/PersonalIcon';
 FooterChatContainer.propTypes = {
     onScrollWhenSentText: PropTypes.func,
     socket: PropTypes.object,
@@ -29,7 +32,7 @@ const style_addtion_interaction = {
 
 function FooterChatContainer({ onScrollWhenSentText, socket }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
-    const { currentConversation, conversations, currentChannel } = useSelector(
+    const { currentConversation, conversations, currentChannel, memberInConversation } = useSelector(
         (state) => state.chat
     );
     const [isShowLike, setShowLike] = useState(true);
@@ -38,6 +41,21 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     const [isHightLight, setHightLight] = useState(false);
     const { user } = useSelector((state) => state.global);
     const [detailConver, setDetailConver] = useState({});
+    const { Option } = Mentions;
+    const checkGroup = conversations.find(ele => ele._id === currentConversation).type;
+    const [mentionList, setMentionsList] = useState([]);
+    const [mentionSelect, setMentionSelect] = useState([]);
+
+
+    useEffect(() => {
+
+        setValueText('');
+        setMentionSelect([]);
+        if (memberInConversation.length > 0) {
+            setMentionsList(memberInConversation);
+        }
+
+    }, [currentConversation, memberInConversation])
 
     useEffect(() => {
         if (currentConversation) {
@@ -60,12 +78,14 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     };
 
     async function sendMessage(value, type) {
+        const listId = mentionSelect.map(ele => ele._id);
 
 
         const newMessage = {
             content: value,
             type: type,
             conversationId: currentConversation,
+            tags: listId
         };
 
         if (currentChannel) {
@@ -81,6 +101,8 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
                 console.log('Send Message Success');
             })
             .catch((err) => console.log('Send Message Fail'));
+        setMentionsList(memberInConversation);
+        setMentionSelect([]);
     }
 
     const handleOnScroll = (id) => {
@@ -99,8 +121,28 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
         socket.emit('not-typing', currentConversation, user);
     };
 
-    const handleOnChageInput = (e) => {
-        const value = e.target.value;
+    const handleOnChageInput = (value) => {
+
+
+
+
+        if (mentionSelect.length > 0) {
+            mentionSelect.forEach((ele, index) => {
+                const regex = new RegExp(`@${ele.name}`)
+                if (regex.exec(value) === null) {
+                    const tempMensionList = [...mentionList];
+                    const checkExist = mentionList.every(temp => ele._id !== temp._id);
+                    if (checkExist) {
+                        tempMensionList.push(ele);
+                    }
+                    setMentionsList(tempMensionList);
+                    setMentionSelect(mentionSelect.filter(select => select._id !== ele._id));
+                    return false;
+                }
+
+            })
+        }
+
         value.length > 0 ? setShowLike(false) : setShowLike(true);
         setValueText(value);
 
@@ -116,8 +158,12 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
         setShowLike(value);
     };
 
+    // console.log('list ', mentionList)
+    // console.log('select lsit', mentionSelect);
+
     const handleKeyPress = (event) => {
-        if (event.keyCode === 13) {
+
+        if (event.nativeEvent.keyCode === 13) {
             if (!event.shiftKey) {
                 const valueInput = event.target.value;
 
@@ -154,6 +200,12 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
         setValueText(content);
     };
 
+    const handleSelectMention = ({ object }, _) => {
+        setMentionSelect([...mentionSelect, object]);
+        setMentionsList(mentionList.filter(ele => ele._id !== object._id));
+
+    }
+
     return (
         <div id='main-footer-chat'>
             <div className='navigation'>
@@ -178,20 +230,64 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
                             onSetValue={handleSetValueEditor}
                         />
                     ) : (
-                        <TextArea
+
+                        <Mentions
                             autoSize={{ minRows: 1, maxRows: 5 }}
                             placeholder={`Nhập @, tin nhắt tới ${detailConver.name}`}
                             size='large'
-                            // onPressEnter={handleMessageSend}
                             bordered={false}
                             onChange={handleOnChageInput}
-                            onKeyDown={handleKeyPress}
+                            onKeyPress={handleKeyPress}
                             value={valueText}
-                            style={{ whiteSpace: 'pre-wrap' }}
+                            style={{ whiteSpace: 'pre-wrap', border: 'none', outline: 'none' }}
                             spellCheck={false}
                             onFocus={handleOnFocus}
                             onBlur={handleOnBlur}
-                        />
+                            onSelect={handleSelectMention}
+                            split=" "
+
+                        >
+                            {checkGroup && (
+                                mentionList.map((ele, index) => {
+                                    if (ele._id !== user._id) {
+                                        return (
+                                            <Option
+                                                value={ele.name}
+                                                key={index}
+                                                object={ele}
+                                            >
+                                                <div className='mention-option'>
+                                                    <div className='icon-user-item'>
+                                                        <PersonalIcon
+                                                            demention={24}
+                                                            avatar={ele.avatar}
+                                                            name={ele.name}
+                                                        />
+                                                    </div>
+
+                                                    <div className='name-user-item'>
+                                                        {ele.name}
+                                                    </div>
+                                                </div>
+                                            </Option>
+                                        )
+                                    }
+                                }))}
+                        </Mentions>
+                        // <TextArea
+                        //     autoSize={{ minRows: 1, maxRows: 5 }}
+                        //     placeholder={`Nhập @, tin nhắt tới ${detailConver.name}`}
+                        //     size='large'
+                        //     // onPressEnter={handleMessageSend}
+                        //     bordered={false}
+                        //     onChange={handleOnChageInput}
+                        //     onKeyDown={handleKeyPress}
+                        //     value={valueText}
+                        //     style={{ whiteSpace: 'pre-wrap' }}
+                        //     spellCheck={false}
+                        //     onFocus={handleOnFocus}
+                        //     onBlur={handleOnBlur}
+                        // />
                     )}
                 </div>
 

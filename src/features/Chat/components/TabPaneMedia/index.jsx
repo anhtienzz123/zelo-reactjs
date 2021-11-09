@@ -93,6 +93,7 @@ function TabPaneMedia(props) {
                                         <PersonalIcon
                                             demention={24}
                                             avatar={memberEle.avatar}
+                                            name={memberEle.name}
                                         />
                                     </div>
 

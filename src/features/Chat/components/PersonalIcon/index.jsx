@@ -1,10 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
-import { Avatar, Badge, Tooltip } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
-import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
-import getSummaryName from 'utils/nameHelper'
+import { Avatar, Badge } from 'antd';
+import PropTypes from 'prop-types';
+import React from 'react';
+import getSummaryName from 'utils/nameHelper';
+import './style.scss';
 
 PersonalIcon.propTypes = {
     avatar: PropTypes.string,

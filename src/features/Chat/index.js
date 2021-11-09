@@ -284,6 +284,12 @@ function Chat({ socket, idNewMessage }) {
             socket.on(
                 'user-last-view',
                 ({ conversationId, userId, lastView, channelId }) => {
+                    console.log('last view', {
+                        conversationId,
+                        userId,
+                        lastView,
+                        channelId,
+                    });
                     if (userId != user._id) {
                         dispatch(
                             updateLastViewOfMembers({

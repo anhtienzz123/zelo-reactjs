@@ -52,7 +52,7 @@ function UserMessage({
     viewUsers,
     onOpenModalShare
 }) {
-    const { _id, content, user, createdAt, type, isDeleted, reacts } = message;
+    const { _id, content, user, createdAt, type, isDeleted, reacts, tagUsers } = message;
     const { name, avatar } = user;
     const { messages, currentConversation, conversations, pinMessages, currentChannel } =
         useSelector((state) => state.chat);
@@ -288,6 +288,7 @@ function UserMessage({
                                                         </HTMLMessage>
                                                     ) : type === 'TEXT' ? (
                                                         <TextMessage
+                                                            tags={tagUsers}
                                                             content={content}
                                                             dateAt={dateAt}
                                                             isSeen={(viewUsers && viewUsers.length > 0)}
