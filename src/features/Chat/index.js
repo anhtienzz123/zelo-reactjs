@@ -84,6 +84,8 @@ function Chat({ socket, idNewMessage }) {
     const refCurrentConversation = useRef();
     const refConversations = useRef();
     const refCurrentChannel = useRef();
+    const [replyMessage, setReplyMessage] = useState({});
+    const [userMention, setUserMention] = useState({});
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;
@@ -99,6 +101,8 @@ function Chat({ socket, idNewMessage }) {
 
     useEffect(() => {
         setUsersTyping([]);
+        setReplyMessage(null);
+        setUserMention({});
     }, [currentConversation]);
 
     useEffect(() => {
@@ -458,6 +462,21 @@ function Chat({ socket, idNewMessage }) {
         setTabActiveNews(key);
     };
 
+    const handleOnReply = (mes) => {
+        console.log(mes);
+        setReplyMessage(mes);
+    };
+
+    const handleCloseReply = () => {
+        setReplyMessage({});
+    };
+
+    const handleOnMention = (userMent) => {
+        if (userMention._id !== userMent) {
+            setUserMention(userMent);
+        }
+    };
+
     // Xử lý modal mode
 
     return (
@@ -508,6 +527,8 @@ function Chat({ socket, idNewMessage }) {
                                                     hanldeResetScrollButton
                                                 }
                                                 turnOnScrollButoon={isScroll}
+                                                onReply={handleOnReply}
+                                                onMention={handleOnMention}
                                             />
 
                                             {pinMessages.length > 1 &&
@@ -649,6 +670,9 @@ function Chat({ socket, idNewMessage }) {
                                                     handleScrollWhenSent
                                                 }
                                                 socket={socket}
+                                                replyMessage={replyMessage}
+                                                onCloseReply={handleCloseReply}
+                                                userMention={userMention}
                                             />
                                         </div>
                                     </div>

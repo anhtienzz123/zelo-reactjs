@@ -4,20 +4,28 @@ import messageApi from 'api/messageApi';
 import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
 import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Mentions } from 'antd';
 import './style.scss';
 import MentionOption from 'features/Chat/components/MentionOption';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import ReplyBlock from 'features/Chat/components/ReplyBlock';
+import { object } from 'yup';
 FooterChatContainer.propTypes = {
     onScrollWhenSentText: PropTypes.func,
     socket: PropTypes.object,
+    replyMessage: PropTypes.object,
+    onCloseReply: PropTypes.func,
+    userMention: PropTypes.object,
 };
 
 FooterChatContainer.defaultProps = {
     onScrollWhenSentText: null,
-    socket: null
+    socket: null,
+    replyMessage: {},
+    onCloseReply: null,
+    userMention: {}
 };
 
 const style_EditorText = {
@@ -30,11 +38,12 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer({ onScrollWhenSentText, socket }) {
+function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations, currentChannel, memberInConversation } = useSelector(
         (state) => state.chat
     );
+
     const [isShowLike, setShowLike] = useState(true);
     const { TextArea } = Input;
     const [valueText, setValueText] = useState('');
@@ -45,17 +54,78 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
     const checkGroup = conversations.find(ele => ele._id === currentConversation).type;
     const [mentionList, setMentionsList] = useState([]);
     const [mentionSelect, setMentionSelect] = useState([]);
+    const preMention = useRef();
+
+    const checkIsExistInSelect = (userMen) => {
+        if (mentionSelect.length > 0) {
+            const index = mentionSelect.findIndex(ele => ele._id === userMen._id);
+            return index >= 0;
+        } else {
+            return false;
+        }
+    }
+
+
+
+    useEffect(() => {
+        if (userMention && Object.keys(userMention).length > 0) {
+
+            if (preMention.current) {
+
+                console.log('preMention.current', preMention.current);
+                if (checkIsExistInSelect(preMention.current)) {
+                    console.log('Chay trong day')
+                    const regex = new RegExp(`^@${preMention.current.name}`);
+                    const newText = valueText.replace(regex, userMention.name);
+                    setValueText(newText);
+
+                    const newMentionSelect = mentionSelect.filter(ele => ele._id !== preMention.current._id);
+                    console.log('newMentionSelect', newMentionSelect);
+                    setMentionSelect(newMentionSelect);
+
+                    setMentionsList([...mentionList, preMention.current]);
+                }
+            }
+
+            const checkExist = checkIsExistInSelect(userMention);
+
+            if (!checkExist) {
+                setValueText(`@${userMention.name} ${valueText}`);
+                setMentionSelect([...mentionSelect, userMention]);
+                const newMentionList = mentionList.filter(ele => ele._id !== userMention._id);
+                setMentionsList(newMentionList);
+            }
+
+
+            preMention.current = userMention;
+
+        }
+    }, [userMention])
+
+
+
+
+    console.log('Mention select', mentionSelect);
+    console.log('Mention list', mentionList);
+    console.log('User mention', userMention);
+
+
+
+    useEffect(() => {
+
+        if (memberInConversation.length > 0) {
+            setMentionsList(memberInConversation);
+        }
+
+    }, [memberInConversation])
 
 
     useEffect(() => {
 
         setValueText('');
         setMentionSelect([]);
-        if (memberInConversation.length > 0) {
-            setMentionsList(memberInConversation);
-        }
+    }, [currentConversation])
 
-    }, [currentConversation, memberInConversation])
 
     useEffect(() => {
         if (currentConversation) {
@@ -216,9 +286,26 @@ function FooterChatContainer({ onScrollWhenSentText, socket }) {
                 />
             </div>
 
+
+
+            {
+                (replyMessage && Object.keys(replyMessage).length > 0) &&
+                (
+
+                    <ReplyBlock
+                        replyMessage={replyMessage}
+                        onCloseReply={onCloseReply}
+                    />
+                )
+            }
+
+
+
             <div
                 className='chat-editor'
-                style={showTextFormat ? style_EditorText : undefined}>
+                style={showTextFormat ? style_EditorText : {}}
+            >
+
                 <div className='main-editor'>
                     {showTextFormat ? (
                         <TextEditor

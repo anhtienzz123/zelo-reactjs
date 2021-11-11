@@ -44,7 +44,7 @@ function TextMessage({ content, children, dateAt, isSeen, tags }) {
 
 
     const tranferTextToTagUser = (contentMes, tagUser) => {
-        console.log('content messsage', contentMes)
+
         let tempContent = contentMes;
 
         if (tagUser.length > 0) {
@@ -55,9 +55,6 @@ function TextMessage({ content, children, dateAt, isSeen, tags }) {
                 );
             });
         }
-
-        console.log('tempContent', parse(tempContent))
-
         return parse(tempContent);
     }
 

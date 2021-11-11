@@ -100,7 +100,7 @@ function ModalDetailMessagePin({ visible, message, onClose }) {
                     <PinItem
                         message={message}
                     >
-                        <div className='file_info-wrapper'>
+                        <div className='file_info-wrapper-pin'>
                             <div className="file_info">
                                 <div className="file_info-icon">
                                     <FileIcon
@@ -117,7 +117,6 @@ function ModalDetailMessagePin({ visible, message, onClose }) {
                             <div className="icon-download" onClick={handleOnClickDownLoad}>
                                 <DownloadOutlined />
                             </div>
-
                         </div>
 
                     </PinItem>

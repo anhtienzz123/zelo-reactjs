@@ -35,6 +35,8 @@ UserMessage.propTypes = {
     isSameUser: PropTypes.bool,
     viewUsers: PropTypes.array,
     onOpenModalShare: PropTypes.func,
+    onReply: PropTypes.func,
+    onMention: PropTypes.func,
 };
 
 UserMessage.defaultProps = {
@@ -42,7 +44,9 @@ UserMessage.defaultProps = {
     isMyMessage: false,
     isSameUser: false,
     viewUsers: [],
-    onOpenModalShare: null
+    onOpenModalShare: null,
+    onReply: null,
+    onMention: null
 };
 
 function UserMessage({
@@ -50,7 +54,9 @@ function UserMessage({
     isMyMessage,
     isSameUser,
     viewUsers,
-    onOpenModalShare
+    onOpenModalShare,
+    onReply,
+    onMention
 }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts, tagUsers } = message;
     const { name, avatar } = user;
@@ -189,6 +195,15 @@ function UserMessage({
     const handleOpenModalShare = () => {
         if (onOpenModalShare) {
             onOpenModalShare(_id);
+        }
+    }
+
+    const handleReplyMessage = () => {
+        if (onReply) {
+            onReply(message);
+        }
+        if (onMention) {
+            onMention(user)
         }
     }
 
@@ -462,6 +477,7 @@ function UserMessage({
                                                 style={
                                                     MESSAGE_STYLE.styleButton
                                                 }
+                                                onClick={handleReplyMessage}
                                             >
                                                 <MdQuestionAnswer />
                                             </Button>
