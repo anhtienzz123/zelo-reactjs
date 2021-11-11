@@ -43,7 +43,9 @@ const styleButton = {
 function NavigationChatBox(props) {
     const { onClickTextFormat, isFocus, onScroll } = props;
     const [visiblePop, setVisiblePop] = useState(false);
-    const { stickers } = useSelector(state => state.chat)
+    const { stickers, currentConversation, conversations } = useSelector(state => state.chat);
+
+    const checkIsGroup = conversations.find(conver => conver._id === currentConversation).type;
 
     const handleOnClickTextFormat = () => {
 
@@ -118,10 +120,6 @@ function NavigationChatBox(props) {
                             <LinkOutlined />
                         </Button>
                     </UploadFile>
-
-
-
-
                 </li>
 
                 <li className='item-chat-box'>
@@ -129,6 +127,25 @@ function NavigationChatBox(props) {
                         <IoText />
                     </div>
                 </li>
+
+                {checkIsGroup && (
+                    <li className='item-chat-box'>
+                        <UploadFile
+                            typeOfFile='File'
+
+                        >
+                            <Button
+                                title='Gửi file'
+                                type="text"
+                                style={styleButton}
+                            >
+                                <LinkOutlined />
+                            </Button>
+                        </UploadFile>
+                    </li>
+                )}
+
+
             </ul>
         </div>
     );
