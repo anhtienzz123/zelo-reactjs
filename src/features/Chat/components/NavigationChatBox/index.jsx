@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
 import {
-    SmileOutlined,
-    FileImageOutlined,
-    LinkOutlined,
+    DashOutlined, FileImageOutlined,
+    LinkOutlined, SmileOutlined
 } from '@ant-design/icons';
-import { IoText } from "react-icons/io5";
-import { Button, Popover } from 'antd';
+import { Button, Dropdown, Menu, Popover } from 'antd';
 import UploadFile from 'customfield/upLoadFile';
-import Sticker from '../Sticker';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { BsNewspaper } from "react-icons/bs";
+import { FcBarChart } from "react-icons/fc";
+import { IoText } from "react-icons/io5";
 import { useSelector } from 'react-redux';
+import Sticker from '../Sticker';
+import './style.scss';
 
 NavigationChatBox.propTypes = {
     onClickTextFormat: PropTypes.func,
@@ -62,6 +63,19 @@ function NavigationChatBox(props) {
     const handleOnClose = () => {
         setVisiblePop(false)
     }
+
+
+    const menu = (
+        <Menu>
+            <Menu.Item icon={<FcBarChart />}>
+                <span className='item-menu-vote'>Tạo cuộc bình chọn</span>
+            </Menu.Item>
+            <Menu.Item icon={<BsNewspaper />}>
+                <span className="item-menu-vote"> Xem bảng tin nhóm</span>
+            </Menu.Item>
+        </Menu>
+    );
+
 
     return (
         <div
@@ -130,18 +144,16 @@ function NavigationChatBox(props) {
 
                 {checkIsGroup && (
                     <li className='item-chat-box'>
-                        <UploadFile
-                            typeOfFile='File'
 
-                        >
+                        <Dropdown overlay={menu} placement="topLeft">
                             <Button
-                                title='Gửi file'
+                                title='Vote'
                                 type="text"
                                 style={styleButton}
                             >
-                                <LinkOutlined />
+                                <DashOutlined />
                             </Button>
-                        </UploadFile>
+                        </Dropdown>
                     </li>
                 )}
 

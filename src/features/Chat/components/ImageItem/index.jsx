@@ -46,7 +46,6 @@ function ImageItem(props) {
 
 
     const handleOnClick = () => {
-        console.log('clock', type)
         if (type === 'video' && onVisibleVideoModal) {
             onVisibleVideoModal(url)
         }

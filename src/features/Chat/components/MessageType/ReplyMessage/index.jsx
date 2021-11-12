@@ -85,7 +85,7 @@ function ReplyMessage({ replyMessage }) {
 
                 <div className="reply-message_info">
                     <div className="info-blog_info--top">
-                        <strong className="reply-message_info--user">{replyMessage.userName}</strong>
+                        <strong className="reply-message_info--user">{replyMessage.user.name}</strong>
                     </div>
 
                     <div className="reply-message_info--bottom">
