@@ -58,7 +58,7 @@ function UserMessage({
     onReply,
     onMention
 }) {
-    const { _id, content, user, createdAt, type, isDeleted, reacts, tagUsers } = message;
+    const { _id, content, user, createdAt, type, isDeleted, reacts, tagUsers, replyMessage } = message;
     const { name, avatar } = user;
     const { messages, currentConversation, conversations, pinMessages, currentChannel } =
         useSelector((state) => state.chat);
@@ -307,6 +307,7 @@ function UserMessage({
                                                             content={content}
                                                             dateAt={dateAt}
                                                             isSeen={(viewUsers && viewUsers.length > 0)}
+                                                            replyMessage={replyMessage}
                                                         >
                                                             {!myReact && (
                                                                 <ListReaction

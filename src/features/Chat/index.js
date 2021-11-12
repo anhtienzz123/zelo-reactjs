@@ -288,12 +288,6 @@ function Chat({ socket, idNewMessage }) {
             socket.on(
                 'user-last-view',
                 ({ conversationId, userId, lastView, channelId }) => {
-                    console.log('last view', {
-                        conversationId,
-                        userId,
-                        lastView,
-                        channelId,
-                    });
                     if (userId != user._id) {
                         dispatch(
                             updateLastViewOfMembers({
@@ -463,7 +457,6 @@ function Chat({ socket, idNewMessage }) {
     };
 
     const handleOnReply = (mes) => {
-        console.log(mes);
         setReplyMessage(mes);
     };
 
@@ -472,9 +465,13 @@ function Chat({ socket, idNewMessage }) {
     };
 
     const handleOnMention = (userMent) => {
-        if (userMention._id !== userMent) {
+        if (user._id !== userMent._id) {
             setUserMention(userMent);
         }
+    };
+
+    const handleOnRemoveMention = () => {
+        setUserMention({});
     };
 
     // Xử lý modal mode
@@ -673,6 +670,9 @@ function Chat({ socket, idNewMessage }) {
                                                 replyMessage={replyMessage}
                                                 onCloseReply={handleCloseReply}
                                                 userMention={userMention}
+                                                onRemoveMention={
+                                                    handleOnRemoveMention
+                                                }
                                             />
                                         </div>
                                     </div>

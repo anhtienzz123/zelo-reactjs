@@ -4,22 +4,26 @@ import CheckLink, { replaceConentWithouLink, replaceContentToLink } from 'utils/
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import parse from 'html-react-parser'
 import './style.scss';
+import ReplyMessage from '../ReplyMessage';
 TextMessage.propTypes = {
     content: PropTypes.string,
     dateAt: PropTypes.object,
     isVisibleTime: PropTypes.bool.isRequired,
     isSeen: PropTypes.bool,
     tags: PropTypes.array,
+    replyMessage: PropTypes.object,
 };
 
 TextMessage.defaultProps = {
     dateAt: null,
     isSeen: false,
-    tags: []
+    tags: [],
+    replyMessage: null
+
 
 }
 
-function TextMessage({ content, children, dateAt, isSeen, tags }) {
+function TextMessage({ content, children, dateAt, isSeen, replyMessage, tags }) {
 
 
     const handleOnClickTag = () => {
@@ -122,6 +126,14 @@ function TextMessage({ content, children, dateAt, isSeen, tags }) {
 
     return (
         <div className='text-message-item'>
+
+
+            {replyMessage && (
+                <ReplyMessage
+                    replyMessage={replyMessage}
+                />
+
+            )}
 
 
             {

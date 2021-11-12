@@ -50,6 +50,7 @@ function ModalDetailMessagePin({ visible, message, onClose }) {
                     onCancel={handleOnClose}
                     closable={false}
 
+
                 >
                     <PinItem
                         message={message}

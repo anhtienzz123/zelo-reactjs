@@ -58,6 +58,13 @@ function ReplyBlock({ replyMessage, onCloseReply }) {
                             />
                         </div>
                     </div>
+                ) : replyMessage.type === 'STICKER' ? (
+
+                    <div className="reply-block_logo">
+                        <img
+                            src={replyMessage.content}
+                        />
+                    </div>
                 ) : (
                     <div></div>
                 )
@@ -76,8 +83,10 @@ function ReplyBlock({ replyMessage, onCloseReply }) {
                             <span>[Video]</span>
                         ) : replyMessage.type === 'FILE' ? (
                             <span>[File] {fileName}</span>
+                        ) : replyMessage.type === 'STICKER' ? (
+                            <span>[Stikcer]</span>
                         ) : (
-                            replyMessage.content + 'ádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffffádffffffffffffffffffff'
+                            replyMessage.content
                         )
                     }
                 </div>

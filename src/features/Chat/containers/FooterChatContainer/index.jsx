@@ -18,6 +18,7 @@ FooterChatContainer.propTypes = {
     replyMessage: PropTypes.object,
     onCloseReply: PropTypes.func,
     userMention: PropTypes.object,
+    onRemoveMention: PropTypes.func,
 };
 
 FooterChatContainer.defaultProps = {
@@ -25,7 +26,8 @@ FooterChatContainer.defaultProps = {
     socket: null,
     replyMessage: {},
     onCloseReply: null,
-    userMention: {}
+    userMention: {},
+    onRemoveMention: null
 };
 
 const style_EditorText = {
@@ -38,7 +40,7 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention }) {
+function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention, onRemoveMention }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations, currentChannel, memberInConversation } = useSelector(
         (state) => state.chat
@@ -70,33 +72,34 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
     useEffect(() => {
         if (userMention && Object.keys(userMention).length > 0) {
 
+            let tempMensionSelect = [...mentionSelect];
+            let tempMensionList = [...mentionList];
+            let tempValueText = valueText;
+
+
             if (preMention.current) {
 
-                console.log('preMention.current', preMention.current);
+
                 if (checkIsExistInSelect(preMention.current)) {
-                    console.log('Chay trong day')
+
                     const regex = new RegExp(`^@${preMention.current.name}`);
-                    const newText = valueText.replace(regex, userMention.name);
-                    setValueText(newText);
+                    const newText = valueText.replace(regex, '');
+                    tempValueText = newText;
 
-                    const newMentionSelect = mentionSelect.filter(ele => ele._id !== preMention.current._id);
-                    console.log('newMentionSelect', newMentionSelect);
-                    setMentionSelect(newMentionSelect);
-
-                    setMentionsList([...mentionList, preMention.current]);
+                    tempMensionSelect = mentionSelect.filter(ele => ele._id !== preMention.current._id);
+                    tempMensionList = [...mentionList, preMention.current]
                 }
             }
 
             const checkExist = checkIsExistInSelect(userMention);
 
             if (!checkExist) {
-                setValueText(`@${userMention.name} ${valueText}`);
-                setMentionSelect([...mentionSelect, userMention]);
-                const newMentionList = mentionList.filter(ele => ele._id !== userMention._id);
-                setMentionsList(newMentionList);
+                tempValueText = `@${userMention.name} ${tempValueText}`;
+                setValueText(tempValueText);
+                setMentionSelect([...tempMensionSelect, userMention]);
+                tempMensionList = tempMensionList.filter(ele => ele._id !== userMention._id);
+                setMentionsList(tempMensionList);
             }
-
-
             preMention.current = userMention;
 
         }
@@ -105,9 +108,6 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
 
 
 
-    console.log('Mention select', mentionSelect);
-    console.log('Mention list', mentionList);
-    console.log('User mention', userMention);
 
 
 
@@ -155,7 +155,8 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
             content: value,
             type: type,
             conversationId: currentConversation,
-            tags: listId
+            tags: listId,
+            replyMessageId: replyMessage._id
         };
 
         if (currentChannel) {
@@ -173,6 +174,14 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
             .catch((err) => console.log('Send Message Fail'));
         setMentionsList(memberInConversation);
         setMentionSelect([]);
+
+        if (onCloseReply) {
+            onCloseReply();
+        }
+        if (onRemoveMention) {
+            onRemoveMention();
+        }
+
     }
 
     const handleOnScroll = (id) => {
@@ -207,6 +216,9 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                     }
                     setMentionsList(tempMensionList);
                     setMentionSelect(mentionSelect.filter(select => select._id !== ele._id));
+                    if (onRemoveMention) {
+                        onRemoveMention();
+                    }
                     return false;
                 }
 
@@ -228,8 +240,6 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
         setShowLike(value);
     };
 
-    // console.log('list ', mentionList)
-    // console.log('select lsit', mentionSelect);
 
     const handleKeyPress = (event) => {
 
