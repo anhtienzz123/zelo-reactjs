@@ -1,11 +1,12 @@
 import { CloseCircleFilled } from '@ant-design/icons';
-import React from 'react';
-import { MdQuestionAnswer } from 'react-icons/md';
 import PropTypes from 'prop-types';
-
-import './style.scss';
-import { FileIcon, defaultStyles } from 'react-file-icon';
+import React from 'react';
+import { defaultStyles, FileIcon } from 'react-file-icon';
+import { MdQuestionAnswer } from 'react-icons/md';
 import fileHelpers from 'utils/fileHelpers';
+import './style.scss';
+
+
 
 ReplyBlock.propTypes = {
     replyMessage: PropTypes.object,
@@ -85,6 +86,8 @@ function ReplyBlock({ replyMessage, onCloseReply }) {
                             <span>[File] {fileName}</span>
                         ) : replyMessage.type === 'STICKER' ? (
                             <span>[Stikcer]</span>
+                        ) : replyMessage.type == 'HTML' ? (
+                            <span>[Văn bản]</span>
                         ) : (
                             replyMessage.content
                         )

@@ -10,6 +10,7 @@ import { BsNewspaper } from "react-icons/bs";
 import { FcBarChart } from "react-icons/fc";
 import { IoText } from "react-icons/io5";
 import { useSelector } from 'react-redux';
+import ModalCreateVote from '../ModalCreateVote';
 import Sticker from '../Sticker';
 import './style.scss';
 
@@ -45,7 +46,7 @@ function NavigationChatBox(props) {
     const { onClickTextFormat, isFocus, onScroll } = props;
     const [visiblePop, setVisiblePop] = useState(false);
     const { stickers, currentConversation, conversations } = useSelector(state => state.chat);
-
+    const [isVisibleVote, setIsVisibleVote] = useState(false);
     const checkIsGroup = conversations.find(conver => conver._id === currentConversation).type;
 
     const handleOnClickTextFormat = () => {
@@ -63,18 +64,30 @@ function NavigationChatBox(props) {
     const handleOnClose = () => {
         setVisiblePop(false)
     }
+    const handleOnClick = ({ key }) => {
+        if (key === 'VOTE') {
+            setIsVisibleVote(true)
+        }
+    }
+
+    const handleCloseModalVote = () => {
+        setIsVisibleVote(false)
+    }
+
 
 
     const menu = (
-        <Menu>
-            <Menu.Item icon={<FcBarChart />}>
+        <Menu onClick={handleOnClick}>
+            <Menu.Item key='VOTE' icon={<FcBarChart />}>
                 <span className='item-menu-vote'>Tạo cuộc bình chọn</span>
             </Menu.Item>
-            <Menu.Item icon={<BsNewspaper />}>
+            <Menu.Item key='VIEW_NEWS' icon={<BsNewspaper />}>
                 <span className="item-menu-vote"> Xem bảng tin nhóm</span>
             </Menu.Item>
         </Menu>
     );
+
+
 
 
     return (
@@ -145,7 +158,7 @@ function NavigationChatBox(props) {
                 {checkIsGroup && (
                     <li className='item-chat-box'>
 
-                        <Dropdown overlay={menu} placement="topLeft">
+                        <Dropdown overlay={menu} placement="topLeft" trigger={['click']} arrow>
                             <Button
                                 title='Vote'
                                 type="text"
@@ -159,6 +172,12 @@ function NavigationChatBox(props) {
 
 
             </ul>
+
+
+            <ModalCreateVote
+                visible={isVisibleVote}
+                onCancel={handleCloseModalVote}
+            />
         </div>
     );
 }

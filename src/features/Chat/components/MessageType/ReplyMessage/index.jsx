@@ -1,10 +1,10 @@
-import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { defaultStyles, FileIcon } from 'react-file-icon';
 import fileHelpers from 'utils/fileHelpers';
 import ModalDetailMessageReply from '../../ModalDetailMessageReply';
 import './style.scss';
+
 
 
 ReplyMessage.propTypes = {
@@ -29,7 +29,6 @@ function ReplyMessage({ replyMessage }) {
     }
 
 
-    console.log('visibleModal', visible);
     return (
 
         <>
@@ -98,6 +97,8 @@ function ReplyMessage({ replyMessage }) {
                                 <span>[File] {fileName}</span>
                             ) : replyMessage.type === 'STICKER' ? (
                                 <span>[Stikcer]</span>
+                            ) : replyMessage.type === 'HTML' ? (
+                                <span>[Văn bản]</span>
                             ) : (
                                 replyMessage.content
                             )

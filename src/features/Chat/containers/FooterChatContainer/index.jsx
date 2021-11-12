@@ -1,17 +1,16 @@
 import { LikeTwoTone, SendOutlined, SmileOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { Input, Mentions } from 'antd';
 import messageApi from 'api/messageApi';
 import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
+import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import ReplyBlock from 'features/Chat/components/ReplyBlock';
 import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Mentions } from 'antd';
 import './style.scss';
-import MentionOption from 'features/Chat/components/MentionOption';
-import PersonalIcon from 'features/Chat/components/PersonalIcon';
-import ReplyBlock from 'features/Chat/components/ReplyBlock';
-import { object } from 'yup';
+
+
 FooterChatContainer.propTypes = {
     onScrollWhenSentText: PropTypes.func,
     socket: PropTypes.object,
@@ -156,8 +155,11 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
             type: type,
             conversationId: currentConversation,
             tags: listId,
-            replyMessageId: replyMessage._id
+
         };
+        if (replyMessage && Object.keys(replyMessage).length > 0) {
+            newMessage.replyMessageId = replyMessage._id;
+        }
 
         if (currentChannel) {
             newMessage.channelId = currentChannel

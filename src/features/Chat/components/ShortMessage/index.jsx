@@ -13,6 +13,8 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { FcBarChart } from "react-icons/fc";
+
 import './style.scss';
 ShortMessage.propTypes = {
     message: PropTypes.object,
@@ -169,6 +171,12 @@ function ShortMessage({ message, type }) {
                         {
                             (message.type === 'NOTIFY' && (message.content === 'Ảnh đại diện nhóm đã thay đổi')) && (
                                 <span>{renderName()}<EditOutlined />&nbsp;đã đổi ảnh nhóm</span>
+                            )
+                        }
+
+                        {
+                            (message.type === 'VOTE') && (
+                                <span>{renderName()}<FcBarChart />&nbsp;đã tạo cuộc bình chọn</span>
                             )
                         }
 
