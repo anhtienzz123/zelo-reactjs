@@ -230,7 +230,7 @@ function UserMessage({
                 <>
                     {type === 'VOTE' && (
                         <VoteMessage
-                            content={content}
+                            data={message}
                         />
                     )}
 

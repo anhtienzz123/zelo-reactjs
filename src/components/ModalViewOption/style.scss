@@ -1,0 +1,78 @@
+@import "../../scss/variables";
+
+.footer_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-menu {
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.modal-view-option {
+    &_title {
+        text-align: center;
+        small {
+            color: $neutral-500;
+        }
+        strong {
+            color: initial;
+        }
+    }
+    .overview-text {
+        color: $base-color;
+        margin-left: 2rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    .overview-text:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    &_item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &_checkbox {
+        width: 10%;
+    }
+    .vote-message_item {
+        width: 75%;
+    }
+
+    &_avatar {
+        width: 15%;
+    }
+
+    &_list {
+        padding: 0 2rem;
+    }
+    &_add {
+        margin-top: 2rem;
+        padding: 0 2rem;
+    }
+    &_form {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .temp-space {
+        width: 15%;
+    }
+
+    .form-checkox {
+        width: 10%;
+    }
+
+    .form-input {
+        width: 75%;
+    }
+}
