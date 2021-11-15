@@ -71,28 +71,6 @@ function VoteMessage({ data }) {
                     }
 
                     )}
-                    {/* <div className="vote-message_item">
-
-                        <span className="vote-message_name-option">
-                            Bán kem đánh răng
-                        </span>
-
-                        <strong className="vote-message_munber-voted">
-                            3
-                        </strong>
-                        <div className="vote-message_progress" style={{ width: '50%' }} />
-                    </div>
-
-                    <div className="vote-message_item">
-                        <span className="vote-message_name-option">
-                            Bán kem đánh răng
-                        </span>
-
-                        <strong className="vote-message_munber-voted">
-                            3
-                        </strong>
-                    </div> */}
-
                 </div>
 
                 <div className="vote-message_view-all">
@@ -109,6 +87,7 @@ function VoteMessage({ data }) {
             <ModalViewOption
                 isModalVisible={isVisibleOption}
                 onCancel={() => setIsVisibleOption(false)}
+                data={data}
             />
         </div>
     );

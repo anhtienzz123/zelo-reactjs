@@ -73,15 +73,6 @@ function ModalCreateVote({ visible, onCancel }) {
 
                 <Form.List
                     name="options"
-                    rules={[
-                        {
-                            validator: async (_, names) => {
-                                if (!names || names.length < 2) {
-                                    return Promise.reject(new Error('At least 2 passengers'));
-                                }
-                            },
-                        },
-                    ]}
 
                 >
                     {(fields, { add, remove }, { errors }) => (
@@ -103,6 +94,27 @@ function ModalCreateVote({ visible, onCancel }) {
                                                 whitespace: true,
                                                 message: "Nhập thông tin lựa chọn",
                                             },
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    console.log('getFieldValue', getFieldValue('options'));
+                                                    console.log('_', _);
+                                                    console.log('value', value);
+
+
+                                                    let count = 0;
+                                                    getFieldValue('options').forEach(ele => {
+                                                        if (ele === value) {
+                                                            count += 1
+                                                        }
+                                                    })
+
+
+                                                    if (value && count > 1) {
+                                                        return Promise.reject(new Error('Các lựa chọn không dược trùng nhau'));
+                                                    }
+                                                    return Promise.resolve();
+                                                },
+                                            }),
                                         ]}
                                         noStyle
                                     >

@@ -3,8 +3,8 @@
 .footer_wrapper {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 }
 
 .item-menu {
@@ -37,22 +37,28 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+        // justify-content: ;
+        margin-bottom: 1rem;
     }
 
-    &_checkbox {
-        width: 10%;
-    }
+    // &_checkbox {
+    //     width: 85%;
+    // }
     .vote-message_item {
-        width: 75%;
+        &_name-option {
+            z-index: 1;
+        }
     }
 
-    &_avatar {
-        width: 15%;
-    }
+    // &_avatar {
+    //     width: 15%;
+    // }
 
     &_list {
         padding: 0 2rem;
+        .ant-checkbox-group {
+            display: block;
+        }
     }
     &_add {
         margin-top: 2rem;
@@ -62,17 +68,20 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        justify-content: space-between;
     }
     .temp-space {
         width: 15%;
     }
 
-    .form-checkox {
-        width: 10%;
-    }
+    // .form-checkox {
+    //     width: 10%;
+    // }
 
     .form-input {
-        width: 75%;
+        margin-left: 1rem;
+        width: 300px;
+        .ant-input-affix-wrapper {
+            padding: 4px 4px;
+        }
     }
 }
