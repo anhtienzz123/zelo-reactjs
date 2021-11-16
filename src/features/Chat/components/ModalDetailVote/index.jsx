@@ -1,19 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Modal } from 'antd';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import PersonalIcon from '../PersonalIcon';
 import './style.scss';
 
 ModalDetailVote.propTypes = {
     visible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
+    data: PropTypes.array,
 };
 
 ModalDetailVote.defaultProps = {
     onCancel: null,
+    data: []
 };
 
-function ModalDetailVote({ visible, onCancel }) {
+function ModalDetailVote({ visible, onCancel, data }) {
+    const { memberInConversation } = useSelector(state => state.chat)
 
     const handleCancel = () => {
         if (onCancel) {
@@ -29,177 +33,36 @@ function ModalDetailVote({ visible, onCancel }) {
             onCancel={handleCancel}
         >
             <div className="detail-vote-wrapper">
-                <div className="detail-vote_item">
-                    <span className='detail-vote_option'>Bán kem đanh găng (2)</span>
-                    <div className="detail-vote_list-user">
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
+                {data.map((ele, index) => {
+                    if (ele.userIds.length > 0) {
+                        return (
+                            <div className="detail-vote_item" key={index}>
+                                <span className='detail-vote_option'>{ele.name} ({ele.userIds.length})</span>
+                                <div className="detail-vote_list-user">
+                                    {ele.userIds.map((ele, index) => {
+                                        const user = memberInConversation.find(member => member._id === ele);
+                                        return (
+                                            <div className="detail-vote_user-item" key={index}>
+                                                <div className="detail-vote_avatar">
+                                                    <PersonalIcon
+                                                        name={user?.name}
+                                                        avatar={user?.avatar}
+                                                    />
+                                                </div>
+
+                                                <div className="detail-vote_name">
+                                                    {user?.name}
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
+                        )
+                    }
+                })}
 
 
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="detail-vote_item">
-                    <span className='detail-vote_option'>Bán kem đanh găng (2)</span>
-                    <div className="detail-vote_list-user">
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-
-
-                        <div className="detail-vote_user-item">
-                            <div className="detail-vote_avatar">
-                                <PersonalIcon
-                                    name="Hoàng Phúc"
-                                    avatar='https://photo-cms-kienthuc.zadn.vn/zoom/800/uploaded/nguyenanhson/2021_06_18/3/nhay-quyen-ru-lo-body-sieu-hot-hot-girl-tram-anh-dot-mat-netizen.jpg'
-                                />
-                            </div>
-
-                            <div className="detail-vote_name">
-                                Trâm anh
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </Modal>
     );

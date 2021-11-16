@@ -41,6 +41,7 @@ import {
     updateNameOfConver,
     updateTimeForConver,
     updateAvavarConver,
+    updateVoteMessage,
 } from './slice/chatSlice';
 import './style.scss';
 
@@ -360,6 +361,17 @@ function Chat({ socket, idNewMessage }) {
                     }
                 }
             );
+
+            socket.on('update-vote-message', (conversationId, voteMessage) => {
+                if (refCurrentConversation.current === conversationId) {
+                    console.log('voteMessage', voteMessage);
+                    dispatch(
+                        updateVoteMessage({
+                            voteMessage,
+                        })
+                    );
+                }
+            });
         }
         dispatch(setJoinChatLayout(true));
     }, []);

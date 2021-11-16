@@ -1,10 +1,12 @@
 import { CaretRightOutlined, LockOutlined, MinusCircleOutlined, PlusOutlined, PushpinOutlined } from '@ant-design/icons';
-import { Avatar, Button, Checkbox, Dropdown, Form, Input, Menu, Modal } from 'antd';
+import { Avatar, Button, Checkbox, Dropdown, Form, Input, Menu, message, Modal, Spin } from 'antd';
+import voteApi from 'api/voteApi';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { HiOutlineAdjustments } from "react-icons/hi";
 import { useSelector } from 'react-redux';
+import { equalsArray } from 'utils/arrayHelper';
 import MODAL_OPTION_STYLE from './ModalViewOptionStyle';
 import './style.scss';
 
@@ -27,15 +29,27 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
     const [infoVote, setInfoVote] = useState(data);
     const { user } = useSelector(state => state.global);
     const [checkList, setCheckList] = useState([]);
-
+    const [valueForm, setValueForm] = useState(null);
     const preValue = useRef();
+    const [confirmLoading, setConfirmLoading] = useState(false);
+
+    useEffect(() => {
+        setInfoVote(data);
+    }, [data]);
+
+
+
     useEffect(() => {
         if (isModalVisible) {
             preValue.current = getDefaultValues();
+            setCheckList(getDefaultValues);
+
+        } else {
+            form.resetFields();
         }
+
+
     }, [isModalVisible]);
-
-
 
 
     const handleCancel = () => {
@@ -44,10 +58,40 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
         }
     }
 
+
+
     function handleOk() {
-        form.validateFields().then((values) => {
-            // const { question, options } = values;
-            console.log(values);
+        form.validateFields().then(async ({ options }) => {
+            setConfirmLoading(true);
+            try {
+                if (preValue.current && !(equalsArray(preValue.current, checkList))) {
+                    await voteApi.deleteSelect(infoVote._id, preValue.current)
+                    await voteApi.selectVote(infoVote._id, checkList);
+                    message.success('Cập nhật lựa chọn thành công');
+
+                }
+
+                if (options && options.length > 0) {
+
+                    const newField = options.map(ele => ele.name);
+                    const tempSelect = options.filter(ele => ele.checkbox === true);
+                    const realSelect = tempSelect.map(ele => ele.name);
+
+                    await voteApi.addVote(infoVote._id, newField);
+                    await voteApi.selectVote(infoVote._id, realSelect);
+                    message.success('Thêm lựa chọn thành công');
+
+                }
+
+
+                handleCancel();
+
+            } catch (error) {
+                message.error('Đã có lỗi xảy ra');
+
+            }
+            setConfirmLoading(false);
+
 
 
         }).catch((info) => {
@@ -55,6 +99,23 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
         });
 
     }
+
+    const getDefaultValues = () => {
+        let temp = [];
+        infoVote.options.forEach(option => {
+            option.userIds.forEach(userId => {
+                if (userId === user._id) {
+                    temp.push(option.name);
+                }
+            })
+        })
+        return temp;
+    }
+    // console.log('getDefault ', getDefaultValues());
+
+
+
+
 
     const menu = (
         <Menu>
@@ -78,12 +139,17 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
 
             <div className="footer_right-btn">
                 <Button>Hủy</Button>
-                <Button type="primary" onClick={handleOk}>Xác nhận</Button>
+                <Button
+                    type="primary"
+                    onClick={handleOk}
+                    icon={<Spin spinning={confirmLoading} />}
+                >
+                    Xác nhận
+                </Button>
             </div>
-        </div>
+        </div >
     )
 
-    console.log('infoVote total', infoVote.options);
 
 
 
@@ -126,34 +192,42 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
         return memberInConversation.find(ele => ele._id === userId);
     }
 
-    const checkNumberUserSelected = () => {
-        let count = 0;
-        infoVote.options.forEach((option) => {
-            if (option.userIds.length > 0) {
-                count += option.userIds.length;
-            }
-        })
-        return count;
-    }
 
 
     const countingPercent = (amoutVote) => {
-        return (amoutVote / checkNumberUserSelected()) * 100;
+
+        const result = (amoutVote / getNumberJoinVote().length) * 100;
+        if (isNaN(result)) {
+            return 0;
+        }
+        return result;
     }
 
 
-
-    const getDefaultValues = () => {
-        let temp = [];
-        infoVote.options.forEach(option => {
-            option.userIds.forEach(userId => {
-                if (userId === user._id) {
-                    temp.push(option.name);
-                }
+    const getNumberJoinVote = () => {
+        let tempUserIds = [];
+        infoVote.options.forEach((option) => {
+            option.userIds.forEach((userId) => {
+                tempUserIds.push(userId);
             })
-        })
-        return temp;
+        });
+
+        let uniqueUser = tempUserIds.filter((c, index) => {
+            return tempUserIds.indexOf(c) === index;
+        });
+        return uniqueUser;
     }
+
+
+
+
+
+    const handleValueChange = (_, allValues) => {
+
+        setValueForm(allValues);
+    }
+
+
 
 
     return (
@@ -177,7 +251,7 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
 
                 <div className="modal-view-option_list">
 
-                    <Checkbox.Group onChange={handleCheckboxChange} defaultValue={getDefaultValues()}>
+                    <Checkbox.Group onChange={handleCheckboxChange} value={getDefaultValues()}>
 
                         {infoVote.options.map((ele, index) => (
                             <div className="modal-view-option_item" key={index}>
@@ -195,7 +269,7 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
                                                 {ele.userIds.length}
                                             </strong>
 
-                                            <div className="vote-message_progress" style={{ width: countingPercent(ele.userIds.length) }} />
+                                            <div className="vote-message_progress" style={{ width: `${countingPercent(ele.userIds.length)}%` }} />
 
                                         </div>
 
@@ -218,13 +292,17 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
 
                                         {(ele.userIds.length > 0 && memberInConversation.length > 0) && (
                                             ele.userIds.map((ele, index) => (
-                                                <PersonalIcon
-                                                    key={index}
-                                                    name={getUserFromConver(ele).name}
-                                                    avatar={getUserFromConver(ele).avatar}
-                                                    demention={32}
+                                                <>
+                                                    <PersonalIcon
+                                                        key={index}
+                                                        name={getUserFromConver(ele).name}
+                                                        avatar={getUserFromConver(ele).avatar}
+                                                        demention={32}
 
-                                                />
+                                                    />
+
+
+                                                </>
                                             ))
                                         )}
 
@@ -243,6 +321,7 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
                         name="dynamic_form_nest_item"
                         layout='vertical'
                         form={form}
+                        onValuesChange={handleValueChange}
                     >
 
 
@@ -280,12 +359,37 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
                                                             // whitespace: true,
                                                             message: "Nhập thông tin lựa chọn",
                                                         },
+                                                        ({ getFieldValue }) => ({
+                                                            validator(_, value) {
+
+                                                                const tempValue = value ? value.toLowerCase() : value;
+                                                                let count = 0;
+                                                                getFieldValue('options').forEach(ele => {
+                                                                    if (ele && ele.name.toLowerCase() === tempValue) {
+                                                                        count += 1
+                                                                    }
+                                                                });
+
+                                                                const checkDuplicate = infoVote.options.find(ele => ele.name.toLowerCase() === tempValue);
+
+                                                                if (value && checkDuplicate) {
+
+                                                                    return Promise.reject(new Error('Các lựa chọn không dược trùng nhau'));
+                                                                }
+
+                                                                if (value && count > 1) {
+
+                                                                    return Promise.reject(new Error('Các lựa chọn không dược trùng nhau'));
+                                                                }
+                                                                return Promise.resolve();
+                                                            },
+                                                        }),
                                                     ]}
 
                                                 >
                                                     <Input
                                                         spellCheck={false}
-                                                        placeholder={`Lựa chọn ${infoVote && infoVote.options.length + 1}`}
+                                                        placeholder={`Lựa chọn ${infoVote && infoVote.options.length + index + 1}`}
                                                         style={{ width: '100%' }}
                                                         suffix={fields.length > 0 ? (
                                                             <MinusCircleOutlined
@@ -295,9 +399,15 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
                                                         ) : null}
                                                     />
 
-                                                </Form.Item>
-                                            </div>
+                                                    {/* <div className="hidden-avatar-temp"></div> */}
 
+
+
+                                                </Form.Item>
+
+
+
+                                            </div>
 
 
 

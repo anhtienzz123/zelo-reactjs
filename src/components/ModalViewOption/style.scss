@@ -37,7 +37,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        // justify-content: ;
+        justify-content: center;
         margin-bottom: 1rem;
     }
 
@@ -50,9 +50,9 @@
         }
     }
 
-    // &_avatar {
-    //     width: 15%;
-    // }
+    &_avatar {
+        width: 60px;
+    }
 
     &_list {
         padding: 0 2rem;
@@ -68,18 +68,15 @@
         display: flex;
         flex-direction: row;
         width: 100%;
+        align-items: center;
     }
     .temp-space {
         width: 15%;
     }
 
-    // .form-checkox {
-    //     width: 10%;
-    // }
-
     .form-input {
         margin-left: 1rem;
-        width: 300px;
+        width: 100%;
         .ant-input-affix-wrapper {
             padding: 4px 4px;
         }

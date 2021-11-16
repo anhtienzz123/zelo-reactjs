@@ -40,20 +40,40 @@ function VoteMessage({ data }) {
 
 
     const countingPercent = (amoutVote) => {
-        return (amoutVote / checkNumberUserSelected()) * 100;
+        return (amoutVote / getNumberJoinVote().length) * 100;
     }
+
+
+
+
+    const getNumberJoinVote = () => {
+        let tempUserIds = [];
+        data.options.forEach((option) => {
+            option.userIds.forEach((userId) => {
+                tempUserIds.push(userId);
+            })
+        });
+
+        let uniqueUser = tempUserIds.filter((c, index) => {
+            return tempUserIds.indexOf(c) === index;
+        });
+        return uniqueUser;
+    }
+
+
     return (
         <div className='vote-message-wrapper'>
             <div className="vote-message">
                 <h3>{data.content}</h3>
 
-                {checkNumberUserSelected > 0 && (
-                    <span onClick={handleDetailVote} className="vote-message_number-voted">Đã có {checkNumberUserSelected} lượt bình chọn <CaretRightOutlined /></span>
+
+                {getNumberJoinVote().length > 0 && (
+                    <span onClick={handleDetailVote} className="vote-message_number-voted">Đã có {checkNumberUserSelected()} lượt bình chọn <CaretRightOutlined /></span>
                 )}
                 <div className="vote-message_list">
 
                     {data.options.map((ele, index) => {
-                        if (index < 2) {
+                        if (index < 3) {
                             return (
                                 <div className="vote-message_item" key={index}>
 
@@ -64,7 +84,7 @@ function VoteMessage({ data }) {
                                     <strong className="vote-message_munber-voted">
                                         {ele.userIds.length}
                                     </strong>
-                                    <div className="vote-message_progress" style={{ width: countingPercent(ele.userIds.length) }} />
+                                    <div className="vote-message_progress" style={{ width: `${countingPercent(ele.userIds.length)}%` }} />
                                 </div>
                             )
                         }
@@ -72,6 +92,13 @@ function VoteMessage({ data }) {
 
                     )}
                 </div>
+
+                {
+                    data.options.length > 3 && (
+                        <small>{`* Còn ${data.options.length - 3} lựa chọn khác `}</small>
+                    )
+                }
+
 
                 <div className="vote-message_view-all">
                     <Button onClick={handleViewOption} type='primary' style={{ width: '100%' }}>Xem lựa chọn</Button>
@@ -82,6 +109,7 @@ function VoteMessage({ data }) {
             <ModalDetailVote
                 visible={isVisibleDetail}
                 onCancel={() => setIsVisibleDetail(false)}
+                data={data.options}
             />
 
             <ModalViewOption

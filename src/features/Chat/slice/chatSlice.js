@@ -605,6 +605,16 @@ const chatSlice = createSlice({
                 avatar: conversationAvatar,
             };
         },
+        updateVoteMessage: (state, action) => {
+            const { voteMessage } = action.payload;
+            const index = state.messages.findIndex(
+                (ele) => ele._id === voteMessage._id
+            );
+
+            if (index > -1) {
+                state.messages[index] = voteMessage;
+            }
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -804,6 +814,7 @@ export const {
     updateAvavarConver,
     removeChannel,
     setTotalChannelNotify,
+    updateVoteMessage,
 } = actions;
 
 export default reducer;

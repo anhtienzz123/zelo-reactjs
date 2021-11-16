@@ -176,7 +176,7 @@ function ShortMessage({ message, type }) {
 
                         {
                             (message.type === 'VOTE') && (
-                                <span>{renderName()}<FcBarChart />&nbsp;đã tạo cuộc bình chọn</span>
+                                <span>{renderName()}<FcBarChart />&nbsp;bình chọn</span>
                             )
                         }
 

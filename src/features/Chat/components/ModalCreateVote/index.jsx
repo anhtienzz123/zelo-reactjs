@@ -25,8 +25,11 @@ function ModalCreateVote({ visible, onCancel }) {
     function handleCancel() {
         if (onCancel) {
             onCancel();
+            form.resetFields();
         }
     }
+
+
 
     function handleOk() {
         form.validateFields().then((values) => {
@@ -96,14 +99,11 @@ function ModalCreateVote({ visible, onCancel }) {
                                             },
                                             ({ getFieldValue }) => ({
                                                 validator(_, value) {
-                                                    console.log('getFieldValue', getFieldValue('options'));
-                                                    console.log('_', _);
-                                                    console.log('value', value);
-
+                                                    const tempValue = value ? value.toLowerCase() : value;
 
                                                     let count = 0;
                                                     getFieldValue('options').forEach(ele => {
-                                                        if (ele === value) {
+                                                        if (ele && ele.toLowerCase() === tempValue) {
                                                             count += 1
                                                         }
                                                     })
