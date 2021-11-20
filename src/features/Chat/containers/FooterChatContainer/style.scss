@@ -15,12 +15,14 @@
         align-items: center;
         flex: 1;
 
-        .mention-option {
+        .mention-option_wrapper {
             display: flex;
             flex-direction: row;
             align-items: center;
+            background: red;
+
             .name-user-item {
-                margin-left: 1rem;
+                margin-left: 10rem;
                 font-size: 12px;
                 font-weight: 400;
                 flex: 1;

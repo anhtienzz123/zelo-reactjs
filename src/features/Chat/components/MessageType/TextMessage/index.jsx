@@ -128,7 +128,7 @@ function TextMessage({ content, children, dateAt, isSeen, replyMessage, tags }) 
         <div className='text-message-item'>
 
 
-            {replyMessage && (
+            {(replyMessage && Object.keys(replyMessage).length > 0) && (
                 <ReplyMessage
                     replyMessage={replyMessage}
                 />

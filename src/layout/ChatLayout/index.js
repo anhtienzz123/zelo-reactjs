@@ -12,6 +12,7 @@ import {
     fetchListColor,
     fetchListConversations,
     updateConversationWhenAddMember,
+    updateFriendChat,
     updateMemberLeaveGroup,
 } from 'features/Chat/slice/chatSlice';
 import Friend from 'features/Friend';
@@ -24,6 +25,9 @@ import {
     setMyRequestFriend,
     setNewFriend,
     setNewRequestFriend,
+    updateFriend,
+    updateMyRequestFriend,
+    updateRequestFriends,
 } from 'features/Friend/friendSlice';
 import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect';
 import React, { useEffect, useState } from 'react';
@@ -172,6 +176,23 @@ function ChatLayout(props) {
         socket.on('send-friend-invite', (value) => {
             dispatch(setNewRequestFriend(value));
             dispatch(setAmountNotify(amountNotify + 1));
+        });
+
+        // xóa lời mời kết bạn
+        socket.on('deleted-friend-invite', (_id) => {
+            dispatch(updateMyRequestFriend(_id));
+        });
+
+        //  xóa gởi lời mời kết bạn cho người khác
+        socket.on('deleted-invite-was-send', (_id) => {
+            dispatch(updateRequestFriends(_id));
+        });
+
+        // xóa kết bạn
+        socket.on('deleted-friend', (_id) => {
+            console.log('id', _id);
+            dispatch(updateFriend(_id));
+            dispatch(updateFriendChat(_id));
         });
 
         // dispatch(setJoinFriendLayout(true))

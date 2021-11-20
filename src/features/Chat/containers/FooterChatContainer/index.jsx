@@ -1,5 +1,5 @@
 import { LikeTwoTone, SendOutlined, SmileOutlined } from '@ant-design/icons';
-import { Input, Mentions } from 'antd';
+import { Mentions } from 'antd';
 import messageApi from 'api/messageApi';
 import NavigationChatBox from 'features/Chat/components/NavigationChatBox';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
@@ -8,6 +8,7 @@ import TextEditor from 'features/Chat/components/TextEditor';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import MENTION_STYLE from './MentionStyle';
 import './style.scss';
 
 
@@ -45,14 +46,16 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
         (state) => state.chat
     );
 
+    const getTypeConversation = conversations.find(ele => ele._id === currentConversation).type;
+
     const [isShowLike, setShowLike] = useState(true);
-    const { TextArea } = Input;
+    // const { TextArea } = Input;
     const [valueText, setValueText] = useState('');
     const [isHightLight, setHightLight] = useState(false);
     const { user } = useSelector((state) => state.global);
     const [detailConver, setDetailConver] = useState({});
     const { Option } = Mentions;
-    const checkGroup = conversations.find(ele => ele._id === currentConversation).type;
+    const checkGroup = conversations.find(ele => ele._id === currentConversation);
     const [mentionList, setMentionsList] = useState([]);
     const [mentionSelect, setMentionSelect] = useState([]);
     const preMention = useRef();
@@ -93,7 +96,9 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
             const checkExist = checkIsExistInSelect(userMention);
 
             if (!checkExist) {
-                tempValueText = `@${userMention.name} ${tempValueText}`;
+                if (getTypeConversation) {
+                    tempValueText = `@${userMention.name} ${tempValueText}`;
+                }
                 setValueText(tempValueText);
                 setMentionSelect([...tempMensionSelect, userMention]);
                 tempMensionList = tempMensionList.filter(ele => ele._id !== userMention._id);
@@ -103,11 +108,6 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
 
         }
     }, [userMention])
-
-
-
-
-
 
 
     useEffect(() => {
@@ -345,6 +345,8 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                             onSelect={handleSelectMention}
                             split=" "
 
+
+
                         >
                             {checkGroup && (
                                 mentionList.map((ele, index) => {
@@ -355,7 +357,10 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                                                 key={index}
                                                 object={ele}
                                             >
-                                                <div className='mention-option'>
+                                                <div
+                                                    className='mention-option_wrapper'
+                                                    style={MENTION_STYLE.MENTION_ITEM}
+                                                >
                                                     <div className='icon-user-item'>
                                                         <PersonalIcon
                                                             demention={24}
@@ -364,7 +369,10 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                                                         />
                                                     </div>
 
-                                                    <div className='name-user-item'>
+                                                    <div
+                                                        style={MENTION_STYLE.NAME_ITEM}
+                                                        className='name-user-item'
+                                                    >
                                                         {ele.name}
                                                     </div>
                                                 </div>

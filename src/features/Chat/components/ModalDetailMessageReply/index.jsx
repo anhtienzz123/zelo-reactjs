@@ -66,13 +66,13 @@ function ModalDetailMessageReply({ visible, onCancel, data }) {
                 <div className="reply-info">
 
                     <PersonalIcon
-                        avatar={user.avatar}
-                        name={user.name}
+                        avatar={user?.avatar}
+                        name={user?.name}
                     />
 
                     <div className="time-user">
                         <div className="reply-name">
-                            Tên: <span>{user.name}</span>
+                            Tên: <span>{user?.name}</span>
                         </div>
 
                         <div className="reply-time">

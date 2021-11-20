@@ -615,6 +615,10 @@ const chatSlice = createSlice({
                 state.messages[index] = voteMessage;
             }
         },
+        updateFriendChat: (state, action) => {
+            const id = action.payload;
+            state.friends = state.friends.filter((ele) => ele._id !== id);
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -815,6 +819,7 @@ export const {
     removeChannel,
     setTotalChannelNotify,
     updateVoteMessage,
+    updateFriendChat,
 } = actions;
 
 export default reducer;
