@@ -134,10 +134,12 @@ function InfoContainer({ socket, onViewChannel }) {
                         </>
                     );
                 } else if (isFind.view === 2) {
-                    return (<InfoMediaSearch
-                        onBack={handleOnBack}
-                        tabpane={isFind.tabpane}
-                    />);
+                    return (
+                        <InfoMediaSearch
+                            onBack={handleOnBack}
+                            tabpane={isFind.tabpane}
+                        />
+                    );
                 } else {
                     return (
                         <InfoFriendSearch

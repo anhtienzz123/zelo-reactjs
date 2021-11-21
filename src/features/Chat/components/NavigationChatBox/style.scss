@@ -22,7 +22,13 @@
         background-color: $light-grey;
         color: inherit !important;
     }
+
     // .item-chat-box ~ .item-chat-box {
     //     margin-right: 1rem;
     // }
+}
+
+.item-menu-vote {
+    font-size: 1.3rem;
+    font-weight: 500;
 }

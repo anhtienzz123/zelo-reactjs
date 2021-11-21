@@ -14,13 +14,17 @@ BodyChatContainer.propTypes = {
     onSCrollDown: PropTypes.string,
     onBackToBottom: PropTypes.func,
     onLoading: PropTypes.func,
+    onReply: PropTypes.func,
+    onMention: PropTypes.func,
 };
 
 BodyChatContainer.defaultProps = {
     scrollId: '',
     onSCrollDown: '',
     onBackToBottom: null,
-    onLoading: null
+    onLoading: null,
+    onReply: null,
+    onMention: null
 
 };
 
@@ -32,6 +36,8 @@ function BodyChatContainer({
     onBackToBottom,
     onResetScrollButton,
     turnOnScrollButoon,
+    onReply,
+    onMention
 }) {
     const {
         messages,
@@ -150,6 +156,8 @@ function BodyChatContainer({
                         isMyMessage={isMyMessage}
                         conditionTime={true}
                         onOpenModalShare={handleOpenModalShare}
+                        onReply={onReply}
+                        onMention={onMention}
 
                     />
                 );
@@ -221,6 +229,8 @@ function BodyChatContainer({
                             isMyMessage={isMyMessage}
                             viewUsers={viewUsers}
                             onOpenModalShare={handleOpenModalShare}
+                            onReply={onReply}
+                            onMention={onMention}
                         />
                     </div>
                 );
@@ -233,6 +243,8 @@ function BodyChatContainer({
                         isSameUser={isSameUser}
                         viewUsers={viewUsers}
                         onOpenModalShare={handleOpenModalShare}
+                        onReply={onReply}
+                        onMention={onMention}
                     />
                 );
         }

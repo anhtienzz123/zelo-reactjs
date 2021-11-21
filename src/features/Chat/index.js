@@ -41,6 +41,7 @@ import {
     updateNameOfConver,
     updateTimeForConver,
     updateAvavarConver,
+    updateVoteMessage,
 } from './slice/chatSlice';
 import './style.scss';
 
@@ -84,6 +85,8 @@ function Chat({ socket, idNewMessage }) {
     const refCurrentConversation = useRef();
     const refConversations = useRef();
     const refCurrentChannel = useRef();
+    const [replyMessage, setReplyMessage] = useState({});
+    const [userMention, setUserMention] = useState({});
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;
@@ -99,6 +102,8 @@ function Chat({ socket, idNewMessage }) {
 
     useEffect(() => {
         setUsersTyping([]);
+        setReplyMessage(null);
+        setUserMention({});
     }, [currentConversation]);
 
     useEffect(() => {
@@ -356,6 +361,17 @@ function Chat({ socket, idNewMessage }) {
                     }
                 }
             );
+
+            socket.on('update-vote-message', (conversationId, voteMessage) => {
+                if (refCurrentConversation.current === conversationId) {
+                    console.log('voteMessage', voteMessage);
+                    dispatch(
+                        updateVoteMessage({
+                            voteMessage,
+                        })
+                    );
+                }
+            });
         }
         dispatch(setJoinChatLayout(true));
     }, []);
@@ -452,6 +468,24 @@ function Chat({ socket, idNewMessage }) {
         setTabActiveNews(key);
     };
 
+    const handleOnReply = (mes) => {
+        setReplyMessage(mes);
+    };
+
+    const handleCloseReply = () => {
+        setReplyMessage({});
+    };
+
+    const handleOnMention = (userMent) => {
+        if (user._id !== userMent._id) {
+            setUserMention(userMent);
+        }
+    };
+
+    const handleOnRemoveMention = () => {
+        setUserMention({});
+    };
+
     // Xử lý modal mode
 
     return (
@@ -502,6 +536,8 @@ function Chat({ socket, idNewMessage }) {
                                                     hanldeResetScrollButton
                                                 }
                                                 turnOnScrollButoon={isScroll}
+                                                onReply={handleOnReply}
+                                                onMention={handleOnMention}
                                             />
 
                                             {pinMessages.length > 1 &&
@@ -643,6 +679,12 @@ function Chat({ socket, idNewMessage }) {
                                                     handleScrollWhenSent
                                                 }
                                                 socket={socket}
+                                                replyMessage={replyMessage}
+                                                onCloseReply={handleCloseReply}
+                                                userMention={userMention}
+                                                onRemoveMention={
+                                                    handleOnRemoveMention
+                                                }
                                             />
                                         </div>
                                     </div>

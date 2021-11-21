@@ -22,10 +22,12 @@ import {
     fetchListMyRequestFriend,
     fetchListRequestFriend,
     fetchPhoneBook,
+    fetchSuggestFriend,
 } from './friendSlice';
 import FRIEND_STYLE from './friendStyle';
 import './style.scss';
 import ListContact from './components/ListContact';
+import SuggestList from './components/SuggestList';
 
 Friend.propTypes = {
     socket: PropTypes.object,
@@ -43,6 +45,7 @@ function Friend({ socket }) {
         friends,
         phoneBook,
         isLoading,
+        suggestFriends,
     } = useSelector((state) => state.friend);
     const { user } = useSelector((state) => state.global);
 
@@ -79,6 +82,7 @@ function Friend({ socket }) {
         );
         dispatch(fetchListGroup({ name: '', type: 2 }));
         dispatch(fetchPhoneBook());
+        dispatch(fetchSuggestFriend());
     }, []);
 
     const handleMenuLeftSelect = ({ _, key }) => {
@@ -288,6 +292,14 @@ function Friend({ socket }) {
                                                 <ListMyFriendRequest
                                                     data={myRequestFriend}
                                                 />
+
+                                                <div className="main-friend_body_title-list">
+                                                    Gợi ý kết bạn(
+                                                    {suggestFriends.length})
+                                                    <SuggestList
+                                                        data={suggestFriends}
+                                                    />
+                                                </div>
                                             </div>
                                         ) : (
                                             <div>

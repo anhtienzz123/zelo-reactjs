@@ -28,16 +28,12 @@ UserCard.propTypes = {
     user: PropTypes.object.isRequired,
     isVisible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
-    onAddFriend: PropTypes.func,
-    onDeleteFriend: PropTypes.func,
 
 };
 
 UserCard.defaultProps = {
     title: 'Thông tin',
     onCancel: null,
-    onAddFriend: null,
-    onDeleteFriend: null,
 };
 
 
@@ -268,15 +264,6 @@ function UserCard(props) {
                     </div>
 
                     <div className="user-card-infomation">
-                        <div className="user-card-infomation__group user-card-infomation--flex">
-                            <div className="user-card-infomation__label">
-                                Nhóm chung
-                            </div>
-
-                            <div className="user-card-infomation__text">
-                                {`${numberCommonGroup} nhóm`}
-                            </div>
-                        </div>
 
                         <div className="user-card-infomation__gender user-card-infomation--flex">
                             <div className="user-card-infomation__label">
@@ -299,6 +286,17 @@ function UserCard(props) {
                                 {dateUtils.transferDateString(user.dateOfBirth?.day, user.dateOfBirth?.month, user.dateOfBirth?.year)}
                             </div>
                         </div>
+
+                        <div className="user-card-infomation__group user-card-infomation--flex">
+                            <div className="user-card-infomation__label">
+                                Nhóm chung
+                            </div>
+
+                            <div className="user-card-infomation__text">
+                                {`${numberCommonGroup} nhóm`}
+                            </div>
+                        </div>
+
 
                         <div className="user-card-infomation__birthday user-card-infomation--flex">
                             <div className="user-card-infomation__label">

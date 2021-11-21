@@ -37,6 +37,14 @@ const friendApi = {
     fetchMyRequestFriend: () => {
         return axiosClient.get(`${API_URL}/invites/me`);
     },
+    fetchSuggestFriend: (page = 0, size = 12) => {
+        return axiosClient.get(`${API_URL}/suggest`, {
+            params: {
+                page,
+                size,
+            },
+        });
+    },
 };
 
 export default friendApi;
