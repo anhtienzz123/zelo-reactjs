@@ -75,7 +75,6 @@ function InfoContainer({ socket, onViewChannel }) {
                                     <div className='info_name-and-thumbnail-wrapper'>
                                         <InfoNameAndThumbnail
                                             conversation={conversations.find(ele => ele._id === currentConversation)}
-
                                         />
                                     </div>
 

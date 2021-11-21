@@ -190,7 +190,7 @@ function ModalShareMessage({ visible, onCancel, idMessage }) {
                                 // onChange={handleCheckBoxChange}
                                 value={checkList}
                             >
-                                <Row gutter={[0, 12]}>
+                                <Row gutter={[0, 0]}>
 
                                     {conversations.map((element, index) => (
                                         <Col span={24} key={index}>
@@ -207,15 +207,16 @@ function ModalShareMessage({ visible, onCancel, idMessage }) {
                                                             type={element.type}
                                                             name={element.name}
                                                             demension={22}
-                                                            sizeAvatar={36}
+                                                            sizeAvatar={40}
                                                             frameSize={36}
-
+                                                            avatarColor={element.avatarColor}
                                                         />
                                                     ) : (
                                                         <PersonalIcon
                                                             demention={36}
                                                             avatar={element.avatar}
                                                             name={element.name}
+                                                            color={element.avatarColor}
 
                                                         />
                                                     )}

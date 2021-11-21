@@ -29,6 +29,7 @@ HeaderOptional.propTypes = {
     typeConver: PropTypes.bool.isRequired,
     isLogin: PropTypes.bool,
     lastLogin: PropTypes.object,
+    avatarColor: PropTypes.string,
 };
 
 HeaderOptional.defaultProps = {
@@ -36,11 +37,12 @@ HeaderOptional.defaultProps = {
     name: '',
     isLogin: false,
     lastLogin: null,
+    avatarColor: ''
 
 };
 
 function HeaderOptional(props) {
-    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin } = props;
+    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin, avatarColor } = props;
     const type = typeof avatar;
     const { currentConversation, currentChannel, channels } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
@@ -109,13 +111,16 @@ function HeaderOptional(props) {
             <div className='header_wrapper'>
                 <div className='header_leftside'>
                     <div className='icon_user'>
-                        {<ConversationAvatar
-                            avatar={avatar}
-                            totalMembers={totalMembers}
-                            type={typeConver}
-                            name={name}
-                            isActived={isLogin}
-                        />}
+                        {
+                            <ConversationAvatar
+                                avatar={avatar}
+                                totalMembers={totalMembers}
+                                type={typeConver}
+                                name={name}
+                                isActived={isLogin}
+                                avatarColor={avatarColor}
+                            />
+                        }
                     </div>
 
                     <div className='info_user'>

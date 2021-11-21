@@ -235,6 +235,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
                                                         demention={36}
                                                         avatar={element.avatar}
                                                         name={element.name}
+                                                        color={element.avatarColor}
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

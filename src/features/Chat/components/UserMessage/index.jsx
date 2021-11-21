@@ -60,7 +60,7 @@ function UserMessage({
     onMention
 }) {
     const { _id, content, user, createdAt, type, isDeleted, reacts, tagUsers, replyMessage } = message;
-    const { name, avatar } = user;
+    const { name, avatar, avatarColor } = user;
     const { messages, currentConversation, conversations, pinMessages, currentChannel } =
         useSelector((state) => state.chat);
     const global = useSelector((state) => state.global);
@@ -249,6 +249,7 @@ function UserMessage({
                                     demention={40}
                                     avatar={avatar}
                                     name={user.name}
+                                    color={avatarColor}
                                 />
                             </div>
                             <div className="list-conversation">

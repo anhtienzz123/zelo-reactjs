@@ -12,7 +12,7 @@ ConversationSingle.propTypes = {
 };
 
 function ConversationSingle({ conversation, onClick }) {
-    const { _id, name, avatar, numberUnread, lastMessage, totalMembers } =
+    const { _id, name, avatar, numberUnread, lastMessage, totalMembers, avatarColor } =
         conversation;
     const { type, createdAt } = lastMessage;
 
@@ -45,6 +45,7 @@ function ConversationSingle({ conversation, onClick }) {
                         avatar={avatar}
                         type={conversation.type}
                         name={name}
+                        avatarColor={avatarColor}
 
                     />
                 </div>

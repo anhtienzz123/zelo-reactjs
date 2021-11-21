@@ -130,7 +130,7 @@ function NavbarContainer(props) {
                                         common={false}
                                         avatar={user.avatar}
                                         name={user.name}
-                                        color="#eb822c"
+                                        color={user.avatarColor}
                                     />
                                 </div>
                             </Button>
@@ -139,9 +139,8 @@ function NavbarContainer(props) {
 
                     <Link className="link-icon" to="/chat">
                         <li
-                            className={`sidebar_nav_item  ${
-                                tabActive === 1 ? 'active' : ''
-                            }`}
+                            className={`sidebar_nav_item  ${tabActive === 1 ? 'active' : ''
+                                }`}
                             onClick={() => handleSetTabActive(1)}
                         >
                             <div className="sidebar_nav_item--icon">
@@ -156,9 +155,8 @@ function NavbarContainer(props) {
 
                     <Link className="link-icon" to="/chat/friends">
                         <li
-                            className={`sidebar_nav_item  ${
-                                tabActive === 2 ? 'active' : ''
-                            }`}
+                            className={`sidebar_nav_item  ${tabActive === 2 ? 'active' : ''
+                                }`}
                             onClick={() => handleSetTabActive(2)}
                         >
                             <div className="sidebar_nav_item--icon">

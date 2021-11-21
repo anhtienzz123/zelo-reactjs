@@ -87,6 +87,13 @@ function Chat({ socket, idNewMessage }) {
     const refCurrentChannel = useRef();
     const [replyMessage, setReplyMessage] = useState({});
     const [userMention, setUserMention] = useState({});
+    const [conversationFil, setConversationFil] = useState([conversations]);
+
+    useEffect(() => {
+        if (conversations.length > 0) {
+            setConversationFil(conversations);
+        }
+    }, []);
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;

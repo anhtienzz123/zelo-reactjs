@@ -213,7 +213,7 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
                                                         demention={36}
                                                         avatar={element.avatar}
                                                         name={element.name}
-
+                                                        color={element.avatarColor}
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

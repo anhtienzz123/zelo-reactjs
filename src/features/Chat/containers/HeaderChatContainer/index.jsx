@@ -34,6 +34,7 @@ function HeaderChatContainer() {
                 typeConver={detailConver.type}
                 isLogin={detailConver?.isOnline}
                 lastLogin={detailConver?.lastLogin}
+                avatarColor={detailConver?.avatarColor}
             />
         </div>
     );
