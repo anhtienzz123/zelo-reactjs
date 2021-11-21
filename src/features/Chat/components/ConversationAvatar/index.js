@@ -40,18 +40,36 @@ function ConversationAvatar({
     const renderAvatar = () => {
         let tempAvatar = [];
         for (let index = 0; index < totalMembers; index++) {
-            tempAvatar.push(
-                <Avatar
-                    key={index}
-                    style={
-                        totalMembers === 3 && index === 2
-                            ? COVERSATION_STYLE.styleGroup3(demension)
-                            : {}
-                    }
-                    size={demension}
-                    src={avatar[index] ? avatar[index] : DEFAULT_AVATAR}
-                />
-            );
+            if (avatar[index].avatar) {
+                tempAvatar.push(
+                    <Avatar
+                        key={index}
+                        style={
+                            totalMembers === 3 && index === 2
+                                ? COVERSATION_STYLE.styleGroup3(demension)
+                                : {}
+                        }
+                        size={demension}
+                        src={avatar[index].avatar}
+                    />
+                );
+            } else {
+                tempAvatar.push(
+                    <Avatar
+                        key={index}
+                        style={
+                            (totalMembers === 3 && index === 2
+                                ? COVERSATION_STYLE.styleGroup3(demension)
+                                : {},
+                            { backgroundColor: avatar[index].avatarColor })
+                        }
+                        size={demension}
+                    >
+                        a
+                        {/*   { backgroundColor: avatar[index].avatarColor } */}
+                    </Avatar>
+                );
+            }
         }
         return tempAvatar;
     };

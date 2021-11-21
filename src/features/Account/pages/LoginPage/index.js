@@ -61,7 +61,7 @@ function LoginPage(props) {
 
     useEffect(() => {
         axiosClient
-            .get('/KEY_GOOGLE_CAPTCHA')
+            .get('/common/google-captcha')
             .then((res) => setKeyGoogleCaptcha(res.KEY_GOOGLE_CAPTCHA));
     }, []);
     return (
