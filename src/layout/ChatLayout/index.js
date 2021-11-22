@@ -6,6 +6,7 @@ import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import {
     addMessage,
     addMessageInChannel,
+    deletedMember,
     fetchAllSticker,
     fetchConversationById,
     fetchListClassify,
@@ -30,7 +31,7 @@ import {
     updateRequestFriends,
 } from 'features/Friend/friendSlice';
 import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { init, socket } from 'utils/socketClient';
@@ -43,6 +44,8 @@ function ChatLayout(props) {
     const { isJoinChatLayout, user } = useSelector((state) => state.global);
     const { amountNotify } = useSelector((state) => state.friend);
     const [idNewMessage, setIdNewMessage] = useState('');
+    const [codeRevoke, setCodeRevoke] = useState('');
+    const codeRevokeRef = useRef();
 
     useEffect(() => {
         return () => {
@@ -120,6 +123,13 @@ function ChatLayout(props) {
                 // console.log('chạy');
                 // dispatch(setNumberUnreadForNewFriend(conversationId))
             }
+            if (type === 'NOTIFY' && content === 'Đã xóa ra khỏi nhóm') {
+                dispatch(
+                    deletedMember({
+                        conversationId,
+                    })
+                );
+            }
 
             if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
                 dispatch(
@@ -194,16 +204,30 @@ function ChatLayout(props) {
             dispatch(updateFriend(_id));
             dispatch(updateFriendChat(_id));
         });
+        // revokeToken
+
+        socket.on('revoke-token', ({ key }) => {
+            if (codeRevokeRef.current !== key) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('refreshToken');
+                window.location.reload();
+            }
+        });
 
         // dispatch(setJoinFriendLayout(true))
     }, []);
+
+    const handleSetCodeRevoke = (code) => {
+        setCodeRevoke(code);
+        codeRevokeRef.current = code;
+    };
 
     return (
         <div>
             {/* <button onClick={leaveApp} >test scoket</button> */}
             <Row gutter={[0, 0]}>
                 <Col span={1}>
-                    <NavbarContainer />
+                    <NavbarContainer onSaveCodeRevoke={handleSetCodeRevoke} />
                 </Col>
                 <Col span={23}>
                     <Switch>

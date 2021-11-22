@@ -9,6 +9,8 @@ import PersonalIcon from '../PersonalIcon';
 import { Menu, Dropdown, Modal, message } from 'antd';
 import conversationApi from 'api/conversationApi';
 import './style.scss';
+import { useDispatch } from 'react-redux';
+import { removeMemberWhenDeleted } from '../../slice/chatSlice'
 InfoFriendSearch.propTypes = {
     onBack: PropTypes.func,
     members: PropTypes.array,
@@ -24,6 +26,7 @@ function InfoFriendSearch(props) {
     const { user } = useSelector(state => state.global);
     const { currentConversation } = useSelector(state => state.chat);
     const { confirm } = Modal;
+    const dispatch = useDispatch();
 
 
     const handleOnBack = (value) => {
@@ -58,6 +61,7 @@ function InfoFriendSearch(props) {
         try {
             console.log(idMember);
             await conversationApi.deleteMember(currentConversation, idMember);
+            dispatch(removeMemberWhenDeleted({ idMember }))
             message.success('Xóa thành công');
         } catch (error) {
             message.error('Xóa thất bại');
@@ -126,6 +130,7 @@ function InfoFriendSearch(props) {
                                                         avatar={ele.avatar}
                                                         demention={40}
                                                         name={ele.name}
+                                                        color={ele.avatarColor}
 
                                                     />
                                                 </div>

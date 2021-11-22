@@ -16,7 +16,7 @@ ul {
         align-items: center;
 
         transition: 0.1s;
-        padding: 0.4rem 0.4rem;
+        padding: 0.4rem 0rem;
         &-text {
             padding-left: 0.8rem;
             padding-right: 3rem;
@@ -33,6 +33,7 @@ ul {
     background: $blue-zelo;
     display: flex;
     flex-direction: column;
+    // width: 64px;
 
     .sidebar-main {
         display: flex;
@@ -52,13 +53,16 @@ ul {
             }
 
             &_item {
-                width: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
 
                 transition: 0.2s;
                 cursor: pointer;
+                width: 100%;
+
+                // width: 64px;
+                // height: 60px;
 
                 &--icon {
                     padding: 1.4rem 0;

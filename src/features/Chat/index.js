@@ -518,7 +518,9 @@ function Chat({ socket, idNewMessage }) {
                             </div>
 
                             <div className="main-conversation_list-conversation">
-                                <ConversationContainer />
+                                <ConversationContainer
+                                    conversations={conversationFil}
+                                />
                             </div>
                         </div>
                     </Col>
