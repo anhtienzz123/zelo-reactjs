@@ -68,6 +68,7 @@ function FriendItem({ data, onClickMenu }) {
                             isActive={data.isOnline && data.isOnline}
                             avatar={data.avatar}
                             name={data.name}
+                            color={data.avatarColor}
                         />
                     </div>
 

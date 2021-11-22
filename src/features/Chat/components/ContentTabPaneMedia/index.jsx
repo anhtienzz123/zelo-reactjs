@@ -6,14 +6,16 @@ import { Image } from 'antd';
 import ModalVideoCustom from 'components/ModalVideoCustom';
 ContentTabPaneMedia.propTypes = {
     items: PropTypes.array,
+    type: PropTypes.string,
 };
 
 ContentTabPaneMedia.defaultProps = {
     items: [],
+    type: 'image'
 };
 
 function ContentTabPaneMedia(props) {
-    const { items } = props;
+    const { items, type } = props;
     const [visible, setVisible] = useState(false);
     const [currentVideo, setCurrentVideo] = useState('');
 
@@ -38,7 +40,7 @@ function ContentTabPaneMedia(props) {
                             <ImageItem
                                 key={index}
                                 url={itemEle.content}
-                                type='video'
+                                type={type}
                                 onVisibleVideoModal={handleVisibleModal}
                             />
                         ))}

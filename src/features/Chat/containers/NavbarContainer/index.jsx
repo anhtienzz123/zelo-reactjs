@@ -1,27 +1,33 @@
 import {
-    BellOutlined,
-    CheckSquareOutlined,
     ContactsOutlined,
+    LockOutlined,
     LogoutOutlined,
     MessageOutlined,
-    SettingOutlined,
-    StarOutlined,
-    UserOutlined,
+    SettingOutlined, UserOutlined
 } from '@ant-design/icons';
-import { Badge, Button, Modal, Popover } from 'antd';
+import { Badge, Button, Popover } from 'antd';
 import { setTabActive } from 'app/globalSlice';
+import ModalChangePassword from 'components/ModalChangePassword';
 import ModalUpdateProfile from "features/Chat/components/ModalUpdateProfile";
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { setToTalUnread } from '../../slice/chatSlice';
+import NavbarStyle from './NavbarStyle';
+import PropTypes from 'prop-types';
 import './style.scss';
 
-NavbarContainer.propTypes = {};
+NavbarContainer.propTypes = {
+    onSaveCodeRevoke: PropTypes.func,
+};
 
-function NavbarContainer(props) {
-    const [visible, setVisible] = useState(false);
+
+NavbarContainer.defaultProps = {
+    onSaveCodeRevoke: null,
+};
+function NavbarContainer({ onSaveCodeRevoke }) {
+    const [visibleModalChangePassword, setvisibleModalChangePassword] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { user, tabActive } = useSelector((state) => state.global);
 
@@ -37,21 +43,6 @@ function NavbarContainer(props) {
         dispatch(setToTalUnread());
     }, [conversations]);
 
-    const showModal = () => {
-        setVisible(true);
-    };
-
-    const handleOk = () => {
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setVisible(false);
-            setConfirmLoading(false);
-        }, 2000);
-    };
-
-    const handleCancel = () => {
-        setVisible(false);
-    };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -103,6 +94,42 @@ function NavbarContainer(props) {
         </div>
     );
 
+    const handleChangePassword = () => {
+        setvisibleModalChangePassword(true);
+    }
+
+    const handleLogoutAllDevice = () => {
+
+    }
+
+
+    const setting = (
+        <div className="pop_up-personal">
+            <div className="pop_up-personal--item" onClick={handleChangePassword}>
+                <div className="pop_up-personal--item-icon">
+                    <LockOutlined />
+                </div>
+
+                <div className="pop_up-personal--item-text">Đổi mật khẩu</div>
+            </div>
+
+            <div className="pop_up-personal--item">
+                <div className="pop_up-personal--item-icon">
+                    <LogoutOutlined />
+                </div>
+
+                <div
+                    className="pop_up-personal--item-text"
+                    onClick={handleLogoutAllDevice}
+                >
+                    Đăng xuất ra khỏi các thiết bị khác
+                </div>
+            </div>
+        </div>
+    );
+
+
+
     return (
         <div id="sidebar_wrapper">
             <div className="sidebar-main">
@@ -114,15 +141,7 @@ function NavbarContainer(props) {
                             trigger="focus"
                         >
                             <Button
-                                style={{
-                                    height: '48px',
-                                    width: '48px',
-                                    background: 'none',
-                                    outline: 'none',
-                                    border: 'red',
-                                    padding: '0px',
-                                    borderRadius: '50%',
-                                }}
+                                style={NavbarStyle.BUTTON}
                             >
                                 <div className="user-icon-navbar">
                                     <PersonalIcon
@@ -130,7 +149,7 @@ function NavbarContainer(props) {
                                         common={false}
                                         avatar={user.avatar}
                                         name={user.name}
-                                        color="#eb822c"
+                                        color={user.avatarColor}
                                     />
                                 </div>
                             </Button>
@@ -139,9 +158,8 @@ function NavbarContainer(props) {
 
                     <Link className="link-icon" to="/chat">
                         <li
-                            className={`sidebar_nav_item  ${
-                                tabActive === 1 ? 'active' : ''
-                            }`}
+                            className={`sidebar_nav_item  ${tabActive === 1 ? 'active' : ''
+                                }`}
                             onClick={() => handleSetTabActive(1)}
                         >
                             <div className="sidebar_nav_item--icon">
@@ -156,9 +174,8 @@ function NavbarContainer(props) {
 
                     <Link className="link-icon" to="/chat/friends">
                         <li
-                            className={`sidebar_nav_item  ${
-                                tabActive === 2 ? 'active' : ''
-                            }`}
+                            className={`sidebar_nav_item  ${tabActive === 2 ? 'active' : ''
+                                }`}
                             onClick={() => handleSetTabActive(2)}
                         >
                             <div className="sidebar_nav_item--icon">
@@ -168,50 +185,46 @@ function NavbarContainer(props) {
                             </div>
                         </li>
                     </Link>
-
-                    {/* <li className='sidebar_nav_item'>
-                        <Link to='/notify'>
-                            <div className='sidebar_nav_item--icon'>
-                                <Badge>
-                                    <BellOutlined />
-                                </Badge>
-                            </div>
-                        </Link>
-                    </li>
-
-                    <li className='sidebar_nav_item'>
-                        <Link to='/todo'>
-                            <div className='sidebar_nav_item--icon'>
-                                <CheckSquareOutlined />
-                            </div>
-                        </Link>
-                    </li> */}
                 </ul>
 
                 <ul className="sidebar_nav">
                     <li className="sidebar_nav_item">
                         <div className="sidebar_nav_item--icon">
-                            <Badge count={0}>
-                                <SettingOutlined />
-                            </Badge>
+
+                            <Popover
+                                placement="rightTop"
+                                content={setting}
+                                trigger="focus"
+                            >
+                                <Button
+                                    style={NavbarStyle.BUTTON_SETTING}
+                                >
+
+                                    <SettingOutlined />
+                                </Button>
+                            </Popover>
                         </div>
                     </li>
 
-                    {/* <li className='sidebar_nav_item'>
-                        <div className='sidebar_nav_item--icon'>
-                            <Badge count={0}>
-                                <StarOutlined />
-                            </Badge>
-                        </div>
-                    </li> */}
                 </ul>
             </div>
+
+
             <ModalUpdateProfile
                 isVisible={isModalUpdateProfileVisible}
                 onCancel={handleCancelModalUpdateProfile}
                 onOk={handleOklModalUpdateProfile}
                 loading={confirmLoading}
             />
+
+
+            <ModalChangePassword
+                visible={visibleModalChangePassword}
+                onCancel={() => setvisibleModalChangePassword(false)}
+                onSaveCodeRevoke={onSaveCodeRevoke}
+            />
+
+
         </div>
     );
 }

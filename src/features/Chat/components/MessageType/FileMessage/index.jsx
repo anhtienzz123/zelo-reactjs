@@ -14,7 +14,7 @@ FileMessage.defaultProps = {
     isSeen: false
 
 };
-// {content}
+
 function FileMessage({ content, children, dateAt, isSeen }) {
 
     const handleOnClickDownLoad = () => {
@@ -28,9 +28,6 @@ function FileMessage({ content, children, dateAt, isSeen }) {
     const fileName = fileHelpers.getFileName(content);
     const fileExtension =
         fileHelpers.getFileExtension(fileName);
-
-
-
 
 
     return (

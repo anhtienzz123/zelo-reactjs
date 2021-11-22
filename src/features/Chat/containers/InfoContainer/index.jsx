@@ -75,7 +75,6 @@ function InfoContainer({ socket, onViewChannel }) {
                                     <div className='info_name-and-thumbnail-wrapper'>
                                         <InfoNameAndThumbnail
                                             conversation={conversations.find(ele => ele._id === currentConversation)}
-
                                         />
                                     </div>
 
@@ -134,10 +133,12 @@ function InfoContainer({ socket, onViewChannel }) {
                         </>
                     );
                 } else if (isFind.view === 2) {
-                    return (<InfoMediaSearch
-                        onBack={handleOnBack}
-                        tabpane={isFind.tabpane}
-                    />);
+                    return (
+                        <InfoMediaSearch
+                            onBack={handleOnBack}
+                            tabpane={isFind.tabpane}
+                        />
+                    );
                 } else {
                     return (
                         <InfoFriendSearch

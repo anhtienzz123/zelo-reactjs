@@ -31,7 +31,9 @@ const voteApi = {
 
     deleteSelect: (messageId, options) => {
         return axiosClient.delete(`${API_URL}/${messageId}/choices`, {
-            options,
+            data: {
+                options,
+            },
         });
     },
 };

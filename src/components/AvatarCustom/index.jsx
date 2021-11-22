@@ -12,13 +12,15 @@ AvatarCustom.propTypes = {
         PropTypes.number,
         PropTypes.string,
     ]),
+    color: PropTypes.string,
 };
 
 
 AvatarCustom.defaultProps = {
     src: "",
     name: "",
-    style: {}
+    style: {},
+    color: "#408ec6"
 };
 
 
@@ -26,7 +28,7 @@ AvatarCustom.defaultProps = {
 
 function AvatarCustom(props) {
 
-    const { src, name, style, ...rest } = props;
+    const { src, name, style, color, ...rest } = props;
 
 
     return (
@@ -43,7 +45,7 @@ function AvatarCustom(props) {
 
                     >
                         <Avatar
-                            style={{ backgroundColor: '#408ec6', ...style }}
+                            style={{ backgroundColor: color, ...style }}
                             {...rest}
                         >
                             {getSummaryName(name)}

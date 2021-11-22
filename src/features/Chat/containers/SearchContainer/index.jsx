@@ -48,8 +48,11 @@ function SearchContainer(props) {
 
 
     const handleOnChange = (e) => {
+        console.log(e.target.value);
         setValueSearch(e.target.value);
     };
+
+    console.log('value serarch', valueSearch);
 
 
     // --- HANDLE CREATE GROUP
@@ -196,11 +199,6 @@ function SearchContainer(props) {
                 isVisible={visibleUserCard}
                 onCancel={handleCancelModalUserCard}
             />
-
-
-
-
-
 
         </div>
     );

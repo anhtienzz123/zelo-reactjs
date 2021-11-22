@@ -5,6 +5,8 @@ import COVERSATION_STYLE from './ConversationAvatarStyle';
 import './style.scss';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
 import AvatarCustom from 'components/AvatarCustom';
+import getSummaryName from 'utils/nameHelper';
+import { AntDesignOutlined, UserOutlined } from '@ant-design/icons';
 ConversationAvatar.propTypes = {
     demension: PropTypes.number,
     isGroupCard: PropTypes.bool,
@@ -15,6 +17,7 @@ ConversationAvatar.propTypes = {
     avatar: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     sizeAvatar: PropTypes.number,
     frameSize: PropTypes.number,
+    avatarColor: PropTypes.string,
 };
 
 ConversationAvatar.defaultProps = {
@@ -24,6 +27,7 @@ ConversationAvatar.defaultProps = {
     avatar: '',
     sizeAvatar: 48,
     frameSize: 48,
+    avatarColor: '',
 };
 
 function ConversationAvatar({
@@ -36,6 +40,7 @@ function ConversationAvatar({
     isActived,
     sizeAvatar,
     frameSize,
+    avatarColor,
 }) {
     const renderAvatar = () => {
         let tempAvatar = [];
@@ -58,16 +63,19 @@ function ConversationAvatar({
                     <Avatar
                         key={index}
                         style={
-                            (totalMembers === 3 && index === 2
-                                ? COVERSATION_STYLE.styleGroup3(demension)
-                                : {},
-                            { backgroundColor: avatar[index].avatarColor })
+                            totalMembers === 3 && index === 2
+                                ? {
+                                      ...COVERSATION_STYLE.styleGroup3(
+                                          demension
+                                      ),
+                                      backgroundColor:
+                                          avatar[index].avatarColor,
+                                  }
+                                : { backgroundColor: avatar[index].avatarColor }
                         }
                         size={demension}
-                    >
-                        a
-                        {/*   { backgroundColor: avatar[index].avatarColor } */}
-                    </Avatar>
+                        icon={<UserOutlined />}
+                    />
                 );
             }
         }
@@ -78,19 +86,42 @@ function ConversationAvatar({
         let tempAvatar = [];
         for (let index = 0; index < 4; index++) {
             if (index < 3) {
-                tempAvatar.push(
-                    <div className="per-user">
-                        <Avatar
-                            size={demension}
-                            src={avatar[index] ? avatar[index] : DEFAULT_AVATAR}
-                            style={
-                                index == 2
-                                    ? { marginTop: (demension / 6) * -1 }
-                                    : {}
-                            }
-                        />
-                    </div>
-                );
+                if (avatar[index].avatar) {
+                    tempAvatar.push(
+                        <div className="per-user">
+                            <Avatar
+                                size={demension}
+                                src={avatar[index].avatar}
+                                style={
+                                    index === 2
+                                        ? { marginTop: (demension / 6) * -1 }
+                                        : {}
+                                }
+                            />
+                        </div>
+                    );
+                } else {
+                    tempAvatar.push(
+                        <div className="per-user">
+                            <Avatar
+                                size={demension}
+                                style={
+                                    index === 2
+                                        ? {
+                                              marginTop: (demension / 6) * -1,
+                                              backgroundColor:
+                                                  avatar[index].avatarColor,
+                                          }
+                                        : {
+                                              backgroundColor:
+                                                  avatar[index].avatarColor,
+                                          }
+                                }
+                                icon={<UserOutlined />}
+                            />
+                        </div>
+                    );
+                }
             } else {
                 tempAvatar.push(
                     <div className="per-user">
@@ -114,11 +145,16 @@ function ConversationAvatar({
     };
 
     return (
-        <div id="avatar_conversation">
+        <div className="avatar_conversation">
             {typeof avatar === 'string' ? (
                 // <Avatar size={48} src={avatar ? avatar : DEFAULT_AVATAR} />
                 <Badge dot={isActived} offset={[-5, 40]} color="green">
-                    <AvatarCustom size={sizeAvatar} src={avatar} name={name} />
+                    <AvatarCustom
+                        size={sizeAvatar}
+                        src={avatar}
+                        color={avatarColor}
+                        name={name}
+                    />
                 </Badge>
             ) : (
                 <>
@@ -152,7 +188,7 @@ function ConversationAvatar({
                         <div className="conversation-item_box">
                             <div className="left-side-box">
                                 <div
-                                    lassName="icon-users-group"
+                                    className="icon-users-group"
                                     style={
                                         (isGroupCard
                                             ? COVERSATION_STYLE.friendCardAvatarMixStyle2(

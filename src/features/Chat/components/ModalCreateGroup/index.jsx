@@ -98,9 +98,9 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
         if (!value && isVisible) {
             setInitalFriend(friends);
         } else {
-            const tempFriends = [...initalFriend];
+            // const tempFriends = [...initalFriend];
             const realFriends = [];
-            tempFriends.forEach((ele) => {
+            friends.forEach((ele) => {
                 const index = ele.name.search(value);
                 if (index > -1) {
                     realFriends.push(ele);
@@ -213,7 +213,7 @@ function ModalCreateGroup({ isVisible, onCancel, onOk, loading }) {
                                                         demention={36}
                                                         avatar={element.avatar}
                                                         name={element.name}
-
+                                                        color={element.avatarColor}
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

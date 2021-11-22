@@ -434,7 +434,12 @@ const chatSlice = createSlice({
             if (typeof conversation.avatar === 'object') {
                 const avatar = [
                     ...conversation.avatar,
-                    ...newMembers.map((ele) => ele.avatar),
+                    ...newMembers.map((ele) => {
+                        return {
+                            avatar: ele.avatar,
+                            avatarColor: ele.avatarColor,
+                        };
+                    }),
                 ];
                 const totalMembers =
                     conversation.totalMembers + newMembers.length;
@@ -604,6 +609,37 @@ const chatSlice = createSlice({
                 ...state.conversations[index],
                 avatar: conversationAvatar,
             };
+        },
+        updateVoteMessage: (state, action) => {
+            const { voteMessage } = action.payload;
+            const index = state.messages.findIndex(
+                (ele) => ele._id === voteMessage._id
+            );
+
+            if (index > -1) {
+                state.messages[index] = voteMessage;
+            }
+        },
+        updateFriendChat: (state, action) => {
+            const id = action.payload;
+            state.friends = state.friends.filter((ele) => ele._id !== id);
+        },
+
+        deletedMember: (state, action) => {
+            const { conversationId } = action.payload;
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === conversationId
+            );
+            if (index > -1) {
+                state.conversations[index].totalMembers =
+                    state.conversations[index].totalMembers - 1;
+            }
+        },
+        removeMemberWhenDeleted: (state, action) => {
+            const { idMember } = action.payload;
+            state.memberInConversation = state.memberInConversation.filter(
+                (ele) => ele._id !== idMember
+            );
         },
     },
     extraReducers: {
@@ -804,6 +840,10 @@ export const {
     updateAvavarConver,
     removeChannel,
     setTotalChannelNotify,
+    updateVoteMessage,
+    updateFriendChat,
+    deletedMember,
+    removeMemberWhenDeleted,
 } = actions;
 
 export default reducer;
