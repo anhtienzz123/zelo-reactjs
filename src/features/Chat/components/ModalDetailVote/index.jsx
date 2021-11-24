@@ -9,11 +9,13 @@ ModalDetailVote.propTypes = {
     visible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
     data: PropTypes.array,
+
 };
 
 ModalDetailVote.defaultProps = {
     onCancel: null,
-    data: []
+    data: [],
+    onShowDetail: null
 };
 
 function ModalDetailVote({ visible, onCancel, data }) {
@@ -24,6 +26,8 @@ function ModalDetailVote({ visible, onCancel, data }) {
             onCancel()
         }
     }
+
+
 
     return (
         <Modal
@@ -41,20 +45,39 @@ function ModalDetailVote({ visible, onCancel, data }) {
                                 <div className="detail-vote_list-user">
                                     {ele.userIds.map((ele, index) => {
                                         const user = memberInConversation.find(member => member._id === ele);
-                                        return (
-                                            <div className="detail-vote_user-item" key={index}>
-                                                <div className="detail-vote_avatar">
-                                                    <PersonalIcon
-                                                        name={user?.name}
-                                                        avatar={user?.avatar}
-                                                    />
-                                                </div>
 
-                                                <div className="detail-vote_name">
-                                                    {user?.name}
+                                        if (user) {
+                                            return (
+                                                <div className="detail-vote_user-item" key={index}>
+                                                    <div className="detail-vote_avatar">
+                                                        <PersonalIcon
+                                                            name={user?.name}
+                                                            avatar={user?.avatar}
+                                                        />
+                                                    </div>
+
+                                                    <div className="detail-vote_name">
+                                                        {user?.name}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
+                                            )
+                                        } else {
+                                            return (
+                                                <div className="detail-vote_user-item" key={index}>
+                                                    <div className="detail-vote_avatar">
+                                                        <PersonalIcon
+                                                            noneUser={true}
+                                                        />
+                                                    </div>
+
+                                                    <div className="detail-vote_name leave">
+                                                        Đã rời nhóm
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+
+
                                     })}
                                 </div>
                             </div>

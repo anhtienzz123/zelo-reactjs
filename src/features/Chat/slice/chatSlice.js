@@ -641,6 +641,17 @@ const chatSlice = createSlice({
                 (ele) => ele._id !== idMember
             );
         },
+        updateManagerIds: (state, action) => {
+            console.log('payload', action.payload);
+            const { conversationId, managerId } = action.payload;
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === conversationId
+            );
+            state.conversations[index] = {
+                ...state.conversations[index],
+                managerIds: managerId,
+            };
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -844,6 +855,7 @@ export const {
     updateFriendChat,
     deletedMember,
     removeMemberWhenDeleted,
+    updateManagerIds,
 } = actions;
 
 export default reducer;

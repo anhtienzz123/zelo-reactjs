@@ -116,6 +116,7 @@ function VoteMessage({ data }) {
                 isModalVisible={isVisibleOption}
                 onCancel={() => setIsVisibleOption(false)}
                 data={data}
+                onShowDetail={() => setIsVisibleDetail(true)}
             />
         </div>
     );
