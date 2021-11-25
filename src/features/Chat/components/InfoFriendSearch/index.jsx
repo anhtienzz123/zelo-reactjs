@@ -189,10 +189,10 @@ function InfoFriendSearch(props) {
                         <div className="info_friend-search-title">
                             <strong>{`Danh sách thành viên (${members.length})`}</strong>
                         </div>
-
+                        {/* 
                         <div className="info_friend-searchbar">
                             <Input placeholder="Tìm kiếm thành viên" prefix={<SearchOutlined />} />
-                        </div>
+                        </div> */}
 
                         <div className="info_friend-list">
                             {

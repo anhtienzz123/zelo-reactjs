@@ -1,7 +1,5 @@
 $demension: 80px;
 $demension_icon: 26px;
-#upload-avatar {
-}
 
 .upload-avatar {
     &_image {
@@ -14,6 +12,7 @@ $demension_icon: 26px;
     }
     &_text-select,
     &_image {
+        border: 1px solid #cfff;
         border-radius: 50%;
         display: flex;
         align-items: center;

@@ -43,13 +43,13 @@ function TextEditor(props) {
         ],
     ];
 
-    const handleFocus = (range, source, editor) => {
+    const handleFocus = () => {
         if (onFocus) {
             onFocus();
         }
     };
 
-    const handleOnBlur = (previousRange, source, editor) => {
+    const handleOnBlur = () => {
         if (onBlur) {
             onBlur();
         }
@@ -61,7 +61,6 @@ function TextEditor(props) {
 
     const regEx = new RegExp('^(<p><br></p>)+$');
     const handleOnChange = (content, delta, source, editor) => {
-        console.log('EDITOR CHANGE', content);
 
         if (onSetValue) {
             onSetValue(content);

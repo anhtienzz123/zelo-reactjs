@@ -471,6 +471,12 @@ function Chat({ socket, idNewMessage }) {
         setTabActiveNews(2);
     };
 
+    const handleViewVotes = () => {
+        console.log('runnnnn');
+        setVisibleNews(true);
+        setTabActiveNews(1);
+    };
+
     const handleChangeActiveKey = (key) => {
         setTabActiveNews(key);
     };
@@ -561,11 +567,6 @@ function Chat({ socket, idNewMessage }) {
                                                             isOpen={
                                                                 isOpenDrawer
                                                             }
-                                                            onOpen={() =>
-                                                                setIsOpenDrawer(
-                                                                    true
-                                                                )
-                                                            }
                                                             onClose={() =>
                                                                 setIsOpenDrawer(
                                                                     false
@@ -573,9 +574,6 @@ function Chat({ socket, idNewMessage }) {
                                                             }
                                                             message={
                                                                 pinMessages
-                                                            }
-                                                            onViewNews={
-                                                                handleViewNews
                                                             }
                                                         />
                                                     </div>
@@ -694,6 +692,7 @@ function Chat({ socket, idNewMessage }) {
                                                 onRemoveMention={
                                                     handleOnRemoveMention
                                                 }
+                                                onViewVotes={handleViewVotes}
                                             />
                                         </div>
                                     </div>

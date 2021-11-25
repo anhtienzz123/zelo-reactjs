@@ -25,6 +25,7 @@
 }
 
 .nutshell-pin-container {
+    z-index: 2;
     &_left {
         display: flex;
         flex-direction: row;

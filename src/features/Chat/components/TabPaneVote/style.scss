@@ -1,0 +1,9 @@
+@import "../../../../scss/variables";
+#tabpane-vote {
+    margin: 1rem 1.6rem;
+    .tabpane-vote-item {
+        margin: 2rem 0;
+        border: 1px solid #c6c6c6;
+        border-radius: 0.4rem;
+    }
+}

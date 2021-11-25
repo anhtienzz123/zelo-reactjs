@@ -6,6 +6,7 @@ import friendApi from 'api/friendApi';
 import messageApi from 'api/messageApi';
 import pinMessageApi from 'api/pinMessageApi';
 import stickerApi from 'api/stickerApi';
+import voteApi from 'api/voteApi';
 import dateUtils from 'utils/dateUtils';
 
 const KEY = 'chat';
@@ -217,6 +218,15 @@ export const fetchAllSticker = createAsyncThunk(
     }
 );
 
+export const fetchVotes = createAsyncThunk(
+    `${KEY}/fetchVotes`,
+    async (params, _) => {
+        const { conversationId, page, size } = params;
+        const data = await voteApi.getVotes(conversationId, page, size);
+        return data;
+    }
+);
+
 const chatSlice = createSlice({
     name: KEY,
     initialState: {
@@ -238,6 +248,8 @@ const chatSlice = createSlice({
         channels: [],
         totalChannelNotify: 0,
         stickers: [],
+        votes: [],
+        totalPagesVote: 0,
     },
     reducers: {
         addMessage: (state, action) => {
@@ -652,6 +664,9 @@ const chatSlice = createSlice({
                 managerIds: managerId,
             };
         },
+        updateVote: (state, action) => {
+            state.votes = action.payload;
+        },
     },
     extraReducers: {
         [fetchListConversations.pending]: (state, action) => {
@@ -819,6 +834,11 @@ const chatSlice = createSlice({
         [fetchAllSticker.pending]: (state, action) => {
             state.isLoading = false;
         },
+
+        [fetchVotes.fulfilled]: (state, action) => {
+            state.votes = action.payload.data;
+            state.totalPagesVote = action.payload.totalPages;
+        },
     },
 });
 
@@ -856,6 +876,7 @@ export const {
     deletedMember,
     removeMemberWhenDeleted,
     updateManagerIds,
+    updateVote,
 } = actions;
 
 export default reducer;

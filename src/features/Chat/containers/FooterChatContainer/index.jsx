@@ -19,6 +19,7 @@ FooterChatContainer.propTypes = {
     onCloseReply: PropTypes.func,
     userMention: PropTypes.object,
     onRemoveMention: PropTypes.func,
+    onViewVotes: PropTypes.func,
 };
 
 FooterChatContainer.defaultProps = {
@@ -27,7 +28,8 @@ FooterChatContainer.defaultProps = {
     replyMessage: {},
     onCloseReply: null,
     userMention: {},
-    onRemoveMention: null
+    onRemoveMention: null,
+    onViewVotes: null
 };
 
 const style_EditorText = {
@@ -40,7 +42,7 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention, onRemoveMention }) {
+function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention, onRemoveMention, onViewVotes }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations, currentChannel, memberInConversation } = useSelector(
         (state) => state.chat
@@ -295,6 +297,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                     isFocus={isHightLight}
                     onClickTextFormat={handleClickTextFormat}
                     onScroll={handleOnScroll}
+                    onViewVotes={onViewVotes}
                 />
             </div>
 
