@@ -13,7 +13,9 @@ import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import UserCard from 'components/UserCard'
 import './style.scss';
+import userApi from 'api/userApi';
 InfoContainer.propTypes = {
     socket: PropTypes.object,
     onViewChannel: PropTypes.func,
@@ -29,7 +31,15 @@ function InfoContainer({ socket, onViewChannel }) {
     const [isFind, setFind] = useState({ tapane: 0, view: 0 });
     const { memberInConversation, type, currentConversation, conversations, channels } = useSelector(state => state.chat);
     const { media } = useSelector(state => state.media);
-    const dispatch = useDispatch()
+    const [isVisible, setIsVisible] = useState(false);
+    const [userChose, setUserChose] = useState(null);
+    const dispatch = useDispatch();
+
+    const handleChoseUser = async (value) => {
+        const user = await userApi.fetchUser(value.username);
+        setUserChose(user);
+        setIsVisible(true);
+    }
 
 
 
@@ -144,10 +154,21 @@ function InfoContainer({ socket, onViewChannel }) {
                         <InfoFriendSearch
                             onBack={handleOnBack}
                             members={memberInConversation}
+                            onChoseUser={handleChoseUser}
                         />
                     );
                 }
             })()}
+
+            {userChose && (
+                <UserCard
+                    isVisible={isVisible}
+                    onCancel={() => setIsVisible(false)}
+                    user={userChose}
+                />
+            )}
+
+
         </div>
     );
 }

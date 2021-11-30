@@ -2,6 +2,7 @@ import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { Col, message as messageNotify, notification, Row, Spin } from 'antd';
 import conversationApi from 'api/conversationApi';
 import { setJoinChatLayout } from 'app/globalSlice';
+import FilterContainer from 'components/FilterContainer';
 import ModalJoinGroupFromLink from 'components/ModalJoinGroupFromLink';
 import Slider from 'components/Slider';
 import PropTypes from 'prop-types';
@@ -19,7 +20,9 @@ import HeaderChatContainer from './containers/HeaderChatContainer';
 import InfoContainer from './containers/InfoContainer';
 import SearchContainer from './containers/SearchContainer';
 import {
+    addManagers,
     addMessage,
+    deleteManager,
     fetchConversationById,
     fetchListFriends,
     fetchListMessages,
@@ -35,13 +38,14 @@ import {
     setRedoMessage,
     setTotalChannelNotify,
     setTypeOfConversation,
+    updateAvavarConver,
     updateChannel,
     updateLastViewOfMembers,
     updateNameChannel,
     updateNameOfConver,
     updateTimeForConver,
-    updateAvavarConver,
     updateVoteMessage,
+    updateMemberInconver,
 } from './slice/chatSlice';
 import './style.scss';
 
@@ -87,13 +91,15 @@ function Chat({ socket, idNewMessage }) {
     const refCurrentChannel = useRef();
     const [replyMessage, setReplyMessage] = useState({});
     const [userMention, setUserMention] = useState({});
-    const [conversationFil, setConversationFil] = useState([conversations]);
 
-    useEffect(() => {
-        if (conversations.length > 0) {
-            setConversationFil(conversations);
-        }
-    }, []);
+    // filter search
+    const [visibleFilter, setVisbleFilter] = useState(false);
+    const [valueInput, setValueInput] = useState('');
+    const [singleConverFilter, setSingleConverFilter] = useState([]);
+    const [mutipleConverFilter, setMutipleConverFilter] = useState([]);
+    const [valueClassify, setValueClassify] = useState('0');
+
+    //
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;
@@ -157,10 +163,6 @@ function Chat({ socket, idNewMessage }) {
         };
         openModalJoinFromLink();
     }, []);
-
-    // useEffect(() => {
-    //     console.log('User typing', usersTyping);
-    // }, [usersTyping]);
 
     useEffect(() => {
         dispatch(
@@ -312,6 +314,13 @@ function Chat({ socket, idNewMessage }) {
             socket.on('update-member', async (conversationId) => {
                 if (conversationId === refCurrentConversation.current) {
                     await dispatch(getLastViewOfMembers({ conversationId }));
+                    const newMember =
+                        await conversationApi.getMemberInConversation(
+                            refCurrentConversation.current
+                        );
+                    dispatch(
+                        updateMemberInconver({ conversationId, newMember })
+                    );
                 }
             });
 
@@ -371,13 +380,30 @@ function Chat({ socket, idNewMessage }) {
 
             socket.on('update-vote-message', (conversationId, voteMessage) => {
                 if (refCurrentConversation.current === conversationId) {
-                    console.log('voteMessage', voteMessage);
                     dispatch(
                         updateVoteMessage({
                             voteMessage,
                         })
                     );
                 }
+            });
+
+            socket.on('add-managers', ({ conversationId, managerIds }) => {
+                dispatch(
+                    addManagers({
+                        conversationId,
+                        managerIds,
+                    })
+                );
+            });
+
+            socket.on('delete-managers', ({ conversationId, managerIds }) => {
+                dispatch(
+                    deleteManager({
+                        conversationId,
+                        managerIds,
+                    })
+                );
             });
         }
         dispatch(setJoinChatLayout(true));
@@ -471,6 +497,11 @@ function Chat({ socket, idNewMessage }) {
         setTabActiveNews(2);
     };
 
+    const handleViewVotes = () => {
+        setVisibleNews(true);
+        setTabActiveNews(1);
+    };
+
     const handleChangeActiveKey = (key) => {
         setTabActiveNews(key);
     };
@@ -493,7 +524,37 @@ function Chat({ socket, idNewMessage }) {
         setUserMention({});
     };
 
-    // Xử lý modal mode
+    const handleOnVisibleFilter = (value) => {
+        if (value.trim().length > 0) {
+            setVisbleFilter(true);
+        } else {
+            setVisbleFilter(false);
+        }
+    };
+
+    const handleOnSearchChange = (value) => {
+        setValueInput(value);
+        handleOnVisibleFilter(value);
+    };
+
+    const handleOnSubmitSearch = async () => {
+        try {
+            const single = await conversationApi.fetchListConversations(
+                valueInput,
+                1
+            );
+            setSingleConverFilter(single);
+            const mutiple = await conversationApi.fetchListConversations(
+                valueInput,
+                2
+            );
+            setMutipleConverFilter(mutiple);
+        } catch (error) {}
+    };
+
+    const handleOnFilterClassfiy = (value) => {
+        setValueClassify(value);
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -509,19 +570,39 @@ function Chat({ socket, idNewMessage }) {
                 <Row gutter={[0, 0]}>
                     <Col span={5}>
                         <div className="main-conversation">
-                            <div className="main-conversation_search-bar">
-                                <SearchContainer />
-                            </div>
-
-                            <div className="divider-layout">
-                                <div></div>
-                            </div>
-
-                            <div className="main-conversation_list-conversation">
-                                <ConversationContainer
-                                    conversations={conversationFil}
+                            <div
+                                className={`main-conversation_search-bar ${
+                                    visibleFilter ? 'fillter ' : ''
+                                }`}
+                            >
+                                <SearchContainer
+                                    onSearchChange={handleOnSearchChange}
+                                    valueText={valueInput}
+                                    onSubmitSearch={handleOnSubmitSearch}
+                                    onFilterClasify={handleOnFilterClassfiy}
+                                    valueClassify={valueClassify}
                                 />
                             </div>
+
+                            {visibleFilter ? (
+                                <FilterContainer
+                                    dataSingle={singleConverFilter}
+                                    dataMutiple={mutipleConverFilter}
+                                    valueText={valueInput}
+                                />
+                            ) : (
+                                <>
+                                    <div className="divider-layout">
+                                        <div />
+                                    </div>
+
+                                    <div className="main-conversation_list-conversation">
+                                        <ConversationContainer
+                                            valueClassify={valueClassify}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </Col>
 
@@ -561,11 +642,6 @@ function Chat({ socket, idNewMessage }) {
                                                             isOpen={
                                                                 isOpenDrawer
                                                             }
-                                                            onOpen={() =>
-                                                                setIsOpenDrawer(
-                                                                    true
-                                                                )
-                                                            }
                                                             onClose={() =>
                                                                 setIsOpenDrawer(
                                                                     false
@@ -573,9 +649,6 @@ function Chat({ socket, idNewMessage }) {
                                                             }
                                                             message={
                                                                 pinMessages
-                                                            }
-                                                            onViewNews={
-                                                                handleViewNews
                                                             }
                                                         />
                                                     </div>
@@ -694,6 +767,7 @@ function Chat({ socket, idNewMessage }) {
                                                 onRemoveMention={
                                                     handleOnRemoveMention
                                                 }
+                                                onViewVotes={handleViewVotes}
                                             />
                                         </div>
                                     </div>

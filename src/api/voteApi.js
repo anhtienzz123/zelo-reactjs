@@ -36,6 +36,14 @@ const voteApi = {
             },
         });
     },
+    getVotes: (conversationId, page, size) => {
+        return axiosClient.get(`${API_URL}/${conversationId}/`, {
+            params: {
+                page,
+                size,
+            },
+        });
+    },
 };
 
 export default voteApi;

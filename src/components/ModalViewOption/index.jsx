@@ -14,15 +14,17 @@ ModalViewOption.propTypes = {
     isModalVisible: PropTypes.bool,
     onCancel: PropTypes.func,
     data: PropTypes.object,
+    onShowDetail: PropTypes.func,
 };
 
 ModalViewOption.defaultProps = {
     isModalVisible: false,
     onCancel: null,
-    data: {}
+    data: {},
+    onShowDetail: null,
 };
 
-function ModalViewOption({ isModalVisible, onCancel, data }) {
+function ModalViewOption({ isModalVisible, onCancel, data, onShowDetail }) {
     const [form] = Form.useForm();
     const { memberInConversation } = useSelector(state => state.chat);
 
@@ -55,6 +57,12 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
     const handleCancel = () => {
         if (onCancel) {
             onCancel();
+        }
+    }
+
+    const handleShowDetail = () => {
+        if (onShowDetail) {
+            onShowDetail();
         }
     }
 
@@ -138,7 +146,7 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
             </div>
 
             <div className="footer_right-btn">
-                <Button>Hủy</Button>
+                <Button onClick={handleCancel}>Hủy</Button>
                 <Button
                     type="primary"
                     onClick={handleOk}
@@ -204,6 +212,8 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
     }
 
 
+
+
     const getNumberJoinVote = () => {
         let tempUserIds = [];
         infoVote.options.forEach((option) => {
@@ -219,12 +229,18 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
     }
 
 
-
-
-
     const handleValueChange = (_, allValues) => {
 
         setValueForm(allValues);
+    }
+
+    const getMumberVotes = () => {
+        const amount = infoVote.options.reduce((pre, cur) => {
+            return (
+                pre.userIds.length + cur.userIds.length
+            )
+        })
+        return amount;
     }
 
 
@@ -247,7 +263,17 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
                     <h3>{infoVote?.content}</h3>
                     <small>Tạo bởi <strong>{infoVote?.user?.name}</strong> - Hôm qua</small>
                 </div>
-                <p className='overview-text'>{`2 người tham gia 4 lượt bình chọn `}<CaretRightOutlined /></p>
+
+                {(getMumberVotes() && getMumberVotes()) > 0 && (
+                    <p
+                        className='overview-text'
+                        onClick={handleShowDetail}
+                    >
+                        {`${getNumberJoinVote().length} người tham gia ${getMumberVotes()} lượt bình chọn `}<CaretRightOutlined />
+                    </p>
+
+                )}
+
 
                 <div className="modal-view-option_list">
 
@@ -291,19 +317,29 @@ function ModalViewOption({ isModalVisible, onCancel, data }) {
                                     >
 
                                         {(ele.userIds.length > 0 && memberInConversation.length > 0) && (
-                                            ele.userIds.map((ele, index) => (
-                                                <>
-                                                    <PersonalIcon
-                                                        key={index}
-                                                        name={getUserFromConver(ele).name}
-                                                        avatar={getUserFromConver(ele).avatar}
-                                                        demention={32}
+                                            ele.userIds.map((ele, index) => {
+                                                {
+                                                    if (getUserFromConver(ele)) {
+                                                        return (
+                                                            <PersonalIcon
+                                                                key={index}
+                                                                name={getUserFromConver(ele)?.name}
+                                                                avatar={getUserFromConver(ele)?.avatar}
+                                                                demention={32}
+                                                            />
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <PersonalIcon
+                                                                key={index}
+                                                                noneUser={true}
+                                                                demention={32}
+                                                            />
+                                                        )
+                                                    }
+                                                }
 
-                                                    />
-
-
-                                                </>
-                                            ))
+                                            })
                                         )}
 
                                     </Avatar.Group>

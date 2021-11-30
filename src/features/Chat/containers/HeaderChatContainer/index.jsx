@@ -9,7 +9,7 @@ HeaderChatContainer.propTypes = {};
 function HeaderChatContainer() {
 
     const [detailConver, setDetailConver] = useState({})
-    const { currentConversation, conversations } = useSelector(
+    const { currentConversation, conversations, memberInConversation } = useSelector(
         (state) => state.chat
     );
 
@@ -29,7 +29,7 @@ function HeaderChatContainer() {
         <div id='header-main'>
             <HeaderOptional
                 avatar={detailConver.avatar}
-                totalMembers={detailConver.totalMembers}
+                totalMembers={memberInConversation.length}
                 name={detailConver.name}
                 typeConver={detailConver.type}
                 isLogin={detailConver?.isOnline}

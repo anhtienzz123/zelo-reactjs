@@ -49,6 +49,7 @@ function ModalUpdateProfile({ isVisible, onCancel, onOk, loading }) {
     }
 
     const handleGetAvatar = (avatar) => {
+        console.log('avatar', avatar);
         setAvatar(avatar);
     }
 
@@ -99,6 +100,7 @@ function ModalUpdateProfile({ isVisible, onCancel, onOk, loading }) {
             if (!checkChangeValue(values, refInitValue.current)) {
                 const { name, dateOfBirth, gender } = values;
                 await meApi.updateProfile(name, dateOfBirth, gender);
+
             }
 
 
@@ -118,6 +120,7 @@ function ModalUpdateProfile({ isVisible, onCancel, onOk, loading }) {
 
 
             }
+            setIsClear(true);
 
 
         } catch (error) {

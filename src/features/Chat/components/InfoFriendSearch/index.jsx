@@ -1,32 +1,33 @@
-import { ExclamationCircleOutlined, SearchOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
+import { ExclamationCircleOutlined, KeyOutlined, UserDeleteOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { Dropdown, Menu, message, Modal, Tag } from 'antd';
+import conversationApi from 'api/conversationApi';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import InfoTitle from '../InfoTitle';
 import PersonalIcon from '../PersonalIcon';
-import { Menu, Dropdown, Modal, message } from 'antd';
-import conversationApi from 'api/conversationApi';
 import './style.scss';
-import { useDispatch } from 'react-redux';
-import { removeMemberWhenDeleted } from '../../slice/chatSlice'
 InfoFriendSearch.propTypes = {
     onBack: PropTypes.func,
     members: PropTypes.array,
+    onChoseUser: PropTypes.func,
 };
 
 InfoFriendSearch.defaultProps = {
     onBack: null,
     members: [],
+    onChoseUser: null
 };
 
 function InfoFriendSearch(props) {
-    const { onBack, members } = props;
+    const { onBack, members, onChoseUser } = props;
     const { user } = useSelector(state => state.global);
-    const { currentConversation } = useSelector(state => state.chat);
+    const { currentConversation, conversations } = useSelector(state => state.chat);
     const { confirm } = Modal;
     const dispatch = useDispatch();
+    const converData = conversations.find(ele => ele._id === currentConversation);
+    const { managerIds, leaderId } = converData;
 
 
     const handleOnBack = (value) => {
@@ -36,8 +37,10 @@ function InfoFriendSearch(props) {
     }
 
 
-    const handleAddFriend = (id) => {
-
+    const handleClickUser = (ele) => {
+        if (onChoseUser) {
+            onChoseUser(ele);
+        }
     }
 
     // confirm xóa thành viên
@@ -59,26 +62,84 @@ function InfoFriendSearch(props) {
 
     async function removeMember(idMember) {
         try {
-            console.log(idMember);
             await conversationApi.deleteMember(currentConversation, idMember);
-            dispatch(removeMemberWhenDeleted({ idMember }))
             message.success('Xóa thành công');
         } catch (error) {
             message.error('Xóa thất bại');
         }
     }
 
-    const handleInteractMember = async ({ item, key }, value) => {
-        if (key == 1) {
+    const handleInteractMember = async ({ _, key }, value) => {
+        if (key === "1") {
+            console.log('values', value)
             showConfirm(value);
+        }
+        if (key === "2") {
+            handleAddLeader(value._id);
+        }
+
+        if (key === "3") {
+            handleDeleteLeader(value._id);
+        }
+
+    }
+
+    const handleAddLeader = async (id) => {
+        try {
+            await conversationApi.addManagerGroup(currentConversation, [id]);
+            message.success('Thêm thành công');
+
+        } catch (error) {
+            message.error('Thêm thất bại');
         }
     }
 
+    const handleDeleteLeader = async (id) => {
+        try {
+            await conversationApi.deleteManager(currentConversation, [id]);
+            message.success('Gỡ thành công');
+        } catch (error) {
+            message.error('Gỡ thất bại');
+        }
+    }
+
+
+
     const menu = (value) => (
         <Menu onClick={(e) => handleInteractMember(e, value)}>
-            <Menu.Item icon={<UserDeleteOutlined />} key="1" danger>
-                <span className="menu-icon-danger">Xóa khỏi nhóm</span>
-            </Menu.Item>
+
+            {(value._id !== user._id) && (
+                <>
+                    {
+
+                        (((leaderId === user._id) || (managerIds.find(ele => ele === user._id))) && (
+                            <Menu.Item icon={<UserDeleteOutlined />} key="1" danger>
+                                <span className="menu-icon">Xóa khỏi nhóm</span>
+                            </Menu.Item>
+                        ))
+                    }
+
+
+
+                    {
+                        ((leaderId === user._id && !managerIds.find(ele => ele === value._id)) && (
+                            <Menu.Item icon={<KeyOutlined />} key="2" >
+                                <span className="menu-icon">Thêm phó nhóm </span>
+                            </Menu.Item>
+                        ))
+                    }
+
+
+                    {
+                        (((leaderId === user._id) && (managerIds.find(ele => ele === value._id))) && (
+                            <Menu.Item icon={<UserSwitchOutlined />} key="3" >
+                                <span className="menu-icon">Gỡ quyền phó nhóm </span>
+                            </Menu.Item>
+                        ))
+                    }
+                </>
+            )}
+
         </Menu>
     );
     return (
@@ -98,32 +159,25 @@ function InfoFriendSearch(props) {
                 autoHideDuration={200}
                 style={{ width: '100%' }}
 
-
-
             >
 
                 <div className="info_friend-search-content">
-                    <div className="info_friend-add-member">
-                        <button>
-                            <UserAddOutlined />
-                            <span>&nbsp;Thêm Thành viên</span>
-                        </button>
-                    </div>
+
 
                     <div className="info_friend-searchbar-and-title">
                         <div className="info_friend-search-title">
                             <strong>{`Danh sách thành viên (${members.length})`}</strong>
                         </div>
-
+                        {/* 
                         <div className="info_friend-searchbar">
                             <Input placeholder="Tìm kiếm thành viên" prefix={<SearchOutlined />} />
-                        </div>
+                        </div> */}
 
                         <div className="info_friend-list">
                             {
-                                members.map(ele => (
-                                    <Dropdown overlay={() => menu(ele)} trigger={['contextMenu']}>
-                                        <div className="info_friend-item">
+                                members.map((ele, index) => (
+                                    <Dropdown key={index} overlay={() => menu(ele)} trigger={['contextMenu']}>
+                                        <div className="info_friend-item" onClick={() => handleClickUser(ele)}>
                                             <div className="info_friend-item-leftside">
                                                 <div className="info_friend-item-leftside-avatar">
                                                     <PersonalIcon
@@ -131,6 +185,7 @@ function InfoFriendSearch(props) {
                                                         demention={40}
                                                         name={ele.name}
                                                         color={ele.avatarColor}
+                                                        isHost={(ele._id === leaderId || managerIds.find(managerId => managerId === ele._id))}
 
                                                     />
                                                 </div>
@@ -143,14 +198,12 @@ function InfoFriendSearch(props) {
 
 
                                             </div>
-
-                                            <div className={`info_friend-item-rightside ${(ele.isFriend || ele._id === user._id) && 'hidden'}`}>
-                                                <Button
-                                                    type='primary'
-                                                    onClick={() => handleAddFriend(ele._id)}
-                                                >
-                                                    Kết bạn
-                                                </Button>
+                                            <div className={`info_friend-item-rightside ${(ele._id === user._id) && 'hidden'} `}>
+                                                {ele.isFriend ? (
+                                                    <Tag color="#87d068">Bạn bè</Tag>
+                                                ) : (
+                                                    <Tag color="#f5d003">Người lạ</Tag>
+                                                )}
                                             </div>
                                         </div>
                                     </Dropdown>
@@ -164,10 +217,10 @@ function InfoFriendSearch(props) {
                         </div>
                     </div>
                 </div>
-            </Scrollbars>
+            </Scrollbars >
 
 
-        </div>
+        </div >
     );
 }
 

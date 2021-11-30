@@ -1,4 +1,5 @@
 import { Col, Row } from 'antd';
+import conversationApi from 'api/conversationApi';
 import { setTabActive } from 'app/globalSlice';
 import NotFoundPage from 'components/NotFoundPage';
 import Chat from 'features/Chat';
@@ -15,6 +16,8 @@ import {
     updateConversationWhenAddMember,
     updateFriendChat,
     updateMemberLeaveGroup,
+    removeMemberWhenDeleted,
+    updateAvatarWhenUpdateMember,
 } from 'features/Chat/slice/chatSlice';
 import Friend from 'features/Friend';
 import {
@@ -107,41 +110,22 @@ function ChatLayout(props) {
 
     useEffect(() => {
         socket.on('new-message', (conversationId, newMessage) => {
-            const { type, content, manipulatedUsers } = newMessage;
-
-            // nếu nottify đã là bạn bè, t
-            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
-                dispatch(
-                    updateConversationWhenAddMember({
-                        newMembers: manipulatedUsers,
-                        conversationId,
-                    })
-                );
-            }
-
-            if (type === 'NOTIFY' && content === 'Đã là bạn bè') {
-                // console.log('chạy');
-                // dispatch(setNumberUnreadForNewFriend(conversationId))
-            }
-            if (type === 'NOTIFY' && content === 'Đã xóa ra khỏi nhóm') {
-                dispatch(
-                    deletedMember({
-                        conversationId,
-                    })
-                );
-            }
-
-            if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
-                dispatch(
-                    updateMemberLeaveGroup({
-                        conversationId,
-                        newMessage,
-                    })
-                );
-            }
-
             dispatch(addMessage(newMessage));
             setIdNewMessage(newMessage._id);
+        });
+
+        socket.on('update-member', async (conversationId) => {
+            const data = await conversationApi.getConversationById(
+                conversationId
+            );
+            const { avatar, totalMembers } = data;
+            dispatch(
+                updateAvatarWhenUpdateMember({
+                    conversationId,
+                    avatar,
+                    totalMembers,
+                })
+            );
         });
 
         socket.on(

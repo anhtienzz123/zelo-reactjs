@@ -28,6 +28,8 @@ import FRIEND_STYLE from './friendStyle';
 import './style.scss';
 import ListContact from './components/ListContact';
 import SuggestList from './components/SuggestList';
+import FilterContainer from 'components/FilterContainer';
+import conversationApi from 'api/conversationApi';
 
 Friend.propTypes = {
     socket: PropTypes.object,
@@ -57,6 +59,14 @@ function Friend({ socket }) {
     const [keySort, setKeySort] = useState(1);
     const dispatch = useDispatch();
     const refFiller = useRef();
+
+    // filter search
+    const [visibleFilter, setVisbleFilter] = useState(false);
+    const [valueInput, setValueInput] = useState('');
+    const [singleConverFilter, setSingleConverFilter] = useState([]);
+    const [mutipleConverFilter, setMutipleConverFilter] = useState([]);
+
+    //
 
     useEffect(() => {
         if (groups.length > 0) {
@@ -129,6 +139,36 @@ function Friend({ socket }) {
         </Menu>
     );
 
+    const handleOnVisibleFilter = (value) => {
+        if (value.trim().length > 0) {
+            setVisbleFilter(true);
+        } else {
+            setVisbleFilter(false);
+        }
+    };
+
+    const handleOnSearchChange = (value) => {
+        setValueInput(value);
+        handleOnVisibleFilter(value);
+    };
+
+    const handleOnSubmitSearch = async () => {
+        try {
+            const single = await conversationApi.fetchListConversations(
+                valueInput,
+                1
+            );
+            const mutiple = await conversationApi.fetchListConversations(
+                valueInput,
+                2
+            );
+            setSingleConverFilter(single);
+            setMutipleConverFilter(mutiple);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <Spin spinning={isLoading}>
             <div id="main-friend_wrapper">
@@ -136,73 +176,88 @@ function Friend({ socket }) {
                     <Col span={5}>
                         <div className="main-friend_sidebar">
                             <div className="main-friend_sidebar_search-bar">
-                                <SearchContainer />
+                                <SearchContainer
+                                    onSearchChange={handleOnSearchChange}
+                                    valueText={valueInput}
+                                    onSubmitSearch={handleOnSubmitSearch}
+                                    isFriendPage={true}
+                                />
                             </div>
 
-                            <div className="divider-layout">
-                                <div></div>
-                            </div>
-
-                            <div className="main-friend_sidebar_bottom">
-                                <div
-                                    className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend"
-                                    onClick={() => setSubTab(0)}
-                                >
-                                    <div className="main-friend_sidebar_option_img">
-                                        <img
-                                            src={ICON_FRIEND}
-                                            alt="ICON_FRIEND"
-                                        />
+                            {visibleFilter ? (
+                                <FilterContainer
+                                    dataSingle={singleConverFilter}
+                                    dataMutiple={mutipleConverFilter}
+                                    valueText={valueInput}
+                                />
+                            ) : (
+                                <>
+                                    <div className="divider-layout">
+                                        <div></div>
                                     </div>
 
-                                    <div className="main-friend_sidebar_option_text">
-                                        Danh sách kết bạn
-                                    </div>
-                                </div>
+                                    <div className="main-friend_sidebar_bottom">
+                                        <div
+                                            className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend"
+                                            onClick={() => setSubTab(0)}
+                                        >
+                                            <div className="main-friend_sidebar_option_img">
+                                                <img
+                                                    src={ICON_FRIEND}
+                                                    alt="ICON_FRIEND"
+                                                />
+                                            </div>
 
-                                <div
-                                    className="main-friend_sidebar_option main-friend_sidebar_option--groups"
-                                    onClick={() => setSubTab(1)}
-                                >
-                                    <div className="main-friend_sidebar_option_img">
-                                        <img
-                                            src={ICON_GROUP}
-                                            alt="ICON_GROUP"
-                                        />
-                                    </div>
+                                            <div className="main-friend_sidebar_option_text">
+                                                Danh sách kết bạn
+                                            </div>
+                                        </div>
 
-                                    <div className="main-friend_sidebar_option_text">
-                                        Danh sách nhóm
-                                    </div>
-                                </div>
+                                        <div
+                                            className="main-friend_sidebar_option main-friend_sidebar_option--groups"
+                                            onClick={() => setSubTab(1)}
+                                        >
+                                            <div className="main-friend_sidebar_option_img">
+                                                <img
+                                                    src={ICON_GROUP}
+                                                    alt="ICON_GROUP"
+                                                />
+                                            </div>
 
-                                <div
-                                    className="main-friend_sidebar_option main-friend_sidebar_option--contact"
-                                    onClick={() => setSubTab(2)}
-                                >
-                                    <div className="main-friend_sidebar_option_img">
-                                        <img
-                                            src={ICON_CONTACT}
-                                            alt="ICON_CONTACT"
-                                        />
-                                    </div>
+                                            <div className="main-friend_sidebar_option_text">
+                                                Danh sách nhóm
+                                            </div>
+                                        </div>
 
-                                    <div className="main-friend_sidebar_option_text">
-                                        Danh bạ
-                                    </div>
-                                </div>
+                                        <div
+                                            className="main-friend_sidebar_option main-friend_sidebar_option--contact"
+                                            onClick={() => setSubTab(2)}
+                                        >
+                                            <div className="main-friend_sidebar_option_img">
+                                                <img
+                                                    src={ICON_CONTACT}
+                                                    alt="ICON_CONTACT"
+                                                />
+                                            </div>
 
-                                <div className="divider-layout">
-                                    <div></div>
-                                </div>
+                                            <div className="main-friend_sidebar_option_text">
+                                                Danh bạ
+                                            </div>
+                                        </div>
 
-                                <div className="main-friend_sidebar_list-friend">
-                                    <div className="main-friend_sidebar_list-friend_title">
-                                        Bạn bè ({friends.length})
+                                        <div className="divider-layout">
+                                            <div></div>
+                                        </div>
+
+                                        <div className="main-friend_sidebar_list-friend">
+                                            <div className="main-friend_sidebar_list-friend_title">
+                                                Bạn bè ({friends.length})
+                                            </div>
+                                            <ListFriend data={friends} />
+                                        </div>
                                     </div>
-                                    <ListFriend data={friends} />
-                                </div>
-                            </div>
+                                </>
+                            )}
                         </div>
                     </Col>
 

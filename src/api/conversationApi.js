@@ -78,6 +78,19 @@ const conversationApi = {
     changAvatarGroup: (conversationId, file) => {
         return axiosClient.patch(`${API_URL}/${conversationId}/avatar`, file);
     },
+    addManagerGroup: (converId, userIds) => {
+        return axiosClient.post(`${API_URL}/${converId}/managers`, {
+            managerIds: userIds,
+        });
+    },
+
+    deleteManager: (converId, userIds) => {
+        return axiosClient.delete(`${API_URL}/${converId}/managers`, {
+            data: {
+                managerIds: userIds,
+            },
+        });
+    },
 };
 
 export default conversationApi;

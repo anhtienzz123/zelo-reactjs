@@ -19,6 +19,7 @@ FooterChatContainer.propTypes = {
     onCloseReply: PropTypes.func,
     userMention: PropTypes.object,
     onRemoveMention: PropTypes.func,
+    onViewVotes: PropTypes.func,
 };
 
 FooterChatContainer.defaultProps = {
@@ -27,7 +28,8 @@ FooterChatContainer.defaultProps = {
     replyMessage: {},
     onCloseReply: null,
     userMention: {},
-    onRemoveMention: null
+    onRemoveMention: null,
+    onViewVotes: null
 };
 
 const style_EditorText = {
@@ -40,7 +42,7 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention, onRemoveMention }) {
+function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention, onRemoveMention, onViewVotes }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations, currentChannel, memberInConversation } = useSelector(
         (state) => state.chat
@@ -295,6 +297,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                     isFocus={isHightLight}
                     onClickTextFormat={handleClickTextFormat}
                     onScroll={handleOnScroll}
+                    onViewVotes={onViewVotes}
                 />
             </div>
 
@@ -381,20 +384,6 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                                     }
                                 }))}
                         </Mentions>
-                        // <TextArea
-                        //     autoSize={{ minRows: 1, maxRows: 5 }}
-                        //     placeholder={`Nhập @, tin nhắt tới ${detailConver.name}`}
-                        //     size='large'
-                        //     // onPressEnter={handleMessageSend}
-                        //     bordered={false}
-                        //     onChange={handleOnChageInput}
-                        //     onKeyDown={handleKeyPress}
-                        //     value={valueText}
-                        //     style={{ whiteSpace: 'pre-wrap' }}
-                        //     spellCheck={false}
-                        //     onFocus={handleOnFocus}
-                        //     onBlur={handleOnBlur}
-                        // />
                     )}
                 </div>
 
@@ -402,10 +391,9 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                     className='addtion-interaction'
                     style={
                         showTextFormat ? style_addtion_interaction : undefined
-                    }>
-                    <div className='emoji-or-stiker'>
-                        <SmileOutlined />
-                    </div>
+                    }
+                >
+
 
                     <div className='like-emoji'>
                         {isShowLike ? (

@@ -41,6 +41,9 @@
         &_search-bar {
             height: 18vh;
         }
+        &_search-bar.fillter {
+            height: 10vh;
+        }
 
         &_list-conversation {
             height: 80vh;

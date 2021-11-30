@@ -27,12 +27,17 @@ function UploadAvatar({ avatar, getFile, isClear }) {
 
     useEffect(() => {
         if (isClear) {
+            console.log('clear');
             setImagePreview('');
         }
-    }, [isClear])
+    }, [isClear]);
 
-    const handleOnChange = (e) => {
+    console.log('image preview', imagePreview);
+
+    const handleOnChange = async (e) => {
         const files = e.target.files;
+
+        console.log('file', files);
 
         const fileImage = files[0];
         const reader = new FileReader();
@@ -51,7 +56,7 @@ function UploadAvatar({ avatar, getFile, isClear }) {
     }
 
     return (
-        <div id='upload-avatar'>
+        <div className='upload-avatar'>
             <div className="upload-avatar_default-avatar">
                 <div className="upload-avatar_image">
                     {(avatar || imagePreview) ? (

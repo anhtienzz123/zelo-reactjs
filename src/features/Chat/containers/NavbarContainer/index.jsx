@@ -1,6 +1,5 @@
 import {
-    ContactsOutlined,
-    LockOutlined,
+    ContactsOutlined, LockOutlined,
     LogoutOutlined,
     MessageOutlined,
     SettingOutlined, UserOutlined
@@ -10,12 +9,12 @@ import { setTabActive } from 'app/globalSlice';
 import ModalChangePassword from 'components/ModalChangePassword';
 import ModalUpdateProfile from "features/Chat/components/ModalUpdateProfile";
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { setToTalUnread } from '../../slice/chatSlice';
 import NavbarStyle from './NavbarStyle';
-import PropTypes from 'prop-types';
 import './style.scss';
 
 NavbarContainer.propTypes = {
@@ -38,6 +37,17 @@ function NavbarContainer({ onSaveCodeRevoke }) {
         useState(false);
 
     const dispatch = useDispatch();
+    const location = useLocation();
+
+    const checkCurrentPage = (iconName) => {
+        if (iconName === 'MESSAGE' && location.pathname === '/chat') {
+            return true;
+        }
+        if (iconName === 'FRIEND' && location.pathname === '/chat/friends') {
+            return true;
+        }
+        return false;
+    }
 
     useEffect(() => {
         dispatch(setToTalUnread());
@@ -98,9 +108,6 @@ function NavbarContainer({ onSaveCodeRevoke }) {
         setvisibleModalChangePassword(true);
     }
 
-    const handleLogoutAllDevice = () => {
-
-    }
 
 
     const setting = (
@@ -111,19 +118,6 @@ function NavbarContainer({ onSaveCodeRevoke }) {
                 </div>
 
                 <div className="pop_up-personal--item-text">Đổi mật khẩu</div>
-            </div>
-
-            <div className="pop_up-personal--item">
-                <div className="pop_up-personal--item-icon">
-                    <LogoutOutlined />
-                </div>
-
-                <div
-                    className="pop_up-personal--item-text"
-                    onClick={handleLogoutAllDevice}
-                >
-                    Đăng xuất ra khỏi các thiết bị khác
-                </div>
             </div>
         </div>
     );
@@ -158,8 +152,7 @@ function NavbarContainer({ onSaveCodeRevoke }) {
 
                     <Link className="link-icon" to="/chat">
                         <li
-                            className={`sidebar_nav_item  ${tabActive === 1 ? 'active' : ''
-                                }`}
+                            className={`sidebar_nav_item  ${checkCurrentPage('MESSAGE') ? 'active' : ''}`}
                             onClick={() => handleSetTabActive(1)}
                         >
                             <div className="sidebar_nav_item--icon">
@@ -174,8 +167,7 @@ function NavbarContainer({ onSaveCodeRevoke }) {
 
                     <Link className="link-icon" to="/chat/friends">
                         <li
-                            className={`sidebar_nav_item  ${tabActive === 2 ? 'active' : ''
-                                }`}
+                            className={`sidebar_nav_item  ${checkCurrentPage('FRIEND') ? 'active' : ''}`}
                             onClick={() => handleSetTabActive(2)}
                         >
                             <div className="sidebar_nav_item--icon">
