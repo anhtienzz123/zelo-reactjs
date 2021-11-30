@@ -21,8 +21,7 @@ DrawerPinMessage.defaultProps = {
 function DrawerPinMessage({ isOpen, onClose, message }) {
 
     const handlViewNews = () => {
-        if (onViewNews && onClose) {
-            onViewNews()
+        if (onClose) {
             onClose()
         }
     }
