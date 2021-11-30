@@ -1,6 +1,5 @@
 import {
-    ContactsOutlined,
-    LockOutlined,
+    ContactsOutlined, LockOutlined,
     LogoutOutlined,
     MessageOutlined,
     SettingOutlined, UserOutlined
@@ -109,9 +108,6 @@ function NavbarContainer({ onSaveCodeRevoke }) {
         setvisibleModalChangePassword(true);
     }
 
-    const handleLogoutAllDevice = () => {
-
-    }
 
 
     const setting = (
@@ -122,19 +118,6 @@ function NavbarContainer({ onSaveCodeRevoke }) {
                 </div>
 
                 <div className="pop_up-personal--item-text">Đổi mật khẩu</div>
-            </div>
-
-            <div className="pop_up-personal--item">
-                <div className="pop_up-personal--item-icon">
-                    <LogoutOutlined />
-                </div>
-
-                <div
-                    className="pop_up-personal--item-text"
-                    onClick={handleLogoutAllDevice}
-                >
-                    Đăng xuất ra khỏi các thiết bị khác
-                </div>
             </div>
         </div>
     );
