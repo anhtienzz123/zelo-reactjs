@@ -2,6 +2,7 @@ import {
     EditOutlined,
     FileImageOutlined,
     FileOutlined,
+    KeyOutlined,
     NumberOutlined,
     PlaySquareOutlined,
     PushpinOutlined,
@@ -171,6 +172,19 @@ function ShortMessage({ message, type }) {
                         {
                             (message.type === 'NOTIFY' && (message.content === 'Ảnh đại diện nhóm đã thay đổi')) && (
                                 <span>{renderName()}<EditOutlined />&nbsp;đã đổi ảnh nhóm</span>
+                            )
+                        }
+
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'ADD_MANAGERS')) && (
+                                <span>{renderName()}<KeyOutlined />&nbsp;đã thêm phó nhóm</span>
+                            )
+                        }
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'DELETE_MANAGERS')) && (
+                                <span>{renderName()}<KeyOutlined />&nbsp;đã xóa phó nhóm</span>
                             )
                         }
 

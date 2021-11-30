@@ -61,6 +61,7 @@ function UserCard(props) {
     const handleClickMessage = async () => {
         const response = await conversationApi.createConversationIndividual(user._id);
         const { _id, isExists } = response;
+        console.log('response', response);
 
 
         if (!isExists) {
@@ -68,7 +69,9 @@ function UserCard(props) {
             dispatch(setConversations(conver));
         }
 
-        if (conversations.find(ele => ele._id === _id).type) {
+        const tempConver = conversations.find(ele => ele._id === _id);
+
+        if (tempConver && tempConver.type) {
             dispatch(fetchChannels({ conversationId: _id }))
         }
 

@@ -298,7 +298,9 @@ function BodyChatContainer({
     useEffect(() => {
         if (messages.length > 0) {
             sleep(500).then(() => {
-                scrollbars.current.scrollToBottom();
+                if (scrollbars.current) {
+                    scrollbars.current.scrollToBottom();
+                }
             });
         }
     }, [currentConversation, currentChannel]);

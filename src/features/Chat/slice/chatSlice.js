@@ -167,6 +167,7 @@ export const getLastViewOfMembers = createAsyncThunk(
         const lastViews = await conversationApi.getLastViewOfMembers(
             conversationId
         );
+        console.log('ádfasdf', lastViews);
 
         return lastViews;
     }
@@ -429,82 +430,6 @@ const chatSlice = createSlice({
                 state.messages[index].reacts = reacts;
             }
         },
-        updateConversationWhenAddMember: (state, action) => {
-            const { newMembers, conversationId } = action.payload;
-
-            const index = state.conversations.findIndex(
-                (ele) => ele._id === conversationId
-            );
-            const conversation = state.conversations.find(
-                (ele) => ele._id === conversationId
-            );
-
-            // lấy ra vị trí, lấy ra giá trị
-            // sau đó clone ra 1 mảng avatar ms và gán vào
-            // lấy totalMember + newMember.lenght
-
-            if (typeof conversation.avatar === 'object') {
-                const avatar = [
-                    ...conversation.avatar,
-                    ...newMembers.map((ele) => {
-                        return {
-                            avatar: ele.avatar,
-                            avatarColor: ele.avatarColor,
-                        };
-                    }),
-                ];
-                const totalMembers =
-                    conversation.totalMembers + newMembers.length;
-                state.conversations[index] = {
-                    ...state.conversations[index],
-                    avatar,
-                    totalMembers,
-                };
-            }
-
-            const temp = [];
-            newMembers.forEach((member) => {
-                state.friends.forEach((friend) => {
-                    if (member._id == friend._id) {
-                        member = { ...member, isFriend: true };
-                        return;
-                    }
-                });
-                temp.push(member);
-            });
-
-            if (state.currentConversation === conversationId) {
-                state.memberInConversation = [
-                    ...state.memberInConversation,
-                    ...temp,
-                ];
-            }
-        },
-
-        updateMemberLeaveGroup: (state, action) => {
-            const { conversationId, newMessage } = action.payload;
-
-            const index = state.conversations.findIndex(
-                (ele) => ele._id === conversationId
-            );
-            const conversation = state.conversations.find(
-                (ele) => ele._id === conversationId
-            );
-
-            const avatar = conversation.avatar.filter(
-                (ele) => ele !== newMessage.user.avatar
-            );
-
-            const totalMembers = conversation.totalMembers - 1;
-            state.memberInConversation = state.memberInConversation.filter(
-                (ele) => ele._id !== newMessage.user._id
-            );
-            state.conversations[index] = {
-                ...state.conversations[index],
-                avatar,
-                totalMembers,
-            };
-        },
         leaveGroup: (state, action) => {
             const conversationId = action.payload;
             const newConvers = state.conversations.filter(
@@ -647,25 +572,72 @@ const chatSlice = createSlice({
                     state.conversations[index].totalMembers - 1;
             }
         },
-        removeMemberWhenDeleted: (state, action) => {
-            const { idMember } = action.payload;
-            state.memberInConversation = state.memberInConversation.filter(
-                (ele) => ele._id !== idMember
-            );
+
+        addManagers: (state, action) => {
+            const { conversationId, managerIds } = action.payload;
+            if (conversationId === state.currentConversation) {
+                const index = state.conversations.findIndex(
+                    (ele) => ele._id === conversationId
+                );
+
+                const tempManagerIds =
+                    state.conversations[index].managerIds.concat(managerIds);
+                if (index > -1) {
+                    state.conversations[index] = {
+                        ...state.conversations[index],
+                        managerIds: tempManagerIds,
+                    };
+                }
+            }
         },
-        updateManagerIds: (state, action) => {
-            console.log('payload', action.payload);
-            const { conversationId, managerId } = action.payload;
+
+        deleteManager: (state, action) => {
+            const { conversationId, managerIds } = action.payload;
+            if (conversationId === state.currentConversation) {
+                const index = state.conversations.findIndex(
+                    (ele) => ele._id === conversationId
+                );
+
+                const tempManagerIds = state.conversations[
+                    index
+                ].managerIds.filter((ele) => ele !== managerIds[0]);
+                if (index > -1) {
+                    state.conversations[index] = {
+                        ...state.conversations[index],
+                        managerIds: tempManagerIds,
+                    };
+                }
+            }
+        },
+
+        updateVote: (state, action) => {
+            state.votes = action.payload;
+        },
+        updateMemberInconver: (state, action) => {
+            const { conversationId, newMember } = action.payload;
+            state.memberInConversation = newMember;
             const index = state.conversations.findIndex(
                 (ele) => ele._id === conversationId
             );
-            state.conversations[index] = {
-                ...state.conversations[index],
-                managerIds: managerId,
-            };
+            if (index > -1) {
+                state.conversations[index].totalMembers = newMember.length;
+            }
         },
-        updateVote: (state, action) => {
-            state.votes = action.payload;
+
+        updateAvatarWhenUpdateMember: (state, action) => {
+            const { conversationId, avatar, totalMembers } = action.payload;
+
+            const index = state.conversations.findIndex(
+                (ele) => ele._id === conversationId
+            );
+
+            state.conversations[index].totalMembers = totalMembers;
+            if (
+                index > -1 &&
+                typeof state.conversations[index].avatar === 'object'
+            ) {
+                state.conversations[index].avatar = avatar;
+            }
         },
     },
     extraReducers: {
@@ -874,9 +846,11 @@ export const {
     updateVoteMessage,
     updateFriendChat,
     deletedMember,
-    removeMemberWhenDeleted,
-    updateManagerIds,
     updateVote,
+    addManagers,
+    deleteManager,
+    updateMemberInconver,
+    updateAvatarWhenUpdateMember,
 } = actions;
 
 export default reducer;

@@ -384,20 +384,6 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                                     }
                                 }))}
                         </Mentions>
-                        // <TextArea
-                        //     autoSize={{ minRows: 1, maxRows: 5 }}
-                        //     placeholder={`Nhập @, tin nhắt tới ${detailConver.name}`}
-                        //     size='large'
-                        //     // onPressEnter={handleMessageSend}
-                        //     bordered={false}
-                        //     onChange={handleOnChageInput}
-                        //     onKeyDown={handleKeyPress}
-                        //     value={valueText}
-                        //     style={{ whiteSpace: 'pre-wrap' }}
-                        //     spellCheck={false}
-                        //     onFocus={handleOnFocus}
-                        //     onBlur={handleOnBlur}
-                        // />
                     )}
                 </div>
 
@@ -405,10 +391,9 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                     className='addtion-interaction'
                     style={
                         showTextFormat ? style_addtion_interaction : undefined
-                    }>
-                    <div className='emoji-or-stiker'>
-                        <SmileOutlined />
-                    </div>
+                    }
+                >
+
 
                     <div className='like-emoji'>
                         {isShowLike ? (

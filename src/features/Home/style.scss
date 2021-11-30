@@ -1,102 +1,102 @@
 @import "../../scss/variables";
 
-#home_page::selection {
-    background: $base-color;
-    color: #fff;
-}
+// #home_page::selection {
+//     background: $base-color;
+//     color: #fff;
+// }
 
-#home_page {
-    text-decoration: none;
-    outline: none;
-    border: none;
+// #home_page {
+//     text-decoration: none;
+//     outline: none;
+//     border: none;
 
-    header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: #fff;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-        padding: 1.8rem 9%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 1000;
+//     header {
+//         position: fixed;
+//         top: 0;
+//         left: 0;
+//         width: 100%;
+//         background: #fff;
+//         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+//         padding: 1.8rem 9%;
+//         display: flex;
+//         align-items: center;
+//         justify-content: space-between;
+//         z-index: 1000;
 
-        .logo {
-            font-size: 2rem;
-            color: $base-color;
-        }
+//         .logo {
+//             font-size: 2rem;
+//             color: $base-color;
+//         }
 
-        .navbar a {
-            font-size: 1.7rem;
-            margin-left: 2rem;
-            color: $blue-zelo;
-        }
+//         .navbar a {
+//             font-size: 1.7rem;
+//             margin-left: 2rem;
+//             color: $blue-zelo;
+//         }
 
-        .navbar a:hover {
-            color: $base-color;
-        }
+//         .navbar a:hover {
+//             color: $base-color;
+//         }
 
-        input {
-            display: none;
-        }
+//         input {
+//             display: none;
+//         }
 
-        label {
-            font-size: 3rem;
-            color: $blue-zelo;
-            cursor: pointer;
-            visibility: hidden;
-            opacity: 0;
-        }
-    }
-}
+//         label {
+//             font-size: 3rem;
+//             color: $blue-zelo;
+//             cursor: pointer;
+//             visibility: hidden;
+//             opacity: 0;
+//         }
+//     }
+// }
 
-/* media queries  */
+// /* media queries  */
 
-@media (max-width: 1200px) {
-}
+// @media (max-width: 1200px) {
+// }
 
-@media (max-width: 991px) {
-}
+// @media (max-width: 991px) {
+// }
 
-@media (max-width: 768px) {
-    #home_page header {
-        label {
-            visibility: visible;
-            opacity: 1;
-        }
+// @media (max-width: 768px) {
+//     #home_page header {
+//         label {
+//             visibility: visible;
+//             opacity: 1;
+//         }
 
-        .navbar {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: #fff;
-            padding: 1rem 2rem;
-            border-top: 0.1rem solid rgba(0, 0, 0, 0.2);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            transform-origin: top;
-            transform: scaleY(0);
-            opacity: 0;
-            transition: 0.2s linear;
-            a {
-                display: block;
-                margin: 2rem 0;
-                font-size: 2rem;
-            }
-        }
+//         .navbar {
+//             position: absolute;
+//             top: 100%;
+//             left: 0;
+//             width: 100%;
+//             background: #fff;
+//             padding: 1rem 2rem;
+//             border-top: 0.1rem solid rgba(0, 0, 0, 0.2);
+//             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+//             transform-origin: top;
+//             transform: scaleY(0);
+//             opacity: 0;
+//             transition: 0.2s linear;
+//             a {
+//                 display: block;
+//                 margin: 2rem 0;
+//                 font-size: 2rem;
+//             }
+//         }
 
-        input:checked ~ .navbar {
-            transform: scaleY(1);
-            opacity: 1;
-        }
+//         input:checked ~ .navbar {
+//             transform: scaleY(1);
+//             opacity: 1;
+//         }
 
-        input:checked ~ label::before {
-            content: "\f00d";
-        }
-    }
-}
+//         input:checked ~ label::before {
+//             content: "\f00d";
+//         }
+//     }
+// }
 
-@media (max-width: 450px) {
-}
+// @media (max-width: 450px) {
+// }

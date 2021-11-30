@@ -1,16 +1,13 @@
-import { ExclamationCircleOutlined, ExclamationOutlined, KeyOutlined, SearchOutlined, UserAddOutlined, UserDeleteOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Button, Input, Tag } from 'antd';
+import { ExclamationCircleOutlined, KeyOutlined, UserDeleteOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { Dropdown, Menu, message, Modal, Tag } from 'antd';
+import conversationApi from 'api/conversationApi';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import InfoTitle from '../InfoTitle';
 import PersonalIcon from '../PersonalIcon';
-import { Menu, Dropdown, Modal, message } from 'antd';
-import conversationApi from 'api/conversationApi';
 import './style.scss';
-import { useDispatch } from 'react-redux';
-import { removeMemberWhenDeleted, updateManagerIds } from '../../slice/chatSlice'
 InfoFriendSearch.propTypes = {
     onBack: PropTypes.func,
     members: PropTypes.array,
@@ -65,9 +62,7 @@ function InfoFriendSearch(props) {
 
     async function removeMember(idMember) {
         try {
-            console.log('idMember', idMember)
             await conversationApi.deleteMember(currentConversation, idMember);
-            dispatch(removeMemberWhenDeleted({ idMember }))
             message.success('Xóa thành công');
         } catch (error) {
             message.error('Xóa thất bại');
@@ -92,33 +87,19 @@ function InfoFriendSearch(props) {
     const handleAddLeader = async (id) => {
         try {
             await conversationApi.addManagerGroup(currentConversation, [id]);
-            dispatch(updateManagerIds({
-                conversationId: currentConversation,
-                managerId: [...managerIds, id]
-            }))
             message.success('Thêm thành công');
-
 
         } catch (error) {
             message.error('Thêm thất bại');
-
         }
     }
 
     const handleDeleteLeader = async (id) => {
         try {
             await conversationApi.deleteManager(currentConversation, [id]);
-            const tempIds = managerIds.filter(ele => ele !== id);
-
-            dispatch(updateManagerIds({
-                conversationId: currentConversation,
-                managerId: tempIds
-            }))
             message.success('Gỡ thành công');
-
         } catch (error) {
             message.error('Gỡ thất bại');
-
         }
     }
 
@@ -177,8 +158,6 @@ function InfoFriendSearch(props) {
                 autoHideTimeout={1000}
                 autoHideDuration={200}
                 style={{ width: '100%' }}
-
-
 
             >
 

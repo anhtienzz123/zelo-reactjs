@@ -44,7 +44,7 @@ HeaderOptional.defaultProps = {
 function HeaderOptional(props) {
     const { avatar, totalMembers, name, typeConver, isLogin, lastLogin, avatarColor } = props;
     const type = typeof avatar;
-    const { currentConversation, currentChannel, channels } = useSelector((state) => state.chat);
+    const { currentConversation, currentChannel, channels, } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [typeModal, setTypeModal] = useState(1);
@@ -151,20 +151,14 @@ function HeaderOptional(props) {
                                     <>
                                         {
                                             isLogin ? (
-                                                <>
-                                                    <span>Đang hoạt động</span>
-                                                    <div className='small-bar'></div>
-                                                </>
+                                                <span>Đang hoạt động</span>
                                             ) : (
                                                 <>
                                                     {lastLogin && (
-                                                        <>
-                                                            <span>
-                                                                {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
-                                                            </span>
+                                                        <span>
+                                                            {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
+                                                        </span>
 
-                                                            <div className='small-bar'></div>
-                                                        </>
                                                     )}
                                                 </>
                                             )
@@ -172,14 +166,6 @@ function HeaderOptional(props) {
                                     </>
                                 )}
 
-
-
-                                {typeConver && <div className='small-bar'></div>}
-
-
-                                <div className='classify-object'>
-                                    <TagOutlined />
-                                </div>
 
                             </div>
                         )}
@@ -203,13 +189,6 @@ function HeaderOptional(props) {
                                 <UsergroupAddOutlined />
                             </div>
 
-                            <div className='icon-header search-message'>
-                                <SearchOutlined />
-                            </div>
-
-                            <div className='icon-header call-video'>
-                                <VideoCameraOutlined />
-                            </div>
                         </>
                     )}
 

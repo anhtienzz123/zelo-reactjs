@@ -35,9 +35,10 @@ function InfoContainer({ socket, onViewChannel }) {
     const [userChose, setUserChose] = useState(null);
     const dispatch = useDispatch();
 
-    const handleChoseUser = (value) => {
-        console.log('value', value);
-        // const user = userApi.fetchUser()
+    const handleChoseUser = async (value) => {
+        const user = await userApi.fetchUser(value.username);
+        setUserChose(user);
+        setIsVisible(true);
     }
 
 

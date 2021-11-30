@@ -9,6 +9,7 @@ import {
     getLastViewOfMembers,
     setCurrentChannel,
 } from 'features/Chat/slice/chatSlice';
+import PropTypes from 'prop-types';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,12 +19,29 @@ import {
 } from '../../slice/chatSlice';
 import './style.scss';
 
-ConversationContainer.propTypes = {};
+ConversationContainer.propTypes = {
+    valueClassify: PropTypes.string.isRequired,
+};
 
-function ConversationContainer(props) {
+function ConversationContainer({ valueClassify }) {
     const dispatch = useDispatch();
     const { conversations, classifies } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
+
+    const tempClassify =
+        classifies.find((ele) => ele._id === valueClassify) || 0;
+
+    const checkConverInClassify = (idMember) => {
+        if (tempClassify === 0) return true;
+        const index = tempClassify.conversationIds.findIndex(
+            (ele) => ele == idMember
+        );
+        return index > -1;
+    };
+
+    const converFilter = [...conversations].filter((ele) => {
+        if (checkConverInClassify(ele._id)) return true;
+    });
 
     const handleConversationClick = async (conversationId) => {
         // dispatch(setCurrentConversation(conversationId));
@@ -79,59 +97,65 @@ function ConversationContainer(props) {
             >
                 <div id="conversation-main">
                     <ul className="list_conversation">
-                        {conversations.map((conversationEle, index) => {
-                            const { numberUnread } = conversationEle;
-                            if (conversationEle.lastMessage) {
-                                return (
-                                    <Dropdown
-                                        key={index}
-                                        overlay={
-                                            <Menu
-                                                onClick={(e) =>
-                                                    handleOnClickItem(
-                                                        e,
-                                                        conversationEle._id
-                                                    )
-                                                }
+                        {converFilter.map((conversationEle, index) => {
+                            if (true) {
+                                const { numberUnread } = conversationEle;
+                                if (conversationEle.lastMessage) {
+                                    return (
+                                        <Dropdown
+                                            key={index}
+                                            overlay={
+                                                <Menu
+                                                    onClick={(e) =>
+                                                        handleOnClickItem(
+                                                            e,
+                                                            conversationEle._id
+                                                        )
+                                                    }
+                                                >
+                                                    <SubMenuClassify
+                                                        data={classifies}
+                                                        idConver={
+                                                            conversationEle._id
+                                                        }
+                                                    />
+
+                                                    {user._id ===
+                                                        conversationEle.leaderId && (
+                                                        <Menu.Item
+                                                            danger
+                                                            key="1"
+                                                            icon={
+                                                                <DeleteFilled />
+                                                            }
+                                                        >
+                                                            Xoá hội thoại
+                                                        </Menu.Item>
+                                                    )}
+                                                </Menu>
+                                            }
+                                            trigger={['contextMenu']}
+                                        >
+                                            <li
+                                                key={index}
+                                                className={`conversation-item ${
+                                                    numberUnread === 0
+                                                        ? ''
+                                                        : 'arrived-message'
+                                                } `}
                                             >
-                                                <SubMenuClassify
-                                                    data={classifies}
-                                                    idConver={
-                                                        conversationEle._id
+                                                <ConversationSingle
+                                                    conversation={
+                                                        conversationEle
+                                                    }
+                                                    onClick={
+                                                        handleConversationClick
                                                     }
                                                 />
-
-                                                {user._id ===
-                                                    conversationEle.leaderId && (
-                                                    <Menu.Item
-                                                        danger
-                                                        key="1"
-                                                        icon={<DeleteFilled />}
-                                                    >
-                                                        Xoá hội thoại
-                                                    </Menu.Item>
-                                                )}
-                                            </Menu>
-                                        }
-                                        trigger={['contextMenu']}
-                                    >
-                                        <li
-                                            key={index}
-                                            className={`conversation-item ${
-                                                numberUnread === 0
-                                                    ? ''
-                                                    : 'arrived-message'
-                                            } `}
-                                        >
-                                            <ConversationSingle
-                                                conversation={conversationEle}
-                                                onClick={
-                                                    handleConversationClick
-                                                }
-                                            />
-                                        </li>
-                                    </Dropdown>
-                                );
+                                            </li>
+                                        </Dropdown>
+                                    );
+                                }
                             }
                         })}
                     </ul>

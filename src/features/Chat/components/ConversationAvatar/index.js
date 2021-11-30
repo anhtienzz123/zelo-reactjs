@@ -1,12 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Tooltip } from 'antd';
-import COVERSATION_STYLE from './ConversationAvatarStyle';
-import './style.scss';
 import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg';
 import AvatarCustom from 'components/AvatarCustom';
-import getSummaryName from 'utils/nameHelper';
-import { AntDesignOutlined, UserOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
+import React from 'react';
+import COVERSATION_STYLE from './ConversationAvatarStyle';
+import './style.scss';
 ConversationAvatar.propTypes = {
     demension: PropTypes.number,
     isGroupCard: PropTypes.bool,
@@ -43,9 +42,10 @@ function ConversationAvatar({
     avatarColor,
 }) {
     const renderAvatar = () => {
+        console.log('conversation avatar', avatar);
         let tempAvatar = [];
         for (let index = 0; index < totalMembers; index++) {
-            if (avatar[index].avatar) {
+            if (avatar[index]?.avatar) {
                 tempAvatar.push(
                     <Avatar
                         key={index}
@@ -69,9 +69,12 @@ function ConversationAvatar({
                                           demension
                                       ),
                                       backgroundColor:
-                                          avatar[index].avatarColor,
+                                          avatar[index]?.avatarColor,
                                   }
-                                : { backgroundColor: avatar[index].avatarColor }
+                                : {
+                                      backgroundColor:
+                                          avatar[index]?.avatarColor,
+                                  }
                         }
                         size={demension}
                         icon={<UserOutlined />}
@@ -86,12 +89,12 @@ function ConversationAvatar({
         let tempAvatar = [];
         for (let index = 0; index < 4; index++) {
             if (index < 3) {
-                if (avatar[index].avatar) {
+                if (avatar[index]?.avatar) {
                     tempAvatar.push(
                         <div className="per-user">
                             <Avatar
                                 size={demension}
-                                src={avatar[index].avatar}
+                                src={avatar[index]?.avatar}
                                 style={
                                     index === 2
                                         ? { marginTop: (demension / 6) * -1 }
@@ -110,11 +113,11 @@ function ConversationAvatar({
                                         ? {
                                               marginTop: (demension / 6) * -1,
                                               backgroundColor:
-                                                  avatar[index].avatarColor,
+                                                  avatar[index]?.avatarColor,
                                           }
                                         : {
                                               backgroundColor:
-                                                  avatar[index].avatarColor,
+                                                  avatar[index]?.avatarColor,
                                           }
                                 }
                                 icon={<UserOutlined />}

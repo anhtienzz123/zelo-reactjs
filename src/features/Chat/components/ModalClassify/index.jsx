@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Modal, message, Popover } from 'antd';
-import './style.scss';
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined, TagTwoTone } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { Input } from 'antd';
+import { Button, Input, message, Modal, Popover } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import ClassifyApi from 'api/ClassifyApi';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchListClassify } from '../../slice/chatSlice';
+import './style.scss';
 ModalClassify.propTypes = {
     isVisible: PropTypes.bool,
     onCancel: PropTypes.func,
@@ -53,6 +52,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
     const handleShowModalAdd = () => {
         setIsShowModalAdd(true);
+        setIsModalEdit(false);
         setNameTag('');
         if (onCancel) {
             onCancel();
@@ -61,6 +61,8 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
     const handleBackModal = () => {
         setIsShowModalAdd(false);
+        setIsModalEdit(false);
+
         if (onOpen) {
             onOpen();
         }
@@ -70,8 +72,18 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
     const handleInputChange = (e) => {
         const value = e.target.value;
         const index = classifies.findIndex(ele => ele.name.toLowerCase() === value.toLowerCase());
+
+
+        // !isModalEdit && 
         if (index >= 0) {
-            setIsShowError(true);
+            if (!isModalEdit) {
+                setIsShowError(true);
+            } else {
+                if (previousName.current.name.toLowerCase() !== classifies[index].name.toLowerCase()) {
+                    setIsShowError(true);
+                }
+            }
+
         } else {
             setIsShowError(false);
         }
@@ -108,6 +120,8 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                 message.error('Thêm thất bại');
             }
         }
+
+        setIsModalEdit(false);
 
     }
 
@@ -235,7 +249,7 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
                 visible={isShowModalAdd}
                 onOk={handleCreateClassify}
                 onCancel={handleCancelModalAdd}
-                okButtonProps={{ disabled: (nameTag.trim().length > 0 ? false : true) || isShowError || previousName.current?.name === nameTag }}
+                okButtonProps={{ disabled: (nameTag.trim().length > 0 ? false : true) || isShowError || !(previousName.current?.name !== nameTag || previousName.current?.color._id !== color._id) }}
                 okText={isModalEdit ? 'Cập nhật' : 'Thêm phân loại'}
                 cancelText='Hủy'
             >
@@ -259,7 +273,6 @@ function ModalClassify({ isVisible, onCancel, onOpen }) {
 
                                     >
                                         <Button
-                                            // onClick={() => setIsVisblePopup(true)}
                                             type="text"
                                             icon={<TagTwoTone twoToneColor={color.code} />}
                                         />

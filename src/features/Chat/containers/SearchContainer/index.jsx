@@ -1,24 +1,36 @@
 import { AlignLeftOutlined, AppstoreAddOutlined, SearchOutlined, UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Input, message, Radio } from 'antd';
-import friendApi from 'api/friendApi';
 import userApi from 'api/userApi';
 import ModalAddFriend from 'components/ModalAddFriend';
 import UserCard from 'components/UserCard';
 import ModalClassify from 'features/Chat/components/ModalClassify';
 import ModalCreateGroup from 'features/Chat/components/ModalCreateGroup';
 import { createGroup } from 'features/Chat/slice/chatSlice';
-import { fetchListMyRequestFriend } from 'features/Friend/friendSlice';
-import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import React, { useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import './style.scss';
 SearchContainer.propTypes = {
-
+    onVisibleFilter: PropTypes.func,
+    onSearchChange: PropTypes.func,
+    valueText: PropTypes.string,
+    onSubmitSearch: PropTypes.func,
+    isFriendPage: PropTypes.bool,
+    onFilterClasify: PropTypes.func,
+    valueClassify: PropTypes.string.isRequired,
 };
 
-function SearchContainer(props) {
+SearchContainer.defaultProps = {
+    onVisibleFilter: null,
+    valueText: '',
+    onSearchChange: null,
+    onSubmitSearch: null,
+    isFriendPage: false,
+    onFilterClasify: null
+};
 
-    const [valueSearch, setValueSearch] = useState(0);
+function SearchContainer({ valueText, onSearchChange, onSubmitSearch, isFriendPage, onFilterClasify, valueClassify }) {
     const [isModalCreateGroupVisible, setIsModalCreateGroupVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { classifies } = useSelector(state => state.chat);
@@ -26,7 +38,9 @@ function SearchContainer(props) {
     const [isShowModalAddFriend, setShowModalAddFriend] = useState(false);
     const [userIsFind, setUserIsFind] = useState({});
     const [visibleUserCard, setVisbleUserCard] = useState(false);
+    const refDebounce = useRef(null)
     const dispatch = useDispatch();
+
 
 
     // -----  HANDLE MODAL CLASSIFY
@@ -48,7 +62,11 @@ function SearchContainer(props) {
 
 
     const handleOnChange = (e) => {
-        setValueSearch(e.target.value);
+        const value = e.target.value;
+        console.log('value', value);
+        if (onFilterClasify) {
+            onFilterClasify(value)
+        }
     };
 
 
@@ -112,6 +130,27 @@ function SearchContainer(props) {
         setVisbleUserCard(false);
     }
 
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        if (onSearchChange) {
+            onSearchChange(value)
+        }
+
+
+        if (refDebounce.current) {
+            clearTimeout(refDebounce.current);
+        }
+        refDebounce.current = setTimeout(() => {
+            if (onSubmitSearch) {
+                onSubmitSearch()
+            }
+        }, 400)
+
+        // setValueInput(value);
+
+    }
+
+
 
 
     return (
@@ -122,6 +161,9 @@ function SearchContainer(props) {
                         <Input
                             placeholder="Tìm kiếm"
                             prefix={<SearchOutlined />}
+                            onChange={handleInputChange}
+                            value={valueText}
+                            allowClear
                         />
                     </div>
 
@@ -134,40 +176,44 @@ function SearchContainer(props) {
                     </div>
                 </div>
 
-                <div className="search-bottom">
-                    <div className='classify-title'>
-                        <div>
-                            <AlignLeftOutlined /> &nbsp;
-                            <span>Phân loại</span>
-                        </div>
-                        <div className='add-classify' onClick={handleCreateClasify}>
-                            <AppstoreAddOutlined />
-                        </div>
+                {!isFriendPage && (
+                    <>
+                        {!(valueText.trim().length > 0) && (
+                            <div className="search-bottom">
+                                <div className='classify-title'>
+                                    <div>
+                                        <AlignLeftOutlined /> &nbsp;
+                                        <span>Phân loại</span>
+                                    </div>
+                                    <div className='add-classify' onClick={handleCreateClasify}>
+                                        <AppstoreAddOutlined />
+                                    </div>
 
-                    </div>
+                                </div>
+                                <div className='classify-element'>
+                                    <Scrollbars
+                                        autoHide={true}
+                                        autoHideTimeout={1000}
+                                        autoHideDuration={200}
+                                        style={{ height: '42px', width: '100%' }}
+                                    >
 
-                    <div className='classify-element'>
-                        <Scrollbars
-                            autoHide={true}
-                            autoHideTimeout={1000}
-                            autoHideDuration={200}
-                            style={{ height: '42px', width: '100%' }}
-                        >
+                                        <Radio.Group onChange={handleOnChange} value={valueClassify} size='small' >
+                                            <Radio value={'0'}>Tất cả</Radio>
+                                            {classifies.map((ele, index) => (
+                                                <Radio key={index} value={ele._id}>{ele.name}</Radio>
+                                            ))}
+                                        </Radio.Group>
+                                    </Scrollbars>
 
-                            <Radio.Group onChange={handleOnChange} value={valueSearch} size='small' >
-                                <Radio value={0}>Tất cả</Radio>
-                                {classifies.map((ele, index) => (
-                                    <Radio key={index} value={ele._id}>{ele.name}</Radio>
-                                ))}
-
-
-                            </Radio.Group>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
 
 
-                        </Scrollbars>
 
-                    </div>
-                </div>
             </div>
 
 
