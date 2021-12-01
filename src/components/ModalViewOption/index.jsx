@@ -1,10 +1,9 @@
-import { CaretRightOutlined, LockOutlined, MinusCircleOutlined, PlusOutlined, PushpinOutlined } from '@ant-design/icons';
-import { Avatar, Button, Checkbox, Dropdown, Form, Input, Menu, message, Modal, Spin } from 'antd';
+import { CaretRightOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Avatar, Button, Checkbox, Form, Input, message, Modal, Spin } from 'antd';
 import voteApi from 'api/voteApi';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { HiOutlineAdjustments } from "react-icons/hi";
 import { useSelector } from 'react-redux';
 import { equalsArray } from 'utils/arrayHelper';
 import MODAL_OPTION_STYLE from './ModalViewOptionStyle';
@@ -125,26 +124,11 @@ function ModalViewOption({ isModalVisible, onCancel, data, onShowDetail }) {
 
 
 
-    const menu = (
-        <Menu>
-            <Menu.Item icon={<PushpinOutlined />}>
-                <span className='item-menu'>Ghim lên đầu</span>
-            </Menu.Item>
-            <Menu.Item icon={<LockOutlined />}>
-                <span className='item-menu'>Khóa bình chọn</span>
-            </Menu.Item>
-        </Menu>
-    );
+
 
 
     const footer = (
         <div className="footer_wrapper">
-            <div className="footer_left-btn">
-                <Dropdown overlay={menu} placement="topLeft" arrow>
-                    <Button style={{ background: '#396edd' }} icon={<HiOutlineAdjustments />} type="primary"></Button>
-                </Dropdown>
-            </div>
-
             <div className="footer_right-btn">
                 <Button onClick={handleCancel}>Hủy</Button>
                 <Button
@@ -236,8 +220,10 @@ function ModalViewOption({ isModalVisible, onCancel, data, onShowDetail }) {
 
     const getMumberVotes = () => {
         const amount = infoVote.options.reduce((pre, cur) => {
+            const amoutnPre = pre.userIds?.length || 0;
+            const amountCur = cur.userIds.length || 0
             return (
-                pre.userIds.length + cur.userIds.length
+                amoutnPre + amountCur
             )
         })
         return amount;
@@ -326,6 +312,8 @@ function ModalViewOption({ isModalVisible, onCancel, data, onShowDetail }) {
                                                                 name={getUserFromConver(ele)?.name}
                                                                 avatar={getUserFromConver(ele)?.avatar}
                                                                 demention={32}
+                                                                color={getUserFromConver(ele)?.avatarColor}
+
                                                             />
                                                         )
                                                     } else {
@@ -334,6 +322,7 @@ function ModalViewOption({ isModalVisible, onCancel, data, onShowDetail }) {
                                                                 key={index}
                                                                 noneUser={true}
                                                                 demention={32}
+
                                                             />
                                                         )
                                                     }
