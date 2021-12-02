@@ -17,7 +17,13 @@ h1 {
 }
 
 @media (max-width: 768px) {
+    html {
+        font-size: 50%;
+    }
 }
 
 @media (max-width: 450px) {
+    html {
+        font-size: 50%;
+    }
 }
