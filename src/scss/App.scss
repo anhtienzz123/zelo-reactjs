@@ -2,8 +2,10 @@
 .modal-video-close-btn {
     cursor: pointer;
 }
-// .App {
-// }
+
+h1 {
+    box-shadow: none;
+}
 
 @media (max-width: 1200px) {
     html {
@@ -15,7 +17,13 @@
 }
 
 @media (max-width: 768px) {
+    html {
+        font-size: 50%;
+    }
 }
 
 @media (max-width: 450px) {
+    html {
+        font-size: 50%;
+    }
 }
