@@ -7,17 +7,13 @@ import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import {
     addMessage,
     addMessageInChannel,
-    deletedMember,
     fetchAllSticker,
     fetchConversationById,
     fetchListClassify,
     fetchListColor,
     fetchListConversations,
-    updateConversationWhenAddMember,
-    updateFriendChat,
-    updateMemberLeaveGroup,
-    removeMemberWhenDeleted,
     updateAvatarWhenUpdateMember,
+    updateFriendChat,
 } from 'features/Chat/slice/chatSlice';
 import Friend from 'features/Friend';
 import {
@@ -210,10 +206,25 @@ function ChatLayout(props) {
         <div>
             {/* <button onClick={leaveApp} >test scoket</button> */}
             <Row gutter={[0, 0]}>
-                <Col span={1}>
+                <Col
+                    span={1}
+                    xl={{ span: 1 }}
+                    lg={{ span: 1 }}
+                    md={{ span: 2 }}
+                    sm={{ span: 3 }}
+                    xs={{ span: 4 }}
+                >
                     <NavbarContainer onSaveCodeRevoke={handleSetCodeRevoke} />
                 </Col>
-                <Col span={23}>
+
+                <Col
+                    span={23}
+                    xl={{ span: 23 }}
+                    lg={{ span: 23 }}
+                    md={{ span: 22 }}
+                    sm={{ span: 21 }}
+                    xs={{ span: 20 }}
+                >
                     <Switch>
                         <Route
                             exact

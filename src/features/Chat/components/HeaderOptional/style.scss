@@ -1,5 +1,55 @@
 @import "../../../../scss/variables";
 #header-optional {
+    @media only screen and (min-width: 992px) and (max-width: 1199px) {
+        .header_rightside .pop-up-layout {
+            display: none;
+        }
+        .pop-up-responsive {
+            display: inline-block;
+        }
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .header_rightside .pop-up-layout {
+            display: none;
+        }
+        .pop-up-responsive {
+            display: inline-block;
+        }
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .pop-up-layout {
+            display: none;
+        }
+        .pop-up-responsive {
+            display: inline-block;
+        }
+    }
+
+    @media only screen and (min-width: 577px) and (max-width: 767px) {
+        .icon-header.back-list {
+            display: block;
+        }
+        .pop-up-layout {
+            display: none;
+        }
+        .pop-up-responsive {
+            display: inline-block;
+        }
+    }
+
+    @media only screen and (max-width: 576px) {
+        .pop-up-layout {
+            display: none;
+        }
+        .pop-up-responsive {
+            display: inline-block;
+        }
+        .icon-header.back-list {
+            display: block;
+        }
+    }
     flex: 1;
 }
 
@@ -62,6 +112,19 @@
                 margin: auto 0.8rem;
             }
         }
+
+        .icon-header.back-list {
+            cursor: pointer;
+            padding: 0 0.56rem;
+            transition: 0.2s;
+            border-radius: 4px;
+            font-size: 20px;
+            margin-right: 1rem;
+            display: none;
+        }
+        .icon-header.back-list:hover {
+            background-color: $light-grey;
+        }
     }
 
     .classify-object {
@@ -81,7 +144,8 @@
         .pop-up-layout,
         .create-group,
         .call-video,
-        .back-channel {
+        .back-channel,
+        .pop-up-responsive {
             cursor: pointer;
             padding: 0 0.56rem;
             transition: 0.2s;
@@ -92,8 +156,14 @@
         .pop-up-layout:hover,
         .create-group:hover,
         .call-video:hover,
-        .back-channel:hover {
+        .back-channel:hover,
+        .pop-up-responsive:hover {
             background-color: $light-grey;
         }
+        .pop-up-responsive {
+            display: none;
+        }
     }
+
+    /* width >= 992 and width < 1199px */
 }

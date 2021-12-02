@@ -179,7 +179,7 @@ function UserCard(props) {
                             ) : (
                                 <Avatar
                                     size={96}
-                                    style={{ backgroundColor: '#4c92ff' }}
+                                    style={{ backgroundColor: user.avatarColor }}
                                 >
                                     <span style={{ fontSize: '3rem' }}>
                                         {getSummaryName(user.name)}

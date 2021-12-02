@@ -19,13 +19,15 @@ NavigationChatBox.propTypes = {
     isFocus: PropTypes.bool,
     onScroll: PropTypes.func,
     onViewVotes: PropTypes.func,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 NavigationChatBox.defaultProps = {
     onClickTextFormat: null,
     isFocus: false,
     onScroll: null,
-    onViewVotes: null
+    onViewVotes: null,
+    onOpenInfoBlock: null
 };
 
 const styleBorder = {
@@ -45,7 +47,7 @@ const styleButton = {
 
 
 function NavigationChatBox(props) {
-    const { onClickTextFormat, isFocus, onScroll, onViewVotes } = props;
+    const { onClickTextFormat, isFocus, onScroll, onViewVotes, onOpenInfoBlock } = props;
     const [visiblePop, setVisiblePop] = useState(false);
     const { stickers, currentConversation, conversations } = useSelector(state => state.chat);
     const [isVisibleVote, setIsVisibleVote] = useState(false);
@@ -73,6 +75,9 @@ function NavigationChatBox(props) {
         if (key === 'VIEW_NEWS') {
             if (onViewVotes) {
                 onViewVotes();
+            }
+            if (onOpenInfoBlock) {
+                onOpenInfoBlock();
             }
         }
     }

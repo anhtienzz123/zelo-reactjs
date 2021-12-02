@@ -1,15 +1,11 @@
 import {
+    LeftOutlined,
     NumberOutlined,
-    RollbackOutlined,
-    SearchOutlined,
-    SplitCellsOutlined,
-    TagOutlined,
-    UsergroupAddOutlined,
-    UserOutlined,
-    VideoCameraOutlined
+    RollbackOutlined, SplitCellsOutlined, UsergroupAddOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
-import { createGroup, fetchListMessages, getLastViewOfMembers, setCurrentChannel } from 'features/Chat/slice/chatSlice';
+import { createGroup, fetchListMessages, getLastViewOfMembers, setCurrentChannel, setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,6 +26,8 @@ HeaderOptional.propTypes = {
     isLogin: PropTypes.bool,
     lastLogin: PropTypes.object,
     avatarColor: PropTypes.string,
+    onPopUpInfo: PropTypes.func,
+    onOpenDrawer: PropTypes.func,
 };
 
 HeaderOptional.defaultProps = {
@@ -37,18 +35,27 @@ HeaderOptional.defaultProps = {
     name: '',
     isLogin: false,
     lastLogin: null,
-    avatarColor: ''
+    avatarColor: '',
+    onPopUpInfo: null,
+    onOpenDrawer: null
 
 };
 
 function HeaderOptional(props) {
-    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin, avatarColor } = props;
+    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin, avatarColor, onPopUpInfo, onOpenDrawer } = props;
     const type = typeof avatar;
     const { currentConversation, currentChannel, channels, } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [typeModal, setTypeModal] = useState(1);
     const dispatch = useDispatch();
+
+
+    const handlePopUpInfo = () => {
+        if (onPopUpInfo) {
+            onPopUpInfo()
+        }
+    }
 
     // false đơn, true là nhóm
     const handleAddMemberToGroup = () => {
@@ -105,11 +112,24 @@ function HeaderOptional(props) {
 
     }
 
+    const handleOpenDraweer = () => {
+        if (onOpenDrawer) {
+            onOpenDrawer();
+        }
+    }
+
+    const handleBackToListConver = () => {
+        dispatch(setCurrentConversation(''))
+    }
+
 
     return (
         <div id='header-optional'>
             <div className='header_wrapper'>
                 <div className='header_leftside'>
+                    <div className='icon-header back-list' onClick={handleBackToListConver}>
+                        <LeftOutlined />
+                    </div>
                     <div className='icon_user'>
                         {
                             <ConversationAvatar
@@ -193,7 +213,11 @@ function HeaderOptional(props) {
                     )}
 
                     <div className='icon-header pop-up-layout'>
-                        <SplitCellsOutlined />
+                        <SplitCellsOutlined onClick={handlePopUpInfo} />
+                    </div>
+
+                    <div className='icon-header pop-up-responsive'>
+                        <SplitCellsOutlined onClick={handleOpenDraweer} />
                     </div>
 
 

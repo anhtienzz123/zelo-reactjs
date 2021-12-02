@@ -1,15 +1,24 @@
 import { DoubleLeftOutlined, DownOutlined } from '@ant-design/icons';
-import { Col, message as messageNotify, notification, Row, Spin } from 'antd';
+import {
+    Col,
+    Drawer,
+    message as messageNotify,
+    notification,
+    Row,
+    Spin,
+} from 'antd';
 import conversationApi from 'api/conversationApi';
 import { setJoinChatLayout } from 'app/globalSlice';
 import FilterContainer from 'components/FilterContainer';
 import ModalJoinGroupFromLink from 'components/ModalJoinGroupFromLink';
 import Slider from 'components/Slider';
+import useWindowDimensions from 'hooks/useWindowDimensions';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import { useHistory, useLocation } from 'react-router-dom';
+import renderWidthDrawer from 'utils/DrawerResponsive';
 import DrawerPinMessage from './components/DrawerPinMessage';
 import GroupNews from './components/GroupNews';
 import NutshellPinMessage from './components/NutshellPinMessage/NutshellPinMessage';
@@ -41,11 +50,11 @@ import {
     updateAvavarConver,
     updateChannel,
     updateLastViewOfMembers,
+    updateMemberInconver,
     updateNameChannel,
     updateNameOfConver,
     updateTimeForConver,
     updateVoteMessage,
-    updateMemberInconver,
 } from './slice/chatSlice';
 import './style.scss';
 
@@ -98,8 +107,19 @@ function Chat({ socket, idNewMessage }) {
     const [singleConverFilter, setSingleConverFilter] = useState([]);
     const [mutipleConverFilter, setMutipleConverFilter] = useState([]);
     const [valueClassify, setValueClassify] = useState('0');
+    const [isOpenInfo, setIsOpenInfo] = useState(true);
+    const [openDrawerInfo, setOpenDrawerInfo] = useState(false);
+    const { width } = useWindowDimensions();
+
+    useEffect(() => {
+        if (width > 1199) {
+            setOpenDrawerInfo(false);
+        }
+    }, [width]);
 
     //
+
+    //Get Clientwidth
 
     useEffect(() => {
         refCurrentConversation.current = currentConversation;
@@ -498,6 +518,9 @@ function Chat({ socket, idNewMessage }) {
     };
 
     const handleViewVotes = () => {
+        if (width <= 1199) {
+            setOpenDrawerInfo(true);
+        }
         setVisibleNews(true);
         setTabActiveNews(1);
     };
@@ -568,7 +591,14 @@ function Chat({ socket, idNewMessage }) {
 
             <div id="main-chat-wrapper">
                 <Row gutter={[0, 0]}>
-                    <Col span={5}>
+                    <Col
+                        span={5}
+                        xl={{ span: 5 }}
+                        lg={{ span: 6 }}
+                        md={{ span: 7 }}
+                        sm={{ span: currentConversation ? 0 : 24 }}
+                        xs={{ span: currentConversation ? 0 : 24 }}
+                    >
                         <div className="main-conversation">
                             <div
                                 className={`main-conversation_search-bar ${
@@ -605,13 +635,26 @@ function Chat({ socket, idNewMessage }) {
                             )}
                         </div>
                     </Col>
-
                     {path === '/chat' && currentConversation ? (
                         <>
-                            <Col span={13}>
+                            <Col
+                                span={isOpenInfo ? 13 : 19}
+                                xl={{ span: isOpenInfo ? 13 : 19 }}
+                                lg={{ span: 18 }}
+                                md={{ span: 17 }}
+                                sm={{ span: currentConversation ? 24 : 0 }}
+                                xs={{ span: currentConversation ? 24 : 0 }}
+                            >
                                 <div className="main_chat">
                                     <div className="main_chat-header">
-                                        <HeaderChatContainer />
+                                        <HeaderChatContainer
+                                            onPopUpInfo={() =>
+                                                setIsOpenInfo(!isOpenInfo)
+                                            }
+                                            onOpenDrawer={() =>
+                                                setOpenDrawerInfo(true)
+                                            }
+                                        />
                                     </div>
 
                                     <div className="main_chat-body">
@@ -768,13 +811,56 @@ function Chat({ socket, idNewMessage }) {
                                                     handleOnRemoveMention
                                                 }
                                                 onViewVotes={handleViewVotes}
+                                                onOpenInfoBlock={() =>
+                                                    setIsOpenInfo(true)
+                                                }
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </Col>
-                            <Col span={6}>
+                            <Col
+                                span={isOpenInfo ? 6 : 0}
+                                xl={{ span: isOpenInfo ? 6 : 0 }}
+                                lg={{ span: 0 }}
+                                md={{ span: 0 }}
+                                sm={{ span: 0 }}
+                                xs={{ span: 0 }}
+                            >
                                 <div className="main-info">
+                                    <Drawer
+                                        placement="right"
+                                        closable={false}
+                                        onClose={() => setOpenDrawerInfo(false)}
+                                        visible={openDrawerInfo}
+                                        key="right"
+                                        className="drawer-responsive"
+                                        bodyStyle={{ padding: 0 }}
+                                        width={`${renderWidthDrawer(width)}%`}
+                                    >
+                                        <>
+                                            {visibleNews ? (
+                                                <GroupNews
+                                                    tabActive={tabActiveInNews}
+                                                    onBack={handleOnBack}
+                                                    onChange={
+                                                        handleChangeActiveKey
+                                                    }
+                                                />
+                                            ) : (
+                                                <InfoContainer
+                                                    onViewChannel={
+                                                        handleChangeViewChannel
+                                                    }
+                                                    socket={socket}
+                                                    onOpenInfoBlock={() =>
+                                                        setIsOpenInfo(true)
+                                                    }
+                                                />
+                                            )}
+                                        </>
+                                    </Drawer>
+
                                     {visibleNews ? (
                                         <GroupNews
                                             tabActive={tabActiveInNews}
@@ -787,13 +873,23 @@ function Chat({ socket, idNewMessage }) {
                                                 handleChangeViewChannel
                                             }
                                             socket={socket}
+                                            onOpenInfoBlock={() =>
+                                                setIsOpenInfo(true)
+                                            }
                                         />
                                     )}
                                 </div>
                             </Col>
                         </>
                     ) : (
-                        <Col span={19}>
+                        <Col
+                            span={18}
+                            xl={{ span: 18 }}
+                            lg={{ span: 18 }}
+                            md={{ span: 17 }}
+                            sm={{ span: 0 }}
+                            xs={{ span: 0 }}
+                        >
                             <div className="landing-app">
                                 <div className="title-welcome">
                                     <div className="title-welcome-heading">

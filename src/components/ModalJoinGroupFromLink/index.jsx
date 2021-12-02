@@ -2,15 +2,8 @@ import { Col, Divider, message, Modal, Row } from 'antd';
 import conversationApi from 'api/conversationApi';
 import ConversationAvatar from 'features/Chat/components/ConversationAvatar';
 import PersonalIcon from 'features/Chat/components/PersonalIcon';
-import {
-    fetchListMessages,
-    getLastViewOfMembers,
-    getMembersConversation,
-    setTypeOfConversation
-} from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import MODAL_JOIN_FROM_LINK_STYLE from './ModalJoinGroupFromLinkStyle';
 import './style.scss';
 
@@ -24,16 +17,20 @@ ModalJoinGroupFromLink.defaultProps = {
 }
 
 function ModalJoinGroupFromLink({ isVisible, info, onCancel }) {
+    console.log('info', info);
 
 
     const { _id, name, users } = info;
-    const dispatch = useDispatch();
 
     const handleCancel = () => {
         if (onCancel) {
             onCancel()
         }
     }
+    const tempAvatar = users.map(ele => ({
+        avatar: ele.avatar,
+        avatarColor: ele.avatarColor
+    }))
 
 
     const handleOk = async () => {
@@ -69,10 +66,9 @@ function ModalJoinGroupFromLink({ isVisible, info, onCancel }) {
                     <div className="modal-join-link_avatar">
                         <ConversationAvatar
                             totalMembers={users.length}
-                            avatar={users.map(ele => ele.avatar)}
+                            avatar={tempAvatar}
                             type={true}
                             isGroupCard={true}
-                            demension={52}
                         />
                     </div>
 
@@ -97,6 +93,7 @@ function ModalJoinGroupFromLink({ isVisible, info, onCancel }) {
                                         <PersonalIcon
                                             avatar={ele.avatar}
                                             name={ele.name}
+                                            color={ele.avatarColor}
 
                                         />
                                     </div>

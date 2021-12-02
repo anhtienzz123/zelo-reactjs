@@ -1,8 +1,10 @@
 import { CaretDownOutlined, FilterOutlined } from '@ant-design/icons';
 import { Button, Col, Dropdown, Menu, Row, Spin } from 'antd';
+import conversationApi from 'api/conversationApi';
+import ICON_CONTACT from 'assets/images/icon/contacts_icon.png';
 import ICON_FRIEND from 'assets/images/icon/icon_friend.png';
 import ICON_GROUP from 'assets/images/icon/icon_group.png';
-import ICON_CONTACT from 'assets/images/icon/contacts_icon.png';
+import FilterContainer from 'components/FilterContainer';
 import { getValueFromKey } from 'constants/filterFriend';
 import SearchContainer from 'features/Chat/containers/SearchContainer';
 import PropTypes from 'prop-types';
@@ -11,11 +13,12 @@ import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import { sortGroup } from 'utils/groupUtils';
 import HeaderFriend from './components/HeaderFiend';
+import ListContact from './components/ListContact';
 import ListFriend from './components/ListFriend';
 import ListGroup from './components/ListGroup';
 import ListMyFriendRequest from './components/ListMyRequestFriend';
 import ListRequestFriend from './components/ListRequestFriend';
-
+import SuggestList from './components/SuggestList';
 import {
     fetchFriends,
     fetchListGroup,
@@ -26,10 +29,6 @@ import {
 } from './friendSlice';
 import FRIEND_STYLE from './friendStyle';
 import './style.scss';
-import ListContact from './components/ListContact';
-import SuggestList from './components/SuggestList';
-import FilterContainer from 'components/FilterContainer';
-import conversationApi from 'api/conversationApi';
 
 Friend.propTypes = {
     socket: PropTypes.object,
@@ -96,33 +95,37 @@ function Friend({ socket }) {
     }, []);
 
     const handleMenuLeftSelect = ({ _, key }) => {
-        setCurrentFilterLeft(key);
-        if (key === '2') {
-            const newGroup = groupCurrent.filter(
-                (ele) => ele.leaderId === user._id
-            );
+        if (groups.length > 0) {
+            setCurrentFilterLeft(key);
+            if (key === '2') {
+                const newGroup = groupCurrent.filter(
+                    (ele) => ele.leaderId === user._id
+                );
 
-            setGroupCurrent(newGroup);
-        }
-        if (key === '1') {
-            console.log(refFiller.current);
-            setGroupCurrent(sortGroup(refFiller.current, keySort));
+                setGroupCurrent(newGroup);
+            }
+            if (key === '1') {
+                console.log(refFiller.current);
+                setGroupCurrent(sortGroup(refFiller.current, keySort));
+            }
         }
     };
 
     const handleMenuRightSelect = ({ _, key }) => {
-        setCurrentFilterRight(key);
-        let newGroup = [];
-        if (key === '2') {
-            newGroup = sortGroup(groupCurrent, 0);
-            setKeySort(0);
-        }
-        if (key === '1') {
-            newGroup = sortGroup(groupCurrent, 1);
-            setKeySort(1);
-        }
+        if (groups.length > 0) {
+            setCurrentFilterRight(key);
+            let newGroup = [];
+            if (key === '2') {
+                newGroup = sortGroup(groupCurrent, 0);
+                setKeySort(0);
+            }
+            if (key === '1') {
+                newGroup = sortGroup(groupCurrent, 1);
+                setKeySort(1);
+            }
 
-        setGroupCurrent(newGroup);
+            setGroupCurrent(newGroup);
+        }
     };
 
     const menuLeft = (

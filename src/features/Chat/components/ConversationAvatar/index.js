@@ -42,7 +42,6 @@ function ConversationAvatar({
     avatarColor,
 }) {
     const renderAvatar = () => {
-        console.log('conversation avatar', avatar);
         let tempAvatar = [];
         for (let index = 0; index < totalMembers; index++) {
             if (avatar[index]?.avatar) {

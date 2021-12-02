@@ -36,14 +36,11 @@ function ListGroup({ data }) {
             cancelText: 'Hủy',
             onOk: async () => {
                 try {
-                    console.log('Chay try')
                     await conversationApi.leaveGroup(id);
                     message.success(`Rời nhóm thành công`);
                     socket.emit('leave-conversation', id);
                     dispatch(fetchListGroup({ name: '', type: 2 }));
-
                 } catch (error) {
-                    console.log('Chay catch')
                     message.error(`Rời nhóm thất bại`);
                 }
 
