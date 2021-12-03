@@ -167,7 +167,6 @@ export const getLastViewOfMembers = createAsyncThunk(
         const lastViews = await conversationApi.getLastViewOfMembers(
             conversationId
         );
-        console.log('ádfasdf', lastViews);
 
         return lastViews;
     }

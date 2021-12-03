@@ -29,6 +29,7 @@ import {
     updateMyRequestFriend,
     updateRequestFriends,
 } from 'features/Friend/friendSlice';
+import { fetchInfoWebs } from 'features/Home/homeSlice';
 import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -71,6 +72,7 @@ function ChatLayout(props) {
         dispatch(fetchListConversations({}));
         dispatch(fetchAllSticker());
         dispatch(setTabActive(1));
+        dispatch(fetchInfoWebs());
     }, []);
 
     useEffect(() => {

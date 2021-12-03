@@ -53,7 +53,14 @@ function ListGroup({ data }) {
         <Row gutter={[16, 16]}>
             {data && data.length > 0 && (
                 data.map((ele, index) => (
-                    <Col span={6} >
+                    <Col
+                        span={6}
+                        xl={{ span: 6 }}
+                        lg={{ span: 8 }}
+                        md={{ span: 12 }}
+                        sm={{ span: 12 }}
+                        xs={{ span: 24 }}
+                    >
                         <GroupCard
                             data={ele}
                             key={index}

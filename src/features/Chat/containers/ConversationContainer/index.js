@@ -21,9 +21,15 @@ import './style.scss';
 
 ConversationContainer.propTypes = {
     valueClassify: PropTypes.string.isRequired,
+    onClickConver: PropTypes.func,
 };
 
-function ConversationContainer({ valueClassify }) {
+ConversationContainer.defaultProps = {
+    valueClassify: PropTypes.string.isRequired,
+    onClickConver: null,
+};
+
+function ConversationContainer({ valueClassify, onClickConver }) {
     const dispatch = useDispatch();
     const { conversations, classifies } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
@@ -53,6 +59,10 @@ function ConversationContainer({ valueClassify }) {
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
         dispatch(fetchChannels({ conversationId }));
+
+        if (onClickConver) {
+            onClickConver;
+        }
     };
 
     const handleOnClickItem = (e, id) => {

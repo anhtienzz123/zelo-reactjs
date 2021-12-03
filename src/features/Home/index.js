@@ -7,12 +7,7 @@ import Developer from './Components/Developer';
 import Feature from './Components/Feature';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
-import {
-    fetchDeveloper,
-    fetchFeatures,
-    fetchInfoApp,
-    fetchInfoWebApp,
-} from './homeSlice';
+import { fetchInfoWebs } from './homeSlice';
 import './style.scss';
 
 function Home(props) {
@@ -21,24 +16,17 @@ function Home(props) {
         useSelector((state) => state.home);
 
     useEffect(() => {
-        dispatch(fetchDeveloper());
-        dispatch(fetchInfoApp());
-        dispatch(fetchFeatures());
-        dispatch(fetchInfoWebApp());
+        dispatch(fetchInfoWebs());
     }, []);
 
     return (
         <Spin size="large" spinning={isLoading}>
             <div id="home_page">
-                <Header data={infoApp.length > 0 && infoApp[0]} />
+                <Header data={infoApp} />
                 <Feature data={features} />
-                <AboutWebApp data={infoWebApps.length > 0 && infoWebApps[0]} />
+                <AboutWebApp data={infoWebApps} />
                 <Developer data={developers} />
-                <Footer
-                    data={
-                        infoWebApps.length > 0 && infoWebApps[0].additionalInfo
-                    }
-                />
+                <Footer data={infoWebApps} />
             </div>
         </Spin>
     );

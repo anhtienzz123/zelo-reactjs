@@ -445,7 +445,6 @@ function ModalViewOption({ isModalVisible, onCancel, data, onShowDetail }) {
                                         <Button
                                             type="default"
                                             onClick={() => add()}
-                                            style={{ width: '30%' }}
                                             icon={<PlusOutlined />}
 
                                         >

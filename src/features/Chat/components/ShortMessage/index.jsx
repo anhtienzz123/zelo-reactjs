@@ -13,10 +13,10 @@ import {
 } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { FcBarChart } from "react-icons/fc";
-
+import { useSelector } from 'react-redux';
 import './style.scss';
+
 ShortMessage.propTypes = {
     message: PropTypes.object,
     type: PropTypes.bool,
@@ -161,6 +161,13 @@ function ShortMessage({ message, type }) {
                                 <span>{renderName()}<NumberOutlined />&nbsp;đã tạo Channel</span>
                             )
                         }
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'Tham gia từ link')) && (
+                                <span>{renderName()} đã tham gia nhóm </span>
+                            )
+                        }
+
 
 
                         {

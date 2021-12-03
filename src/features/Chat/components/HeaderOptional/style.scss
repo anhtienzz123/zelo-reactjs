@@ -18,15 +18,6 @@
         }
     }
 
-    @media only screen and (min-width: 768px) and (max-width: 991px) {
-        .pop-up-layout {
-            display: none;
-        }
-        .pop-up-responsive {
-            display: inline-block;
-        }
-    }
-
     @media only screen and (min-width: 577px) and (max-width: 767px) {
         .icon-header.back-list {
             display: block;
@@ -59,6 +50,7 @@
     justify-content: space-between;
     align-items: center;
     height: 68px;
+    overflow: hidden;
 
     .header_leftside {
         display: flex;
@@ -103,6 +95,10 @@
             .info_user-name {
                 font-weight: 600;
                 font-size: 1.8rem;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                word-wrap: break-word;
             }
             .small-bar {
                 width: 0.01rem;

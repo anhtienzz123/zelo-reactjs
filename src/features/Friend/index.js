@@ -65,7 +65,7 @@ function Friend({ socket }) {
     const [singleConverFilter, setSingleConverFilter] = useState([]);
     const [mutipleConverFilter, setMutipleConverFilter] = useState([]);
 
-    //
+    const [isActiveTab, setActiveTab] = useState(false);
 
     useEffect(() => {
         if (groups.length > 0) {
@@ -167,16 +167,21 @@ function Friend({ socket }) {
             );
             setSingleConverFilter(single);
             setMutipleConverFilter(mutiple);
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) {}
     };
 
     return (
         <Spin spinning={isLoading}>
             <div id="main-friend_wrapper">
                 <Row gutter={[0, 0]}>
-                    <Col span={5}>
+                    <Col
+                        span={5}
+                        xl={{ span: 5 }}
+                        lg={{ span: 6 }}
+                        md={{ span: 7 }}
+                        sm={{ span: isActiveTab ? 0 : 24 }}
+                        xs={{ span: isActiveTab ? 0 : 24 }}
+                    >
                         <div className="main-friend_sidebar">
                             <div className="main-friend_sidebar_search-bar">
                                 <SearchContainer
@@ -202,7 +207,10 @@ function Friend({ socket }) {
                                     <div className="main-friend_sidebar_bottom">
                                         <div
                                             className="main-friend_sidebar_option main-friend_sidebar_option--add-fiend"
-                                            onClick={() => setSubTab(0)}
+                                            onClick={() => {
+                                                setSubTab(0);
+                                                setActiveTab(true);
+                                            }}
                                         >
                                             <div className="main-friend_sidebar_option_img">
                                                 <img
@@ -218,7 +226,10 @@ function Friend({ socket }) {
 
                                         <div
                                             className="main-friend_sidebar_option main-friend_sidebar_option--groups"
-                                            onClick={() => setSubTab(1)}
+                                            onClick={() => {
+                                                setSubTab(1);
+                                                setActiveTab(true);
+                                            }}
                                         >
                                             <div className="main-friend_sidebar_option_img">
                                                 <img
@@ -234,7 +245,10 @@ function Friend({ socket }) {
 
                                         <div
                                             className="main-friend_sidebar_option main-friend_sidebar_option--contact"
-                                            onClick={() => setSubTab(2)}
+                                            onClick={() => {
+                                                setSubTab(2);
+                                                setActiveTab(true);
+                                            }}
                                         >
                                             <div className="main-friend_sidebar_option_img">
                                                 <img
@@ -264,10 +278,20 @@ function Friend({ socket }) {
                         </div>
                     </Col>
 
-                    <Col span={19}>
+                    <Col
+                        span={19}
+                        xl={{ span: 19 }}
+                        lg={{ span: 18 }}
+                        md={{ span: 17 }}
+                        sm={{ span: isActiveTab ? 24 : 0 }}
+                        xs={{ span: isActiveTab ? 24 : 0 }}
+                    >
                         <div className="main-friend_body">
                             <div className="main-friend_body__header">
-                                <HeaderFriend subtab={subTab} />
+                                <HeaderFriend
+                                    onBack={() => setActiveTab(false)}
+                                    subtab={subTab}
+                                />
                             </div>
                             <div className="main-friend_body__section">
                                 <div className="main-friend_body_item">
@@ -277,7 +301,7 @@ function Friend({ socket }) {
                                         autoHideDuration={200}
                                         style={{ height: '100%' }}
                                     >
-                                        {subTab === 1 ? (
+                                        {subTab === 1 && (
                                             <>
                                                 <div className="main-friend_body__filter">
                                                     <div className="main-friend_body__filter--left">
@@ -333,7 +357,9 @@ function Friend({ socket }) {
                                                     />
                                                 </div>
                                             </>
-                                        ) : subTab === 0 ? (
+                                        )}
+
+                                        {subTab === 0 && (
                                             <div className="main-friend_body_list-request">
                                                 <div className="main-friend_body_title-list">
                                                     Lời mới kết bạn (
@@ -359,7 +385,9 @@ function Friend({ socket }) {
                                                     />
                                                 </div>
                                             </div>
-                                        ) : (
+                                        )}
+
+                                        {subTab === 2 && (
                                             <div>
                                                 <ListContact data={phoneBook} />
                                             </div>

@@ -44,7 +44,15 @@ function SuggestList({ data }) {
                 {data.map((ele, index) => {
                     if (ele.status === 'NOT_FRIEND') {
                         return (
-                            <Col span={6} >
+                            <Col
+                                span={6}
+                                xl={{ span: 6 }}
+                                lg={{ span: 8 }}
+                                md={{ span: 12 }}
+                                sm={{ span: 12 }}
+                                xs={{ span: 24 }}
+
+                            >
                                 <SuggestCard
                                     data={ele}
                                     key={index}

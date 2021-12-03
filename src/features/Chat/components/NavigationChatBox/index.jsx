@@ -1,5 +1,6 @@
 import {
     DashOutlined, FileImageOutlined,
+    FontColorsOutlined,
     LinkOutlined, SmileOutlined
 } from '@ant-design/icons';
 import { Button, Dropdown, Menu, Popover } from 'antd';
@@ -163,7 +164,7 @@ function NavigationChatBox(props) {
 
                 <li className='item-chat-box'>
                     <div title='Định dạng tin nhắn' onClick={handleOnClickTextFormat}>
-                        <IoText />
+                        <FontColorsOutlined />
                     </div>
                 </li>
 

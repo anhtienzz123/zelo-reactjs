@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
 import { createGroup, fetchListMessages, getLastViewOfMembers, setCurrentChannel, setCurrentConversation } from 'features/Chat/slice/chatSlice';
+import useWindowDimensions from 'hooks/useWindowDimensions';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,6 +50,16 @@ function HeaderOptional(props) {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [typeModal, setTypeModal] = useState(1);
     const dispatch = useDispatch();
+    const { width } = useWindowDimensions();
+
+
+    const handleCutText = (text) => {
+        if (width < 577) {
+            return text.slice(0, 14) + '...';
+        }
+        return text;
+    }
+
 
 
     const handlePopUpInfo = () => {
@@ -145,7 +156,7 @@ function HeaderOptional(props) {
 
                     <div className='info_user'>
                         <div className='info_user-name'>
-                            <span>{name}</span>
+                            <span>{handleCutText(name)}</span>
                         </div>
 
                         {currentChannel ? (

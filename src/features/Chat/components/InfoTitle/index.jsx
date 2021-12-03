@@ -48,13 +48,7 @@ function InfoTitle(props) {
 
             <span>{text}</span>
 
-            {isSelected &&
-                (
-                    <div className="select-text" onClick={handleSelect}>
-                        <span>Chọn</span>
-                    </div>
-                )
-            }
+
 
         </div>
     );

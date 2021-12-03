@@ -20,7 +20,6 @@ function ReplyMessage({ replyMessage }) {
     const [visible, setVisible] = useState(false);
 
     const handleCancelModal = () => {
-        console.log('HOANG PHUC');
         setVisible(false);
     }
 

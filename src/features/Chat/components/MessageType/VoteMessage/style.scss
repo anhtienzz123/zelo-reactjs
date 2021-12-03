@@ -76,3 +76,26 @@
         transition: 0.2s;
     }
 }
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+}
+
+@media only screen and (min-width: 577px) and (max-width: 767px) {
+    .vote-message {
+        min-width: 28.2rem;
+    }
+    .vote-message_item {
+        width: 28rem;
+    }
+}
+@media only screen and (max-width: 576px) {
+    .vote-message {
+        min-width: 28.2rem;
+    }
+    .vote-message_item {
+        width: 28rem;
+    }
+}

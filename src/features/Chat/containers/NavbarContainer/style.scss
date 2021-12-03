@@ -60,12 +60,14 @@ ul {
                 transition: 0.2s;
                 cursor: pointer;
                 width: 100%;
-
-                // width: 64px;
-                // height: 60px;
+                height: 6rem;
 
                 &--icon {
-                    padding: 1.4rem 0;
+                    height: 100%;
+                    width: 100%;
+                    justify-content: center;
+                    align-items: center;
+                    display: flex;
                     color: $white-color;
                     .anticon {
                         color: $white-color;

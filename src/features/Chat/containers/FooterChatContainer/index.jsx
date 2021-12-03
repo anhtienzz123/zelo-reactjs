@@ -197,20 +197,20 @@ function FooterChatContainer({ onScrollWhenSentText, onOpenInfoBlock, socket, re
     }
 
     const handleSentMessage = () => {
-        if (showTextFormat) {
-            sendMessage(valueText, 'HTML');
-        } else {
-            sendMessage(valueText, 'TEXT');
+        if (valueText.trim()) {
+            if (showTextFormat) {
+                sendMessage(valueText, 'HTML');
+            } else {
+                sendMessage(valueText, 'TEXT');
+            }
+            setValueText('');
+            socket.emit('not-typing', currentConversation, user);
         }
-        setValueText('');
-        socket.emit('not-typing', currentConversation, user);
+
+
     };
 
     const handleOnChageInput = (value) => {
-
-
-
-
         if (mentionSelect.length > 0) {
             mentionSelect.forEach((ele, index) => {
                 const regex = new RegExp(`@${ele.name}`)
@@ -350,9 +350,6 @@ function FooterChatContainer({ onScrollWhenSentText, onOpenInfoBlock, socket, re
                             onBlur={handleOnBlur}
                             onSelect={handleSelectMention}
                             split=" "
-
-
-
                         >
                             {checkGroup && (
                                 mentionList.map((ele, index) => {
@@ -399,15 +396,11 @@ function FooterChatContainer({ onScrollWhenSentText, onOpenInfoBlock, socket, re
 
 
                     <div className='like-emoji'>
-                        {isShowLike ? (
-                            <LikeTwoTone twoToneColor='#faad14' />
-                        ) : (
-                            <div
-                                className='send-text-thumb'
-                                onClick={handleSentMessage}>
-                                <SendOutlined />
-                            </div>
-                        )}
+                        <div
+                            className='send-text-thumb'
+                            onClick={handleSentMessage}>
+                            <SendOutlined />
+                        </div>
                     </div>
                 </div>
             </div>

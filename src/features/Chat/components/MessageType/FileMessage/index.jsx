@@ -32,7 +32,7 @@ function FileMessage({ content, children, dateAt, isSeen }) {
 
     return (
         <>
-            <div className='file_info-wrapper'>
+            <div className='file_info-wrapper message'>
                 <div className="file_info">
                     <div className="file_info-icon">
                         <FileIcon
