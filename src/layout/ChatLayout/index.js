@@ -101,7 +101,6 @@ function ChatLayout(props) {
             'create-individual-conversation-when-was-friend',
             (conversationId) => {
                 dispatch(fetchConversationById({ conversationId }));
-                console.log('hai nguoi la');
             }
         );
     }, []);
@@ -129,11 +128,6 @@ function ChatLayout(props) {
         socket.on(
             'new-message-of-channel',
             (conversationId, channelId, message) => {
-                console.log('message in channel', {
-                    conversationId,
-                    channelId,
-                    message,
-                });
                 dispatch(
                     addMessageInChannel({ conversationId, channelId, message })
                 );
@@ -182,7 +176,6 @@ function ChatLayout(props) {
 
         // xóa kết bạn
         socket.on('deleted-friend', (_id) => {
-            console.log('id', _id);
             dispatch(updateFriend(_id));
             dispatch(updateFriendChat(_id));
         });

@@ -11,7 +11,6 @@ import {
 } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     getMembersConversation,
@@ -21,12 +20,10 @@ import './style.scss';
 
 ConversationContainer.propTypes = {
     valueClassify: PropTypes.string.isRequired,
-    onClickConver: PropTypes.func,
 };
 
 ConversationContainer.defaultProps = {
-    valueClassify: PropTypes.string.isRequired,
-    onClickConver: null,
+    valueClassify: '',
 };
 
 function ConversationContainer({ valueClassify, onClickConver }) {
@@ -59,10 +56,6 @@ function ConversationContainer({ valueClassify, onClickConver }) {
         dispatch(getMembersConversation({ conversationId }));
         dispatch(setTypeOfConversation(conversationId));
         dispatch(fetchChannels({ conversationId }));
-
-        if (onClickConver) {
-            onClickConver;
-        }
     };
 
     const handleOnClickItem = (e, id) => {

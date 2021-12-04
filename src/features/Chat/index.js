@@ -122,12 +122,7 @@ function Chat({ socket, idNewMessage }) {
     //Get Clientwidth
 
     useEffect(() => {
-        console.log('Run');
         refCurrentConversation.current = currentConversation;
-        console.log(
-            ' refCurrentConversation.current ',
-            refCurrentConversation.current
-        );
     }, [currentConversation]);
 
     useEffect(() => {
@@ -205,15 +200,9 @@ function Chat({ socket, idNewMessage }) {
             dispatch(fetchPinMessages({ conversationId: currentConversation }));
         }
     }, [currentConversation]);
-    // console.log('currentConversation out', currentConversation);
-    // console.log('refCurrent out', refCurrentConversation.current);
 
     useEffect(() => {
         if (!isJoinChatLayout) {
-            // console.log('Chay socket');
-            // console.log('currentConversation', currentConversation);
-            // console.log('refCurrent', refCurrentConversation.current);
-
             socket.on('delete-conversation', (conversationId) => {
                 const conver = refConversations.current.find(
                     (ele) => ele._id === conversationId
@@ -246,27 +235,10 @@ function Chat({ socket, idNewMessage }) {
             socket.on(
                 'add-reaction',
                 ({ conversationId, channelId, messageId, user, type }) => {
-                    console.log('Hứng');
-                    // console.log({
-                    //     conversationId,
-                    //     channelId,
-                    //     messageId,
-                    //     user,
-                    //     type,
-                    // });
-                    console.log(' !channelId', !channelId);
-                    console.log(
-                        'refCurrentConversation.current',
-                        refCurrentConversation.current
-                    );
-                    console.log('conversationId', conversationId);
-                    console.log('channelId', channelId);
-
                     if (
                         refCurrentConversation.current === conversationId &&
                         refCurrentChannel.current === channelId
                     ) {
-                        console.log('vào đây 1');
                         dispatch(setReactionMessage({ messageId, user, type }));
                     }
 
@@ -274,7 +246,6 @@ function Chat({ socket, idNewMessage }) {
                         !channelId &&
                         refCurrentConversation.current === conversationId
                     ) {
-                        console.log('vào đây 2');
                         dispatch(setReactionMessage({ messageId, user, type }));
                     }
                 }

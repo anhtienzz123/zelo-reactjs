@@ -11,6 +11,7 @@ import ChatLayout from 'layout/ChatLayout';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { fetchInfoWebs } from 'features/Home/homeSlice';
 import './scss/App.scss';
 
 function App() {
@@ -27,6 +28,10 @@ function App() {
         };
 
         fetchProfile();
+    }, []);
+
+    useEffect(() => {
+        dispatch(fetchInfoWebs());
     }, []);
 
     if (!isFetch) return '';
