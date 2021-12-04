@@ -1,7 +1,7 @@
 import { Badge, Button, Dropdown, Menu } from 'antd';
 import SubMenuClassify from 'components/SubMenuClassify';
-import { fetchListMessages, setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import ConversationAvatar from 'features/Chat/components/ConversationAvatar';
+import { fetchListMessages, setCurrentConversation } from 'features/Chat/slice/chatSlice';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -78,7 +78,7 @@ function GroupCard({ data, onRemove }) {
         <Dropdown overlay={menu} trigger={['contextMenu']}>
             <div className='group-card' >
 
-                <div className="group-card__avatar-group" onClick={handleOnClick}>
+                <div className="group-card__avatar-group">
                     <ConversationAvatar
                         avatar={data.avatar}
                         demension={52}
@@ -116,13 +116,13 @@ function GroupCard({ data, onRemove }) {
 
 
     return (
-        <>
+        <div onClick={handleOnClick}>
             {classify ? (<Badge.Ribbon text={classify.name} color={classify.color.code} placement='start'>
                 {mainCard}
             </Badge.Ribbon>) : (
                 mainCard
             )}
-        </>
+        </div>
 
 
     );

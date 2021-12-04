@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button, Form, Input, message, Modal } from 'antd';
-import './style.scss';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message, Modal } from 'antd';
 import voteApi from 'api/voteApi';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import './style.scss';
 
 ModalCreateVote.propTypes = {
     visible: PropTypes.bool,
@@ -139,7 +139,6 @@ function ModalCreateVote({ visible, onCancel }) {
                                 <Button
                                     type="default"
                                     onClick={() => add()}
-                                    style={{ width: '30%' }}
                                     icon={<PlusOutlined />}
 
                                 >

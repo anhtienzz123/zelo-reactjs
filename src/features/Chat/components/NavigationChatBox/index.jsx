@@ -1,5 +1,6 @@
 import {
     DashOutlined, FileImageOutlined,
+    FontColorsOutlined,
     LinkOutlined, SmileOutlined
 } from '@ant-design/icons';
 import { Button, Dropdown, Menu, Popover } from 'antd';
@@ -19,13 +20,15 @@ NavigationChatBox.propTypes = {
     isFocus: PropTypes.bool,
     onScroll: PropTypes.func,
     onViewVotes: PropTypes.func,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 NavigationChatBox.defaultProps = {
     onClickTextFormat: null,
     isFocus: false,
     onScroll: null,
-    onViewVotes: null
+    onViewVotes: null,
+    onOpenInfoBlock: null
 };
 
 const styleBorder = {
@@ -45,7 +48,7 @@ const styleButton = {
 
 
 function NavigationChatBox(props) {
-    const { onClickTextFormat, isFocus, onScroll, onViewVotes } = props;
+    const { onClickTextFormat, isFocus, onScroll, onViewVotes, onOpenInfoBlock } = props;
     const [visiblePop, setVisiblePop] = useState(false);
     const { stickers, currentConversation, conversations } = useSelector(state => state.chat);
     const [isVisibleVote, setIsVisibleVote] = useState(false);
@@ -73,6 +76,9 @@ function NavigationChatBox(props) {
         if (key === 'VIEW_NEWS') {
             if (onViewVotes) {
                 onViewVotes();
+            }
+            if (onOpenInfoBlock) {
+                onOpenInfoBlock();
             }
         }
     }
@@ -158,7 +164,7 @@ function NavigationChatBox(props) {
 
                 <li className='item-chat-box'>
                     <div title='Định dạng tin nhắn' onClick={handleOnClickTextFormat}>
-                        <IoText />
+                        <FontColorsOutlined />
                     </div>
                 </li>
 

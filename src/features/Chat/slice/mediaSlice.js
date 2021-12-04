@@ -7,8 +7,6 @@ export const fetchAllMedia = createAsyncThunk(
     async (params, thunkApi) => {
         const { conversationId } = params;
         const media = await mediaApi.fetchAllMedia(conversationId);
-
-        console.log('media: ', media);
         return media;
     }
 );

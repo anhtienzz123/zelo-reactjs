@@ -1,45 +1,27 @@
+import { Carousel } from 'antd';
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import SliderItem from '../SliderItem';
-import AliceCarousel from 'react-alice-carousel';
-import 'react-alice-carousel/lib/alice-carousel.css';
-import { SLIDER_IMAGES } from 'constants/images';
-Slider.propTypes = {};
 
-function Slider(props) {
-    const items = [
-        <SliderItem
-            src={SLIDER_IMAGES.SLIDER_1}
-            title='Chat nhóm với đồng nghiệp'
-            detail='Tiện lợi hơn nhờ các công cụ hỗ trợ chat trên máy tính'
-        />,
+function Slider() {
 
-        <SliderItem
-            src={SLIDER_IMAGES.SLIDER_2}
-            title='Chat nhóm với đồng nghiệp'
-            detail='Tiện lợi hơn nhờ các công cụ hỗ trợ chat trên máy tính'
-        />,
+    const { features } = useSelector(state => state.home);
 
-        <SliderItem
-            src={SLIDER_IMAGES.SLIDER_3}
-            title='Chat nhóm với đồng nghiệp'
-            detail='Tiện lợi hơn nhờ các công cụ hỗ trợ chat trên máy tính'
-        />,
-    ];
 
     return (
-        <AliceCarousel
-            items={items}
-            autoHeight={true}
-            autoWidth={true}
-            controlsStrategy='alternate'
-            autoPlay={true}
-            animationDuration={2000}
-            disableButtonsControls={true}
-            infinite={true}
-            autoPlayDirection={true}
-            keyboardNavigation={true}
-        />
+
+        <Carousel autoplay dots={false}>
+            {features.map((ele, index) => (
+
+                <SliderItem
+                    key={index}
+                    src={ele.image}
+                    title={ele.title}
+                    detail={ele.descrpition}
+                />
+
+            ))}
+        </Carousel>
     );
 }
 

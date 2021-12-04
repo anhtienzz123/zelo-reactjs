@@ -1,36 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import zeloInfoAPi from 'api/zeloInfoApi';
+import InfoWebApi from 'api/infoWebApi';
 
 const KEY = 'HOME';
 
-export const fetchDeveloper = createAsyncThunk(
-    `${KEY}/fetchDeveloper`,
-    async () => {
-        const data = await zeloInfoAPi.getDeveloper();
-        return data;
-    }
-);
-
-export const fetchInfoApp = createAsyncThunk(
-    `${KEY}/fetchInfoApp`,
-    async () => {
-        const data = await zeloInfoAPi.getInfoApp();
-        return data;
-    }
-);
-
-export const fetchFeatures = createAsyncThunk(
-    `${KEY}/fetchFeatures`,
-    async () => {
-        const data = await zeloInfoAPi.getFeature();
-        return data;
-    }
-);
-
-export const fetchInfoWebApp = createAsyncThunk(
+export const fetchInfoWebs = createAsyncThunk(
     `${KEY}/fetchInfoWebApp`,
     async () => {
-        const data = await zeloInfoAPi.getInfoWebApp();
+        const data = await InfoWebApi.getInfoWeb();
         return data;
     }
 );
@@ -39,10 +15,10 @@ const homeSlice = createSlice({
     name: KEY,
     initialState: {
         developers: [],
-        infoApp: [],
+        infoApp: {},
         isLoading: false,
         features: [],
-        infoWebApps: [],
+        infoWebApps: {},
     },
     reducers: {
         setLoading: (state, action) => {
@@ -51,59 +27,24 @@ const homeSlice = createSlice({
     },
 
     extraReducers: {
-        [fetchDeveloper.fulfilled]: (state, action) => {
-            state.developers = action.payload;
+        [fetchInfoWebs.fulfilled]: (state, action) => {
+            const data = action.payload;
+            state.infoWebApps = data.find(
+                (ele) => ele.name === 'infoweb'
+            ).value;
+            state.developers = data.find(
+                (ele) => ele.name === 'developers'
+            ).value;
+            state.infoApp = data.find((ele) => ele.name === 'infoapp').value;
+            state.features = data.find((ele) => ele.name === 'features').value;
             state.isLoading = false;
         },
 
-        [fetchDeveloper.pending]: (state, action) => {
+        [fetchInfoWebs.pending]: (state, action) => {
             state.isLoading = true;
         },
 
-        [fetchDeveloper.rejected]: (state, action) => {
-            state.isLoading = false;
-        },
-
-        [fetchInfoApp.fulfilled]: (state, action) => {
-            state.infoApp = action.payload;
-            state.isLoading = false;
-        },
-
-        [fetchInfoApp.pending]: (state, action) => {
-            state.isLoading = true;
-        },
-
-        [fetchInfoApp.rejected]: (state, action) => {
-            state.isLoading = false;
-        },
-
-        //
-
-        [fetchFeatures.fulfilled]: (state, action) => {
-            state.features = action.payload;
-            state.isLoading = false;
-        },
-
-        [fetchFeatures.pending]: (state, action) => {
-            state.isLoading = true;
-        },
-
-        [fetchFeatures.rejected]: (state, action) => {
-            state.isLoading = false;
-        },
-
-        // fetchInfoWebApp
-
-        [fetchInfoWebApp.fulfilled]: (state, action) => {
-            state.infoWebApps = action.payload;
-            state.isLoading = false;
-        },
-
-        [fetchInfoWebApp.pending]: (state, action) => {
-            state.isLoading = true;
-        },
-
-        [fetchInfoWebApp.rejected]: (state, action) => {
+        [fetchInfoWebs.rejected]: (state, action) => {
             state.isLoading = false;
         },
     },

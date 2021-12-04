@@ -1,19 +1,19 @@
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Row, Tag, message, Typography } from 'antd';
+import { CloseCircleOutlined, HomeOutlined } from '@ant-design/icons';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { Button, Col, Divider, message, Row, Tag, Typography } from 'antd';
+import axiosClient from 'api/axiosClient';
 import loginApi from 'api/loginApi';
 import { fetchUserProfile, setLogin } from 'app/globalSlice';
 import InputField from 'customfield/InputField';
 import { setLoading } from 'features/Account/accountSlice';
+import { loginValues } from 'features/Account/initValues';
 import { FastField, Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import { useHistory } from 'react-router';
-import './style.scss';
-import { loginValues } from 'features/Account/initValues';
-import { unwrapResult } from '@reduxjs/toolkit';
 import ReCAPTCHA from 'react-google-recaptcha';
-import axiosClient from 'api/axiosClient';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
+import IMAGE_ACCOUNT_PAGE from 'assets/images/account/account-bg.png';
 
 const { Text, Title } = Typography;
 
@@ -65,110 +65,107 @@ function LoginPage(props) {
             .then((res) => setKeyGoogleCaptcha(res.KEY_GOOGLE_CAPTCHA));
     }, []);
     return (
-        <div className="login-main-page">
-            <div className="main">
-                <Title level={2} style={{ textAlign: 'center' }}>
-                    <Text style={{ color: '#08aeea' }}>Đăng</Text> Nhập
-                </Title>
-                <Divider />
-                <Formik
-                    initialValues={{ ...loginValues.initial }}
-                    onSubmit={(values) => handleSubmit(values)}
-                    validationSchema={loginValues.validationSchema}
-                    enableReinitialize={true}
-                >
-                    {(formikProps) => {
-                        return (
-                            <Form>
-                                <Row gutter={[0, 16]}>
-                                    <Col span={24}>
-                                        <FastField
-                                            name="username"
-                                            component={InputField}
-                                            type="text"
-                                            title="Tài khoản"
-                                            placeholder="Nhập tài khoản"
-                                            maxLength={50}
-                                            titleCol={8}
-                                            inputCol={16}
-                                        ></FastField>
-                                    </Col>
+        <div className="account-common-page">
+            <div className="account-wrapper">
+                <div className="account_left">
+                    <img src={IMAGE_ACCOUNT_PAGE} alt="zelo_login" />
+                </div>
 
-                                    <Col span={24}>
-                                        <FastField
-                                            name="password"
-                                            component={InputField}
-                                            type="password"
-                                            title="Mật khẩu"
-                                            placeholder="Nhập mật khẩu"
-                                            maxLength={200}
-                                            titleCol={8}
-                                            inputCol={16}
-                                        ></FastField>
-                                    </Col>
-                                    <Col offset={8} span={24}>
-                                        <br />
-                                        {keyGoogleCaptcha && (
-                                            <ReCAPTCHA
-                                                sitekey={keyGoogleCaptcha}
-                                                onChange={onChange}
-                                            />
-                                        )}
-                                    </Col>
-                                    {isError ? (
-                                        <Col offset={8} span={16}>
-                                            <Tag
-                                                color="error"
-                                                style={{
-                                                    fontWeight: 'bold',
-                                                }}
-                                                icon={<CloseCircleOutlined />}
-                                            >
-                                                Tài khoản không hợp lệ
-                                            </Tag>
-                                        </Col>
-                                    ) : (
-                                        ''
-                                    )}
+                <div className="account_right">
+                    <Title level={2} style={{ textAlign: 'center' }}>
+                        <Text style={{ color: '#4d93ff' }}>Đăng Nhập</Text>
+                    </Title>
+                    <Divider />
+                    <div className="form-account">
+                        <Formik
+                            initialValues={{ ...loginValues.initial }}
+                            onSubmit={(values) => handleSubmit(values)}
+                            validationSchema={loginValues.validationSchema}
+                            enableReinitialize={true}
+                        >
+                            {(formikProps) => {
+                                return (
+                                    <Form>
+                                        <Row gutter={[0, 8]}>
+                                            <Col span={24}>
+                                                <FastField
+                                                    name="username"
+                                                    component={InputField}
+                                                    type="text"
+                                                    title="Tài khoản"
+                                                    placeholder="Nhập tài khoản"
+                                                    maxLength={50}
+                                                    titleCol={24}
+                                                    inputCol={24}
+                                                />
+                                            </Col>
 
-                                    <Col offset={8}>
-                                        <Button
-                                            type="primary"
-                                            htmlType="submit"
-                                        >
-                                            Đăng nhập
-                                        </Button>
-                                    </Col>
-                                </Row>
-                                <Divider />
-                                <p
-                                    style={{
-                                        color: '#08aeea',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    <Link to="/account/forgot">
-                                        {' '}
-                                        Quên mật khẩu !
-                                    </Link>
-                                </p>
+                                            <Col span={24}>
+                                                <FastField
+                                                    name="password"
+                                                    component={InputField}
+                                                    type="password"
+                                                    title="Mật khẩu"
+                                                    placeholder="Nhập mật khẩu"
+                                                    maxLength={200}
+                                                    titleCol={24}
+                                                    inputCol={24}
+                                                />
+                                            </Col>
+                                            <Col span={24}>
+                                                <br />
+                                                {keyGoogleCaptcha && (
+                                                    <ReCAPTCHA
+                                                        sitekey={
+                                                            keyGoogleCaptcha
+                                                        }
+                                                        onChange={onChange}
+                                                    />
+                                                )}
+                                            </Col>
+                                            {isError ? (
+                                                <Col span={24}>
+                                                    <Tag
+                                                        color="error"
+                                                        style={{
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                        icon={
+                                                            <CloseCircleOutlined />
+                                                        }
+                                                    >
+                                                        Tài khoản không hợp lệ
+                                                    </Tag>
+                                                </Col>
+                                            ) : (
+                                                ''
+                                            )}
 
-                                <br />
-                                <p
-                                    style={{
-                                        color: '#08aeea',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    <Link to="/account/registry">
-                                        {' '}
-                                        Bạn chưa có tài khoản ?
-                                    </Link>
-                                </p>
-                            </Form>
-                        );
-                    }}
-                </Formik>
+                                            <Col span={24}>
+                                                <br />
+                                                <Button
+                                                    type="primary"
+                                                    htmlType="submit"
+                                                    block
+                                                >
+                                                    Đăng nhập
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </Form>
+                                );
+                            }}
+                        </Formik>
+                    </div>
+                    <Divider />
+                    <div className="addtional-link">
+                        <Link to="/">Trang chủ</Link>
+                        <Link to="/account/forgot">Quên mật khẩu</Link>
+                        <Link to="/account/registry">
+                            Bạn chưa có tài khoản ?
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

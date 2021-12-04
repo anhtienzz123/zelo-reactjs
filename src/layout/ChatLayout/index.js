@@ -7,17 +7,13 @@ import NavbarContainer from 'features/Chat/containers/NavbarContainer';
 import {
     addMessage,
     addMessageInChannel,
-    deletedMember,
     fetchAllSticker,
     fetchConversationById,
     fetchListClassify,
     fetchListColor,
     fetchListConversations,
-    updateConversationWhenAddMember,
-    updateFriendChat,
-    updateMemberLeaveGroup,
-    removeMemberWhenDeleted,
     updateAvatarWhenUpdateMember,
+    updateFriendChat,
 } from 'features/Chat/slice/chatSlice';
 import Friend from 'features/Friend';
 import {
@@ -33,6 +29,7 @@ import {
     updateMyRequestFriend,
     updateRequestFriends,
 } from 'features/Friend/friendSlice';
+import { fetchInfoWebs } from 'features/Home/homeSlice';
 import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,6 +72,7 @@ function ChatLayout(props) {
         dispatch(fetchListConversations({}));
         dispatch(fetchAllSticker());
         dispatch(setTabActive(1));
+        dispatch(fetchInfoWebs());
     }, []);
 
     useEffect(() => {
@@ -103,7 +101,6 @@ function ChatLayout(props) {
             'create-individual-conversation-when-was-friend',
             (conversationId) => {
                 dispatch(fetchConversationById({ conversationId }));
-                console.log('hai nguoi la');
             }
         );
     }, []);
@@ -131,11 +128,6 @@ function ChatLayout(props) {
         socket.on(
             'new-message-of-channel',
             (conversationId, channelId, message) => {
-                console.log('message in channel', {
-                    conversationId,
-                    channelId,
-                    message,
-                });
                 dispatch(
                     addMessageInChannel({ conversationId, channelId, message })
                 );
@@ -184,7 +176,6 @@ function ChatLayout(props) {
 
         // xóa kết bạn
         socket.on('deleted-friend', (_id) => {
-            console.log('id', _id);
             dispatch(updateFriend(_id));
             dispatch(updateFriendChat(_id));
         });
@@ -210,10 +201,25 @@ function ChatLayout(props) {
         <div>
             {/* <button onClick={leaveApp} >test scoket</button> */}
             <Row gutter={[0, 0]}>
-                <Col span={1}>
+                <Col
+                    span={1}
+                    xl={{ span: 1 }}
+                    lg={{ span: 1 }}
+                    md={{ span: 2 }}
+                    sm={{ span: 3 }}
+                    xs={{ span: 4 }}
+                >
                     <NavbarContainer onSaveCodeRevoke={handleSetCodeRevoke} />
                 </Col>
-                <Col span={23}>
+
+                <Col
+                    span={23}
+                    xl={{ span: 23 }}
+                    lg={{ span: 23 }}
+                    md={{ span: 22 }}
+                    sm={{ span: 21 }}
+                    xs={{ span: 20 }}
+                >
                     <Switch>
                         <Route
                             exact

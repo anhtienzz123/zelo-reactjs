@@ -19,14 +19,16 @@ import userApi from 'api/userApi';
 InfoContainer.propTypes = {
     socket: PropTypes.object,
     onViewChannel: PropTypes.func,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 InfoContainer.defaultProps = {
     socket: {},
-    onViewChannel: null
+    onViewChannel: null,
+    onOpenInfoBlock: null
 }
 
-function InfoContainer({ socket, onViewChannel }) {
+function InfoContainer({ socket, onViewChannel, onOpenInfoBlock }) {
 
     const [isFind, setFind] = useState({ tapane: 0, view: 0 });
     const { memberInConversation, type, currentConversation, conversations, channels } = useSelector(state => state.chat);

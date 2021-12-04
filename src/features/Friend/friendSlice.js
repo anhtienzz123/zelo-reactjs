@@ -48,10 +48,7 @@ export const fetchPhoneBook = createAsyncThunk(
 export const fetchSuggestFriend = createAsyncThunk(
     `${KEY}/fetchSuggestFriend`,
     async (params, thunkApi) => {
-        // const { page, size } = params;
-
         const data = await friendApi.fetchSuggestFriend();
-        console.log('fetchSuggestFriend', data);
         return data;
     }
 );

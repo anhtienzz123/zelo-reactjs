@@ -25,7 +25,6 @@
             }
 
             &-detail {
-                width: 500px;
                 text-align: center;
                 font-size: 14px;
             }
@@ -37,17 +36,42 @@
     }
 
     .main-conversation {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
         border-right: 0.05px solid rgba(0, 0, 0, 0.2);
-        &_search-bar {
-            height: 18vh;
-        }
-        &_search-bar.fillter {
-            height: 10vh;
+        // &_search-bar {
+        // }
+        // &_search-bar.fillter {
+        //     // height: 10vh;
+        // }
+
+        &_list-conversation {
+            margin-top: 1rem;
+            flex: 1;
+
+            overflow-y: scroll;
         }
 
         &_list-conversation {
-            height: 80vh;
-            padding-top: 2rem;
+            overflow-y: scroll;
+        }
+
+        &_list-conversation::-webkit-scrollbar {
+            width: 0.5em;
+            height: 0.5em;
+            position: absolute;
+            right: 0;
+        }
+
+        &_list-conversation::-webkit-scrollbar-thumb {
+            border-radius: 6px;
+            background: #e1e4ea;
+        }
+
+        &_list-conversation::-webkit-scrollbar-track {
+            background: none;
         }
     }
     .main_chat {
@@ -60,6 +84,7 @@
             border-bottom: 0.05px solid rgba(0, 0, 0, 0.1);
             width: 100%;
             z-index: 999;
+            overflow: hidden;
         }
 
         &-body {
@@ -69,7 +94,7 @@
             max-height: calc(100vh - 68px);
 
             #main_chat-body--view {
-                height: calc(100% - 68px);
+                height: calc(100vh - 68px);
                 background: $white-smoke;
                 flex-grow: 1;
                 position: relative;
@@ -92,6 +117,7 @@
                     top: 0;
                     left: 0;
                     width: 100%;
+                    overflow: hidden;
                 }
 
                 .typing-message {
@@ -215,6 +241,30 @@
         border-left: 0.05px solid rgba(0, 0, 0, 0.1);
         height: 100vh;
     }
+
+    // .drawer-responsive {
+    //     .ant-drawer-content-wrapper {
+    //         display: none;
+    //     }
+    // }
+    // @media only screen and (min-width: 992px) and (max-width: 1199px) {
+    //     .drawer-responsive {
+    //         .ant-drawer-content-wrapper {
+    //             display: block;
+    //             background: red;
+    //             width: 40%;
+    //         }
+    //     }
+    // }
+
+    // @media only screen and (min-width: 768px) and (max-width: 991px) {
+    // }
+
+    // @media only screen and (min-width: 768px) and (max-width: 991px) {
+    // }
+
+    // @media only screen and (min-width: 577px) and (max-width: 767px) {
+    // }
 }
 
 .divider-layout {

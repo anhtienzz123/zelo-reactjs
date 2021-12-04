@@ -35,6 +35,7 @@ function SuggestCard({ data, onClick }) {
                     avatar={data.avatar}
                     name={data.name}
                     demention={90}
+                    color={data.avatarColor}
                 />
             </div>
             <div className="suggest_card-info">

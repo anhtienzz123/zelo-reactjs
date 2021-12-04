@@ -339,9 +339,7 @@ function NotifyMessage({ message }) {
                                         {`${isMyActive} `}
                                     </span>
                                     {`đã ghim một tin nhắn`}.
-                                    <span className='view-click' >
-                                        &nbsp;Xem
-                                    </span>
+
                                 </div>
                             </div>
                         </>

@@ -20,6 +20,7 @@ FooterChatContainer.propTypes = {
     userMention: PropTypes.object,
     onRemoveMention: PropTypes.func,
     onViewVotes: PropTypes.func,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 FooterChatContainer.defaultProps = {
@@ -29,7 +30,8 @@ FooterChatContainer.defaultProps = {
     onCloseReply: null,
     userMention: {},
     onRemoveMention: null,
-    onViewVotes: null
+    onViewVotes: null,
+    onOpenInfoBlock: null
 };
 
 const style_EditorText = {
@@ -42,7 +44,7 @@ const style_addtion_interaction = {
     width: '100%',
 };
 
-function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onCloseReply, userMention, onRemoveMention, onViewVotes }) {
+function FooterChatContainer({ onScrollWhenSentText, onOpenInfoBlock, socket, replyMessage, onCloseReply, userMention, onRemoveMention, onViewVotes }) {
     const [showTextFormat, setShowTextFormat] = useState(false);
     const { currentConversation, conversations, currentChannel, memberInConversation } = useSelector(
         (state) => state.chat
@@ -195,20 +197,20 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
     }
 
     const handleSentMessage = () => {
-        if (showTextFormat) {
-            sendMessage(valueText, 'HTML');
-        } else {
-            sendMessage(valueText, 'TEXT');
+        if (valueText.trim()) {
+            if (showTextFormat) {
+                sendMessage(valueText, 'HTML');
+            } else {
+                sendMessage(valueText, 'TEXT');
+            }
+            setValueText('');
+            socket.emit('not-typing', currentConversation, user);
         }
-        setValueText('');
-        socket.emit('not-typing', currentConversation, user);
+
+
     };
 
     const handleOnChageInput = (value) => {
-
-
-
-
         if (mentionSelect.length > 0) {
             mentionSelect.forEach((ele, index) => {
                 const regex = new RegExp(`@${ele.name}`)
@@ -298,6 +300,7 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                     onClickTextFormat={handleClickTextFormat}
                     onScroll={handleOnScroll}
                     onViewVotes={onViewVotes}
+                    onOpenInfoBlock={onOpenInfoBlock}
                 />
             </div>
 
@@ -347,9 +350,6 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
                             onBlur={handleOnBlur}
                             onSelect={handleSelectMention}
                             split=" "
-
-
-
                         >
                             {checkGroup && (
                                 mentionList.map((ele, index) => {
@@ -396,15 +396,11 @@ function FooterChatContainer({ onScrollWhenSentText, socket, replyMessage, onClo
 
 
                     <div className='like-emoji'>
-                        {isShowLike ? (
-                            <LikeTwoTone twoToneColor='#faad14' />
-                        ) : (
-                            <div
-                                className='send-text-thumb'
-                                onClick={handleSentMessage}>
-                                <SendOutlined />
-                            </div>
-                        )}
+                        <div
+                            className='send-text-thumb'
+                            onClick={handleSentMessage}>
+                            <SendOutlined />
+                        </div>
                     </div>
                 </div>
             </div>
