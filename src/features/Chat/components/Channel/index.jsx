@@ -11,12 +11,14 @@ import { fetchListMessages, getLastViewOfMembers, setCurrentChannel } from 'feat
 Channel.propTypes = {
     onViewChannel: PropTypes.func,
     data: PropTypes.array,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 
 Channel.defaultProps = {
     onViewChannel: null,
-    data: []
+    data: [],
+    onOpenInfoBlock: null,
 };
 
 
@@ -31,7 +33,7 @@ const styleInteract = {
 }
 
 
-function Channel({ onViewChannel, data }) {
+function Channel({ onViewChannel, data, onOpenInfoBlock }) {
 
     const [isDrop, setIsDrop] = useState(true);
     const [isVisible, setIsVisible] = useState(false);
@@ -53,6 +55,9 @@ function Channel({ onViewChannel, data }) {
         if (onViewChannel) {
             onViewChannel()
         }
+        if (onOpenInfoBlock) {
+            onOpenInfoBlock()
+        }
     }
     const handleAddChannel = () => {
         setIsVisible(true)
@@ -61,7 +66,7 @@ function Channel({ onViewChannel, data }) {
     const handleOk = async () => {
         try {
             await channelApi.addChannel(valueInput, currentConversation);
-            message.success('This is a success message');
+            message.success('Tạo channel thành công');
             setIsVisible(false)
         } catch (error) {
             console.log(error);

@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import './style.scss';
 import {
-    SmileOutlined,
-    FileImageOutlined,
-    LinkOutlined,
+    DashOutlined, FileImageOutlined,
+    FontColorsOutlined,
+    LinkOutlined, SmileOutlined
 } from '@ant-design/icons';
-import { IoText } from "react-icons/io5";
-import { Button, Popover } from 'antd';
+import { Button, Dropdown, Menu, Popover } from 'antd';
 import UploadFile from 'customfield/upLoadFile';
-import Sticker from '../Sticker';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { BsNewspaper } from "react-icons/bs";
+import { FcBarChart } from "react-icons/fc";
+import { IoText } from "react-icons/io5";
 import { useSelector } from 'react-redux';
+import ModalCreateVote from '../ModalCreateVote';
+import Sticker from '../Sticker';
+import './style.scss';
 
 NavigationChatBox.propTypes = {
     onClickTextFormat: PropTypes.func,
     isFocus: PropTypes.bool,
     onScroll: PropTypes.func,
+    onViewVotes: PropTypes.func,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 NavigationChatBox.defaultProps = {
     onClickTextFormat: null,
     isFocus: false,
-    onScroll: null
+    onScroll: null,
+    onViewVotes: null,
+    onOpenInfoBlock: null
 };
 
 const styleBorder = {
@@ -41,9 +48,11 @@ const styleButton = {
 
 
 function NavigationChatBox(props) {
-    const { onClickTextFormat, isFocus, onScroll } = props;
+    const { onClickTextFormat, isFocus, onScroll, onViewVotes, onOpenInfoBlock } = props;
     const [visiblePop, setVisiblePop] = useState(false);
-    const { stickers } = useSelector(state => state.chat)
+    const { stickers, currentConversation, conversations } = useSelector(state => state.chat);
+    const [isVisibleVote, setIsVisibleVote] = useState(false);
+    const checkIsGroup = conversations.find(conver => conver._id === currentConversation).type;
 
     const handleOnClickTextFormat = () => {
 
@@ -60,6 +69,39 @@ function NavigationChatBox(props) {
     const handleOnClose = () => {
         setVisiblePop(false)
     }
+    const handleOnClick = ({ key }) => {
+        if (key === 'VOTE') {
+            setIsVisibleVote(true)
+        }
+        if (key === 'VIEW_NEWS') {
+            if (onViewVotes) {
+                onViewVotes();
+            }
+            if (onOpenInfoBlock) {
+                onOpenInfoBlock();
+            }
+        }
+    }
+
+    const handleCloseModalVote = () => {
+        setIsVisibleVote(false)
+    }
+
+
+
+    const menu = (
+        <Menu onClick={handleOnClick}>
+            <Menu.Item key='VOTE' icon={<FcBarChart />}>
+                <span className='item-menu-vote'>Tạo cuộc bình chọn</span>
+            </Menu.Item>
+            <Menu.Item key='VIEW_NEWS' icon={<BsNewspaper />}>
+                <span className="item-menu-vote"> Xem bảng tin nhóm</span>
+            </Menu.Item>
+        </Menu>
+    );
+
+
+
 
     return (
         <div
@@ -118,18 +160,37 @@ function NavigationChatBox(props) {
                             <LinkOutlined />
                         </Button>
                     </UploadFile>
-
-
-
-
                 </li>
 
                 <li className='item-chat-box'>
                     <div title='Định dạng tin nhắn' onClick={handleOnClickTextFormat}>
-                        <IoText />
+                        <FontColorsOutlined />
                     </div>
                 </li>
+
+                {checkIsGroup && (
+                    <li className='item-chat-box'>
+
+                        <Dropdown overlay={menu} placement="topLeft" trigger={['click']} arrow>
+                            <Button
+                                title='Vote'
+                                type="text"
+                                style={styleButton}
+                            >
+                                <DashOutlined />
+                            </Button>
+                        </Dropdown>
+                    </li>
+                )}
+
+
             </ul>
+
+
+            <ModalCreateVote
+                visible={isVisibleVote}
+                onCancel={handleCloseModalVote}
+            />
         </div>
     );
 }

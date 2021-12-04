@@ -16,7 +16,6 @@ NutshellPinMessage.propTypes = {
     message: PropTypes.object,
     quantity: PropTypes.number,
     isCheckbox: PropTypes.bool,
-    onViewNews: PropTypes.func,
     isHover: PropTypes.bool,
 };
 
@@ -26,14 +25,13 @@ NutshellPinMessage.defaultProps = {
     message: {},
     quantity: 0,
     isCheckbox: false,
-    onViewNews: null,
     isHover: true
 
 };
 
 
 
-function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, onViewNews, isHover }) {
+function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, isHover }) {
     const dispatch = useDispatch();
     const { currentConversation } = useSelector(state => state.chat);
     const [visible, setVisible] = useState(false);
@@ -57,15 +55,9 @@ function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, onViewNew
     }
 
 
-    const handleOnClickMenu = ({ item, key }) => {
+    const handleOnClickMenu = ({ _, key }) => {
         if (key === '1') {
             confirm()
-        }
-
-        if (key === '2') {
-            if (onViewNews) {
-                onViewNews();
-            }
         }
     };
 
@@ -76,9 +68,6 @@ function NutshellPinMessage({ isItem, onOpenDrawer, message, quantity, onViewNew
                 <span style={NutshellPinMessageStyle.MENU_ITEM}>Bỏ gim</span>
             </Menu.Item>
 
-            <Menu.Item key="2" >
-                <span style={NutshellPinMessageStyle.MENU_ITEM} className="menu-item">Mở bảng tin nhóm</span>
-            </Menu.Item>
         </Menu>
     );
 

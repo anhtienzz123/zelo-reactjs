@@ -50,16 +50,6 @@ function Sticker({ data, onClose, onScroll }) {
                         onScroll={onScroll}
                     />
                 </TabPane>
-                <TabPane
-                    tab={
-                        <span className='menu-item'><SmileOutlined />EMOJI</span>
-                    }
-                    key="2"
-
-                >
-
-
-                </TabPane>
             </Tabs>
         </div>
     );

@@ -51,10 +51,46 @@ function FriendCard({ isMyRequest, data, onAccept, onDeny, onCancel }) {
                         avatar={data.avatar}
                         demention={72}
                         name={data.name}
+                        color={data.avatarColor}
                     />
                 </div>
                 <div className="friend-card_name">
                     {data.name}
+
+                    {/* btn-responsive */}
+                    <div className="friend-card_interact-mobile">
+                        {isMyRequest ? (
+                            <div className="friend-card_button friend-card_cancel-request">
+                                <Button
+                                    type="danger"
+                                    onClick={handleRemoveMyRequest}
+                                >
+                                    Hủy yêu cầu
+                                </Button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="friend-card_button friend-card_button--deny">
+                                    <Button
+                                        type="default"
+                                        onClick={handleDeniedRequest}
+                                    >
+                                        Bỏ qua
+                                    </Button>
+                                </div>
+
+                                <div className="friend-card_button friend-card_button--accept">
+                                    <Button
+                                        type="primary"
+                                        onClick={handleAcceptFriend}
+                                    >
+                                        Đồng ý
+                                    </Button>
+                                </div>
+                            </>
+                        )}
+
+                    </div>
                 </div>
             </div>
 
@@ -63,7 +99,6 @@ function FriendCard({ isMyRequest, data, onAccept, onDeny, onCancel }) {
                     <div className="friend-card_button friend-card_button--accept">
                         <Button
                             type="danger"
-                            shape="round"
                             onClick={handleRemoveMyRequest}
                         >
                             Hủy yêu cầu
@@ -74,7 +109,6 @@ function FriendCard({ isMyRequest, data, onAccept, onDeny, onCancel }) {
                         <div className="friend-card_button friend-card_button--deny">
                             <Button
                                 type="default"
-                                shape="round"
                                 onClick={handleDeniedRequest}
                             >
                                 Bỏ qua
@@ -84,7 +118,6 @@ function FriendCard({ isMyRequest, data, onAccept, onDeny, onCancel }) {
                         <div className="friend-card_button friend-card_button--accept">
                             <Button
                                 type="primary"
-                                shape="round"
                                 onClick={handleAcceptFriend}
                             >
                                 Đồng ý

@@ -9,8 +9,8 @@ import {
     getLastViewOfMembers,
     setCurrentChannel,
 } from 'features/Chat/slice/chatSlice';
+import PropTypes from 'prop-types';
 import React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     getMembersConversation,
@@ -18,12 +18,33 @@ import {
 } from '../../slice/chatSlice';
 import './style.scss';
 
-ConversationContainer.propTypes = {};
+ConversationContainer.propTypes = {
+    valueClassify: PropTypes.string.isRequired,
+};
 
-function ConversationContainer(props) {
+ConversationContainer.defaultProps = {
+    valueClassify: '',
+};
+
+function ConversationContainer({ valueClassify, onClickConver }) {
     const dispatch = useDispatch();
     const { conversations, classifies } = useSelector((state) => state.chat);
     const { user } = useSelector((state) => state.global);
+
+    const tempClassify =
+        classifies.find((ele) => ele._id === valueClassify) || 0;
+
+    const checkConverInClassify = (idMember) => {
+        if (tempClassify === 0) return true;
+        const index = tempClassify.conversationIds.findIndex(
+            (ele) => ele == idMember
+        );
+        return index > -1;
+    };
+
+    const converFilter = [...conversations].filter((ele) => {
+        if (checkConverInClassify(ele._id)) return true;
+    });
 
     const handleConversationClick = async (conversationId) => {
         // dispatch(setCurrentConversation(conversationId));
@@ -72,14 +93,10 @@ function ConversationContainer(props) {
 
     return (
         <>
-            <Scrollbars
-                autoHide={true}
-                autoHideTimeout={1000}
-                autoHideDuration={200}
-            >
-                <div id="conversation-main">
-                    <ul className="list_conversation">
-                        {conversations.map((conversationEle, index) => {
+            <div id="conversation-main">
+                <ul className="list_conversation">
+                    {converFilter.map((conversationEle, index) => {
+                        if (true) {
                             const { numberUnread } = conversationEle;
                             if (conversationEle.lastMessage) {
                                 return (
@@ -133,10 +150,10 @@ function ConversationContainer(props) {
                                     </Dropdown>
                                 );
                             }
-                        })}
-                    </ul>
-                </div>
-            </Scrollbars>
+                        }
+                    })}
+                </ul>
+            </div>
         </>
     );
 }

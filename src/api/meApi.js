@@ -22,6 +22,20 @@ const meApi = {
     updateCoverImage: (file) => {
         return axiosClient.patch(`${API_URL}/cover-image`, file);
     },
+    changePasswod: (oldPassword, newPassword) => {
+        return axiosClient.patch(`${API_URL}/password`, {
+            oldPassword,
+            newPassword,
+        });
+    },
+    revokeToken: (password, key) => {
+        return axiosClient.delete(`${API_URL}/revoke-token`, {
+            data: {
+                password,
+                key,
+            },
+        });
+    },
 };
 
 export default meApi;

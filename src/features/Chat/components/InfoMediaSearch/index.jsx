@@ -138,10 +138,10 @@ function InfoMediaSearch(props) {
                     style={{ width: '100%' }}
                     height='100%'>
                     {activeKey === '1' && (
-                        <ContentTabPaneMedia items={medias} />
+                        <ContentTabPaneMedia items={medias} type='image' />
                     )}
                     {activeKey === '2' && (
-                        <ContentTabPaneMedia items={medias} />
+                        <ContentTabPaneMedia items={medias} type='video' />
                     )}
                     {activeKey === '3' && <ContentTabPaneFile items={medias} />}
                 </Scrollbars>

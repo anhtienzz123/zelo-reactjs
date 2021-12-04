@@ -1,10 +1,9 @@
-import React from 'react';
+import { AntDesignOutlined, KeyOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Badge } from 'antd';
 import PropTypes from 'prop-types';
+import React from 'react';
+import getSummaryName from 'utils/nameHelper';
 import './style.scss';
-import { Avatar, Badge, Tooltip } from 'antd';
-import { KeyOutlined } from '@ant-design/icons';
-import DEFAULT_AVATAR from 'assets/images/user/zelo_user_default.jpg'
-import getSummaryName from 'utils/nameHelper'
 
 PersonalIcon.propTypes = {
     avatar: PropTypes.string,
@@ -14,6 +13,7 @@ PersonalIcon.propTypes = {
     isHost: PropTypes.bool,
     name: PropTypes.string,
     color: PropTypes.string,
+    noneUser: PropTypes.bool,
 
 };
 
@@ -24,11 +24,12 @@ PersonalIcon.defaultProps = {
     common: true,
     isHost: false,
     name: '',
-    color: ''
+    color: '',
+    noneUser: false,
 };
 
 function PersonalIcon(props) {
-    const { avatar, isActive, demention, common, isHost, name, color } = props;
+    const { avatar, isActive, demention, common, isHost, name, color, noneUser } = props;
     return (
         <div
             className={
@@ -59,11 +60,23 @@ function PersonalIcon(props) {
                         ''
                     )
                 }>
-                {avatar ? (
-                    <Avatar size={demention} src={avatar} />
-                ) : (
-                    <Avatar size={demention} style={{ backgroundColor: color ? color : '#4c92ff' }}>{getSummaryName(name)}</Avatar>
-                )}
+                {
+                    noneUser ? (
+                        <Avatar
+                            style={{
+                                backgroundColor: '#87d068',
+                            }}
+                            size={demention}
+                            icon={<UserOutlined />}
+                        />
+                    ) : (
+                        avatar ? (
+                            <Avatar size={demention} src={avatar} />
+                        ) : (
+                            <Avatar size={demention} style={{ backgroundColor: color ? color : '#4c92ff' }}>{getSummaryName(name)}</Avatar>
+                        )
+                    )
+                }
 
             </Badge>
         </div>

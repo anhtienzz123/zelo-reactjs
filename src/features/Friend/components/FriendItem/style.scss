@@ -31,6 +31,29 @@
     .recent-login {
         color: $silver;
     }
+
+    @media only screen and (min-width: 992px) and (max-width: 1199px) {
+        .recent-login {
+            font-size: 90%;
+        }
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .recent-login {
+            font-size: 80%;
+        }
+    }
+
+    @media only screen and (min-width: 577px) and (max-width: 767px) {
+        .recent-login {
+            display: none;
+        }
+    }
+    @media only screen and (max-width: 576px) {
+        .recent-login {
+            display: none;
+        }
+    }
 }
 
 #friend-item:hover {

@@ -45,6 +45,14 @@ export const fetchPhoneBook = createAsyncThunk(
     }
 );
 
+export const fetchSuggestFriend = createAsyncThunk(
+    `${KEY}/fetchSuggestFriend`,
+    async (params, thunkApi) => {
+        const data = await friendApi.fetchSuggestFriend();
+        return data;
+    }
+);
+
 const friendSlice = createSlice({
     name: KEY,
     initialState: {
@@ -55,6 +63,7 @@ const friendSlice = createSlice({
         groups: [],
         amountNotify: 0,
         phoneBook: [],
+        suggestFriends: [],
     },
     reducers: {
         setLoading: (state, action) => {
@@ -83,6 +92,26 @@ const friendSlice = createSlice({
         },
         setAmountNotify: (state, action) => {
             state.amountNotify = action.payload;
+        },
+        updateSuggestFriend: (state, action) => {
+            state.suggestFriends = action.payload;
+        },
+        updateFriend: (state, action) => {
+            const id = action.payload;
+            state.friends = state.friends.filter((ele) => ele._id !== id);
+        },
+
+        updateRequestFriends: (state, action) => {
+            const id = action.payload;
+            state.requestFriends = state.requestFriends.filter(
+                (ele) => ele._id !== id
+            );
+        },
+        updateMyRequestFriend: (state, action) => {
+            const id = action.payload;
+            state.myRequestFriend = state.myRequestFriend.filter(
+                (ele) => ele._id !== id
+            );
         },
     },
     extraReducers: {
@@ -149,6 +178,18 @@ const friendSlice = createSlice({
         [fetchPhoneBook.pending]: (state, action) => {
             state.isLoading = true;
         },
+        [fetchSuggestFriend.fulfilled]: (state, action) => {
+            state.suggestFriends = action.payload;
+            state.isLoading = false;
+        },
+
+        [fetchSuggestFriend.rejected]: (state, action) => {
+            state.isLoading = false;
+        },
+
+        [fetchSuggestFriend.pending]: (state, action) => {
+            state.isLoading = true;
+        },
     },
 });
 
@@ -160,6 +201,10 @@ export const {
     setGroup,
     setMyRequestFriend,
     setAmountNotify,
+    updateSuggestFriend,
+    updateFriend,
+    updateMyRequestFriend,
+    updateRequestFriends,
 } = actions;
 
 export default reducer;

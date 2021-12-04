@@ -31,7 +31,7 @@ function TypeMessagePin({ type, content, name }) {
         <div className='type-pin-message'>
             {
                 type === 'TEXT' && (
-                    <div>{`${name}: ${content}`}</div>
+                    <div className='text-pin'>{`${name}: ${content}`}</div>
                 )
             }
 
@@ -63,7 +63,7 @@ function TypeMessagePin({ type, content, name }) {
                         </div>
 
                         <div className="type-pin-message_des">
-                            <Tag color="processing"><FontColorsOutlined /> Định dạng văn bản</Tag>
+                            <FontColorsOutlined /> văn bản
                         </div>
                     </div>
                 )
@@ -77,8 +77,7 @@ function TypeMessagePin({ type, content, name }) {
                         </div>
 
                         <div className="type-pin-message_des">
-                            <Tag color="processing"><PlaySquareOutlined />  {fileHelpers.getFileName(content)}</Tag>
-
+                            video&nbsp;<PlaySquareOutlined />
                         </div>
                     </div>
                 )
@@ -86,7 +85,7 @@ function TypeMessagePin({ type, content, name }) {
 
             {
                 type === 'FILE' && (
-                    <div className='type-pin-message_IMAGE'>
+                    <div className='type-pin-message_FILE'>
                         <div className="type-pin-message_name">
                             {name}:&nbsp;
                         </div>

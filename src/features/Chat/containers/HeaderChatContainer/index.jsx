@@ -4,12 +4,20 @@ import './style.scss';
 import { useSelector } from 'react-redux';
 import HeaderOptional from 'features/Chat/components/HeaderOptional';
 
-HeaderChatContainer.propTypes = {};
+HeaderChatContainer.propTypes = {
+    onPopUpInfo: PropTypes.func,
+    onOpenDrawer: PropTypes.func,
+};
 
-function HeaderChatContainer() {
+HeaderChatContainer.defaultProps = {
+    onPopUpInfo: null,
+    onOpenDrawer: null
+};
+
+function HeaderChatContainer({ onPopUpInfo, onOpenDrawer }) {
 
     const [detailConver, setDetailConver] = useState({})
-    const { currentConversation, conversations } = useSelector(
+    const { currentConversation, conversations, memberInConversation } = useSelector(
         (state) => state.chat
     );
 
@@ -29,11 +37,14 @@ function HeaderChatContainer() {
         <div id='header-main'>
             <HeaderOptional
                 avatar={detailConver.avatar}
-                totalMembers={detailConver.totalMembers}
+                totalMembers={memberInConversation.length}
                 name={detailConver.name}
                 typeConver={detailConver.type}
                 isLogin={detailConver?.isOnline}
                 lastLogin={detailConver?.lastLogin}
+                avatarColor={detailConver?.avatarColor}
+                onPopUpInfo={onPopUpInfo}
+                onOpenDrawer={onOpenDrawer}
             />
         </div>
     );

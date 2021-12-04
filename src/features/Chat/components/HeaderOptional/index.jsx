@@ -1,15 +1,12 @@
 import {
+    LeftOutlined,
     NumberOutlined,
-    RollbackOutlined,
-    SearchOutlined,
-    SplitCellsOutlined,
-    TagOutlined,
-    UsergroupAddOutlined,
-    UserOutlined,
-    VideoCameraOutlined
+    RollbackOutlined, SplitCellsOutlined, UsergroupAddOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import conversationApi from 'api/conversationApi';
-import { createGroup, fetchListMessages, getLastViewOfMembers, setCurrentChannel } from 'features/Chat/slice/chatSlice';
+import { createGroup, fetchListMessages, getLastViewOfMembers, setCurrentChannel, setCurrentConversation } from 'features/Chat/slice/chatSlice';
+import useWindowDimensions from 'hooks/useWindowDimensions';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,6 +26,9 @@ HeaderOptional.propTypes = {
     typeConver: PropTypes.bool.isRequired,
     isLogin: PropTypes.bool,
     lastLogin: PropTypes.object,
+    avatarColor: PropTypes.string,
+    onPopUpInfo: PropTypes.func,
+    onOpenDrawer: PropTypes.func,
 };
 
 HeaderOptional.defaultProps = {
@@ -36,17 +36,37 @@ HeaderOptional.defaultProps = {
     name: '',
     isLogin: false,
     lastLogin: null,
+    avatarColor: '',
+    onPopUpInfo: null,
+    onOpenDrawer: null
 
 };
 
 function HeaderOptional(props) {
-    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin } = props;
+    const { avatar, totalMembers, name, typeConver, isLogin, lastLogin, avatarColor, onPopUpInfo, onOpenDrawer } = props;
     const type = typeof avatar;
-    const { currentConversation, currentChannel, channels } = useSelector((state) => state.chat);
+    const { currentConversation, currentChannel, channels, } = useSelector((state) => state.chat);
     const [isVisible, setIsvisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [typeModal, setTypeModal] = useState(1);
     const dispatch = useDispatch();
+    const { width } = useWindowDimensions();
+
+
+    const handleCutText = (text) => {
+        if (width < 577) {
+            return text.slice(0, 14) + '...';
+        }
+        return text;
+    }
+
+
+
+    const handlePopUpInfo = () => {
+        if (onPopUpInfo) {
+            onPopUpInfo()
+        }
+    }
 
     // false đơn, true là nhóm
     const handleAddMemberToGroup = () => {
@@ -103,24 +123,40 @@ function HeaderOptional(props) {
 
     }
 
+    const handleOpenDraweer = () => {
+        if (onOpenDrawer) {
+            onOpenDrawer();
+        }
+    }
+
+    const handleBackToListConver = () => {
+        dispatch(setCurrentConversation(''))
+    }
+
 
     return (
         <div id='header-optional'>
             <div className='header_wrapper'>
                 <div className='header_leftside'>
+                    <div className='icon-header back-list' onClick={handleBackToListConver}>
+                        <LeftOutlined />
+                    </div>
                     <div className='icon_user'>
-                        {<ConversationAvatar
-                            avatar={avatar}
-                            totalMembers={totalMembers}
-                            type={typeConver}
-                            name={name}
-                            isActived={isLogin}
-                        />}
+                        {
+                            <ConversationAvatar
+                                avatar={avatar}
+                                totalMembers={totalMembers}
+                                type={typeConver}
+                                name={name}
+                                isActived={isLogin}
+                                avatarColor={avatarColor}
+                            />
+                        }
                     </div>
 
                     <div className='info_user'>
                         <div className='info_user-name'>
-                            <span>{name}</span>
+                            <span>{handleCutText(name)}</span>
                         </div>
 
                         {currentChannel ? (
@@ -146,20 +182,14 @@ function HeaderOptional(props) {
                                     <>
                                         {
                                             isLogin ? (
-                                                <>
-                                                    <span>Đang hoạt động</span>
-                                                    <div className='small-bar'></div>
-                                                </>
+                                                <span>Đang hoạt động</span>
                                             ) : (
                                                 <>
                                                     {lastLogin && (
-                                                        <>
-                                                            <span>
-                                                                {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
-                                                            </span>
+                                                        <span>
+                                                            {`Truy cập ${dateUtils.toTime(lastLogin).toLowerCase()}`} {`${checkTime() ? 'trước' : ''}`}
+                                                        </span>
 
-                                                            <div className='small-bar'></div>
-                                                        </>
                                                     )}
                                                 </>
                                             )
@@ -167,14 +197,6 @@ function HeaderOptional(props) {
                                     </>
                                 )}
 
-
-
-                                {typeConver && <div className='small-bar'></div>}
-
-
-                                <div className='classify-object'>
-                                    <TagOutlined />
-                                </div>
 
                             </div>
                         )}
@@ -198,18 +220,15 @@ function HeaderOptional(props) {
                                 <UsergroupAddOutlined />
                             </div>
 
-                            <div className='icon-header search-message'>
-                                <SearchOutlined />
-                            </div>
-
-                            <div className='icon-header call-video'>
-                                <VideoCameraOutlined />
-                            </div>
                         </>
                     )}
 
                     <div className='icon-header pop-up-layout'>
-                        <SplitCellsOutlined />
+                        <SplitCellsOutlined onClick={handlePopUpInfo} />
+                    </div>
+
+                    <div className='icon-header pop-up-responsive'>
+                        <SplitCellsOutlined onClick={handleOpenDraweer} />
                     </div>
 
 

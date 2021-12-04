@@ -13,23 +13,35 @@ import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import UserCard from 'components/UserCard'
 import './style.scss';
+import userApi from 'api/userApi';
 InfoContainer.propTypes = {
     socket: PropTypes.object,
     onViewChannel: PropTypes.func,
+    onOpenInfoBlock: PropTypes.func,
 };
 
 InfoContainer.defaultProps = {
     socket: {},
-    onViewChannel: null
+    onViewChannel: null,
+    onOpenInfoBlock: null
 }
 
-function InfoContainer({ socket, onViewChannel }) {
+function InfoContainer({ socket, onViewChannel, onOpenInfoBlock }) {
 
     const [isFind, setFind] = useState({ tapane: 0, view: 0 });
     const { memberInConversation, type, currentConversation, conversations, channels } = useSelector(state => state.chat);
     const { media } = useSelector(state => state.media);
-    const dispatch = useDispatch()
+    const [isVisible, setIsVisible] = useState(false);
+    const [userChose, setUserChose] = useState(null);
+    const dispatch = useDispatch();
+
+    const handleChoseUser = async (value) => {
+        const user = await userApi.fetchUser(value.username);
+        setUserChose(user);
+        setIsVisible(true);
+    }
 
 
 
@@ -75,7 +87,6 @@ function InfoContainer({ socket, onViewChannel }) {
                                     <div className='info_name-and-thumbnail-wrapper'>
                                         <InfoNameAndThumbnail
                                             conversation={conversations.find(ele => ele._id === currentConversation)}
-
                                         />
                                     </div>
 
@@ -134,19 +145,32 @@ function InfoContainer({ socket, onViewChannel }) {
                         </>
                     );
                 } else if (isFind.view === 2) {
-                    return (<InfoMediaSearch
-                        onBack={handleOnBack}
-                        tabpane={isFind.tabpane}
-                    />);
+                    return (
+                        <InfoMediaSearch
+                            onBack={handleOnBack}
+                            tabpane={isFind.tabpane}
+                        />
+                    );
                 } else {
                     return (
                         <InfoFriendSearch
                             onBack={handleOnBack}
                             members={memberInConversation}
+                            onChoseUser={handleChoseUser}
                         />
                     );
                 }
             })()}
+
+            {userChose && (
+                <UserCard
+                    isVisible={isVisible}
+                    onCancel={() => setIsVisible(false)}
+                    user={userChose}
+                />
+            )}
+
+
         </div>
     );
 }

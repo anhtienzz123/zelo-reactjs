@@ -46,7 +46,6 @@ function ImageItem(props) {
 
 
     const handleOnClick = () => {
-        console.log('clock', type)
         if (type === 'video' && onVisibleVideoModal) {
             onVisibleVideoModal(url)
         }
@@ -55,25 +54,6 @@ function ImageItem(props) {
 
     return (
         <div className="item-img-wrapper" onClick={handleOnClick}>
-            <div className="item-img-interact">
-
-                <div
-                    className="top-select_button "
-                    onClick={handleSelectImage}
-                    style={select ? selectStyle : {}}
-                >
-                    <CheckCircleFilled />
-                </div>
-
-                <div
-                    onClick={handleShareImage}
-                    className="top-share_button"
-                >
-                    <ShareAltOutlined />
-                </div>
-
-            </div>
-
             <div
                 id='item-img'
                 style={dementionStyle}

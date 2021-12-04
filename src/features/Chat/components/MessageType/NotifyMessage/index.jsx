@@ -1,4 +1,4 @@
-import { EditTwoTone, PushpinTwoTone, NumberOutlined } from '@ant-design/icons';
+import { EditTwoTone, PushpinTwoTone, NumberOutlined, KeyOutlined } from '@ant-design/icons';
 import { Avatar, Tooltip } from 'antd';
 import AvatarCustom from 'components/AvatarCustom';
 import parse from 'html-react-parser';
@@ -25,7 +25,7 @@ function NotifyMessage({ message }) {
         manipulatedUsers,
         user,
     } = message;
-    const { name, avatar } = user;
+    const { name, avatar, avatarColor } = user;
 
     const isMyActive = user._id === global.user._id ? 'Bạn' : user.name;
 
@@ -80,6 +80,13 @@ function NotifyMessage({ message }) {
         if (text === 'Ảnh đại diện nhóm đã thay đổi') {
             return 14;
         }
+        if (text === 'ADD_MANAGERS') {
+            return 15;
+        }
+
+        if (text === 'DELETE_MANAGERS') {
+            return 16;
+        }
 
     };
 
@@ -99,6 +106,7 @@ function NotifyMessage({ message }) {
                                     size='small'
                                     src={ele.avatar}
                                     name={ele.name}
+                                    color={ele.avatarColor}
                                 />
                             </div>
                         )
@@ -185,6 +193,7 @@ function NotifyMessage({ message }) {
                                     size='small'
                                     src={avatar}
                                     name={name}
+                                    color={avatarColor}
                                 />
                             </div>
 
@@ -230,6 +239,7 @@ function NotifyMessage({ message }) {
                                     size='small'
                                     src={avatar}
                                     name={name}
+                                    color={avatarColor}
                                 />
                             </div>
 
@@ -253,6 +263,8 @@ function NotifyMessage({ message }) {
                                         size='small'
                                         src={avatar}
                                         name={name}
+                                        color={avatarColor}
+
                                     />
                                 </div>
 
@@ -283,6 +295,8 @@ function NotifyMessage({ message }) {
                                         size='small'
                                         src={avatar}
                                         name={name}
+                                        color={avatarColor}
+
                                     />
                                 </div>
 
@@ -325,9 +339,7 @@ function NotifyMessage({ message }) {
                                         {`${isMyActive} `}
                                     </span>
                                     {`đã ghim một tin nhắn`}.
-                                    <span className='view-click' >
-                                        &nbsp;Xem
-                                    </span>
+
                                 </div>
                             </div>
                         </>
@@ -359,6 +371,7 @@ function NotifyMessage({ message }) {
                                     <AvatarCustom
                                         size='small'
                                         src={user.avatar}
+                                        color={user.avatarColor}
                                         name={user.name}
                                     />
                                 </div>
@@ -384,6 +397,7 @@ function NotifyMessage({ message }) {
                                         size='small'
                                         src={user.avatar}
                                         name={user.name}
+                                        color={user.avatarColor}
                                     />
                                 </div>
                                 <div className='notify-message-content-title'>
@@ -409,6 +423,7 @@ function NotifyMessage({ message }) {
                                         size='small'
                                         src={user.avatar}
                                         name={user.name}
+                                        color={user.avatarColor}
                                     />
                                 </div>
                                 <div className='notify-message-content-title'>
@@ -433,6 +448,7 @@ function NotifyMessage({ message }) {
                                         size='small'
                                         src={user.avatar}
                                         name={user.name}
+                                        color={user.avatarColor}
                                     />
                                 </div>
                                 <div className='notify-message-content-title'>
@@ -449,6 +465,7 @@ function NotifyMessage({ message }) {
 
 
 
+
                 {
                     transferTextToValue(content) === 14 && (
                         <>
@@ -459,6 +476,7 @@ function NotifyMessage({ message }) {
                                         size='small'
                                         src={user.avatar}
                                         name={user.name}
+                                        color={user.avatarColor}
                                     />
                                 </div>
                                 <div className='notify-message-content-title'>
@@ -467,6 +485,63 @@ function NotifyMessage({ message }) {
                                         {`${isMyActive} `}
                                     </span>
                                     đã thay đổi ảnh đại diện nhóm
+
+
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+                {
+                    transferTextToValue(content) === 15 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                        color={user.avatarColor}
+                                    />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <KeyOutlined />&nbsp;
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    đã thêm {renderUser} làm phó nhóm
+
+
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+
+
+
+
+                {
+                    transferTextToValue(content) === 16 && (
+                        <>
+                            <div className='notify-message-content_group-avatar'>
+                                <div className='notify-message-content_per-avatar'>
+
+                                    <AvatarCustom
+                                        size='small'
+                                        src={user.avatar}
+                                        name={user.name}
+                                        color={user.avatarColor}
+                                    />
+                                </div>
+                                <div className='notify-message-content-title'>
+                                    <KeyOutlined />&nbsp;
+                                    <span className='user-name-strong'>
+                                        {`${isMyActive} `}
+                                    </span>
+                                    đã xóa phó nhóm của {renderUser}
 
 
                                 </div>

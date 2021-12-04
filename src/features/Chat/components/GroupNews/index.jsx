@@ -1,12 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import './style.scss'
-import InfoTitle from '../InfoTitle'
-import Scrollbars from 'react-custom-scrollbars'
+import { BarChartOutlined, NumberOutlined } from '@ant-design/icons'
 import { Tabs } from 'antd'
-import { BarChartOutlined, NumberOutlined, PushpinOutlined } from '@ant-design/icons'
-import ListChannel from '../ListChannel'
+import PropTypes from 'prop-types'
+import React from 'react'
+import Scrollbars from 'react-custom-scrollbars'
 import { useSelector } from 'react-redux'
+import InfoTitle from '../InfoTitle'
+import ListChannel from '../ListChannel'
+import TabPaneVote from '../TabPaneVote'
+import './style.scss'
 
 GroupNews.propTypes = {
     onBack: PropTypes.func,
@@ -19,7 +20,12 @@ GroupNews.defaultProps = {
 
 function GroupNews({ onBack, tabActive, onChange }) {
     const { TabPane } = Tabs
-    const { channels } = useSelector(state => state.chat)
+    const { channels } = useSelector(state => state.chat);
+
+
+
+
+
 
 
     const handleChangeActiveKey = (key) => {
@@ -57,25 +63,13 @@ function GroupNews({ onBack, tabActive, onChange }) {
                             <TabPane
                                 tab={
                                     <span>
-                                        <PushpinOutlined />
-                                        Tin ghim
-                                    </span>
-                                }
-                                key='0'
-                            >
-
-                                Tab 1
-                            </TabPane>
-                            <TabPane
-                                tab={
-                                    <span>
                                         <BarChartOutlined />
                                         Bình chọn
                                     </span>
                                 }
                                 key='1'
                             >
-                                Tab 2
+                                <TabPaneVote />
                             </TabPane>
 
                             <TabPane

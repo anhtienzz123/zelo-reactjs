@@ -5,6 +5,7 @@ import { CaretDownOutlined } from '@ant-design/icons';
 import ImageItem from '../ImageItem';
 import { Image } from 'antd';
 import ModalVideoCustom from 'components/ModalVideoCustom';
+import ThumbnailCustom from 'components/ThumbnailCustom';
 ArchiveMedia.propTypes = {
     viewMediaClick: PropTypes.func,
     name: PropTypes.string,
@@ -76,20 +77,37 @@ function ArchiveMedia(props) {
             >
 
                 <div className='info_media-interact-media'>
-                    <Image.PreviewGroup>
+                    {name === 'Video' ? (
+                        <>
+                            {
+                                items.map((ele, index) => (
+                                    <ThumbnailCustom
+                                        key={index}
+                                        url={ele.content}
+                                        onVisibleVideoModal={handleVisibleModal}
+                                    />
+                                ))
+                            }
+                        </>
+                    ) : (
+                        <Image.PreviewGroup>
 
-                        {items.map((itemEle, index) => (
-                            <ImageItem
-                                key={index}
-                                width={80}
-                                height={80}
-                                url={itemEle.content}
-                                type={name === 'Video' ? name.toLowerCase() : 'image'}
-                                onVisibleVideoModal={handleVisibleModal}
-                            />
-                        ))}
+                            {items.map((itemEle, index) => (
+                                <ImageItem
+                                    key={index}
+                                    width={80}
+                                    height={80}
+                                    url={itemEle.content}
+                                    type={name === 'Video' ? name.toLowerCase() : 'image'}
+                                    onVisibleVideoModal={handleVisibleModal}
+                                />
+                            ))}
 
-                    </Image.PreviewGroup>
+                        </Image.PreviewGroup>
+                    )}
+
+
+
 
                 </div>
 
@@ -103,7 +121,7 @@ function ArchiveMedia(props) {
                 url={currentVideo}
                 onClose={handleOnClose}
             />
-        </div>
+        </div >
     );
 }
 

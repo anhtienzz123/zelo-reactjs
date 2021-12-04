@@ -1,4 +1,5 @@
 import { Col, Row } from 'antd';
+import conversationApi from 'api/conversationApi';
 import { setTabActive } from 'app/globalSlice';
 import NotFoundPage from 'components/NotFoundPage';
 import Chat from 'features/Chat';
@@ -11,8 +12,8 @@ import {
     fetchListClassify,
     fetchListColor,
     fetchListConversations,
-    updateConversationWhenAddMember,
-    updateMemberLeaveGroup,
+    updateAvatarWhenUpdateMember,
+    updateFriendChat,
 } from 'features/Chat/slice/chatSlice';
 import Friend from 'features/Friend';
 import {
@@ -24,9 +25,13 @@ import {
     setMyRequestFriend,
     setNewFriend,
     setNewRequestFriend,
+    updateFriend,
+    updateMyRequestFriend,
+    updateRequestFriends,
 } from 'features/Friend/friendSlice';
+import { fetchInfoWebs } from 'features/Home/homeSlice';
 import useWindowUnloadEffect from 'hooks/useWindowUnloadEffect';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { init, socket } from 'utils/socketClient';
@@ -39,6 +44,8 @@ function ChatLayout(props) {
     const { isJoinChatLayout, user } = useSelector((state) => state.global);
     const { amountNotify } = useSelector((state) => state.friend);
     const [idNewMessage, setIdNewMessage] = useState('');
+    const [codeRevoke, setCodeRevoke] = useState('');
+    const codeRevokeRef = useRef();
 
     useEffect(() => {
         return () => {
@@ -65,6 +72,7 @@ function ChatLayout(props) {
         dispatch(fetchListConversations({}));
         dispatch(fetchAllSticker());
         dispatch(setTabActive(1));
+        dispatch(fetchInfoWebs());
     }, []);
 
     useEffect(() => {
@@ -93,51 +101,33 @@ function ChatLayout(props) {
             'create-individual-conversation-when-was-friend',
             (conversationId) => {
                 dispatch(fetchConversationById({ conversationId }));
-                console.log('hai nguoi la');
             }
         );
     }, []);
 
     useEffect(() => {
         socket.on('new-message', (conversationId, newMessage) => {
-            const { type, content, manipulatedUsers } = newMessage;
-
-            // nếu nottify đã là bạn bè, t
-            if (type === 'NOTIFY' && content === 'Đã thêm vào nhóm') {
-                dispatch(
-                    updateConversationWhenAddMember({
-                        newMembers: manipulatedUsers,
-                        conversationId,
-                    })
-                );
-            }
-
-            if (type === 'NOTIFY' && content === 'Đã là bạn bè') {
-                // console.log('chạy');
-                // dispatch(setNumberUnreadForNewFriend(conversationId))
-            }
-
-            if (type === 'NOTIFY' && content === 'Đã rời khỏi nhóm') {
-                dispatch(
-                    updateMemberLeaveGroup({
-                        conversationId,
-                        newMessage,
-                    })
-                );
-            }
-
             dispatch(addMessage(newMessage));
             setIdNewMessage(newMessage._id);
+        });
+
+        socket.on('update-member', async (conversationId) => {
+            const data = await conversationApi.getConversationById(
+                conversationId
+            );
+            const { avatar, totalMembers } = data;
+            dispatch(
+                updateAvatarWhenUpdateMember({
+                    conversationId,
+                    avatar,
+                    totalMembers,
+                })
+            );
         });
 
         socket.on(
             'new-message-of-channel',
             (conversationId, channelId, message) => {
-                console.log('message in channel', {
-                    conversationId,
-                    channelId,
-                    message,
-                });
                 dispatch(
                     addMessageInChannel({ conversationId, channelId, message })
                 );
@@ -174,17 +164,62 @@ function ChatLayout(props) {
             dispatch(setAmountNotify(amountNotify + 1));
         });
 
+        // xóa lời mời kết bạn
+        socket.on('deleted-friend-invite', (_id) => {
+            dispatch(updateMyRequestFriend(_id));
+        });
+
+        //  xóa gởi lời mời kết bạn cho người khác
+        socket.on('deleted-invite-was-send', (_id) => {
+            dispatch(updateRequestFriends(_id));
+        });
+
+        // xóa kết bạn
+        socket.on('deleted-friend', (_id) => {
+            dispatch(updateFriend(_id));
+            dispatch(updateFriendChat(_id));
+        });
+        // revokeToken
+
+        socket.on('revoke-token', ({ key }) => {
+            if (codeRevokeRef.current !== key) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('refreshToken');
+                window.location.reload();
+            }
+        });
+
         // dispatch(setJoinFriendLayout(true))
     }, []);
+
+    const handleSetCodeRevoke = (code) => {
+        setCodeRevoke(code);
+        codeRevokeRef.current = code;
+    };
 
     return (
         <div>
             {/* <button onClick={leaveApp} >test scoket</button> */}
             <Row gutter={[0, 0]}>
-                <Col span={1}>
-                    <NavbarContainer />
+                <Col
+                    span={1}
+                    xl={{ span: 1 }}
+                    lg={{ span: 1 }}
+                    md={{ span: 2 }}
+                    sm={{ span: 3 }}
+                    xs={{ span: 4 }}
+                >
+                    <NavbarContainer onSaveCodeRevoke={handleSetCodeRevoke} />
                 </Col>
-                <Col span={23}>
+
+                <Col
+                    span={23}
+                    xl={{ span: 23 }}
+                    lg={{ span: 23 }}
+                    md={{ span: 22 }}
+                    sm={{ span: 21 }}
+                    xs={{ span: 20 }}
+                >
                     <Switch>
                         <Route
                             exact

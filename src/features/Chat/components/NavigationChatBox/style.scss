@@ -11,18 +11,27 @@
         margin-bottom: 0;
     }
     .item-chat-box {
-        padding: 0 0.62rem;
-        margin: 0 1rem;
+        width: 40px;
         border-radius: 5px;
         cursor: pointer;
-        transition: 0.2s;
+        height: 40px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        margin-left: 1rem;
     }
 
     .item-chat-box:hover {
         background-color: $light-grey;
         color: inherit !important;
     }
+
     // .item-chat-box ~ .item-chat-box {
     //     margin-right: 1rem;
     // }
+}
+
+.item-menu-vote {
+    font-size: 1.3rem;
+    font-weight: 500;
 }

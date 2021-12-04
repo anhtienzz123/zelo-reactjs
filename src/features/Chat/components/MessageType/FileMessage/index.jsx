@@ -14,7 +14,7 @@ FileMessage.defaultProps = {
     isSeen: false
 
 };
-// {content}
+
 function FileMessage({ content, children, dateAt, isSeen }) {
 
     const handleOnClickDownLoad = () => {
@@ -30,12 +30,9 @@ function FileMessage({ content, children, dateAt, isSeen }) {
         fileHelpers.getFileExtension(fileName);
 
 
-
-
-
     return (
         <>
-            <div className='file_info-wrapper'>
+            <div className='file_info-wrapper message'>
                 <div className="file_info">
                     <div className="file_info-icon">
                         <FileIcon

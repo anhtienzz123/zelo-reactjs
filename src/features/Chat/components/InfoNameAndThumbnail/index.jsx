@@ -143,6 +143,8 @@ function InfoNameAndThumbnail({ conversation }) {
                     type={conversation.type}
                     avatar={conversation.avatar}
                     name={conversation.name}
+                    avatarColor={conversation?.avatarColor}
+
 
                 />
             </div>

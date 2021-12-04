@@ -5,8 +5,20 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ItemsSelected from '../ItemsSelected';
 import PersonalIcon from '../PersonalIcon';
+import PropTypes from 'prop-types';
 import './style.scss';
 ModalAddMemberToConver.propTypes = {
+    onOk: PropTypes.func,
+    loading: PropTypes.bool,
+    onCancel: PropTypes.func,
+    isVisible: PropTypes.bool.isRequired,
+    typeModal: PropTypes.number.isRequired,
+};
+
+ModalAddMemberToConver.defaultProps = {
+    onOk: null,
+    loading: false,
+    onCancel: null,
 
 };
 
@@ -61,14 +73,18 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
     const handleSearch = (e) => {
         const value = e.target.value;
         setFrInput(value);
+        console.log('value', value);
 
         if (!value && isVisible) {
             setInitalFriend(friends);
         } else {
-            const tempFriends = [...initalFriend];
+            // const tempFriends = [...initalFriend];
             const realFriends = [];
-            tempFriends.forEach((ele) => {
+            // console.log('friends', friends);
+
+            friends.forEach((ele) => {
                 const index = ele.name.search(value);
+
                 if (index > -1) {
                     realFriends.push(ele);
                 }
@@ -155,7 +171,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
             centered={true}
             okText='Xác nhận'
             cancelText='Hủy'
-            okButtonProps={{ disabled: ((!nameGroup.trim().length > 0 && typeModal === 1) || checkList.length === initialValue.length) }}
+            okButtonProps={{ disabled: ((!nameGroup.trim().length > 0 && typeModal === 1) || checkList.length < 1) }}
             confirmLoading={loading}
 
 
@@ -235,6 +251,7 @@ function ModalAddMemberToConver({ loading, onOk, onCancel, isVisible, typeModal 
                                                         demention={36}
                                                         avatar={element.avatar}
                                                         name={element.name}
+                                                        color={element.avatarColor}
                                                     />
 
                                                     <span className='item-name'>{element.name}</span>

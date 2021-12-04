@@ -2,6 +2,7 @@ import {
     EditOutlined,
     FileImageOutlined,
     FileOutlined,
+    KeyOutlined,
     NumberOutlined,
     PlaySquareOutlined,
     PushpinOutlined,
@@ -12,8 +13,10 @@ import {
 } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FcBarChart } from "react-icons/fc";
 import { useSelector } from 'react-redux';
 import './style.scss';
+
 ShortMessage.propTypes = {
     message: PropTypes.object,
     type: PropTypes.bool,
@@ -159,6 +162,13 @@ function ShortMessage({ message, type }) {
                             )
                         }
 
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'Tham gia từ link')) && (
+                                <span>{renderName()} đã tham gia nhóm </span>
+                            )
+                        }
+
+
 
                         {
                             (message.type === 'STICKER') && (
@@ -169,6 +179,25 @@ function ShortMessage({ message, type }) {
                         {
                             (message.type === 'NOTIFY' && (message.content === 'Ảnh đại diện nhóm đã thay đổi')) && (
                                 <span>{renderName()}<EditOutlined />&nbsp;đã đổi ảnh nhóm</span>
+                            )
+                        }
+
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'ADD_MANAGERS')) && (
+                                <span>{renderName()}<KeyOutlined />&nbsp;đã thêm phó nhóm</span>
+                            )
+                        }
+
+                        {
+                            (message.type === 'NOTIFY' && (message.content === 'DELETE_MANAGERS')) && (
+                                <span>{renderName()}<KeyOutlined />&nbsp;đã xóa phó nhóm</span>
+                            )
+                        }
+
+                        {
+                            (message.type === 'VOTE') && (
+                                <span>{renderName()}<FcBarChart />&nbsp;bình chọn</span>
                             )
                         }
 

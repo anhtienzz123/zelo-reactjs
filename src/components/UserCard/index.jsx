@@ -28,16 +28,12 @@ UserCard.propTypes = {
     user: PropTypes.object.isRequired,
     isVisible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func,
-    onAddFriend: PropTypes.func,
-    onDeleteFriend: PropTypes.func,
 
 };
 
 UserCard.defaultProps = {
     title: 'Thông tin',
     onCancel: null,
-    onAddFriend: null,
-    onDeleteFriend: null,
 };
 
 
@@ -65,6 +61,7 @@ function UserCard(props) {
     const handleClickMessage = async () => {
         const response = await conversationApi.createConversationIndividual(user._id);
         const { _id, isExists } = response;
+        console.log('response', response);
 
 
         if (!isExists) {
@@ -72,7 +69,9 @@ function UserCard(props) {
             dispatch(setConversations(conver));
         }
 
-        if (conversations.find(ele => ele._id === _id).type) {
+        const tempConver = conversations.find(ele => ele._id === _id);
+
+        if (tempConver && tempConver.type) {
             dispatch(fetchChannels({ conversationId: _id }))
         }
 
@@ -180,7 +179,7 @@ function UserCard(props) {
                             ) : (
                                 <Avatar
                                     size={96}
-                                    style={{ backgroundColor: '#4c92ff' }}
+                                    style={{ backgroundColor: user.avatarColor }}
                                 >
                                     <span style={{ fontSize: '3rem' }}>
                                         {getSummaryName(user.name)}
@@ -268,15 +267,6 @@ function UserCard(props) {
                     </div>
 
                     <div className="user-card-infomation">
-                        <div className="user-card-infomation__group user-card-infomation--flex">
-                            <div className="user-card-infomation__label">
-                                Nhóm chung
-                            </div>
-
-                            <div className="user-card-infomation__text">
-                                {`${numberCommonGroup} nhóm`}
-                            </div>
-                        </div>
 
                         <div className="user-card-infomation__gender user-card-infomation--flex">
                             <div className="user-card-infomation__label">
@@ -299,6 +289,17 @@ function UserCard(props) {
                                 {dateUtils.transferDateString(user.dateOfBirth?.day, user.dateOfBirth?.month, user.dateOfBirth?.year)}
                             </div>
                         </div>
+
+                        <div className="user-card-infomation__group user-card-infomation--flex">
+                            <div className="user-card-infomation__label">
+                                Nhóm chung
+                            </div>
+
+                            <div className="user-card-infomation__text">
+                                {`${numberCommonGroup} nhóm`}
+                            </div>
+                        </div>
+
 
                         <div className="user-card-infomation__birthday user-card-infomation--flex">
                             <div className="user-card-infomation__label">
